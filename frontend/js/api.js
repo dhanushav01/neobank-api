@@ -178,14 +178,14 @@ function showToast(message, type = 'info') {
 window.showToast = showToast;
 
 // Modal open/close helpers with dynamic z-index stacking (ensures child/nested popups are never hidden in background)
-let globalModalZIndexCounter = 100000;
+let globalModalZIndexCounter = 1000000100;
 
 function openModal(modalId) {
   const el = document.getElementById(modalId);
   if (el) {
     let highestZ = globalModalZIndexCounter;
     try {
-      document.querySelectorAll('.modal-overlay.active').forEach(m => {
+      document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active').forEach(m => {
         if (m !== el) {
           const compZ = parseInt(window.getComputedStyle(m).zIndex, 10);
           if (!isNaN(compZ) && compZ > highestZ) {
@@ -198,6 +198,10 @@ function openModal(modalId) {
     globalModalZIndexCounter = Math.max(globalModalZIndexCounter + 20, highestZ + 20);
     el.style.setProperty('z-index', String(globalModalZIndexCounter), 'important');
     el.style.setProperty('display', 'flex', 'important');
+    el.scrollTop = 0;
+    if (document.body) {
+      document.body.classList.add('modal-open');
+    }
     requestAnimationFrame(() => {
       el.classList.add('active');
     });
@@ -213,6 +217,10 @@ function closeModal(modalId) {
       if (!el.classList.contains('active')) {
         el.style.removeProperty('display');
         el.style.display = 'none';
+      }
+      const remainingActive = document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active');
+      if (remainingActive.length === 0 && document.body) {
+        document.body.classList.remove('modal-open');
       }
     }, 220);
   }

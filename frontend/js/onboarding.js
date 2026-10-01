@@ -1802,6 +1802,8 @@ function openVerificationChoiceModal() {
   const modal = document.getElementById('modal-verification-choice');
   if (!modal) return;
   modal.style.display = 'flex';
+  modal.scrollTop = 0;
+  if (document.body) document.body.classList.add('modal-open');
   setTimeout(() => modal.classList.add('active'), 10);
 }
 
@@ -1809,7 +1811,11 @@ function closeVerificationChoiceModal() {
   const modal = document.getElementById('modal-verification-choice');
   if (!modal) return;
   modal.classList.remove('active');
-  setTimeout(() => modal.style.display = 'none', 200);
+  setTimeout(() => {
+    modal.style.display = 'none';
+    const remaining = document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active');
+    if (remaining.length === 0 && document.body) document.body.classList.remove('modal-open');
+  }, 200);
 }
 
 function selectVerificationMethod(method) {
@@ -1826,6 +1832,8 @@ function openThumbUploadModal() {
   const modal = document.getElementById('modal-thumb-upload');
   if (!modal) return;
   modal.style.display = 'flex';
+  modal.scrollTop = 0;
+  if (document.body) document.body.classList.add('modal-open');
   setTimeout(() => modal.classList.add('active'), 10);
 }
 
@@ -1833,7 +1841,11 @@ function closeThumbUploadModal() {
   const modal = document.getElementById('modal-thumb-upload');
   if (!modal) return;
   modal.classList.remove('active');
-  setTimeout(() => modal.style.display = 'none', 200);
+  setTimeout(() => {
+    modal.style.display = 'none';
+    const remaining = document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active');
+    if (remaining.length === 0 && document.body) document.body.classList.remove('modal-open');
+  }, 200);
 }
 
 function handleThumbPhotoSelected(input) {
@@ -1941,6 +1953,8 @@ function openCoSignModal(applicantTarget = 'primary') {
   }
 
   modal.style.display = 'flex';
+  modal.scrollTop = 0;
+  if (document.body) document.body.classList.add('modal-open');
   setTimeout(() => modal.classList.add('active'), 10);
   initSignaturePadCanvas();
 }
@@ -1949,7 +1963,11 @@ function closeSignatureModal() {
   const modal = document.getElementById('modal-signature-pad');
   if (!modal) return;
   modal.classList.remove('active');
-  setTimeout(() => modal.style.display = 'none', 200);
+  setTimeout(() => {
+    modal.style.display = 'none';
+    const remaining = document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active');
+    if (remaining.length === 0 && document.body) document.body.classList.remove('modal-open');
+  }, 200);
 }
 
 function initSignaturePadCanvas() {
@@ -3405,14 +3423,20 @@ function openSubmissionGuidanceModal(appNumber, email, phone) {
   }
 
   modal.style.display = 'flex';
+  modal.scrollTop = 0;
+  if (document.body) document.body.classList.add('modal-open');
   modal.classList.add('active');
 }
 
 function closeSubmissionGuidanceModal() {
   const modal = document.getElementById('modal-submission-guidance');
   if (modal) {
-    modal.style.display = 'none';
     modal.classList.remove('active');
+    setTimeout(() => {
+      modal.style.display = 'none';
+      const remaining = document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active');
+      if (remaining.length === 0 && document.body) document.body.classList.remove('modal-open');
+    }, 200);
   }
 }
 

@@ -592,25 +592,39 @@
     .db-modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.75);
-      backdrop-filter: blur(6px);
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.82);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: none;
       align-items: center;
+      align-items: safe center;
       justify-content: center;
-      z-index: 1000;
-      padding: 1.5rem;
+      z-index: 1000000000;
+      padding: clamp(12px, 2.5vh, 24px) clamp(10px, 2vw, 20px);
+      overflow-y: auto;
+      box-sizing: border-box;
     }
 
     .db-modal-card {
       width: 100%;
       max-width: 680px;
-      max-height: 85vh;
+      max-height: calc(100% - 20px);
+      max-height: min(88vh, calc(100% - 20px));
+      margin: auto;
       background: #0f172a;
       border: 1px solid var(--db-border);
       border-radius: 16px;
       display: flex;
       flex-direction: column;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      box-sizing: border-box;
     }
 
     .db-modal-header {

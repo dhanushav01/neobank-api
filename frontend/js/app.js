@@ -100,13 +100,39 @@ function setupGlobalEventListeners() {
     });
   }
 
-  // Close modals when clicking outside
-  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  // Close modals when clicking outside backdrop
+  document.querySelectorAll('.modal-overlay, .signature-modal-backdrop, .db-modal-overlay').forEach(overlay => {
     overlay.addEventListener('click', (e) => {
       if (e.target === overlay) {
-        overlay.classList.remove('active');
+        if (overlay.id && typeof window.closeModal === 'function') {
+          window.closeModal(overlay.id);
+        } else {
+          overlay.classList.remove('active');
+          setTimeout(() => { overlay.style.display = 'none'; }, 200);
+        }
       }
     });
+  });
+
+  // Global Escape key handler to close the topmost active modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      const activeModals = Array.from(document.querySelectorAll('.modal-overlay.active, .signature-modal-backdrop.active, .db-modal-overlay.active'));
+      if (activeModals.length > 0) {
+        activeModals.sort((a, b) => {
+          const zA = parseInt(window.getComputedStyle(a).zIndex, 10) || 0;
+          const zB = parseInt(window.getComputedStyle(b).zIndex, 10) || 0;
+          return zB - zA;
+        });
+        const topModal = activeModals[0];
+        if (topModal.id && typeof window.closeModal === 'function') {
+          window.closeModal(topModal.id);
+        } else {
+          topModal.classList.remove('active');
+          topModal.style.display = 'none';
+        }
+      }
+    }
   });
 }
 

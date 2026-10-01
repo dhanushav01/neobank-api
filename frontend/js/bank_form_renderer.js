@@ -185,7 +185,7 @@
       </div>
 
       <!-- Authentic Physical Bank Paper Sheet -->
-      <div id="print-sheet-${uniquePrefix}" class="bank-paper-sheet printable-bank-sheet" style="background:#ffffff;color:#0b2545;border:2px solid #0b2545;padding:1.5rem;border-radius:4px;box-shadow:0 8px 30px rgba(0,0,0,0.12)">
+      <div id="print-sheet-${uniquePrefix}" class="bank-paper-sheet printable-bank-sheet" style="background:#ffffff;color:#0b2545;border:2px solid #0b2545;padding:clamp(0.75rem,2.5vw,1.5rem);border-radius:4px;box-shadow:0 8px 30px rgba(0,0,0,0.12);width:min(100%,1060px);margin-inline:auto">
         
         <!-- ==================== PAGE 1: CIF & CKYC ==================== -->
         <div id="${uniquePrefix}-part1" class="bank-form-part" style="display:block">
@@ -201,7 +201,7 @@
                 <div style="font-size:0.75rem;font-weight:700;color:#334155">UNIFORM ACCOUNT OPENING FORM FOR RESIDENT INDIVIDUALS</div>
               </div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align:end">
               <div style="font-size:0.82rem;font-weight:800;color:#0b2545">PART I: CIF &amp; CKYC FORM</div>
               <div style="font-size:0.7rem;color:#475569">(Customer Information Sheet - Page 1 of 4)</div>
             </div>
@@ -334,7 +334,7 @@
               <div style="font-size:1.15rem;font-weight:900;color:#0b2545">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
               <div style="font-size:0.75rem;font-weight:700;color:#334155">DOCUMENTATION &amp; OFFICIALLY VALID DOCUMENTS (OVD)</div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align:end">
               <div style="font-size:0.82rem;font-weight:800;color:#0b2545">PART I (CONTINUED): KYC VERIFICATION</div>
               <div style="font-size:0.7rem;color:#475569">Page 2 of 4</div>
             </div>
@@ -347,9 +347,9 @@
 
           <table style="width:100%;border-collapse:collapse;border:1px solid #cbd5e1;margin-bottom:1rem;font-size:0.78rem">
             <tr style="background:#f1f5f9">
-              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:left;width:30%">Document Category</th>
-              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:left">Document Type</th>
-              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:left">Identification / Ref Number</th>
+              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:start;width:30%">Document Category</th>
+              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:start">Document Type</th>
+              <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:start">Identification / Ref Number</th>
               <th style="padding:0.5rem;border:1px solid #cbd5e1;text-align:center;width:20%">Status</th>
             </tr>
             <tr>
@@ -416,7 +416,7 @@
               <div style="font-size:1.15rem;font-weight:900;color:#0b2545">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
               <div style="font-size:0.75rem;font-weight:700;color:#334155">CORE BANKING PRODUCT &amp; ACCOUNT SPECIFICATIONS</div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align:end">
               <div style="font-size:0.82rem;font-weight:800;color:#0b2545">PART II: ACCOUNT FORM</div>
               <div style="font-size:0.7rem;color:#475569">Page 3 of 4</div>
             </div>
@@ -491,7 +491,7 @@
               <div style="font-size:1.15rem;font-weight:900;color:#0b2545">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
               <div style="font-size:0.75rem;font-weight:700;color:#334155">DECLARATIONS &amp; OFFICIAL BANK VERIFICATION</div>
             </div>
-            <div style="text-align:right">
+            <div style="text-align:end">
               <div style="font-size:0.82rem;font-weight:800;color:#0b2545">PART III: DECLARATIONS &amp; STAMP</div>
               <div style="font-size:0.7rem;color:#475569">Page 4 of 4</div>
             </div>
