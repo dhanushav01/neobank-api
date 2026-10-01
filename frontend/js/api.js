@@ -50,9 +50,18 @@ function replaceUnderscoreWords(text) {
 }
 window.replaceUnderscoreWords = replaceUnderscoreWords;
 
-const API_BASE = window.location.origin.includes('8000') 
-  ? window.location.origin 
-  : 'http://127.0.0.1:8000';
+// Dynamic API Base URL resolution:
+// - Standalone frontend dev servers (Live Server on 5500, Vite on 5173/3000, 8080) or local file protocol route to http://127.0.0.1:8000.
+// - Cloud hosted platforms (Render, Railway, etc.) or when served directly from FastAPI route to window.location.origin.
+const isSeparateDevServer = 
+  ['5500', '3000', '5173', '8080'].includes(window.location.port) || 
+  window.location.protocol === 'file:';
+
+const API_BASE = isSeparateDevServer 
+  ? 'http://127.0.0.1:8000' 
+  : window.location.origin;
+
+window.API_BASE = API_BASE;
 
 // Global Token Management
 function getToken() {
