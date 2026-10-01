@@ -58,6 +58,61 @@
     `;
   }
 
+  function formatStampDate(isoStr) {
+    try {
+      const dObj = isoStr ? new Date(isoStr) : new Date();
+      const day = String(dObj.getDate()).padStart(2, '0');
+      const monthNames = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+      const month = monthNames[dObj.getMonth()] || 'OCT';
+      const year = dObj.getFullYear() || 2026;
+      return `${day} ${month} ${year}`;
+    } catch (e) {
+      return '01 OCT 2026';
+    }
+  }
+
+  /**
+   * Renders the authentic institutional rubber ink stamp SVG (APPROVED or REJECTED)
+   * with distressed fractal ink displacement filter, bank insignia, date, and regulatory markings.
+   */
+  function renderOfficialRubberStampSVG(isApproved, stampDate, prefix = 'rf') {
+    const filterId = isApproved ? `nsInkApproved_${prefix}` : `nsInkRejected_${prefix}`;
+    const color = isApproved ? '#0a7f59' : '#c2263c';
+    const stampText = isApproved ? 'APPROVED' : 'REJECTED';
+    const symbolSvg = isApproved
+      ? `<path d="M52 142l10 10 20-23" fill="none" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<path d="M54 129l24 24M78 129L54 153" fill="none" stroke-width="6.5" stroke-linecap="round"/>`;
+
+    return `
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="-14 -12 588 258" role="img" aria-label="Bank stamp: ${stampText}" style="color:${color};width:100%;max-width:320px;height:auto;display:inline-block">
+        <defs>
+          <filter id="${filterId}" x="-5%" y="-5%" width="110%" height="110%">
+            <feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="11" result="n"/>
+            <feColorMatrix in="n" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 5 0 0 0 -1.3" result="m"/>
+            <feComposite in="SourceGraphic" in2="m" operator="in" result="t"/>
+            <feDisplacementMap in="t" in2="n" scale="1.3"/>
+          </filter>
+        </defs>
+        <g filter="url(#${filterId})" transform="rotate(-3 280 112)" fill="currentColor" stroke="currentColor">
+          <rect x="4" y="4" width="552" height="216" rx="18" fill="none" stroke-width="6"/>
+          <rect x="14" y="14" width="532" height="196" rx="11" fill="none" stroke-width="1.6"/>
+          <g transform="translate(34 30)" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M0 14L18 3l18 11M4 17v17M13 17v17M23 17v17M32 17v17M0 38h36"/>
+          </g>
+          <text x="84" y="55" font-size="32" font-weight="800" letter-spacing="7" stroke="none">NEOBANK</text>
+          <text x="86" y="73" font-size="9.5" font-weight="700" letter-spacing="2.4" stroke="none">CORE BANKING SYSTEM</text>
+          <text x="522" y="45" font-size="9.5" font-weight="700" text-anchor="end" letter-spacing="1.6" stroke="none">DATE</text>
+          <text x="522" y="65" font-size="16" font-weight="800" text-anchor="end" letter-spacing="1" font-family="ui-monospace,Menlo,Consolas,monospace" stroke="none">${stampDate}</text>
+          <path d="M30 88H530" stroke-width="1.6" fill="none"/>
+          <rect x="30" y="98" width="500" height="86" rx="8" fill="none" stroke-width="4"/>
+          <circle cx="66" cy="141" r="27" fill="none" stroke-width="4.5"/>
+          ${symbolSvg}
+          <text x="316" y="161" font-size="58" font-weight="900" text-anchor="middle" textLength="318" lengthAdjust="spacingAndGlyphs" stroke="none">${stampText}</text>
+        </g>
+      </svg>
+    `;
+  }
+
   /**
    * Generates complete 4-page uniform bank application form HTML
    */
@@ -100,7 +155,7 @@
 
     return `
       <!-- Toolbar: Page Switcher & Download/Print Action -->
-      <div class="form-editor-toolbar screen-only" style="margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:0.65rem 1rem">
+      <div class="form-editor-toolbar screen-only" style="position:static !important;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;background:#0d1527 !important;border:1px solid rgba(255,255,255,0.14) !important;border-radius:12px;padding:0.75rem 1.1rem;box-shadow:0 6px 20px rgba(0,0,0,0.3) !important">
         <div class="part-nav-pills" style="display:flex;gap:0.4rem;flex-wrap:wrap">
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix} active" onclick="window.switchBankFormPart('${uniquePrefix}', 'part1', this)">
             📄 Page 1: CIF &amp; CKYC
@@ -120,10 +175,10 @@
         </div>
 
         <div style="display:flex;align-items:center;gap:0.6rem">
-          <div style="font-family:monospace;font-size:0.85rem;font-weight:800;color:var(--brand-400);background:rgba(99,102,241,0.1);padding:0.25rem 0.6rem;border-radius:6px;border:1px solid rgba(99,102,241,0.3)">
+          <div style="font-family:monospace;font-size:0.85rem;font-weight:800;color:var(--brand-400);background:rgba(99,102,241,0.15);padding:0.3rem 0.65rem;border-radius:6px;border:1px solid rgba(99,102,241,0.3)">
             ${appNumber}
           </div>
-          <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('${uniquePrefix}')" title="Download Official 4-Page PDF / Print Document">
+          <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('${uniquePrefix}')" title="Download Official 4-Page PDF / Print Document" style="font-weight:700">
             🖨️ Download &amp; Print Form (PDF)
           </button>
         </div>
@@ -480,16 +535,11 @@
           ${(() => {
             const officeVer = app.officeVerification || (app.formData && app.formData.officeVerification) || {};
             const isDecided = (app.status === 'ACCOUNT_OPENED' || app.status === 'APPROVED' || app.status === 'REJECTED' || !!app.reviewedAt || !!officeVer.decision);
+            
+            // Point 1: During application filling and while under review, form ends with signatures & declarations.
+            // Office section is only appended once a decision (Approved or Rejected) is made by the bank official!
             if (!isDecided) {
-              return `
-                <div style="background:#f8fafc;border:1px dashed #94a3b8;border-radius:6px;padding:0.75rem 1rem;margin:1rem 0;display:flex;align-items:center;justify-content:space-between">
-                  <div>
-                    <strong style="color:#334155;font-size:0.78rem">Customer Declarations &amp; Signatures Authenticated</strong>
-                    <div style="font-size:0.7rem;color:#64748b">Application status: <span style="font-weight:700;color:#4f46e5">${app.status || 'SUBMITTED'}</span>. Official "For Office Use Only" authorization box will be appended upon bank officer review and final approval/rejection.</div>
-                  </div>
-                  <div style="font-size:0.72rem;color:#94a3b8;font-weight:700">[ PENDING BANK AUTHORIZATION ]</div>
-                </div>
-              `;
+              return '';
             }
 
             const isApproved = (app.status === 'ACCOUNT_OPENED' || app.status === 'APPROVED' || officeVer.decision === 'APPROVED');
@@ -500,76 +550,98 @@
             const ipvVerified = (officeVer.ipvVerified !== false && app.ipvVerified !== false);
             const reviewedTime = safeVal(officeVer.verifiedAt, safeVal(app.reviewedAt, ''));
             const reviewNotes = safeVal(officeVer.notes, safeVal(app.reviewNotes, ''));
-            const brandColor = isApproved ? '#059669' : '#dc2626';
+            const brandColor = isApproved ? '#0a7f59' : '#c2263c';
+            const stampDate = formatStampDate(reviewedTime);
+            const stampSvg = renderOfficialRubberStampSVG(isApproved, stampDate, uniquePrefix);
 
             return `
-              <!-- 8. FOR OFFICE USE ONLY (APPENDED AFTER BANK OFFICER REVIEW) -->
-              <div style="background:#0b2545;color:#fff;padding:0.45rem 0.75rem;font-size:0.85rem;font-weight:900;margin:1rem 0 0.6rem;display:flex;justify-content:space-between;align-items:center;border-radius:4px 4px 0 0">
-                <span>🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; OFFICIAL DECISION)</span>
-                <span style="font-size:0.72rem;background:${brandColor};color:#fff;padding:0.15rem 0.55rem;border-radius:3px;font-weight:800">
-                  ${isApproved ? '✓ APPROVED &amp; ACCOUNT OPENED' : '✕ REJECTED'}
-                </span>
-              </div>
+              <!-- ==================== 8. FOR OFFICE USE ONLY (APPENDED AFTER BANK OFFICER REVIEW) ==================== -->
+              <div style="margin-top:1.5rem;border:2px solid ${brandColor};border-radius:10px;overflow:hidden;background:#ffffff;box-shadow:0 6px 25px rgba(0,0,0,0.08)">
+                <div style="background:${brandColor};color:#ffffff;padding:0.6rem 1rem;font-size:0.88rem;font-weight:900;display:flex;justify-content:space-between;align-items:center;letter-spacing:0.02em">
+                  <div style="display:flex;align-items:center;gap:0.5rem">
+                    <span>🏛️</span>
+                    <span>FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; OFFICIAL DECISION)</span>
+                  </div>
+                  <span style="font-size:0.75rem;background:rgba(255,255,255,0.22);color:#ffffff;padding:0.2rem 0.65rem;border-radius:9999px;font-weight:800;letter-spacing:0.05em">
+                    ${isApproved ? '✓ APPROVED &amp; ACCOUNT OPENED' : '✕ REJECTED BY UNDERWRITING'}
+                  </span>
+                </div>
 
-              <table style="width:100%;border-collapse:collapse;border:2px solid #0b2545;margin-bottom:0.75rem;font-size:0.78rem">
-                <tr style="background:#f8fafc">
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">Allocated Core Account Number:</span>
-                    <strong style="font-family:monospace;font-size:1.15rem;color:${brandColor}">
-                      ${isApproved ? accountNum : 'REJECTED / NOT ALLOCATED'}
-                    </strong>
-                  </td>
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">Customer ID (CIF):</span>
-                    <strong style="font-family:monospace;font-size:1rem;color:#4f46e5">${safeVal(app.customerId, 'CIF-' + appNumber.slice(-6))}</strong>
-                  </td>
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1;text-align:center" rowspan="3">
-                    <div style="display:inline-block;border:2px solid ${brandColor};color:${brandColor};border-radius:50%;width:86px;height:86px;padding:8px 4px;text-align:center;font-weight:900;font-size:0.62rem;line-height:1.2;transform:rotate(-6deg)">
-                      OFFICIAL<br>BRANCH SEAL<br><strong>${isApproved ? 'VERIFIED' : 'RECORDED'}</strong><br>${branchCode}
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">Verifying Officer Name:</span>
-                    <strong style="color:#0b2545">${officerName}</strong>
-                  </td>
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">Officer Employee Code:</span>
-                    <strong style="font-family:monospace;color:#4f46e5">${officerCode}</strong>
-                  </td>
-                </tr>
-                <tr style="background:#f8fafc">
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">Risk Category:</span>
-                    <span style="display:inline-block;padding:0.15rem 0.5rem;background:${riskCategory === 'HIGH' ? '#fee2e2' : riskCategory === 'MED' ? '#fef3c7' : '#ecfdf5'};color:${riskCategory === 'HIGH' ? '#b91c1c' : riskCategory === 'MED' ? '#b45309' : '#047857'};font-weight:800;border-radius:4px;font-size:0.75rem;margin-top:0.15rem">
-                      ● ${riskCategory} RISK
-                    </span>
-                  </td>
-                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                    <span style="font-size:0.7rem;color:#64748b;display:block">KYC Verification Mode:</span>
-                    <strong style="color:#0b2545;font-size:0.76rem">${kycMode}</strong>
-                  </td>
-                </tr>
-                <tr>
-                  <td style="padding:0.5rem 0.75rem;border:1px solid #cbd5e1;background:#fff" colspan="3">
-                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;font-weight:700;color:${brandColor};flex-wrap:wrap;gap:0.5rem">
-                      <span>✓ In-Person Verification (IPV): Carried out and verified original documents by Bank Official</span>
-                      <span>📅 Decision Date: ${reviewedTime ? reviewedTime.replace('T', ' ').slice(0, 16) : 'Recorded'}</span>
-                    </div>
-                    ${reviewNotes ? `
-                      <div style="margin-top:0.4rem;padding-top:0.35rem;border-top:1px dashed #cbd5e1;font-size:0.72rem;color:#475569;font-weight:normal">
-                        <strong>Official Remarks / Underwriting Notes:</strong> ${reviewNotes}
+                <div style="display:grid;grid-template-columns:1.35fr 1fr;gap:1.25rem;padding:1.25rem;align-items:center;background:#ffffff;color:#0b2545">
+                  <!-- Underwriting Details Left Column -->
+                  <div>
+                    <table style="width:100%;border-collapse:collapse;margin-bottom:0.75rem;font-size:0.8rem">
+                      <tr style="border-bottom:1px solid #e2e8f0">
+                        <td style="padding:0.45rem 0;color:#64748b;width:45%;font-size:0.74rem">Allocated Core Account No:</td>
+                        <td style="padding:0.45rem 0">
+                          <strong style="font-family:monospace;font-size:1.15rem;color:${brandColor} !important;letter-spacing:0.03em">
+                            ${isApproved ? accountNum : 'REJECTED / NOT ALLOCATED'}
+                          </strong>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #e2e8f0">
+                        <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">Customer ID (CIF):</td>
+                        <td style="padding:0.45rem 0">
+                          <strong style="font-family:monospace;font-size:0.95rem;color:#4f46e5 !important">${safeVal(app.customerId, 'CIF-' + appNumber.slice(-6))}</strong>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #e2e8f0">
+                        <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">Verifying Bank Officer:</td>
+                        <td style="padding:0.45rem 0">
+                          <strong style="color:#0b2545 !important;font-size:0.88rem">${officerName}</strong>
+                          <span style="font-family:monospace;color:#4f46e5 !important;font-size:0.78rem;margin-left:0.35rem;background:#e0e7ff;padding:0.1rem 0.4rem;border-radius:4px;font-weight:700">${officerCode}</span>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #e2e8f0">
+                        <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">Risk Category Assessment:</td>
+                        <td style="padding:0.45rem 0">
+                          <span style="display:inline-block;padding:0.18rem 0.55rem;background:${riskCategory === 'HIGH' ? '#fee2e2' : riskCategory === 'MED' ? '#fef3c7' : '#ecfdf5'};color:${riskCategory === 'HIGH' ? '#b91c1c' : riskCategory === 'MED' ? '#b45309' : '#047857'} !important;font-weight:800;border-radius:4px;font-size:0.74rem">
+                            ● ${riskCategory} RISK
+                          </span>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom:1px solid #e2e8f0">
+                        <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">KYC Verification Mode:</td>
+                        <td style="padding:0.45rem 0">
+                          <strong style="color:#0b2545 !important;font-size:0.82rem">${kycMode}</strong>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">Decision Timestamp:</td>
+                        <td style="padding:0.45rem 0;font-size:0.78rem;color:#334155;font-weight:600">
+                          📅 ${reviewedTime ? reviewedTime.replace('T', ' ').slice(0, 16) : stampDate} • ${branchName} (${branchCode})
+                        </td>
+                      </tr>
+                    </table>
+
+                    <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:0.5rem 0.75rem;font-size:0.74rem;color:#0b2545;margin-top:0.4rem">
+                      <div style="font-weight:700;color:${brandColor} !important;display:flex;align-items:center;gap:0.35rem">
+                        <span>✓</span> <span>In-Person Verification (IPV): Carried out and verified original documents by Bank Official</span>
                       </div>
-                    ` : ''}
-                  </td>
-                </tr>
-              </table>
+                      ${reviewNotes ? `
+                        <div style="margin-top:0.4rem;padding-top:0.4rem;border-top:1px dashed #cbd5e1;color:#475569;font-size:0.73rem">
+                          <strong style="color:#0b2545 !important">Official Remarks / Underwriting Notes:</strong> ${reviewNotes}
+                        </div>
+                      ` : ''}
+                    </div>
+                  </div>
+
+                  <!-- Authentic Distressed Rubber Stamp Right Column -->
+                  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0.5rem">
+                    <div style="max-width:320px;width:100%;filter:drop-shadow(0 4px 14px rgba(0,0,0,0.12));transition:transform 0.2s ease">
+                      ${stampSvg}
+                    </div>
+                    <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.08em;color:${brandColor};margin-top:0.5rem;text-transform:uppercase">
+                      OFFICIAL REGULATORY BANK AUDIT SEAL • ${branchCode}
+                    </div>
+                  </div>
+                </div>
+              </div>
             `;
           })()}
 
-          <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#64748b;border-top:1px solid #cbd5e1;padding-top:0.4rem">
-            <span>Form 101-C: Official Authorization (Part-III)</span>
+          <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#64748b;border-top:1px solid #cbd5e1;padding-top:0.5rem;margin-top:1.25rem">
+            <span>Form 101-C: Official Bank Application Dossier (Part-III)</span>
             <span>Page 4 of 4</span>
           </div>
         </div>

@@ -330,7 +330,7 @@ function promptActionConfirm({ title, message, icon = '⚠️', showInput = fals
     if (onConfirm) onConfirm(val);
   };
 
-  modal.classList.add('active');
+  openModal('modal-confirm-action');
 }
 
 function executeConfirmedAction() {

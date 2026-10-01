@@ -177,11 +177,30 @@ function showToast(message, type = 'info') {
 }
 window.showToast = showToast;
 
-// Modal open/close helpers
+// Modal open/close helpers with dynamic z-index stacking (ensures child/nested popups are never hidden in background)
+let globalModalZIndexCounter = 100000;
+
 function openModal(modalId) {
   const el = document.getElementById(modalId);
   if (el) {
-    el.classList.add('active');
+    let highestZ = globalModalZIndexCounter;
+    try {
+      document.querySelectorAll('.modal-overlay.active').forEach(m => {
+        if (m !== el) {
+          const compZ = parseInt(window.getComputedStyle(m).zIndex, 10);
+          if (!isNaN(compZ) && compZ > highestZ) {
+            highestZ = compZ;
+          }
+        }
+      });
+    } catch (e) {}
+
+    globalModalZIndexCounter = Math.max(globalModalZIndexCounter + 20, highestZ + 20);
+    el.style.setProperty('z-index', String(globalModalZIndexCounter), 'important');
+    el.style.setProperty('display', 'flex', 'important');
+    requestAnimationFrame(() => {
+      el.classList.add('active');
+    });
   }
 }
 window.openModal = openModal;
@@ -190,6 +209,12 @@ function closeModal(modalId) {
   const el = document.getElementById(modalId);
   if (el) {
     el.classList.remove('active');
+    setTimeout(() => {
+      if (!el.classList.contains('active')) {
+        el.style.removeProperty('display');
+        el.style.display = 'none';
+      }
+    }, 220);
   }
 }
 window.closeModal = closeModal;

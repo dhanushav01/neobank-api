@@ -721,43 +721,70 @@ body {
 .modal-overlay {
   position: fixed;
   inset: 0;
-  z-index: 99999 !important;
-  background: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(8px);
+  z-index: 100000;
+  background: rgba(3, 7, 18, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   display: flex;
-  align-items: center;
+  align-items: flex-start !important; /* Critical: Never clips top of modal at any zoom or screen height */
   justify-content: center;
-  padding: 1.5rem 1rem;
+  padding: 2.5vh 1rem 3vh 1rem !important;
   overflow-y: auto !important;
   -webkit-overflow-scrolling: touch;
   opacity: 0;
   pointer-events: none;
-  transition: opacity var(--transition-normal);
+  visibility: hidden;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
 }
 
 .modal-overlay.active {
-  opacity: 1;
-  pointer-events: auto;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  visibility: visible !important;
+  display: flex !important;
 }
 
 .modal-box {
   background: #0e1424;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.14);
   border-radius: var(--radius-lg);
   width: 100%;
   max-width: 540px;
-  max-height: 90vh !important;
+  max-height: calc(100vh - 5vh) !important;
   display: flex !important;
   flex-direction: column !important;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08);
   overflow: hidden !important;
-  transform: scale(0.95);
-  transition: transform var(--transition-normal);
-  margin: auto !important;
+  transform: scale(0.97) translateY(8px);
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  margin: 1.5vh auto 2.5vh auto !important;
+  flex-shrink: 0;
 }
 
 .modal-overlay.active .modal-box {
-  transform: scale(1);
+  transform: scale(1) translateY(0);
+}
+
+/* Stacked Modal Overlays (Always appear in foreground above parent review modal) */
+#modal-approve-office-verification,
+#modal-document-viewer,
+#modal-confirm-action,
+#modal-action-confirm,
+.modal-stacked {
+  background: rgba(3, 7, 18, 0.88) !important;
+}
+
+/* Modal Inner Toolbar Styling (Prevents sticky overlapping & background bleed during scroll) */
+.modal-box .form-editor-toolbar {
+  position: static !important;
+  top: auto !important;
+  margin-bottom: 1.25rem !important;
+  background: #111c33 !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+  z-index: 1 !important;
 }
 
 .modal-header {
@@ -3226,9 +3253,29 @@ body.dark-theme .bank-paper-sheet {
   border-color: #334155 !important;
 }
 
-[data-theme="dark"] .bank-paper-sheet strong,
-body.dark-theme .bank-paper-sheet strong {
-  color: #ffffff !important;
+[data-theme="dark"] .bank-paper-sheet strong:not([style*="color"]),
+body.dark-theme .bank-paper-sheet strong:not([style*="color"]) {
+  color: #ffffff;
+}
+
+[data-theme="dark"] .bank-paper-sheet table {
+  border-color: #334155 !important;
+}
+
+[data-theme="dark"] .bank-paper-sheet td,
+[data-theme="dark"] .bank-paper-sheet th {
+  border-color: #27354f !important;
+}
+
+[data-theme="dark"] .bank-paper-sheet tr[style*="background:#f8fafc"],
+[data-theme="dark"] .bank-paper-sheet tr[style*="background: #f8fafc"],
+[data-theme="dark"] .bank-paper-sheet td[style*="background:#f8fafc"],
+[data-theme="dark"] .bank-paper-sheet td[style*="background: #f8fafc"],
+[data-theme="dark"] .bank-paper-sheet td[style*="background:#fff"],
+[data-theme="dark"] .bank-paper-sheet td[style*="background: #fff"],
+[data-theme="dark"] .bank-paper-sheet tr[style*="background:#fff"],
+[data-theme="dark"] .bank-paper-sheet tr[style*="background: #fff"] {
+  background: #111a2e !important;
 }
 
 [data-theme="dark"] .bank-table-grid select,
