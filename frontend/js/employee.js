@@ -761,18 +761,137 @@ function promptRevertStatus(appNumber, targetStatus) {
   });
 }
 
-function confirmApproveApplication(appNumber) {
-  promptActionConfirm({
-    title: 'Approve & Open Bank Account?',
-    message: `Are you sure you want to approve application #${appNumber}? This will immediately provision core ledger accounts, assign an account number, and auto-issue debit cards.`,
-    icon: '🏦',
-    showInput: false,
-    onConfirm: async () => {
-      await reviewCustomerApplication(appNumber, 'APPROVED');
-      closeModal('modal-application-review');
+function openOfficeApprovalModal(appNumber) {
+  const activeNum = appNumber || activeReviewAppNumber;
+  if (!activeNum) return;
+
+  const numText = document.getElementById('approve-modal-app-num-text');
+  if (numText) numText.textContent = activeNum;
+
+  // Pre-fill officer details based on logged in user session
+  let officerName = 'Alexander Sterling';
+  let empCode = 'EMP01';
+  try {
+    const session = (typeof getCurrentUserSession === 'function' ? getCurrentUserSession() : null);
+    if (session) {
+      const profile = session.profile || {};
+      const fName = profile.firstName || '';
+      const lName = profile.lastName || '';
+      if (fName || lName) {
+        officerName = `${fName} ${lName}`.trim();
+      } else if (session.name) {
+        officerName = session.name;
+      }
+      if (session.employeeCode) {
+        empCode = session.employeeCode;
+      } else if (session.id && session.id.startsWith('usr_')) {
+        empCode = session.id.replace('usr_', 'EMP-').toUpperCase();
+      }
     }
-  });
+  } catch (e) {}
+
+  const nameInput = document.getElementById('approve-officer-name');
+  if (nameInput) nameInput.value = officerName;
+
+  const codeInput = document.getElementById('approve-officer-code');
+  if (codeInput) codeInput.value = empCode;
+
+  const notesInput = document.getElementById('approve-officer-notes');
+  if (notesInput) {
+    const accType = currentReviewApplication ? currentReviewApplication.accountType : 'SAVINGS';
+    notesInput.value = `Verified original identity & address documents; applicant signed and authenticated for ${formatHumanText(accType)} account.`;
+  }
+
+  const ipvChk = document.getElementById('approve-ipv-checkbox');
+  if (ipvChk) ipvChk.checked = true;
+
+  const riskSel = document.getElementById('approve-risk-category');
+  if (riskSel) riskSel.value = 'LOW';
+
+  const kycSel = document.getElementById('approve-kyc-mode');
+  if (kycSel) kycSel.value = 'In-Person Verification (IPV)';
+
+  openModal('modal-approve-office-verification');
 }
+window.openOfficeApprovalModal = openOfficeApprovalModal;
+
+function confirmApproveApplication(appNumber) {
+  openOfficeApprovalModal(appNumber || activeReviewAppNumber);
+}
+
+async function submitOfficeAuthorizationApproval() {
+  const appNumber = activeReviewAppNumber;
+  if (!appNumber) return;
+
+  const officerName = document.getElementById('approve-officer-name')?.value?.trim();
+  const officerCode = document.getElementById('approve-officer-code')?.value?.trim();
+  const riskCategory = document.getElementById('approve-risk-category')?.value;
+  const kycMode = document.getElementById('approve-kyc-mode')?.value;
+  const ipvVerified = document.getElementById('approve-ipv-checkbox')?.checked;
+  const notes = document.getElementById('approve-officer-notes')?.value?.trim();
+
+  if (!officerName) {
+    showToast('Verifying Officer Name is mandatory.', 'error');
+    return;
+  }
+  if (!officerCode) {
+    showToast('Officer Employee Code is mandatory.', 'error');
+    return;
+  }
+  if (!riskCategory) {
+    showToast('Risk Category classification is mandatory.', 'error');
+    return;
+  }
+  if (!kycMode) {
+    showToast('KYC Verification Mode is mandatory.', 'error');
+    return;
+  }
+  if (!ipvVerified) {
+    showToast('Please confirm In-Person Verification (IPV) before approval.', 'error');
+    return;
+  }
+  if (!notes) {
+    showToast('Office approval notes are mandatory.', 'error');
+    return;
+  }
+
+  const submitBtn = document.getElementById('btn-submit-office-approval');
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Authorizing & Opening Account...';
+  }
+
+  try {
+    const res = await api(`/onboarding/applications/${appNumber}/review`, {
+      method: 'POST',
+      body: {
+        decision: 'APPROVED',
+        notes: notes,
+        riskCategory: riskCategory,
+        kycMode: kycMode,
+        ipvVerified: ipvVerified,
+        verifyingOfficerName: officerName,
+        officerEmpCode: officerCode
+      }
+    });
+
+    showToast(`✓ Application #${appNumber} approved! New core account #${res.accountNumber} provisioned.`, 'success');
+    closeModal('modal-approve-office-verification');
+
+    // Reload the application review modal immediately to show the appended FOR OFFICE USE ONLY section!
+    await openApplicationReviewModal(appNumber);
+    await loadStaffApplications();
+    await loadEmployeeDashboard();
+  } catch (err) {
+    showToast(err.message || 'Error processing application approval', 'error');
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = '✓ Authorize & Open Account';
+    }
+  }
+}
+window.submitOfficeAuthorizationApproval = submitOfficeAuthorizationApproval;
 
 function confirmRejectApplication(appNumber) {
   promptActionConfirm({
@@ -782,17 +901,38 @@ function confirmRejectApplication(appNumber) {
     showInput: true,
     inputLabel: 'Rejection Reason / Non-Compliance Note:',
     onConfirm: async (reason) => {
-      await reviewCustomerApplication(appNumber, 'REJECTED', reason || 'Non-compliant documents or failed underwriting verification');
-      closeModal('modal-application-review');
+      let officerName = 'Alexander Sterling';
+      let empCode = 'EMP01';
+      try {
+        const session = (typeof getCurrentUserSession === 'function' ? getCurrentUserSession() : null);
+        if (session) {
+          const profile = session.profile || {};
+          const fName = profile.firstName || '';
+          const lName = profile.lastName || '';
+          if (fName || lName) officerName = `${fName} ${lName}`.trim();
+          if (session.employeeCode) empCode = session.employeeCode;
+        }
+      } catch (e) {}
+
+      await reviewCustomerApplication(appNumber, 'REJECTED', reason || 'Non-compliant documents or failed underwriting verification', {
+        verifyingOfficerName: officerName,
+        officerEmpCode: empCode
+      });
+      await openApplicationReviewModal(appNumber);
     }
   });
 }
 
-async function reviewCustomerApplication(appNumber, decision, notes = null) {
+async function reviewCustomerApplication(appNumber, decision, notes = null, extra = {}) {
   try {
+    const payload = {
+      decision,
+      notes,
+      ...extra
+    };
     const res = await api(`/onboarding/applications/${appNumber}/review`, {
       method: 'POST',
-      body: { decision, notes }
+      body: payload
     });
 
     if (decision === 'APPROVED') {

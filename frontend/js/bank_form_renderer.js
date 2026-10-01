@@ -477,48 +477,96 @@
             </tr>
           </table>
 
-          <!-- 8. FOR OFFICE USE ONLY -->
-          <div style="background:#0b2545;color:#fff;padding:0.45rem 0.75rem;font-size:0.85rem;font-weight:900;margin-bottom:0.6rem;display:flex;justify-content:space-between;align-items:center">
-            <span>🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)</span>
-            <span style="font-size:0.7rem;background:#fff;color:#0b2545;padding:0.1rem 0.4rem;border-radius:3px">OFFICIAL RECORD</span>
-          </div>
+          ${(() => {
+            const officeVer = app.officeVerification || (app.formData && app.formData.officeVerification) || {};
+            const isDecided = (app.status === 'ACCOUNT_OPENED' || app.status === 'APPROVED' || app.status === 'REJECTED' || !!app.reviewedAt || !!officeVer.decision);
+            if (!isDecided) {
+              return `
+                <div style="background:#f8fafc;border:1px dashed #94a3b8;border-radius:6px;padding:0.75rem 1rem;margin:1rem 0;display:flex;align-items:center;justify-content:space-between">
+                  <div>
+                    <strong style="color:#334155;font-size:0.78rem">Customer Declarations &amp; Signatures Authenticated</strong>
+                    <div style="font-size:0.7rem;color:#64748b">Application status: <span style="font-weight:700;color:#4f46e5">${app.status || 'SUBMITTED'}</span>. Official "For Office Use Only" authorization box will be appended upon bank officer review and final approval/rejection.</div>
+                  </div>
+                  <div style="font-size:0.72rem;color:#94a3b8;font-weight:700">[ PENDING BANK AUTHORIZATION ]</div>
+                </div>
+              `;
+            }
 
-          <table style="width:100%;border-collapse:collapse;border:2px solid #0b2545;margin-bottom:0.75rem;font-size:0.78rem">
-            <tr style="background:#f1f5f9">
-              <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
-                <span style="font-size:0.7rem;color:#64748b;display:block">Allocated Core Account Number:</span>
-                <strong style="font-family:monospace;font-size:1.15rem;color:#059669">${accountNum}</strong>
-              </td>
-              <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
-                <span style="font-size:0.7rem;color:#64748b;display:block">Customer ID (CIF):</span>
-                <strong style="font-family:monospace;font-size:1rem;color:#4f46e5">${safeVal(app.customerId, 'CIF-' + appNumber.slice(-6))}</strong>
-              </td>
-              <td style="padding:0.6rem;border:1px solid #cbd5e1;text-align:center" rowspan="2">
-                <div style="display:inline-block;border:2px solid #dc2626;color:#dc2626;border-radius:50%;width:80px;height:80px;padding:8px;text-align:center;font-weight:900;font-size:0.6rem;line-height:1.2;transform:rotate(-8deg)">
-                  OFFICIAL<br>BRANCH<br>SEAL<br>VERIFIED
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                <span style="font-size:0.7rem;color:#64748b;display:block">Verifying Officer Name:</span>
-                <strong style="color:#0b2545">${safeVal(app.officerName, 'Alexander Sterling')}</strong>
-              </td>
-              <td style="padding:0.6rem;border:1px solid #cbd5e1">
-                <span style="font-size:0.7rem;color:#64748b;display:block">Officer Employee Code:</span>
-                <strong style="font-family:monospace;color:#4f46e5">${safeVal(app.officerCode, 'EMP01')}</strong>
-              </td>
-            </tr>
-            <tr>
-              <td style="padding:0.5rem;border:1px solid #cbd5e1;background:#f8fafc" colspan="3">
-                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;font-weight:700;color:#059669">
-                  <span>✓ In-Person Verification (IPV) Completed</span>
-                  <span>✓ Original Documents Inspected &amp; Verified</span>
-                  <span>✓ Signature Formally Authenticated</span>
-                </div>
-              </td>
-            </tr>
-          </table>
+            const isApproved = (app.status === 'ACCOUNT_OPENED' || app.status === 'APPROVED' || officeVer.decision === 'APPROVED');
+            const officerName = safeVal(officeVer.verifyingOfficerName, safeVal(app.verifyingOfficerName, safeVal(app.officerName, safeVal(app.reviewedBy, 'Bank Officer'))));
+            const officerCode = safeVal(officeVer.officerEmpCode, safeVal(app.officerEmpCode, safeVal(app.officerCode, 'EMP01')));
+            const riskCategory = (safeVal(officeVer.riskCategory, safeVal(app.riskCategory, 'LOW'))).toUpperCase();
+            const kycMode = safeVal(officeVer.kycMode, safeVal(app.kycMode, 'In-Person Verification (IPV)'));
+            const ipvVerified = (officeVer.ipvVerified !== false && app.ipvVerified !== false);
+            const reviewedTime = safeVal(officeVer.verifiedAt, safeVal(app.reviewedAt, ''));
+            const reviewNotes = safeVal(officeVer.notes, safeVal(app.reviewNotes, ''));
+            const brandColor = isApproved ? '#059669' : '#dc2626';
+
+            return `
+              <!-- 8. FOR OFFICE USE ONLY (APPENDED AFTER BANK OFFICER REVIEW) -->
+              <div style="background:#0b2545;color:#fff;padding:0.45rem 0.75rem;font-size:0.85rem;font-weight:900;margin:1rem 0 0.6rem;display:flex;justify-content:space-between;align-items:center;border-radius:4px 4px 0 0">
+                <span>🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; OFFICIAL DECISION)</span>
+                <span style="font-size:0.72rem;background:${brandColor};color:#fff;padding:0.15rem 0.55rem;border-radius:3px;font-weight:800">
+                  ${isApproved ? '✓ APPROVED &amp; ACCOUNT OPENED' : '✕ REJECTED'}
+                </span>
+              </div>
+
+              <table style="width:100%;border-collapse:collapse;border:2px solid #0b2545;margin-bottom:0.75rem;font-size:0.78rem">
+                <tr style="background:#f8fafc">
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">Allocated Core Account Number:</span>
+                    <strong style="font-family:monospace;font-size:1.15rem;color:${brandColor}">
+                      ${isApproved ? accountNum : 'REJECTED / NOT ALLOCATED'}
+                    </strong>
+                  </td>
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1;width:35%">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">Customer ID (CIF):</span>
+                    <strong style="font-family:monospace;font-size:1rem;color:#4f46e5">${safeVal(app.customerId, 'CIF-' + appNumber.slice(-6))}</strong>
+                  </td>
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1;text-align:center" rowspan="3">
+                    <div style="display:inline-block;border:2px solid ${brandColor};color:${brandColor};border-radius:50%;width:86px;height:86px;padding:8px 4px;text-align:center;font-weight:900;font-size:0.62rem;line-height:1.2;transform:rotate(-6deg)">
+                      OFFICIAL<br>BRANCH SEAL<br><strong>${isApproved ? 'VERIFIED' : 'RECORDED'}</strong><br>${branchCode}
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">Verifying Officer Name:</span>
+                    <strong style="color:#0b2545">${officerName}</strong>
+                  </td>
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">Officer Employee Code:</span>
+                    <strong style="font-family:monospace;color:#4f46e5">${officerCode}</strong>
+                  </td>
+                </tr>
+                <tr style="background:#f8fafc">
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">Risk Category:</span>
+                    <span style="display:inline-block;padding:0.15rem 0.5rem;background:${riskCategory === 'HIGH' ? '#fee2e2' : riskCategory === 'MED' ? '#fef3c7' : '#ecfdf5'};color:${riskCategory === 'HIGH' ? '#b91c1c' : riskCategory === 'MED' ? '#b45309' : '#047857'};font-weight:800;border-radius:4px;font-size:0.75rem;margin-top:0.15rem">
+                      ● ${riskCategory} RISK
+                    </span>
+                  </td>
+                  <td style="padding:0.6rem;border:1px solid #cbd5e1">
+                    <span style="font-size:0.7rem;color:#64748b;display:block">KYC Verification Mode:</span>
+                    <strong style="color:#0b2545;font-size:0.76rem">${kycMode}</strong>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:0.5rem 0.75rem;border:1px solid #cbd5e1;background:#fff" colspan="3">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;font-weight:700;color:${brandColor};flex-wrap:wrap;gap:0.5rem">
+                      <span>✓ In-Person Verification (IPV): Carried out and verified original documents by Bank Official</span>
+                      <span>📅 Decision Date: ${reviewedTime ? reviewedTime.replace('T', ' ').slice(0, 16) : 'Recorded'}</span>
+                    </div>
+                    ${reviewNotes ? `
+                      <div style="margin-top:0.4rem;padding-top:0.35rem;border-top:1px dashed #cbd5e1;font-size:0.72rem;color:#475569;font-weight:normal">
+                        <strong>Official Remarks / Underwriting Notes:</strong> ${reviewNotes}
+                      </div>
+                    ` : ''}
+                  </td>
+                </tr>
+              </table>
+            `;
+          })()}
 
           <div style="display:flex;justify-content:space-between;font-size:0.68rem;color:#64748b;border-top:1px solid #cbd5e1;padding-top:0.4rem">
             <span>Form 101-C: Official Authorization (Part-III)</span>

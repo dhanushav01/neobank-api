@@ -497,7 +497,13 @@ def track_application_status(applicationNumber: str):
         "generatedAccountNumber": app.get("generatedAccountNumber"),
         "isDraft": curr_status in ("DRAFT_INITIATED", "DRAFT_SAVED"),
         "documents": attached_docs,
-        "officerMessages": app.get("officerMessages", [])
+        "officerMessages": app.get("officerMessages", []),
+        "officeVerification": app.get("officeVerification"),
+        "verifyingOfficerName": app.get("verifyingOfficerName"),
+        "officerEmpCode": app.get("officerEmpCode"),
+        "riskCategory": app.get("riskCategory"),
+        "kycMode": app.get("kycMode"),
+        "ipvVerified": app.get("ipvVerified")
     }
 
 # ----------------------------------------------------------------- STAFF APPLICATION REVIEW & DATE FILTERING
@@ -730,15 +736,41 @@ def review_and_open_account(
     if app.get("status") in ("ACCOUNT_OPENED", "APPROVED"):
         fail(409, f"Application has already been approved and account opened ({app.get('status')})", "APPLICATION_ALREADY_OPENED")
 
+    staff_profile = staff.get("profile", {})
+    staff_full_name = f"{staff_profile.get('firstName', '')} {staff_profile.get('lastName', '')}".strip()
+    officer_name = review.verifyingOfficerName or staff_full_name or staff.get("name") or staff.get("email") or "Bank Officer"
+    officer_empcode = review.officerEmpCode or staff.get("employeeCode") or "EMP01"
+    risk_category = (review.riskCategory or "LOW").upper()
+    kyc_mode = review.kycMode or "In-Person Verification (IPV)"
+    ipv_verified = bool(review.ipvVerified if review.ipvVerified is not None else True)
+
     app["reviewedAt"] = now_iso()
     app["reviewedBy"] = staff["id"]
-    app["reviewNotes"] = review.notes or f"Application {review.decision.lower()} by bank officer {staff.get('email')}."
-
-    # Item 12: Bank Verifying Officer Details for Office Use Section
-    officer_name = staff.get("profile", {}).get("firstName") or staff.get("name") or "Alexander Sterling"
-    officer_empcode = staff.get("employeeCode") or "EMP01"
+    app["reviewNotes"] = review.notes or f"Application {review.decision.lower()} by bank officer {officer_name} ({officer_empcode})."
     app["verifyingOfficerName"] = officer_name
     app["officerEmpCode"] = officer_empcode
+    app["riskCategory"] = risk_category
+    app["kycMode"] = kyc_mode
+    app["ipvVerified"] = ipv_verified
+    app["officeVerification"] = {
+        "decision": review.decision,
+        "riskCategory": risk_category,
+        "kycMode": kyc_mode,
+        "ipvVerified": ipv_verified,
+        "verifyingOfficerName": officer_name,
+        "officerEmpCode": officer_empcode,
+        "verifiedAt": now_iso(),
+        "notes": app["reviewNotes"]
+    }
+
+    if not isinstance(app.get("formData"), dict):
+        app["formData"] = {}
+    app["formData"]["officeVerification"] = app["officeVerification"]
+    app["formData"]["verifyingOfficerName"] = officer_name
+    app["formData"]["officerEmpCode"] = officer_empcode
+    app["formData"]["riskCategory"] = risk_category
+    app["formData"]["kycMode"] = kyc_mode
+    app["formData"]["ipvVerified"] = ipv_verified
 
     if review.decision == "REJECTED":
         app["status"] = "REJECTED"
@@ -751,7 +783,8 @@ def review_and_open_account(
         return {
             "applicationNumber": applicationNumber,
             "status": "REJECTED",
-            "notes": app["reviewNotes"]
+            "notes": app["reviewNotes"],
+            "officeVerification": app["officeVerification"]
         }
 
     # ==================== AUTOMATIC PROVISIONING UPON APPROVAL ====================
@@ -874,7 +907,7 @@ def review_and_open_account(
             "createdAt": now_iso()
         }
 
-    # Item 12: Record allocated account and verification officer details
+    # Record allocated account and verification officer details
     app["status"] = "ACCOUNT_OPENED"
     app["generatedUserId"] = user_id
     app["generatedAccountId"] = acc_id
@@ -882,6 +915,13 @@ def review_and_open_account(
     app["officeAllocatedAcc"] = acc_number
     app["verifyingOfficerName"] = officer_name
     app["officerEmpCode"] = officer_empcode
+    app["officeVerification"]["allocatedAccountNumber"] = acc_number
+    app["formData"]["officeVerification"] = app["officeVerification"]
+    if "inputs" not in app["formData"]:
+        app["formData"]["inputs"] = {}
+    app["formData"]["inputs"]["raw-office-acc"] = acc_number
+    app["formData"]["inputs"]["verifyingOfficerName"] = officer_name
+    app["formData"]["inputs"]["officerEmpCode"] = officer_empcode
 
     DB["applications"][applicationNumber] = app
     try:

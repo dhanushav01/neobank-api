@@ -560,6 +560,12 @@ def get_sql_application(app_number: str) -> Optional[Dict[str, Any]]:
         d["formData"] = json.loads(d.get("form_data_json") or "{}")
     except Exception:
         d["formData"] = {}
+    d["officeVerification"] = d["formData"].get("officeVerification")
+    d["verifyingOfficerName"] = d["formData"].get("verifyingOfficerName") or d.get("reviewedBy")
+    d["officerEmpCode"] = d["formData"].get("officerEmpCode") or "EMP01"
+    d["riskCategory"] = d["formData"].get("riskCategory", "LOW")
+    d["kycMode"] = d["formData"].get("kycMode", "In-Person Verification (IPV)")
+    d["ipvVerified"] = d["formData"].get("ipvVerified", True)
     return d
 
 def list_sql_applications() -> List[Dict[str, Any]]:
@@ -592,6 +598,12 @@ def list_sql_applications() -> List[Dict[str, Any]]:
             d["formData"] = json.loads(d.get("form_data_json") or "{}")
         except Exception:
             d["formData"] = {}
+        d["officeVerification"] = d["formData"].get("officeVerification")
+        d["verifyingOfficerName"] = d["formData"].get("verifyingOfficerName") or d.get("reviewedBy")
+        d["officerEmpCode"] = d["formData"].get("officerEmpCode") or "EMP01"
+        d["riskCategory"] = d["formData"].get("riskCategory", "LOW")
+        d["kycMode"] = d["formData"].get("kycMode", "In-Person Verification (IPV)")
+        d["ipvVerified"] = d["formData"].get("ipvVerified", True)
         results.append(d)
     return results
 

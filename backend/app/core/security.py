@@ -49,7 +49,8 @@ def issue_token(user_id: str) -> Dict[str, Any]:
             "email": user["email"],
             "role": user.get("role", "CUSTOMER"),
             "hasSqlAccess": has_sql,
-            "profile": user.get("profile", {})
+            "profile": user.get("profile", {}),
+            "employeeCode": user.get("employeeCode", "EMP01")
         }
     }
 

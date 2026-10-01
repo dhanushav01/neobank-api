@@ -354,4 +354,11 @@ class ApplicationReviewRequest(BaseModel):
     decision: str = Field(pattern="^(APPROVED|REJECTED)$")
     notes: Optional[str] = None
     assignBranch: Optional[str] = "NBK001"
+    riskCategory: Optional[str] = "LOW"
+    kycMode: Optional[str] = "In-Person Verification (IPV)"
+    ipvVerified: Optional[bool] = True
+    verifyingOfficerName: Optional[str] = None
+    officerEmpCode: Optional[str] = None
+    allocatedAccountNumber: Optional[str] = None
+
 

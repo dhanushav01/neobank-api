@@ -128,6 +128,7 @@ def reset_db() -> None:
         "email": "employee@bank.test",
         "password": "Employee@1234",
         "role": "EMPLOYEE",
+        "employeeCode": "EMP01",
         "hasSqlAccess": False,
         "status": "ACTIVE",
         "mfa": None,
