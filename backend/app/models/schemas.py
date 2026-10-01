@@ -329,6 +329,7 @@ class AccountOpeningApplication(BaseModel):
     cardFormat: Optional[str] = "BOTH"       # VIRTUAL, METAL, BOTH
     applicationType: Optional[str] = "NEW"   # NEW, UPDATE
     linkedAccountNumber: Optional[str] = None # For updates
+    formData: Optional[Dict[str, Any]] = None # Complete 4-page uniform bank form snapshot
 
     @model_validator(mode="after")
     def validate_account_eligibility(self):

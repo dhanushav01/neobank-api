@@ -216,8 +216,74 @@
     </div>
   </main>
 
+  <!-- MODAL: Customer View of Submitted Bank Application Form -->
+  <div id="modal-customer-bank-form" class="modal-overlay" style="display:none">
+    <div class="modal-box" style="max-width:1120px;width:96%;max-height:92vh;display:flex;flex-direction:column">
+      <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(16,185,129,0.09) 100%);padding:1rem 1.4rem">
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.35rem">
+            🏛️
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+              <span id="cust-modal-app-num" style="font-family:monospace;font-size:1.15rem;font-weight:800;color:var(--brand-400)">APP-2026-XXXXXX</span>
+              <span id="cust-modal-status-badge" class="status-pill submitted">SUBMITTED</span>
+            </div>
+            <div id="cust-modal-applicant-name" style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.15rem">Submitted Uniform Bank Application Dossier</div>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <button type="button" class="btn btn-primary btn-sm no-print" onclick="window.printBankApplicationForm('cust_track')" title="Download official 4-page uniform bank form as PDF or print">
+            🖨️ Download &amp; Print Form (PDF)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-customer-bank-form')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:1.25rem 1.4rem;overflow-y:auto;flex:1">
+        <div id="cust-bank-paper-container">
+          <!-- Dynamically populated via renderBankApplicationPaperForm() -->
+        </div>
+      </div>
+      <div class="modal-footer" style="padding:0.9rem 1.4rem;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center">
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-customer-bank-form')">
+          Close Form
+        </button>
+        <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('cust_track')">
+          🖨️ Print / Save as PDF
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Decrypted Document Viewer -->
+  <div id="modal-document-viewer" class="modal-overlay" style="display:none">
+    <div class="modal-box" style="max-width:850px;width:95%;max-height:90vh;display:flex;flex-direction:column">
+      <div class="modal-header" style="background:rgba(255,255,255,0.03);padding:0.9rem 1.25rem">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="font-size:1.2rem">📄</span>
+          <h3 id="doc-viewer-title" style="font-size:1rem;font-weight:700;margin:0;color:inherit">Document Inspection</h3>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <button type="button" id="doc-viewer-newtab-btn" class="btn btn-outline btn-sm" title="Open Decrypted Document in New Tab">
+            ↗️ Open in New Tab
+          </button>
+          <button type="button" id="doc-viewer-download-btn" class="btn btn-primary btn-sm" title="Download Decrypted File">
+            ⬇️ Download
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-document-viewer')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:1.25rem;flex:1;overflow:auto">
+        <div id="doc-viewer-body">
+          <!-- Populated dynamically via viewDecryptedDocument() -->
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Core Scripts -->
   <script src="/js/api.js?v=20261001_1300"></script>
+  <script src="/js/bank_form_renderer.js?v=20261001_1600"></script>
   <script>
     if (typeof window.formatHumanText !== 'function') {
       window.formatHumanText = function(val) {
@@ -236,6 +302,43 @@
     }
     var formatHumanText = window.formatHumanText;
 
+    let currentTrackedApp = null;
+    window.currentTrackedApp = null;
+
+    function openModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'flex';
+    }
+    window.openModal = openModal;
+
+    function closeModal(id) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
+    window.closeModal = closeModal;
+
+    function openTrackedBankForm() {
+      if (!currentTrackedApp) return;
+      const app = currentTrackedApp;
+      const numEl = document.getElementById('cust-modal-app-num');
+      if (numEl) numEl.textContent = app.applicationNumber || 'APP-2026';
+      const badgeEl = document.getElementById('cust-modal-status-badge');
+      if (badgeEl) {
+        badgeEl.textContent = formatHumanText(app.status || 'SUBMITTED');
+        badgeEl.className = `status-pill ${(app.status || 'submitted').toLowerCase().replace('_', '-')}`;
+      }
+      const nameEl = document.getElementById('cust-modal-applicant-name');
+      if (nameEl) {
+        const applicant = app.applicant || {};
+        nameEl.textContent = `${applicant.firstName || app.applicantName || 'Applicant'} ${applicant.lastName || ''} • ${app.branchName || 'Central Branch'} • Official Form Record`.trim();
+      }
+      if (typeof window.renderBankApplicationPaperForm === 'function') {
+        window.renderBankApplicationPaperForm(app, 'cust-bank-paper-container', 'cust_track');
+      }
+      openModal('modal-customer-bank-form');
+    }
+    window.openTrackedBankForm = openTrackedBankForm;
+
     async function handleTrackingLookup(form) {
       const appNum = form.appNumber.value.trim().toUpperCase();
       const resultBox = document.getElementById('tracking-result-box');
@@ -244,6 +347,11 @@
 
       try {
         const app = await api(`/onboarding/track/${encodeURIComponent(appNum)}`);
+        currentTrackedApp = app;
+        window.currentTrackedApp = app;
+        if (typeof window.renderBankApplicationPaperForm === 'function') {
+          window.renderBankApplicationPaperForm(app, 'cust-bank-paper-container', 'cust_track');
+        }
         const statusClass = (app.status || '').toLowerCase().replace('_', '-');
 
         resultBox.innerHTML = `
@@ -306,6 +414,68 @@
                 <strong>Officer Notes:</strong> ${app.reviewNotes}
               </div>
             ` : ''}
+
+            <!-- View & Download Official Bank Application Form -->
+            <div style="margin-top:1.25rem;background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:10px;padding:1rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.5rem;margin-bottom:0.5rem">
+                <div>
+                  <strong style="font-size:0.9rem;color:var(--brand-400);display:flex;align-items:center;gap:0.35rem">
+                    <span>📄</span> <span>Official Bank Application Form (4 Pages)</span>
+                  </strong>
+                  <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.15rem">
+                    Review your complete uniform CIF &amp; CKYC bank account opening form, verified details, and declarations.
+                  </div>
+                </div>
+                <div style="display:flex;gap:0.5rem">
+                  <button type="button" class="btn btn-outline btn-sm" onclick="openTrackedBankForm()" style="font-weight:700">
+                    👁️ View Complete Form
+                  </button>
+                  <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('cust_track')" style="font-weight:700">
+                    🖨️ Download &amp; Print (PDF)
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Uploaded Documents & ID Vault (AES-256 in SQL) -->
+            <div style="margin-top:1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:10px;padding:1rem">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.4rem">
+                <strong style="font-size:0.85rem;color:var(--text-main);display:flex;align-items:center;gap:0.35rem">
+                  <span>🔒</span> <span>Encrypted Verification Documents Vault</span>
+                </strong>
+                <span style="font-size:0.7rem;color:var(--emerald-400);font-weight:700;background:rgba(16,185,129,0.1);padding:0.15rem 0.5rem;border-radius:9999px">
+                  ✓ AES-256 Decrypted On Demand
+                </span>
+              </div>
+              <div id="tracked-app-docs-list" style="display:flex;flex-direction:column;gap:0.6rem">
+                ${(app.documents && app.documents.length > 0) ? app.documents.map(d => `
+                  <div style="display:flex;align-items:center;justify-content:space-between;padding:0.65rem 0.85rem;background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;flex-wrap:wrap;gap:0.5rem">
+                    <div style="display:flex;align-items:center;gap:0.6rem">
+                      <span style="font-size:1.25rem">${(d.name || '').endsWith('.pdf') ? '📑' : '🖼️'}</span>
+                      <div>
+                        <div style="font-size:0.82rem;font-weight:700;color:var(--text-main)">${d.name}</div>
+                        <div style="font-size:0.7rem;color:var(--text-muted)">
+                          ${formatHumanText(d.category || 'IDENTITY')} • ${d.size ? (d.size / 1024).toFixed(1) + ' KB' : 'Encrypted BLOB'} • 🔒 AES-256
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex;gap:0.4rem">
+                      <button type="button" class="btn btn-outline btn-sm" onclick="window.viewDecryptedDocument('${d.id}', '${d.name}', '${d.mime || 'application/octet-stream'}')">
+                        👁️ View
+                      </button>
+                      <button type="button" class="btn btn-primary btn-sm" onclick="window.downloadDecryptedDocument('${d.id}', '${d.name}')">
+                        ⬇️ Download
+                      </button>
+                    </div>
+                  </div>
+                `).join('') : `
+                  <div style="background:rgba(99,102,241,0.04);border:1px dashed rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem;font-size:0.75rem;color:var(--text-secondary)">
+                    <span>🛡️ Form Identity Records Registered: <strong>${formatHumanText(app.accountType)}</strong> account verified via Tax ID <code>${app.taxId || 'N/A'}</code> and residential OVD submission.</span>
+                  </div>
+                `}
+              </div>
+            </div>
+
           </div>
         `;
       } catch (err) {

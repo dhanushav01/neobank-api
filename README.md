@@ -151,5 +151,7 @@ docker run -p 8000:8000 neobank-api
 ## Security & Privacy Notice
 
 - All physical SQLite databases (`*.db`), credentials, and local runtime scratch scripts are strictly excluded from version control via `.gitignore`.
-- Document attachments are encrypted using **AES-256** symmetric encryption.
+- Document attachments are encrypted using **AES-256** symmetric encryption (Fernet) in SQLite BLOBs and decrypted on-demand with inline previews (images, PDFs, text) and secure file download.
+- Uniform Account Opening Applications support authentic 4-page bank paper sheet visualization with CIF & CKYC, KYC & OVD, Account Specification, and Declarations, complete with print-to-PDF export.
 - Passwords are encrypted using **PBKDF2-HMAC-SHA256** with 100,000 iterations and 16-byte random salts.
+

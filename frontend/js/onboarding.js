@@ -2218,62 +2218,71 @@ function debounceSaveDraft() {
   }, 1000);
 }
 
+function extractFullFormData(form) {
+  if (!form) form = document.getElementById('form-customer-application');
+  if (!form) return {};
+
+  const data = {
+    applicationNumber: currentApplicationNumber,
+    accountType: selectedAccountType,
+    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
+    inputs: {},
+    radios: {},
+    checkboxes: {},
+    selects: {}
+  };
+
+  // Save all inputs (including hidden & box inputs)
+  form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="file"])').forEach(inp => {
+    if (inp.name || inp.id) {
+      const key = inp.name || inp.id;
+      data.inputs[key] = inp.value;
+    }
+  });
+
+  // Save radio selections
+  form.querySelectorAll('input[type="radio"]:checked').forEach(r => {
+    data.radios[r.name] = r.value;
+  });
+
+  // Save checkboxes
+  form.querySelectorAll('input[type="checkbox"]').forEach(c => {
+    if (c.name || c.id) {
+      data.checkboxes[c.name || c.id] = c.checked;
+    }
+  });
+
+  // Save selects
+  form.querySelectorAll('select').forEach(s => {
+    if (s.name || s.id) {
+      data.selects[s.name || s.id] = s.value;
+    }
+  });
+
+  // Save photo and signature
+  const photoData = document.getElementById('input-applicant-photo-data');
+  if (photoData && photoData.value) data.photo = photoData.value;
+
+  const sigData = document.getElementById('input-applicant-signature-data');
+  if (sigData && sigData.value) data.signature = sigData.value;
+
+  const thumbData = document.getElementById('input-applicant-thumb-data');
+  if (thumbData && thumbData.value) data.thumb = thumbData.value;
+
+  // Save joint data
+  const jointCountInp = document.getElementById('input-joint-members-count');
+  if (jointCountInp) data.jointMembersCount = jointCountInp.value;
+
+  return data;
+}
+
 async function saveCustomerFormDraft(notify = true) {
   if (isApplicationSubmitted) return;
   try {
     const form = document.getElementById('form-customer-application');
     if (!form) return;
 
-    const data = {
-      applicationNumber: currentApplicationNumber,
-      accountType: selectedAccountType,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-      inputs: {},
-      radios: {},
-      checkboxes: {},
-      selects: {}
-    };
-
-    // Save all inputs (including hidden & box inputs)
-    form.querySelectorAll('input:not([type="radio"]):not([type="checkbox"]):not([type="file"])').forEach(inp => {
-      if (inp.name || inp.id) {
-        const key = inp.name || inp.id;
-        data.inputs[key] = inp.value;
-      }
-    });
-
-    // Save radio selections
-    form.querySelectorAll('input[type="radio"]:checked').forEach(r => {
-      data.radios[r.name] = r.value;
-    });
-
-    // Save checkboxes
-    form.querySelectorAll('input[type="checkbox"]').forEach(c => {
-      if (c.name || c.id) {
-        data.checkboxes[c.name || c.id] = c.checked;
-      }
-    });
-
-    // Save selects
-    form.querySelectorAll('select').forEach(s => {
-      if (s.name || s.id) {
-        data.selects[s.name || s.id] = s.value;
-      }
-    });
-
-    // Save photo and signature
-    const photoData = document.getElementById('input-applicant-photo-data');
-    if (photoData && photoData.value) data.photo = photoData.value;
-
-    const sigData = document.getElementById('input-applicant-signature-data');
-    if (sigData && sigData.value) data.signature = sigData.value;
-
-    const thumbData = document.getElementById('input-applicant-thumb-data');
-    if (thumbData && thumbData.value) data.thumb = thumbData.value;
-
-    // Save joint data
-    const jointCountInp = document.getElementById('input-joint-members-count');
-    if (jointCountInp) data.jointMembersCount = jointCountInp.value;
+    const data = extractFullFormData(form);
 
     // If no application number has been allocated yet, initiate draft on the backend to acquire a unique application number!
     if (!currentApplicationNumber) {
@@ -3137,6 +3146,7 @@ async function submitCustomerApplication(form) {
         number: addrDocNumVal,
         issuingCountry: countryVal
       },
+      formData: extractFullFormData(form),
       agreedToTerms: true
     };
 

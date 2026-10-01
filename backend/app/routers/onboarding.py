@@ -429,7 +429,8 @@ def submit_account_opening_application(application: AccountOpeningApplication):
         "employment": application.employment.model_dump(),
         "identityDocument": application.identityDocument.model_dump(mode="json"),
         "addressProof": application.addressProof.model_dump(mode="json"),
-        "agreedToTerms": application.agreedToTerms
+        "agreedToTerms": application.agreedToTerms,
+        "formData": application.formData or (DB["applications"].get(app_number, {}).get("formData")) or {}
     }
 
     DB["applications"][app_number] = app_record
@@ -476,9 +477,19 @@ def track_application_status(applicationNumber: str):
         "status": curr_status,
         "accountType": app.get("accountType", "SAVINGS"),
         "applicationType": app.get("applicationType", "NEW"),
+        "currency": app.get("currency", "USD"),
         "branchName": app.get("branchName", ""),
         "branchCode": app.get("branchCode", ""),
         "applicantName": name_display,
+        "applicant": applicant,
+        "employment": app.get("employment", {}),
+        "identityDocument": app.get("identityDocument", {}),
+        "addressProof": app.get("addressProof", {}),
+        "taxId": app.get("taxId", ""),
+        "initialDeposit": float(app.get("initialDeposit") or 0.0),
+        "cardScheme": app.get("cardScheme", "RUPAY"),
+        "cardFormat": app.get("cardFormat", "BOTH"),
+        "formData": app.get("formData", {}),
         "submittedAt": app.get("createdAt"),
         "updatedAt": app.get("updatedAt"),
         "reviewedAt": app.get("reviewedAt"),

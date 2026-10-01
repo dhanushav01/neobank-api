@@ -2358,91 +2358,137 @@
 
   <!-- MODAL: Application Review & Document Dossier Modal (Items 11, 12, 14, 15, 16) -->
   <div id="modal-application-review" class="modal-overlay">
-    <div class="modal-box" style="max-width:880px;width:95%">
-      <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(16,185,129,0.08) 100%)">
+    <div class="modal-box" style="max-width:1120px;width:96%;max-height:92vh;display:flex;flex-direction:column">
+      <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(16,185,129,0.09) 100%);padding:1rem 1.4rem">
         <div style="display:flex;align-items:center;gap:0.75rem">
-          <div style="width:38px;height:38px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.25rem">
-            📋
+          <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.35rem">
+            🏛️
           </div>
           <div>
-            <div style="display:flex;align-items:center;gap:0.5rem">
-              <span id="review-modal-app-num" style="font-family:monospace;font-size:1.1rem;font-weight:800;color:var(--brand-400)">APP-2026-XXXXXX</span>
+            <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
+              <span id="review-modal-app-num" style="font-family:monospace;font-size:1.15rem;font-weight:800;color:var(--brand-400)">APP-2026-XXXXXX</span>
               <span id="review-modal-status-badge" class="status-pill submitted">SUBMITTED</span>
             </div>
-            <div id="review-modal-applicant-name" style="font-size:0.8rem;color:var(--text-secondary)">Applicant Name • Email</div>
+            <div id="review-modal-applicant-name" style="font-size:0.8rem;color:var(--text-secondary);margin-top:0.15rem">Applicant Name • Email</div>
           </div>
         </div>
-        <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-application-review')">✕</button>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <button type="button" class="btn btn-outline btn-sm no-print" onclick="window.printBankApplicationForm('rf')" title="Download official 4-page uniform bank form as PDF or print">
+            🖨️ Download &amp; Print Form (PDF)
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-application-review')">✕</button>
+        </div>
       </div>
 
-      <div class="modal-body" style="padding:1.4rem;display:flex;flex-direction:column;gap:1.25rem">
-        <!-- Tab 1: Form Filled Dossier Summary -->
-        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
-          <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-            <span>📄</span> <span>Applicant Dossier Details</span>
-          </h4>
-          <div id="review-modal-dossier-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.8rem">
-            <!-- Dynamically populated -->
+      <!-- Navigation Tabs inside Review Modal -->
+      <div style="display:flex;gap:0.5rem;padding:0.75rem 1.4rem;background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap">
+        <button type="button" id="review-tab-btn-form" class="btn btn-sm btn-primary review-tab-btn" onclick="switchReviewModalTab('form')">
+          📄 Official Bank Form Sheet (4 Pages)
+        </button>
+        <button type="button" id="review-tab-btn-docs" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('docs')">
+          🔒 Uploaded Documents &amp; ID Vault <span id="review-docs-count-badge" style="background:rgba(99,102,241,0.2);color:var(--brand-300);padding:0.1rem 0.4rem;border-radius:9999px;font-size:0.7rem;margin-left:0.25rem">0</span>
+        </button>
+        <button type="button" id="review-tab-btn-office" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('office')">
+          🏛️ Office Verification &amp; Remarks
+        </button>
+        <button type="button" id="review-tab-btn-dossier" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('dossier')">
+          📊 Summary Dossier
+        </button>
+      </div>
+
+      <div class="modal-body" style="padding:1.25rem 1.4rem;overflow-y:auto;flex:1">
+        
+        <!-- ==================== TAB 1: AUTHENTIC 4-PAGE BANK FORM ==================== -->
+        <div id="review-tab-content-form" class="review-tab-content" style="display:block">
+          <div id="review-bank-paper-container">
+            <!-- Dynamically populated via renderBankApplicationPaperForm() -->
           </div>
         </div>
 
-        <!-- Tab 2: Uploaded Encrypted Documents Section (Item 11) -->
-        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
-            <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin:0;display:flex;align-items:center;gap:0.4rem">
-              <span>🔒</span> <span>Encrypted Documents Vault (AES-256 in SQL)</span>
+        <!-- ==================== TAB 2: UPLOADED DOCUMENTS & ID VAULT ==================== -->
+        <div id="review-tab-content-docs" class="review-tab-content" style="display:none">
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.25rem;margin-bottom:1rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
+              <div>
+                <h4 style="font-size:1rem;font-weight:700;color:var(--text-main);margin:0;display:flex;align-items:center;gap:0.4rem">
+                  <span>🔒</span> <span>Encrypted Verification Documents Vault</span>
+                </h4>
+                <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem">
+                  All customer files are encrypted using bank-grade AES-256 (Fernet) in SQLite and decrypted on-demand for authorized review.
+                </div>
+              </div>
+              <span style="font-size:0.75rem;color:var(--emerald-400);font-weight:700;background:rgba(16,185,129,0.1);padding:0.25rem 0.65rem;border-radius:9999px">
+                ✓ Decrypted On Demand (AES-256)
+              </span>
+            </div>
+
+            <!-- Documents List Container -->
+            <div id="review-modal-docs-list" style="display:flex;flex-direction:column;gap:0.75rem">
+              <!-- Dynamically populated with View & Download cards -->
+            </div>
+          </div>
+        </div>
+
+        <!-- ==================== TAB 3: OFFICE VERIFICATION & REMARKS ==================== -->
+        <div id="review-tab-content-office" class="review-tab-content" style="display:none">
+          <!-- FOR OFFICE USE ONLY -->
+          <div style="background:rgba(11,37,69,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+              <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin:0">
+                🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)
+              </h4>
+              <span style="font-size:0.72rem;background:#0b2545;color:#fff;padding:0.15rem 0.5rem;border-radius:4px;font-weight:700">OFFICIAL RECORD</span>
+            </div>
+            <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:0.75rem;font-size:0.8rem;margin-bottom:0.75rem">
+              <div>
+                <span style="color:var(--text-muted);display:block;font-size:0.72rem">Allocated Account Number:</span>
+                <strong id="review-modal-office-acc" style="font-family:monospace;font-size:1.05rem;color:var(--emerald-400)">Pending Approval</strong>
+              </div>
+              <div>
+                <span style="color:var(--text-muted);display:block;font-size:0.72rem">Verifying Officer Name:</span>
+                <strong id="review-modal-officer-name" style="color:var(--text-main)">Alexander Sterling</strong>
+              </div>
+              <div>
+                <span style="color:var(--text-muted);display:block;font-size:0.72rem">Employee Code:</span>
+                <strong id="review-modal-officer-code" style="font-family:monospace;color:var(--brand-400)">EMP01</strong>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:1.5rem;font-size:0.75rem;color:var(--text-secondary);border-top:1px dashed var(--border-subtle);padding-top:0.6rem;flex-wrap:wrap">
+              <span>✓ In-Person Verification (IPV) Completed</span>
+              <span>✓ Original Documents Inspected</span>
+              <span style="color:var(--brand-400);font-weight:700">[ OFFICIAL BRANCH STAMP APPLIED ]</span>
+            </div>
+          </div>
+
+          <!-- Officer Communication & Remarks -->
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.25rem">
+            <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+              <span>💬</span> <span>Officer Remarks &amp; Applicant Communication</span>
             </h4>
-            <span style="font-size:0.72rem;color:var(--emerald-400);font-weight:600">✓ Decrypted On Demand</span>
-          </div>
-          <div id="review-modal-docs-list" style="display:flex;flex-direction:column;gap:0.6rem">
-            <!-- Dynamically populated with View and Download buttons -->
+            <div id="review-modal-messages-container" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:6px">
+              <!-- Messages populated via JS -->
+            </div>
+            <div style="display:flex;gap:0.5rem">
+              <input type="text" id="review-modal-new-msg" class="form-input" placeholder="Type a message or instruction for the applicant (visible on status tracking page)..." style="font-size:0.78rem">
+              <button type="button" class="btn btn-outline btn-sm" onclick="sendReviewOfficerMessage()" style="white-space:nowrap;font-weight:600">
+                ✉️ Send Note
+              </button>
+            </div>
           </div>
         </div>
 
-        <!-- Tab 3: FOR OFFICE USE ONLY (Item 12) -->
-        <div style="background:rgba(11,37,69,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:10px;padding:1.1rem">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
-            <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin:0">
-              🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)
+        <!-- ==================== TAB 4: SUMMARY DOSSIER ==================== -->
+        <div id="review-tab-content-dossier" class="review-tab-content" style="display:none">
+          <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.25rem">
+            <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+              <span>📊</span> <span>Applicant Dossier Key Details</span>
             </h4>
-            <span style="font-size:0.72rem;background:#0b2545;color:#fff;padding:0.15rem 0.5rem;border-radius:4px;font-weight:700">OFFICIAL RECORD</span>
-          </div>
-          <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:0.75rem;font-size:0.8rem;margin-bottom:0.75rem">
-            <div>
-              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Allocated Account Number:</span>
-              <strong id="review-modal-office-acc" style="font-family:monospace;font-size:0.95rem;color:var(--emerald-400)">Pending Approval</strong>
+            <div id="review-modal-dossier-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.8rem">
+              <!-- Dynamically populated -->
             </div>
-            <div>
-              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Verifying Officer Name:</span>
-              <strong id="review-modal-officer-name" style="color:var(--text-main)">Alexander Sterling</strong>
-            </div>
-            <div>
-              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Employee Code:</span>
-              <strong id="review-modal-officer-code" style="font-family:monospace;color:var(--brand-400)">EMP01</strong>
-            </div>
-          </div>
-          <div style="display:flex;align-items:center;gap:1.5rem;font-size:0.75rem;color:var(--text-secondary);border-top:1px dashed var(--border-subtle);padding-top:0.6rem">
-            <span>✓ In-Person Verification (IPV) Completed</span>
-            <span>✓ Original Documents Inspected</span>
-            <span style="color:var(--brand-400);font-weight:700">[ OFFICIAL BRANCH STAMP APPLIED ]</span>
           </div>
         </div>
 
-        <!-- Tab 4: Officer Communication & Remarks (Item 15) -->
-        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
-          <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-            <span>💬</span> <span>Officer Remarks &amp; Applicant Communication</span>
-          </h4>
-          <div id="review-modal-messages-container" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:6px">
-            <!-- Messages populated via JS -->
-          </div>
-          <div style="display:flex;gap:0.5rem">
-            <input type="text" id="review-modal-new-msg" class="form-input" placeholder="Type a message or instruction for the applicant (visible on status tracking page)..." style="font-size:0.78rem">
-            <button type="button" class="btn btn-outline btn-sm" onclick="sendReviewOfficerMessage()" style="white-space:nowrap;font-weight:600">
-              ✉️ Send Note
-            </button>
-          </div>
-        </div>
       </div>
 
       <div class="modal-footer" style="padding:1rem 1.4rem;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center">
@@ -2453,6 +2499,32 @@
         </div>
         <div id="review-modal-action-buttons" style="display:flex;gap:0.6rem">
           <!-- Dynamic Approve, Reject, or Reopen buttons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== INLINE DECRYPTED DOCUMENT VIEWER MODAL ==================== -->
+  <div id="modal-document-viewer" class="modal-overlay" style="display:none">
+    <div class="modal-box" style="max-width:850px;width:95%;max-height:90vh;display:flex;flex-direction:column">
+      <div class="modal-header" style="background:rgba(255,255,255,0.03);padding:0.9rem 1.25rem">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="font-size:1.2rem">📄</span>
+          <h3 id="doc-viewer-title" style="font-size:1rem;font-weight:700;margin:0;color:inherit">Document Inspection</h3>
+        </div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <button type="button" id="doc-viewer-newtab-btn" class="btn btn-outline btn-sm" title="Open Decrypted Document in New Tab">
+            ↗️ Open in New Tab
+          </button>
+          <button type="button" id="doc-viewer-download-btn" class="btn btn-primary btn-sm" title="Download Decrypted File">
+            ⬇️ Download
+          </button>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-document-viewer')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body" style="padding:1.25rem;flex:1;overflow:auto">
+        <div id="doc-viewer-body">
+          <!-- Populated dynamically via viewDecryptedDocument() -->
         </div>
       </div>
     </div>
@@ -2526,9 +2598,10 @@
   <!-- JAVASCRIPT LOGIC ENGINE -->
   <script src="/js/api.js?v=20261001_1300"></script>
   <script src="/js/auth.js?v=20260928_2200"></script>
+  <script src="/js/bank_form_renderer.js?v=20261001_1600"></script>
   <script src="/js/onboarding.js?v=20260928_2200"></script>
   <script src="/js/customer.js?v=20260928_2200"></script>
-  <script src="/js/employee.js?v=20260928_2200"></script>
+  <script src="/js/employee.js?v=20261001_1600"></script>
   <script src="/js/app.js?v=20260928_2200"></script>
 
   <!-- Auto-fill account dropdowns helper -->
