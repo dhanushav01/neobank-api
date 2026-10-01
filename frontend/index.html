@@ -1,0 +1,2553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoBank • Enterprise Banking, Customer Onboarding & Staff Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20260928_2200"></script>
+  <script src="/js/i18n.js?v=20260928_2200"></script>
+  <style id="anti-google-banner">
+    /* Targeted suppression of Google Translate top banner, toolbar, and balloon popups */
+    iframe.goog-te-banner-frame,
+    iframe[class*="VIpgJd"],
+    iframe[id*=":1.container"],
+    iframe[id*=":2.container"],
+    iframe[id*="container"],
+    iframe[src*="translate.google"],
+    .goog-te-banner-frame,
+    .goog-te-balloon-frame,
+    div.VIpgJd-ZVi9od-ORHb-OEVmcd,
+    div.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+    div.VIpgJd-suEOdc,
+    div.VIpgJd-yAWNEb-L7lbkb,
+    div[class*="VIpgJd-ZVi9od"],
+    div[class*="VIpgJd-suEOdc"],
+    [class*="goog-te-banner"],
+    [id*="goog-gt-"],
+    .goog-tooltip,
+    .goog-te-spinner-pos,
+    #google_translate_element {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0px !important;
+      max-height: 0px !important;
+      width: 0px !important;
+      max-width: 0px !important;
+      position: fixed !important;
+      top: -99999px !important;
+      left: -99999px !important;
+      z-index: -999999 !important;
+      clip: rect(0, 0, 0, 0) !important;
+      transform: scale(0) !important;
+      overflow: hidden !important;
+      margin: 0px !important;
+      padding: 0px !important;
+    }
+
+    /* Translated text nodes and fonts MUST ALWAYS REMAIN FULLY VISIBLE & INLINE */
+    font,
+    font[class],
+    font[class*="VIpgJd"],
+    .VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
+    [class*="VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q"],
+    .goog-text-highlight {
+      display: inline !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: inherit !important;
+      height: auto !important;
+      width: auto !important;
+      max-height: none !important;
+      max-width: none !important;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      clip: auto !important;
+      transform: none !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    html,
+    body,
+    body.translated-ltr,
+    body.translated-rtl {
+      top: 0px !important;
+      position: static !important;
+      margin-top: 0px !important;
+      padding-top: 0px !important;
+      transform: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== TOP NAVIGATION BAR ==================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="brand-icon">
+        <svg style="width:24px;height:24px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span class="brand-title">NeoBank</span>
+          <span style="font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:9999px;background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)">2026</span>
+        </div>
+        <div data-i18n="brand_sub" style="font-size:0.75rem;color:var(--text-muted)">Digital Banking</div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Theme, Language Selector & User Badge -->
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+
+      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
+      <div class="page-zoom-controls">
+        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+          <span class="zoom-level-text">100%</span>
+        </button>
+        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+
+      <!-- Language Selector (Protected from Auto-Translation) -->
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span style="font-size:0.9rem">🌐</span>
+        <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
+          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
+          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+        </select>
+      </div>
+
+      <!-- User Profile Badge (Visible when logged in) -->
+      <div id="user-profile-badge" class="glass" style="display:none;align-items:center;gap:0.75rem;padding:0.4rem 0.85rem;border-radius:12px">
+        <div style="width:10px;height:10px;border-radius:50%;background:var(--emerald-400)"></div>
+        <div>
+          <div id="header-user-name" style="font-size:0.85rem;font-weight:700;color:var(--text-main)">Logged In</div>
+          <div style="display:flex;align-items:center;gap:0.4rem">
+            <span id="header-role-badge" class="role-badge customer">CUSTOMER</span>
+          </div>
+        </div>
+        <button onclick="handleLogout()" class="btn btn-outline btn-sm" style="margin-left:0.5rem;padding:0.25rem 0.6rem">Logout</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== AUTHENTICATION & ONBOARDING SCREENS ==================== -->
+  <div id="screen-auth" style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);padding:1.5rem">
+
+    <!-- VIEW 1: UNIFIED LOGIN (For Customer, Staff, Admin) -->
+    <div id="auth-view-login" class="glass-card" style="width:100%;max-width:480px;padding:2.25rem">
+      <div style="text-align:center;margin-bottom:1.75rem">
+        <h2 data-i18n="login_heading" style="font-size:1.65rem;font-weight:800;color:var(--text-main);letter-spacing:-0.02em">Welcome to NeoBank</h2>
+        <p data-i18n="login_subtitle" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem">
+          Sign in to access your digital banking account
+        </p>
+      </div>
+
+      <!-- Unified Login Form -->
+      <form id="form-login">
+        <div class="form-group">
+          <label data-i18n="email_label" class="form-label" for="login-email">Email Address</label>
+          <input type="email" id="login-email" name="email" class="form-input" data-i18n-placeholder="email_placeholder" placeholder="e.g. customer@bank.test" required>
+        </div>
+        <div class="form-group">
+          <label data-i18n="password_label" class="form-label" for="login-password">Password</label>
+          <input type="password" id="login-password" name="password" class="form-input" data-i18n-placeholder="password_placeholder" placeholder="••••••••" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.5rem;padding:0.8rem">
+          <span data-i18n="login_submit">Authenticate & Open Dashboard</span>
+        </button>
+      </form>
+
+      <!-- Dedicated Flow Links -->
+      <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:0.75rem;text-align:center">
+        <div>
+          <a href="/open_account_customer" class="btn btn-success" style="width:100%;display:inline-block;text-decoration:none;padding:0.75rem">
+            <span data-i18n="open_account_cta">✨ Open a Bank Account (3-Step Application)</span>
+          </a>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:0.8rem;flex-wrap:wrap;gap:0.5rem">
+          <a href="/existing_application" style="color:var(--brand-500);text-decoration:underline">
+            <span data-i18n="track_existing_cta">🔍 Track Existing Application</span>
+          </a>
+          <a href="/employee_onboarding" style="color:var(--text-secondary);text-decoration:underline">
+            <span data-i18n="employee_onboard_cta">🏢 Employee Onboarding</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: CUSTOMER ACCOUNT OPENING WIZARD (Steps 1, 2, 3, 4) -->
+    <div id="auth-view-onboarding" class="glass-card" style="display:none;width:100%;max-width:920px;padding:2.5rem">
+      
+      <!-- Wizard Progress Indicators -->
+      <div class="wizard-steps">
+        <div id="step-indicator-1" class="step-indicator active">
+          <span class="step-badge">1</span>
+          <span>Choose Account & Eligibility</span>
+        </div>
+        <div style="width:30px;height:1px;background:var(--border-subtle)"></div>
+        <div id="step-indicator-2" class="step-indicator">
+          <span class="step-badge">2</span>
+          <span>Customer Information</span>
+        </div>
+        <div style="width:30px;height:1px;background:var(--border-subtle)"></div>
+        <div id="step-indicator-3" class="step-indicator">
+          <span class="step-badge">3</span>
+          <span>Verification Documents</span>
+        </div>
+        <div style="width:30px;height:1px;background:var(--border-subtle)"></div>
+        <div id="step-indicator-4" class="step-indicator">
+          <span class="step-badge">4</span>
+          <span>Application Number</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: CHOOSE ACCOUNT & CHECK ELIGIBILITY -->
+      <div id="onboarding-step-1">
+        <div style="text-align:center;margin-bottom:2rem">
+          <h2 style="font-size:1.6rem;font-weight:800;color:var(--text-main)">Step 1: Choose Your Account & Verify Eligibility</h2>
+          <p style="font-size:0.9rem;color:var(--text-secondary);max-width:640px;margin:0.5rem auto 0">
+            Before applying, review the bank rules, eligibility requirements, and demanded verification documents. Select the account that fits your financial goals.
+          </p>
+        </div>
+
+        <!-- Account Types Selection Grid -->
+        <div id="onboarding-account-types-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:1rem;margin-bottom:1.5rem">
+          <!-- Populated dynamically by onboarding.js -->
+        </div>
+
+        <!-- Eligibility Confirmation Checkbox -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:12px;padding:1.25rem;margin-bottom:1.5rem">
+          <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer">
+            <input type="checkbox" id="chk-eligibility-agreed" style="margin-top:0.25rem;width:18px;height:18px">
+            <span style="font-size:0.85rem;color:var(--text-main);line-height:1.4">
+              <strong>I confirm my eligibility:</strong> I meet the bank's rules (age requirements, residency, and required initial deposit) and possess the demanded verification documents (Proof of Identity, Proof of Address, and Tax ID like SSN or PAN).
+            </span>
+          </label>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <button type="button" class="btn btn-outline" onclick="switchAuthView('login')">
+            Return to Sign In
+          </button>
+          <button type="button" class="btn btn-primary" onclick="goToOnboardingStep(2)">
+            Proceed to Step 2: Customer Details
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: FILL OUT APPLICATION FORM & STEP 3: SUBMIT VERIFICATION DOCUMENTS -->
+      <form id="form-customer-application">
+        <input type="hidden" id="apply-selected-account-type" name="accountType" value="SAVINGS">
+
+        <!-- STEP 2: CUSTOMER DETAILS (AUTHENTIC PHYSICAL BANK PAPER FORM SHEET) -->
+        <div id="onboarding-step-2" style="display:none">
+          
+          <!-- Step 2 Top Bar: Account info & Print Action -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;gap:0.75rem">
+            <div>
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <span style="font-size:1.2rem">📋</span>
+                <h2 style="font-size:1.35rem;font-weight:800;color:inherit;margin:0" data-i18n="step2_sheet_title">Step 2: Customer Information Sheet</h2>
+              </div>
+              <p style="font-size:0.82rem;color:var(--text-secondary);margin:0.25rem 0 0 0">
+                Official uniform account opening form. Fill out in block letters, upload passport photograph, and provide digital signature.
+              </p>
+            </div>
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <div style="text-align:right">
+                <span style="font-size:0.7rem;color:var(--text-muted);display:block">Selected Product</span>
+                <div id="step2-selected-account-badge" class="status-pill active">SAVINGS</div>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm no-print" onclick="window.print()" title="Print Form Sheet">
+                🖨️ Print Form
+              </button>
+            </div>
+          </div>
+
+          <!-- ==================== AUTHENTIC BANK PAPER SHEET ==================== -->
+          <div class="bank-paper-sheet">
+            
+            <!-- SHEET TOP HEADER -->
+            <table class="bank-sheet-header-table">
+              <tr>
+                <td style="vertical-align:top">
+                  <div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:0.35rem">
+                    <div style="width:34px;height:34px;border-radius:6px;background:#0f172a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px">
+                      🏛️
+                    </div>
+                    <div>
+                      <div class="bank-sheet-title-main">Public / Private Sector Bank of India</div>
+                      <div class="bank-sheet-title-sub">Uniform Account Opening Form for Resident Individuals</div>
+                    </div>
+                  </div>
+                </td>
+                <td style="vertical-align:top;text-align:right;width:240px">
+                  <div class="bank-sheet-form-tag">
+                    <strong>PART I: CIF &amp; CKYC FORM</strong><br>
+                    <span style="font-size:0.72rem;font-weight:600">(Customer Information Sheet)</span>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- INSTRUCTIONS BANNER -->
+            <div class="bank-sheet-instructions">
+              <strong>Instructions:</strong> Fields marked with (*) are mandatory. Please leave a blank space between words.
+            </div>
+
+            <!-- METADATA & CONTROL TABLE -->
+            <table class="bank-table-grid">
+              <tr>
+                <td style="width:30%">
+                  <strong>Application Type*:</strong><br>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="appTypeRadio_idx" value="NEW"> <span>New</span></label>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="appTypeRadio_idx" value="UPDATE"> <span>Update</span></label>
+                </td>
+                <td style="width:40%">
+                  <strong>Account Type*:</strong><br>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="accCategoryRadio_idx" value="NORMAL"> <span>Normal</span></label>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="accCategoryRadio_idx" value="SMALL"> <span>Small</span></label>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="accCategoryRadio_idx" value="MINOR"> <span>Minor</span></label>
+                  <label class="bank-option-pill" style="margin-top:0.25rem"><input type="radio" name="accCategoryRadio_idx" value="STAFF"> <span>Staff</span></label>
+                </td>
+                <td style="width:30%">
+                  <strong>Date (DD/MM/YYYY):</strong>
+                  <div id="char-boxes-header-date" class="char-box-track" style="margin-top:0.25rem"></div>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <strong>Branch Name:</strong> Downtown Main Branch (BR001)<br>
+                  <span style="font-size:0.72rem;color:var(--text-muted)">Branch Code: BR001</span>
+                </td>
+                <td colspan="2">
+                  <div style="display:flex;gap:1.5rem">
+                    <div><strong>CKYC Number (if existing):</strong> <span style="font-family:monospace;letter-spacing:0.1em">-- OPTIONAL --</span></div>
+                    <div><strong>Customer ID (CIF):</strong> <span style="font-family:monospace;color:var(--brand-500);font-weight:700">AUTO-PROVISIONED</span></div>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- 1. PERSONAL DETAILS (SAME AS ID PROOF) -->
+            <div class="bank-section-bar">
+              <span>1. Personal Details (Same as ID Proof)</span>
+              <span style="font-size:0.7rem;font-weight:500;text-transform:none;opacity:0.85">Block Letters Only</span>
+            </div>
+
+            <!-- Full Name Prefix -->
+            <div style="margin-bottom:0.85rem">
+              <span style="font-size:0.8rem;font-weight:700;margin-right:0.6rem">Full Name* (Prefix):</span>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Mr."> <span>Mr.</span></label>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Mrs."> <span>Mrs.</span></label>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Ms."> <span>Ms.</span></label>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Dr."> <span>Dr.</span></label>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Prof."> <span>Prof.</span></label>
+              <label class="bank-option-pill"><input type="radio" name="namePrefix_idx" value="Other"> <span>Other</span></label>
+            </div>
+
+            <!-- First Name (Dynamic Character Boxes) -->
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>First Name*:</span>
+                <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted)">Boxes dynamically expand for longer names</span>
+              </div>
+              <input type="text" id="raw-first-name" class="bank-text-mirror-input" value="ALEXANDER" placeholder="ENTER FIRST NAME" required autocomplete="off">
+              <input type="hidden" name="firstName" value="Alexander">
+              <div id="char-boxes-first-name" class="char-box-track" onclick="document.getElementById('raw-first-name').focus()"></div>
+            </div>
+
+            <!-- Middle Name (With 'No Middle Name' Toggle) -->
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Middle Name:</span>
+                <label class="bank-option-pill" style="font-size:0.74rem;padding:0.15rem 0.5rem;cursor:pointer">
+                  <input type="checkbox" id="chk-no-middle-name" onchange="toggleMiddleName(this.checked)">
+                  <span style="font-weight:700;color:var(--brand-500)">[✓] No Middle Name (Remove this field)</span>
+                </label>
+              </div>
+              <div id="middle-name-input-wrap">
+                <input type="text" id="raw-middle-name" class="bank-text-mirror-input" value="" placeholder="ENTER MIDDLE NAME (LEAVE BLANK IF NONE)" autocomplete="off">
+              </div>
+              <div id="middle-name-omitted-indicator" class="middle-name-omitted-badge" style="display:none;margin-top:0.35rem">
+                ✓ No Middle Name provided — field omitted from official records.
+              </div>
+              <div id="char-boxes-middle-name" class="char-box-track" onclick="document.getElementById('raw-middle-name').focus()"></div>
+            </div>
+
+            <!-- Last Name (Dynamic Character Boxes) -->
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Last Name*:</span>
+                <span style="font-size:0.72rem;font-weight:500;color:var(--text-muted)">Boxes dynamically expand for longer names</span>
+              </div>
+              <input type="text" id="raw-last-name" class="bank-text-mirror-input" value="WRIGHT" placeholder="ENTER LAST NAME" required autocomplete="off">
+              <input type="hidden" name="lastName" value="Wright">
+              <div id="char-boxes-last-name" class="char-box-track" onclick="document.getElementById('raw-last-name').focus()"></div>
+            </div>
+
+            <!-- Maiden Name (if any) -->
+            <div class="char-input-group" style="margin-bottom:1rem">
+              <div class="char-input-label-row">
+                <span>Maiden Name (if any):</span>
+              </div>
+              <input type="text" class="bank-text-mirror-input" placeholder="ENTER MAIDEN NAME (IF APPLICABLE)" autocomplete="off">
+            </div>
+
+            <!-- Date of Birth, Gender, Marital Status & Nationality Grid -->
+            <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:0.85rem;margin-bottom:1.15rem">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Date of Birth* (DDMMYYYY):</label>
+                <input type="date" name="dob" class="bank-text-mirror-input" value="1996-08-20" required style="padding:0.35rem 0.5rem;font-size:0.82rem">
+                <div id="char-boxes-dob" class="char-box-track" style="margin-top:0.35rem"></div>
+                <div id="student-age-hint" style="display:none;font-size:0.72rem;color:var(--amber-400);margin-top:0.25rem">ℹ️ Student accounts: age 16 to 26.</div>
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Gender*:</label>
+                <div style="display:flex;flex-direction:column;gap:0.3rem">
+                  <label class="bank-option-pill"><input type="radio" name="genderRadio_idx" value="MALE" checked> <span>Male</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="genderRadio_idx" value="FEMALE"> <span>Female</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="genderRadio_idx" value="TRANSGENDER"> <span>Transgender</span></label>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Marital Status*:</label>
+                <div style="display:flex;flex-direction:column;gap:0.3rem">
+                  <label class="bank-option-pill"><input type="radio" name="maritalRadio_idx" value="MARRIED" checked> <span>Married</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="maritalRadio_idx" value="UNMARRIED"> <span>Unmarried</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="maritalRadio_idx" value="OTHERS"> <span>Others</span></label>
+                </div>
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Nationality*:</label>
+                <div style="display:flex;flex-direction:column;gap:0.3rem">
+                  <label class="bank-option-pill"><input type="radio" name="nationalityRadio_idx" value="IN" checked> <span>IN - Indian</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="nationalityRadio_idx" value="OTHERS"> <span>International</span></label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Father's Name -->
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Father's / Legal Guardian Name*:</span>
+              </div>
+              <input type="text" id="raw-father-name" class="bank-text-mirror-input" value="ROBERT WRIGHT" placeholder="ENTER FATHER'S FULL NAME" required autocomplete="off">
+              <div id="char-boxes-father-name" class="char-box-track" onclick="document.getElementById('raw-father-name').focus()"></div>
+            </div>
+
+            <!-- Mother's Maiden Name -->
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Mother's Maiden Name*:</span>
+              </div>
+              <input type="text" id="raw-mother-name" class="bank-text-mirror-input" value="MARY ELEANOR" placeholder="ENTER MOTHER'S MAIDEN NAME" required autocomplete="off">
+              <div id="char-boxes-mother-name" class="char-box-track" onclick="document.getElementById('raw-mother-name').focus()"></div>
+            </div>
+
+            <!-- 2. OCCUPATION & FINANCIAL PROFILE -->
+            <div class="bank-section-bar">
+              <span>2. Occupation &amp; Financial Profile</span>
+            </div>
+
+            <div style="margin-bottom:0.85rem">
+              <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.4rem">Occupation Type*:</label>
+              <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+                <label class="bank-option-pill"><input type="radio" name="empStatusRadio_idx" value="EMPLOYED" checked onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value)"> <span>S-Service (Private / Public)</span></label>
+                <label class="bank-option-pill"><input type="radio" name="empStatusRadio_idx" value="SELF_EMPLOYED" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value)"> <span>Self Employed / Business</span></label>
+                <label class="bank-option-pill"><input type="radio" name="empStatusRadio_idx" value="STUDENT" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value)"> <span>Student</span></label>
+                <label class="bank-option-pill"><input type="radio" name="empStatusRadio_idx" value="RETIRED" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value)"> <span>Retired</span></label>
+                <label class="bank-option-pill"><input type="radio" name="empStatusRadio_idx" value="UNEMPLOYED" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value)"> <span>Housewife / Others</span></label>
+              </div>
+              <!-- Hidden select keeping existing controller logic intact -->
+              <select name="empStatus" id="input-emp-status" style="display:none" onchange="handleEmploymentChange(this.value)">
+                <option value="EMPLOYED" selected>Employed</option>
+                <option value="SELF_EMPLOYED">Self-Employed / Business Owner</option>
+                <option value="STUDENT">Student</option>
+                <option value="RETIRED">Retired</option>
+                <option value="UNEMPLOYED">Unemployed</option>
+              </select>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:1rem">
+              <div id="emp-field-group">
+                <label class="form-label" id="emp-field-label" style="font-weight:700;font-size:0.8rem">Organisation / Employer Name*</label>
+                <input type="text" name="employer" id="input-employer" class="bank-text-mirror-input" placeholder="e.g. FinTech Ltd / Enterprise" value="FinTech Ltd">
+              </div>
+              <div id="student-field-group" style="display:none">
+                <label class="form-label" style="font-weight:700;font-size:0.8rem">College / University Name*</label>
+                <input type="text" name="universityName" id="input-university" class="bank-text-mirror-input" placeholder="e.g. London School of Economics" value="London School of Economics">
+              </div>
+              <div id="income-field-group">
+                <label class="form-label" id="income-field-label" style="font-weight:700;font-size:0.8rem">Gross Annual Income (USD / Equivalent)*</label>
+                <input type="number" name="annualIncome" class="bank-text-mirror-input" placeholder="75000" value="75000" required>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1rem">
+              <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.35rem">Source of Funds*:</label>
+              <div style="display:flex;flex-wrap:wrap;gap:0.4rem">
+                <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio_idx" value="Salary" checked> <span>Salary</span></label>
+                <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio_idx" value="Business"> <span>Business Income</span></label>
+                <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio_idx" value="Investments"> <span>Investments</span></label>
+                <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio_idx" value="Agriculture"> <span>Agriculture</span></label>
+                <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio_idx" value="Inheritance"> <span>Inheritance / Family</span></label>
+              </div>
+            </div>
+
+            <!-- 3. IDENTIFICATION & TAX INFORMATION -->
+            <div class="bank-section-bar">
+              <span>3. Identification &amp; Tax Information</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem">
+              <!-- PAN / Tax ID -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>PAN / Tax ID Number* (10 Characters):</span>
+                </div>
+                <input type="text" id="raw-pan-number" class="bank-text-mirror-input" value="ABCDE1234F" maxlength="10" placeholder="ENTER 10-DIGIT PAN" required autocomplete="off">
+                <input type="hidden" name="taxId" value="ABCDE1234F">
+                <div id="char-boxes-pan" class="char-box-track" onclick="document.getElementById('raw-pan-number').focus()"></div>
+              </div>
+
+              <!-- Aadhaar / National UID Number -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>Aadhaar / National UID Number* (12 Digits):</span>
+                </div>
+                <input type="text" id="raw-aadhaar-number" class="bank-text-mirror-input" value="548291038472" maxlength="12" placeholder="ENTER 12-DIGIT AADHAAR" required autocomplete="off">
+                <div id="char-boxes-aadhaar" class="char-box-track" onclick="document.getElementById('raw-aadhaar-number').focus()"></div>
+              </div>
+            </div>
+
+            <div style="margin-bottom:1rem">
+              <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.35rem">Politically Exposed Person (PEP) Status:</label>
+              <div style="display:flex;gap:0.75rem">
+                <label class="bank-option-pill"><input type="radio" name="pepRadio_idx" value="NA" checked> <span>Not Applicable</span></label>
+                <label class="bank-option-pill"><input type="radio" name="pepRadio_idx" value="PEP"> <span>PEP (Politically Exposed Person)</span></label>
+                <label class="bank-option-pill"><input type="radio" name="pepRadio_idx" value="RELATED"> <span>Related to PEP</span></label>
+              </div>
+            </div>
+
+            <!-- 4. CONTACT & ONLINE BANKING DETAILS -->
+            <div class="bank-section-bar">
+              <span>4. Contact Details &amp; Account Provisioning</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:1.25rem;margin-bottom:1rem">
+              <!-- Mobile Number -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>Primary Mobile Number*:</span>
+                  <span style="font-size:0.72rem;color:var(--text-muted)">Prefix +91 (10 digits)</span>
+                </div>
+                <div style="display:flex;gap:0.4rem;align-items:center">
+                  <span style="font-weight:800;font-family:monospace;padding:0.45rem 0.65rem;border:1px solid #cbd5e1;border-radius:4px;background:#f8fafc">+91</span>
+                  <input type="tel" id="raw-mobile-number" class="bank-text-mirror-input" value="9876543210" maxlength="10" placeholder="ENTER 10-DIGIT MOBILE" required autocomplete="off">
+                </div>
+                <input type="hidden" name="phone" value="+919876543210">
+                <div id="char-boxes-mobile" class="char-box-track" onclick="document.getElementById('raw-mobile-number').focus()"></div>
+              </div>
+
+              <!-- Email ID -->
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Official Email Address*:</label>
+                <input type="email" name="email" class="bank-text-mirror-input" placeholder="alexander@example.com" value="alexander@example.com" required style="text-transform:none">
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.25rem">Digital statements and OTP alerts will be dispatched here.</div>
+              </div>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1rem">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Initial Deposit Amount (USD)*:</label>
+                <input type="number" step="0.01" name="initialDeposit" class="bank-text-mirror-input" value="150.00" min="100.00" required>
+                <div id="deposit-account-hint" style="font-size:0.72rem;color:var(--emerald-400);margin-top:0.25rem">✓ High-Yield Savings initial minimum deposit: $100.00.</div>
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Desired Online Banking Password*:</label>
+                <input type="password" name="password" class="bank-text-mirror-input" placeholder="Min 8 characters" value="Customer@1234" required minlength="8" style="text-transform:none">
+                <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.25rem">Secures your digital portal once account review is approved.</div>
+              </div>
+            </div>
+
+            <!-- 5. ADDRESS DETAILS -->
+            <div class="bank-section-bar">
+              <span>5. Address Details (Residential / Current)</span>
+            </div>
+
+            <div style="margin-bottom:0.75rem">
+              <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.35rem">Address Type*:</label>
+              <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio_idx" value="RESIDENTIAL" checked> <span>Residential &amp; Business</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio_idx" value="RES_ONLY"> <span>Residential Only</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio_idx" value="BUSINESS"> <span>Business</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio_idx" value="REGISTERED"> <span>Registered Office</span></label>
+              </div>
+            </div>
+
+            <div style="margin-bottom:0.85rem">
+              <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Flat / House No. &amp; Street / Road / Landmark*:</label>
+              <input type="text" name="addressLine" class="bank-text-mirror-input" placeholder="e.g. 221B Baker Street, Marylebone" value="221B Baker Street" required>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:1rem;margin-bottom:1.5rem">
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">City / Town / Village*:</label>
+                <input type="text" name="city" class="bank-text-mirror-input" placeholder="London" value="London" required>
+              </div>
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>PIN / Postal Code*:</span>
+                </div>
+                <input type="text" id="raw-pincode" class="bank-text-mirror-input" value="400001" maxlength="10" placeholder="PIN CODE" required autocomplete="off">
+                <input type="hidden" name="postalCode" value="400001">
+                <div id="char-boxes-pincode" class="char-box-track" onclick="document.getElementById('raw-pincode').focus()"></div>
+              </div>
+              <div>
+                <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Country Jurisdiction*:</label>
+                <select name="country" class="form-select bank-text-mirror-input" style="padding:0.45rem">
+                  <option value="IN" selected>IN - India</option>
+                  <option value="GB">GB - United Kingdom</option>
+                  <option value="US">US - United States</option>
+                  <option value="DE">DE - Germany</option>
+                  <option value="CA">CA - Canada</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- 6. APPLICANT PHOTOGRAPH & VERIFICATION SIGNATURE -->
+            <div class="bank-section-bar">
+              <span>6. Applicant Photograph &amp; Verification Signature</span>
+            </div>
+
+            <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:1.5rem;align-items:start;margin-bottom:1.5rem">
+              
+              <!-- Left Column: Official Declaration -->
+              <div style="font-size:0.8rem;line-height:1.55;color:var(--text-secondary);padding-right:0.5rem">
+                <strong style="color:var(--text-main);display:block;margin-bottom:0.4rem">Applicant Declaration &amp; Undertaking:</strong>
+                <ol style="padding-left:1.2rem;margin:0 0 1rem 0">
+                  <li style="margin-bottom:0.35rem">
+                    I hereby declare that the details furnished above are true and correct to the best of my knowledge and belief and I undertake to inform you of any changes therein, immediately.
+                  </li>
+                  <li style="margin-bottom:0.35rem">
+                    I hereby give my consent to receive alerts, account notifications, and communication from the Bank regarding my account operations.
+                  </li>
+                  <li>
+                    I submit my Aadhaar and Tax Identification voluntarily for authentic KYC and identity verification with UIDAI and regulatory registries.
+                  </li>
+                </ol>
+
+                <div style="display:flex;gap:2rem;margin-top:1.25rem;border-top:1px dashed #cbd5e1;padding-top:0.75rem;font-size:0.82rem">
+                  <div><strong>Date:</strong> <span id="paper-declaration-date" style="font-family:monospace;font-weight:700">28 / 09 / 2026</span></div>
+                  <div><strong>Place:</strong> <span id="paper-declaration-place" style="font-family:monospace;font-weight:700">LONDON</span></div>
+                </div>
+              </div>
+
+              <!-- Right Column: Auto-Resized Photo & Specimen Signature -->
+              <div style="display:flex;flex-direction:column;gap:1.25rem;align-items:center;background:rgba(255,255,255,0.02);padding:1rem;border-radius:10px;border:1px solid var(--border-subtle)">
+                
+                <!-- PASSPORT PHOTO UPLOAD (Auto-Resized to 3.5cm x 4.5cm) -->
+                <div style="text-align:center">
+                  <div style="font-size:0.72rem;font-weight:800;color:var(--text-main);text-transform:uppercase;margin-bottom:0.35rem">
+                    Recent Passport Size Photograph
+                  </div>
+                  
+                  <div class="passport-photo-box" onclick="document.getElementById('applicant-photo-file-input').click()" title="Click to upload photograph (auto-resized)">
+                    <div id="passport-photo-placeholder">
+                      <div style="font-size:1.8rem;margin-bottom:0.25rem">📷</div>
+                      <div style="font-size:0.72rem;font-weight:700;color:var(--brand-500)">Upload Photo</div>
+                      <div style="font-size:0.62rem;color:var(--text-muted);padding:0 0.5rem;margin-top:0.2rem">
+                        Auto-crops &amp; resizes cleanly to 3.5cm × 4.5cm
+                      </div>
+                    </div>
+                    <img id="passport-photo-img" class="passport-photo-img" alt="Passport Photograph">
+                    <span id="passport-stamp-badge" class="passport-stamp-badge">PASSPORT PHOTO 3.5×4.5cm ✓</span>
+                  </div>
+
+                  <input type="file" id="applicant-photo-file-input" accept="image/*" style="display:none" onchange="handlePassportPhotoUpload(this)">
+                  <input type="hidden" name="applicantPhoto" id="input-applicant-photo-data">
+
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.35rem;line-height:1.2">
+                    (Please paste cleanly. Do not staple. Sign across photo without obscuring face)
+                  </div>
+                </div>
+
+                <!-- SPECIMEN SIGNATURE BOX (Interactive Modal Trigger) -->
+                <div style="text-align:center;width:100%">
+                  <div style="font-size:0.72rem;font-weight:800;color:var(--text-main);text-transform:uppercase;margin-bottom:0.35rem">
+                    Signature / Thumb Impression
+                  </div>
+
+                  <div id="slot-applicant-signature" class="signature-box-slot" onclick="openSignatureModal()" title="Click to sign with interactive digital pad">
+                    <div id="form-signature-placeholder">
+                      <div style="font-size:1.4rem;color:var(--brand-500);margin-bottom:0.2rem">✍️</div>
+                      <div style="font-size:0.75rem;font-weight:800;color:var(--brand-500)">Click to Sign Digital Specimen</div>
+                      <div style="font-size:0.65rem;color:var(--text-muted)">Draw with mouse, touch, or auto-cursive</div>
+                    </div>
+                    <img id="form-signature-preview" class="signature-preview-img" alt="Applicant Specimen Signature">
+                    <div id="form-signature-meta" style="display:none;margin-top:0.35rem"></div>
+                  </div>
+
+                  <input type="hidden" name="applicantSignature" id="input-applicant-signature-data">
+
+                  <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.35rem">
+                    Sign as: <strong id="form-signature-name-display" style="color:var(--brand-500)">ALEXANDER WRIGHT</strong>
+                  </div>
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+          <!-- ==================== END BANK PAPER SHEET ==================== -->
+
+          <!-- STEP 2 NAVIGATION -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem">
+            <button type="button" class="btn btn-outline" onclick="goToOnboardingStep(1)">
+              <span data-i18n="btn_back">Back to Account Selection</span>
+            </button>
+            <button type="button" class="btn btn-primary" onclick="goToOnboardingStep(3)">
+              <span data-i18n="btn_proceed_step3">Proceed to Step 3: Verification Documents</span>
+            </button>
+          </div>
+
+        </div>
+
+
+        <!-- STEP 3: VERIFICATION DOCUMENTS -->
+        <div id="onboarding-step-3" style="display:none">
+          <div style="margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border-subtle)">
+            <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-main)">Step 3: Verification Documents (KYC)</h2>
+            <p style="font-size:0.85rem;color:var(--text-secondary)">
+              Bank regulations demand proof of identity and proof of address before account provisioning.
+            </p>
+          </div>
+
+          <!-- Document 1: Proof of Identity -->
+          <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--brand-500);margin-bottom:0.75rem">1. Proof of Identity</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+              <div class="form-group">
+                <label class="form-label">Document Type</label>
+                <select name="idDocType" class="form-select">
+                  <option value="PASSPORT">Passport</option>
+                  <option value="DRIVERS_LICENSE">Driver's License</option>
+                  <option value="NATIONAL_ID">National Identity Card</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Document Serial / ID #</label>
+                <input type="text" name="idDocNumber" class="form-input" placeholder="e.g. GB9824102" value="GB84920184" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Expiry Date</label>
+                <input type="date" name="idExpiryDate" class="form-input" value="2032-05-15">
+              </div>
+            </div>
+          </div>
+
+          <!-- Document 2: Proof of Address -->
+          <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:12px;padding:1.25rem;margin-bottom:1.25rem">
+            <h3 style="font-size:1rem;font-weight:700;color:var(--emerald-400);margin-bottom:0.75rem">2. Proof of Address</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+              <div class="form-group">
+                <label class="form-label">Document Type</label>
+                <select name="addrDocType" class="form-select">
+                  <option value="UTILITY_BILL">Utility Bill (Electricity, Water, Gas)</option>
+                  <option value="BANK_STATEMENT">Recent Bank Statement</option>
+                  <option value="COUNCIL_TAX">Government Tax Assessment</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Bill / Account Reference #</label>
+                <input type="text" name="addrDocNumber" class="form-input" placeholder="e.g. UB-884210" value="UB-994821" required>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--text-secondary)">
+            🔒 <strong>Bank Compliance Assurance:</strong> Once submitted, the system generates your non-reusable Application Reference Number. Bank officers will inspect your documents and open your account.
+          </div>
+
+          <div style="display:flex;justify-content:space-between">
+            <button type="button" class="btn btn-outline" onclick="goToOnboardingStep(2)">
+              Back to Customer Details
+            </button>
+            <button type="submit" class="btn btn-success" style="padding:0.75rem 1.75rem">
+              Submit Official Application
+            </button>
+          </div>
+        </div>
+      </form>
+
+      <!-- STEP 4: CONFIRMATION & APPLICATION NUMBER -->
+      <div id="onboarding-step-4" style="display:none;text-align:center;padding:1rem 0">
+        <div style="width:64px;height:64px;border-radius:50%;background:rgba(16,185,129,0.15);border:2px solid var(--emerald-400);color:var(--emerald-400);font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 1.5rem">
+          ✓
+        </div>
+        <h2 style="font-size:1.8rem;font-weight:800;color:var(--text-main)">Application Submitted Successfully!</h2>
+        <p style="font-size:0.9rem;color:var(--text-secondary);max-width:540px;margin:0.5rem auto 1.5rem">
+          Your account opening application has been received and registered in the core banking ledger.
+        </p>
+
+        <!-- Displayed Unique Random Application Number -->
+        <div style="background:rgba(255,255,255,0.03);border:2px dashed var(--brand-500);border-radius:16px;padding:1.5rem;max-width:440px;margin:0 auto 1.5rem">
+          <span style="font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--text-muted);font-weight:700">Official Application Number</span>
+          <div id="confirmation-app-number" style="font-size:1.75rem;font-weight:800;font-family:monospace;letter-spacing:0.08em;color:var(--brand-500);margin:0.35rem 0">
+            APP-2026-XXXXXX
+          </div>
+          <p style="font-size:0.75rem;color:var(--text-secondary)">
+            This unique reference is permanently locked to your application and will not be regenerated.
+          </p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;max-width:440px;margin:0 auto 2rem;text-align:left;font-size:0.85rem;background:rgba(0,0,0,0.3);padding:1rem;border-radius:12px">
+          <div><span style="color:var(--text-muted)">Applicant:</span> <strong id="confirmation-applicant-name" style="color:var(--text-main)"></strong></div>
+          <div><span style="color:var(--text-muted)">Account Type:</span> <strong id="confirmation-account-type" style="color:var(--text-main)"></strong></div>
+          <div><span style="color:var(--text-muted)">Initial Deposit:</span> <strong id="confirmation-deposit" style="color:var(--emerald-400)"></strong></div>
+          <div><span style="color:var(--text-muted)">Status:</span> <span id="confirmation-app-status" class="status-pill submitted">SUBMITTED</span></div>
+        </div>
+
+        <div style="display:flex;justify-content:center;gap:1rem">
+          <button type="button" class="btn btn-outline" onclick="switchAuthView('track')">
+            Track Application Status
+          </button>
+          <button type="button" class="btn btn-primary" onclick="switchAuthView('login')">
+            Return to Sign In
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- VIEW 3: APPLICATION STATUS TRACKER (Public) -->
+    <div id="auth-view-track" class="glass-card" style="display:none;width:100%;max-width:540px;padding:2.25rem">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <h2 style="font-size:1.5rem;font-weight:800;color:var(--text-main)">Track Account Opening Application</h2>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.25rem">
+          Enter your unique Application Number to check verification progress and account provisioning status.
+        </p>
+      </div>
+
+      <form id="form-track-app">
+        <div class="form-group">
+          <label class="form-label">Application Reference Number</label>
+          <input type="text" name="appNumber" class="form-input" placeholder="e.g. APP-2026-891042" style="font-family:monospace;letter-spacing:0.05em" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%">
+          Lookup Application Status
+        </button>
+      </form>
+
+      <!-- Dynamic Tracking Result Box -->
+      <div id="tracking-result-box" style="display:none"></div>
+
+      <div style="text-align:center;margin-top:1.5rem">
+        <button type="button" class="btn btn-outline btn-sm" onclick="switchAuthView('login')">
+          ← Return to Sign In
+        </button>
+      </div>
+    </div>
+
+    <!-- VIEW 4: BANK EMPLOYEE ONBOARDING FORM -->
+    <div id="auth-view-employee-register" class="glass-card" style="display:none;width:100%;max-width:560px;padding:2.25rem">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <h2 style="font-size:1.5rem;font-weight:800;color:var(--text-main)">Bank Staff Onboarding Portal</h2>
+        <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.25rem">
+          Register a newly joined bank employee with institutional role and permissions.
+        </p>
+      </div>
+
+      <form id="form-employee-register">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" name="firstName" class="form-input" placeholder="Sarah" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="lastName" class="form-input" placeholder="Jenkins" required>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">Official Bank Email</label>
+            <input type="email" name="email" class="form-input" placeholder="sarah.jenkins@bank.test" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="Min 8 characters" required minlength="8">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">Employee Code</label>
+            <input type="text" name="employeeCode" class="form-input" placeholder="EMP-1042" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Department</label>
+            <select name="department" class="form-select">
+              <option value="OPERATIONS">Operations</option>
+              <option value="UNDERWRITING">Underwriting</option>
+              <option value="COMPLIANCE">Compliance</option>
+              <option value="BRANCH_MANAGEMENT">Branch Management</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Staff Role</label>
+            <select name="role" class="form-select">
+              <option value="EMPLOYEE">Bank Employee (Staff)</option>
+              <option value="ADMIN">Bank Administrator</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" name="dob" class="form-input" value="1992-04-10" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Contact Phone</label>
+            <input type="tel" name="phone" class="form-input" placeholder="+447700900002" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Office / Branch Address</label>
+          <input type="text" name="addressLine" class="form-input" placeholder="1 Bank Street" required>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">City</label>
+            <input type="text" name="city" class="form-input" placeholder="London" value="London" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Postal Code</label>
+            <input type="text" name="postalCode" class="form-input" placeholder="EC2N 1HQ" value="EC2N 1HQ" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Country</label>
+            <input type="text" name="country" class="form-input" value="GB" maxlength="2" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.5rem">
+          Register Staff Member & Grant Portal Access
+        </button>
+
+        <div style="text-align:center;margin-top:1rem">
+          <button type="button" class="btn btn-outline btn-sm" onclick="switchAuthView('login')">
+            ← Return to Sign In
+          </button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <!-- ==================== MAIN APPLICATION SHELL ==================== -->
+  <div id="screen-app" class="app-layout" style="display:none">
+    
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="app-sidebar glass" id="main-app-sidebar">
+      <!-- Sidebar Expand/Collapse Toggle Button (Item 17) -->
+      <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" id="btn-toggle-sidebar" title="Expand / Collapse Sidebar">
+        <span class="toggle-icon">◀</span>
+        <span class="toggle-label">Collapse</span>
+      </button>
+      
+      <!-- CUSTOMER NAVIGATION -->
+      <nav id="sidebar-customer-nav" style="display:flex;flex-direction:column;gap:0.4rem;width:100%">
+        <div class="nav-section-title">Personal Banking</div>
+        <button id="nav-cust-dashboard" class="nav-item active" onclick="switchCustomerTab('cust-dashboard')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+          <span>Dashboard</span>
+        </button>
+        <button id="nav-cust-transfers" class="nav-item" onclick="switchCustomerTab('cust-transfers')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <span>Transfers & OTP</span>
+        </button>
+        <button id="nav-cust-cards" class="nav-item" onclick="switchCustomerTab('cust-cards')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+          <span>Cards & Security</span>
+        </button>
+        <button id="nav-cust-loans" class="nav-item" onclick="switchCustomerTab('cust-loans')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Loans & Credit</span>
+        </button>
+        <!-- Item 20: Post-Account Creation Update Mandate Page -->
+        <button id="nav-cust-update-app" class="nav-item" onclick="switchCustomerTab('cust-update-app')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+          <span>Update Application</span>
+        </button>
+      </nav>
+
+      <!-- EMPLOYEE / STAFF NAVIGATION -->
+      <nav id="sidebar-employee-nav" style="display:none;flex-direction:column;gap:0.4rem;width:100%">
+        <div class="nav-section-title">Staff Administration</div>
+        <button id="nav-emp-dashboard" class="nav-item active" onclick="switchEmployeeTab('emp-dashboard')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+          <span>Bank Overview</span>
+        </button>
+        
+        <!-- Account Opening Applications Tab with Dedicated Route (Item 9 & 13) -->
+        <button id="nav-emp-applications" class="nav-item" onclick="switchEmployeeTab('emp-applications'); try{history.pushState(null, '', '/app/account_applications');}catch(e){}">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"/></svg>
+          <span>Account Applications</span>
+        </button>
+
+        <button id="nav-emp-customers" class="nav-item" onclick="switchEmployeeTab('emp-customers')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <span>Customer Directory</span>
+        </button>
+        <button id="nav-emp-kyc" class="nav-item" onclick="switchEmployeeTab('emp-kyc')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <span>KYC Review Queue</span>
+        </button>
+        <button id="nav-emp-loans" class="nav-item" onclick="switchEmployeeTab('emp-loans')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          <span>Loan Underwriting</span>
+        </button>
+        <button id="nav-emp-disputes" class="nav-item" onclick="switchEmployeeTab('emp-disputes')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+          <span>Disputes Resolution</span>
+        </button>
+
+        <!-- Item 21: Super Admin Employee Onboarding Tab -->
+        <button id="nav-emp-onboard" class="nav-item" onclick="switchEmployeeTab('emp-onboard')" style="display:none">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"/></svg>
+          <span>Onboard Bank Staff</span>
+        </button>
+
+        <!-- Item 9: SQL Database GUI in same tab -->
+        <a id="nav-emp-sql-gui" href="/sql-gui" class="nav-item" style="text-decoration:none;color:inherit;display:none;align-items:center;gap:0.75rem" title="Open SQL Database GUI Workbench">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px;color:var(--emerald-400)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
+          <span>⚡ SQL Database GUI</span>
+        </a>
+
+        <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--border-subtle)">
+          <button class="btn btn-outline btn-sm" style="width:100%;color:var(--rose-500)" onclick="promptResetPlatform()">
+            <span>Reset Sandbox Data</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- CONTENT PANELS CONTAINER -->
+    <main class="app-main">
+
+      <!-- ==================== CUSTOMER PANELS ==================== -->
+      <div id="customer-views-container">
+        
+        <!-- CUSTOMER TAB 1: DASHBOARD -->
+        <section id="panel-cust-dashboard" class="space-y-6">
+          <div id="kyc-status-banner" style="margin-bottom:1.5rem"></div>
+
+          <!-- Top Metric Cards -->
+          <div class="metrics-grid">
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Total Net Worth</span>
+                <div class="metric-icon-wrap" style="background:rgba(16,185,129,0.1);color:var(--emerald-400)">
+                  <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+              </div>
+              <div id="cust-total-balance" class="metric-value">$0.00</div>
+              <div class="metric-sub">Multi-currency cumulative</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Accounts</span>
+                <div class="metric-icon-wrap" style="background:rgba(99,102,241,0.1);color:var(--brand-500)">
+                  <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                </div>
+              </div>
+              <div id="cust-accounts-count" class="metric-value">0</div>
+              <div class="metric-sub">Checking & Savings</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Active Cards</span>
+                <div class="metric-icon-wrap" style="background:rgba(192,132,252,0.1);color:var(--purple-400)">
+                  <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/></svg>
+                </div>
+              </div>
+              <div id="cust-cards-count" class="metric-value">0</div>
+              <div class="metric-sub">Visa & Mastercard</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Active Loans</span>
+                <div class="metric-icon-wrap" style="background:rgba(245,158,11,0.1);color:var(--amber-400)">
+                  <svg style="width:20px;height:20px" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </div>
+              </div>
+              <div id="cust-loans-count" class="metric-value">0</div>
+              <div class="metric-sub">Amortized installments</div>
+            </div>
+          </div>
+
+          <!-- Quick Actions Command Ribbon -->
+          <div style="margin-top:1.5rem">
+            <div class="quick-actions-bar">
+              <button type="button" class="quick-action-btn" onclick="switchCustomerTab('cust-transfers')">
+                <span class="btn-icon-bubble">💸</span>
+                <span>Send Money &amp; Wire</span>
+              </button>
+              <button type="button" class="quick-action-btn" onclick="if(customerAccounts.length > 0){ promptDeposit(customerAccounts[0].id, customerAccounts[0].currency); } else { openModal('modal-create-account'); }">
+                <span class="btn-icon-bubble" style="background:rgba(16,185,129,0.18)">📥</span>
+                <span>Instant Deposit</span>
+              </button>
+              <button type="button" class="quick-action-btn" onclick="openModal('modal-issue-card')">
+                <span class="btn-icon-bubble" style="background:rgba(192,132,252,0.18)">💳</span>
+                <span>Issue Titanium Card</span>
+              </button>
+              <button type="button" class="quick-action-btn" onclick="switchCustomerTab('cust-loans')">
+                <span class="btn-icon-bubble" style="background:rgba(245,158,11,0.18)">📊</span>
+                <span>Instant Loan APR</span>
+              </button>
+              <button type="button" class="quick-action-btn" onclick="openModal('modal-submit-kyc')">
+                <span class="btn-icon-bubble" style="background:rgba(56,189,248,0.18)">🛡️</span>
+                <span>Identity &amp; Compliance</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Accounts Section -->
+          <div style="margin-top:2rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <h2 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">My Bank Accounts</h2>
+              <button class="btn btn-primary btn-sm" onclick="openModal('modal-create-account')">
+                <span>+ Open New Account</span>
+              </button>
+            </div>
+            
+            <div id="accounts-cards-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:1rem">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+          <!-- Cards Preview Section -->
+          <div style="margin-top:2rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+              <h2 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">Payment Cards</h2>
+              <button class="btn btn-outline btn-sm" onclick="openModal('modal-issue-card')">
+                <span>+ Issue Card</span>
+              </button>
+            </div>
+            <div id="cards-display-container" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:1.5rem">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </section>
+
+        <!-- CUSTOMER TAB 2: TRANSFERS -->
+        <section id="panel-cust-transfers" style="display:none">
+          <div class="glass-card" style="padding:2rem;max-width:680px;margin:0 auto">
+            <h2 style="font-size:1.35rem;font-weight:800;color:var(--text-main);margin-bottom:0.25rem">Instant Money Transfer</h2>
+            <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem">
+              Send money domestically or internationally. Transfers over $1,000 generate a 6-digit OTP verification.
+            </p>
+
+            <form id="form-transfer" onsubmit="event.preventDefault(); submitTransfer(this);">
+              <div class="form-group">
+                <label class="form-label">Transfer Type</label>
+                <select name="destinationType" class="form-select" onchange="document.getElementById('transfer-internal-fields').style.display = this.value === 'INTERNAL' ? 'block' : 'none'; document.getElementById('transfer-external-fields').style.display = this.value === 'EXTERNAL' ? 'block' : 'none';">
+                  <option value="INTERNAL">Internal Transfer (NeoBank Account)</option>
+                  <option value="EXTERNAL">External Transfer (IBAN & SWIFT)</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">From Account</label>
+                <select name="fromAccountId" class="form-select" id="transfer-from-account" required>
+                  <!-- Populated dynamically -->
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Recipient Full Name</label>
+                <input type="text" name="recipientName" class="form-input" placeholder="e.g. Sarah Jenkins" required>
+              </div>
+
+              <div id="transfer-internal-fields">
+                <div class="form-group">
+                  <label class="form-label">Recipient Account Number (10 digits)</label>
+                  <input type="text" name="accountNumber" class="form-input" placeholder="e.g. 4892018471" pattern="\d{10}">
+                </div>
+              </div>
+
+              <div id="transfer-external-fields" style="display:none">
+                <div class="form-group">
+                  <label class="form-label">Recipient IBAN</label>
+                  <input type="text" name="iban" class="form-input" placeholder="GB29NEOB00000000000000">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Bank Clearing Code / SWIFT</label>
+                  <input type="text" name="bankCode" class="form-input" placeholder="NEOBGB2L">
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+                <div class="form-group">
+                  <label class="form-label">Amount</label>
+                  <input type="number" step="0.01" name="amount" class="form-input" placeholder="100.00" required min="1">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Currency</label>
+                  <select name="currency" class="form-select">
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Reference Note</label>
+                <input type="text" name="reference" class="form-input" placeholder="e.g. Rent payment">
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.5rem">
+                Execute Transfer
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- CUSTOMER TAB 3: CARDS & SECURITY -->
+        <section id="panel-cust-cards" style="display:none">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+            <div>
+              <h2 style="font-size:1.35rem;font-weight:800;color:var(--text-main)">Cards & Controls</h2>
+              <p style="font-size:0.85rem;color:var(--text-secondary)">Manage virtual cards, PINs, and spend limits.</p>
+            </div>
+            <button class="btn btn-primary" onclick="openModal('modal-issue-card')">+ Issue New Card</button>
+          </div>
+
+          <div id="cards-display-container-tab" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:1.5rem">
+            <!-- Rendered via JS -->
+          </div>
+        </section>
+
+        <!-- CUSTOMER TAB 4: LOANS & CREDIT -->
+        <section id="panel-cust-loans" style="display:none">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start">
+            
+            <!-- Loan Calculator Card -->
+            <div class="glass-card" style="padding:2rem">
+              <h2 style="font-size:1.25rem;font-weight:800;color:var(--text-main);margin-bottom:0.25rem">Instant Loan Calculator</h2>
+              <p style="font-size:0.85rem;color:var(--text-secondary);margin-bottom:1.5rem">
+                Calculate interest and monthly installments in real time.
+              </p>
+
+              <div class="form-group">
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.5rem">
+                  <span style="color:var(--text-secondary)">Loan Principal</span>
+                  <span id="slider-loan-amount-val" style="font-weight:700;color:var(--text-main)">$25,000</span>
+                </div>
+                <input type="range" id="slider-loan-amount" min="1000" max="100000" step="1000" value="25000" style="width:100%" oninput="document.getElementById('slider-loan-amount-val').textContent = '$' + Number(this.value).toLocaleString(); calculateLoanQuote(this.value, document.getElementById('slider-loan-term').value, document.getElementById('select-loan-purpose').value);">
+              </div>
+
+              <div class="form-group">
+                <div style="display:flex;justify-content:space-between;font-size:0.85rem;margin-bottom:0.5rem">
+                  <span style="color:var(--text-secondary)">Term (Months)</span>
+                  <span id="slider-loan-term-val" style="font-weight:700;color:var(--text-main)">24 Months</span>
+                </div>
+                <input type="range" id="slider-loan-term" min="6" max="72" step="6" value="24" style="width:100%" oninput="document.getElementById('slider-loan-term-val').textContent = this.value + ' Months'; calculateLoanQuote(document.getElementById('slider-loan-amount').value, this.value, document.getElementById('select-loan-purpose').value);">
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Loan Purpose</label>
+                <select id="select-loan-purpose" class="form-select" onchange="calculateLoanQuote(document.getElementById('slider-loan-amount').value, document.getElementById('slider-loan-term').value, this.value);">
+                  <option value="CAR">Vehicle Purchase</option>
+                  <option value="HOME">Home Renovation</option>
+                  <option value="EDUCATION">Education</option>
+                  <option value="PERSONAL">Personal Financing</option>
+                  <option value="BUSINESS">Business Expansion</option>
+                </select>
+              </div>
+
+              <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:12px;padding:1rem;margin-top:1.5rem">
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                  <span style="font-size:0.85rem;color:var(--text-secondary)">Calculated APR</span>
+                  <span id="loan-quote-apr" style="font-weight:700;color:var(--emerald-400)">8.0%</span>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-bottom:0.5rem">
+                  <span style="font-size:0.85rem;color:var(--text-secondary)">Monthly Installment (EMI)</span>
+                  <span id="loan-quote-emi" style="font-size:1.15rem;font-weight:800;color:var(--text-main)">$1,130.65/mo</span>
+                </div>
+                <div style="display:flex;justify-content:space-between">
+                  <span style="font-size:0.85rem;color:var(--text-secondary)">Total Repayable</span>
+                  <span id="loan-quote-total" style="font-weight:700;color:var(--text-main)">$27,135.60</span>
+                </div>
+              </div>
+
+              <input type="hidden" id="loan-active-quote-id">
+              <button class="btn btn-primary" style="width:100%;margin-top:1.25rem" onclick="openModal('modal-apply-loan')">
+                Apply for this Loan
+              </button>
+            </div>
+
+            <!-- Applications & Active Loans List -->
+            <div class="space-y-6">
+              <div class="glass-card" style="padding:1.5rem">
+                <h3 style="font-size:1.1rem;font-weight:700;color:var(--text-main);margin-bottom:1rem">Loan Applications</h3>
+                <div class="data-table-wrap">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Application ID</th>
+                        <th>Status</th>
+                        <th>Underwriting Notes</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody id="loan-applications-table">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              <div class="glass-card" style="padding:1.5rem">
+                <h3 style="font-size:1.1rem;font-weight:700;color:var(--text-main);margin-bottom:1rem">Active Loans</h3>
+                <div class="data-table-wrap">
+                  <table class="data-table">
+                    <thead>
+                      <tr>
+                        <th>Loan ID</th>
+                        <th>Principal</th>
+                        <th>Rate</th>
+                        <th>Monthly</th>
+                        <th>Repayments</th>
+                      </tr>
+                    </thead>
+                    <tbody id="active-loans-table">
+                      <!-- Populated via JS -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- CUSTOMER TAB 5: UPDATE APPLICATION / MANDATE (Item 20) -->
+        <section id="panel-cust-update-app" class="space-y-6" style="display:none">
+          <div class="glass-card" style="padding:1.75rem">
+            <div style="margin-bottom:1.5rem">
+              <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-main)">Request Account Application &amp; Profile Update</h2>
+              <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem">
+                Update KYC details, address, debit card schemes, or account mandates on your active bank account.
+              </p>
+            </div>
+
+            <form id="form-customer-update-app" onsubmit="event.preventDefault(); submitCustomerUpdateApplication(this);">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                <div class="form-group">
+                  <label class="form-label">Linked Account Number*</label>
+                  <select name="accountNumber" id="update-app-account-select" class="form-select" required>
+                    <!-- Populated dynamically with customer's active accounts -->
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Application Type*</label>
+                  <input type="text" name="applicationType" class="form-input" value="UPDATE" readonly style="font-weight:700;color:var(--brand-400);background:rgba(99,102,241,0.08);cursor:not-allowed">
+                </div>
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                <div class="form-group">
+                  <label class="form-label">Updated Primary Phone Number</label>
+                  <input type="tel" name="phone" id="update-app-phone" class="form-input" placeholder="+91 9876543210">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Updated Email Address</label>
+                  <input type="email" name="email" id="update-app-email" class="form-input" placeholder="new.email@example.com">
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:1.25rem">
+                <label class="form-label">Updated Residential / Communication Address</label>
+                <input type="text" name="addressLine" id="update-app-address" class="form-input" placeholder="Flat / House No., Building, Street Name, Area">
+              </div>
+
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1.25rem">
+                <div class="form-group">
+                  <label class="form-label">City / Town</label>
+                  <input type="text" name="city" id="update-app-city" class="form-input" placeholder="e.g. Mumbai / New York">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Postal / PIN Code</label>
+                  <input type="text" name="postalCode" id="update-app-postal" class="form-input" placeholder="e.g. 400001">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Debit Card Scheme Preference</label>
+                  <select name="cardScheme" class="form-select">
+                    <option value="RUPAY">RuPay Global</option>
+                    <option value="VISA">Visa Platinum</option>
+                    <option value="MASTERCARD">Mastercard World</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:1.5rem">
+                <label class="form-label">Reason for Modification / Update Justification*</label>
+                <textarea name="reason" class="form-input" rows="3" placeholder="Explain the reason for this account profile update..." required minlength="5"></textarea>
+              </div>
+
+              <div style="display:flex;justify-content:flex-end;gap:0.75rem">
+                <button type="submit" class="btn btn-primary" style="font-weight:700;padding:0.75rem 1.75rem">
+                  📤 Submit Update Application (Type: UPDATE)
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- ==================== EMPLOYEE / BANK STAFF PANELS ==================== -->
+      <div id="employee-views-container" style="display:none">
+        
+        <!-- STAFF TAB 1: BANK OVERVIEW -->
+        <section id="panel-emp-dashboard">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+            <div>
+              <h2 style="font-size:1.5rem;font-weight:800;color:var(--text-main)">Institutional Management Console</h2>
+              <p style="font-size:0.85rem;color:var(--text-secondary)">Real-time oversight of customers, credit risk underwriting, and bank reserves.</p>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="loadEmployeeDashboard()">Refresh Metrics</button>
+          </div>
+
+          <div class="metrics-grid">
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Total Customers</span>
+                <span style="color:var(--brand-500)">👥</span>
+              </div>
+              <div id="emp-stat-customers" class="metric-value">0</div>
+              <div class="metric-sub">Active bank clientele</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Total Deposits USD</span>
+                <span style="color:var(--emerald-400)">🏦</span>
+              </div>
+              <div id="emp-stat-deposits" class="metric-value">$0</div>
+              <div class="metric-sub">Aggregate ledger balance</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Pending KYC</span>
+                <span style="color:var(--amber-400)">🛡️</span>
+              </div>
+              <div id="emp-stat-kyc-pending" class="metric-value">0</div>
+              <div class="metric-sub">Awaiting compliance review</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Pending Loans</span>
+                <span style="color:var(--purple-400)">📊</span>
+              </div>
+              <div id="emp-stat-loans-pending" class="metric-value">0</div>
+              <div class="metric-sub">Underwriting queue</div>
+            </div>
+
+            <div class="glass-card metric-card">
+              <div class="metric-header">
+                <span class="metric-label">Open Disputes</span>
+                <span style="color:var(--rose-500)">⚖️</span>
+              </div>
+              <div id="emp-stat-disputes" class="metric-value">0</div>
+              <div class="metric-sub">Chargeback investigations</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- STAFF TAB 2: ACCOUNT OPENING APPLICATIONS (WITH DATE RANGE FILTERING) -->
+        <section id="panel-emp-applications" style="display:none">
+          <div class="glass-card" style="padding:1.5rem">
+            
+            <!-- Header & Date Metrics -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+              <div>
+                <h3 style="font-size:1.3rem;font-weight:800;color:var(--text-main)">Customer Account Opening Applications</h3>
+                <p style="font-size:0.85rem;color:var(--text-secondary)">
+                  Review customer application forms, verify documents, and approve new account provisioning.
+                </p>
+              </div>
+
+              <!-- Mini KPI Badges -->
+              <div style="display:flex;gap:0.75rem">
+                <div style="background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);padding:0.4rem 0.85rem;border-radius:10px;text-align:center">
+                  <div style="font-size:0.65rem;text-transform:uppercase;color:var(--text-muted)">Received Today</div>
+                  <div id="emp-stat-apps-today" style="font-size:1.15rem;font-weight:800;color:var(--text-main)">0</div>
+                </div>
+                <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);padding:0.4rem 0.85rem;border-radius:10px;text-align:center">
+                  <div style="font-size:0.65rem;text-transform:uppercase;color:var(--text-muted)">Pending Review</div>
+                  <div id="emp-stat-apps-pending" style="font-size:1.15rem;font-weight:800;color:var(--amber-400)">0</div>
+                </div>
+                <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);padding:0.4rem 0.85rem;border-radius:10px;text-align:center">
+                  <div style="font-size:0.65rem;text-transform:uppercase;color:var(--text-muted)">Accounts Opened</div>
+                  <div id="emp-stat-apps-approved" style="font-size:1.15rem;font-weight:800;color:var(--emerald-400)">0</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Date Range Filtering Toolbar -->
+            <div style="background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:12px;padding:1rem;margin-bottom:1.5rem;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem">
+              
+              <!-- Quick Date Buttons -->
+              <div style="display:flex;gap:0.4rem;align-items:center">
+                <span style="font-size:0.75rem;font-weight:700;color:var(--text-muted);text-transform:uppercase;margin-right:0.35rem">Quick Date:</span>
+                <button type="button" id="btn-filter-all" class="app-date-filter-btn active" onclick="setAppDateFilter('all')">All Dates</button>
+                <button type="button" id="btn-filter-today" class="app-date-filter-btn" onclick="setAppDateFilter('today')">Today</button>
+                <button type="button" id="btn-filter-yesterday" class="app-date-filter-btn" onclick="setAppDateFilter('yesterday')">Yesterday</button>
+                <button type="button" id="btn-filter-this_week" class="app-date-filter-btn" onclick="setAppDateFilter('this_week')">Past 7 Days</button>
+                <button type="button" id="btn-filter-this_month" class="app-date-filter-btn" onclick="setAppDateFilter('this_month')">This Month</button>
+              </div>
+
+              <!-- Item 10 & 13: Universal Table Search Filter -->
+              <div style="flex:1;min-width:240px;max-width:380px">
+                <input type="text" id="emp-apps-search-input" class="form-input" placeholder="🔍 Search ref #, applicant, email, phone..." oninput="handleAppTableSearch(this.value)" style="padding:0.4rem 0.75rem;font-size:0.78rem">
+              </div>
+
+              <!-- Custom Date Pickers & Status Filter -->
+              <div style="display:flex;gap:0.75rem;align-items:center;flex-wrap:wrap">
+                <div style="display:flex;align-items:center;gap:0.4rem">
+                  <span style="font-size:0.75rem;color:var(--text-muted)">From:</span>
+                  <input type="date" id="emp-apps-start-date" class="form-input" style="padding:0.35rem 0.6rem;font-size:0.75rem;width:130px" onchange="loadStaffApplications()">
+                  <span style="font-size:0.75rem;color:var(--text-muted)">To:</span>
+                  <input type="date" id="emp-apps-end-date" class="form-input" style="padding:0.35rem 0.6rem;font-size:0.75rem;width:130px" onchange="loadStaffApplications()">
+                </div>
+
+                <div>
+                  <select id="emp-apps-status-select" class="form-select" style="padding:0.35rem 0.6rem;font-size:0.75rem;width:140px" onchange="setAppStatusFilter(this.value)">
+                    <option value="all">All Statuses</option>
+                    <option value="SUBMITTED">Submitted</option>
+                    <option value="UNDER_REVIEW">Under Review</option>
+                    <option value="ACCOUNT_OPENED">Account Opened</option>
+                    <option value="REJECTED">Rejected</option>
+                  </select>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Applications Table -->
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Application Ref #</th>
+                    <th>Customer Name & Contact</th>
+                    <th>Account Type</th>
+                    <th>Submitted At</th>
+                    <th>Initial Deposit</th>
+                    <th>Current Status</th>
+                    <th>Staff Action</th>
+                  </tr>
+                </thead>
+                <tbody id="emp-applications-table-body">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- STAFF TAB 3: CUSTOMER DIRECTORY -->
+        <section id="panel-emp-customers" style="display:none">
+          <div class="glass-card" style="padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+              <h3 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">Bank Customer Directory</h3>
+              <span style="font-size:0.8rem;color:var(--text-secondary)">Staff authorization to freeze or activate accounts</span>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>User ID</th>
+                    <th>Customer Name & Email</th>
+                    <th>Role</th>
+                    <th>Account Status</th>
+                    <th>Assets (USD)</th>
+                    <th>Staff Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="emp-customers-table">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- STAFF TAB 4: KYC REVIEW QUEUE -->
+        <section id="panel-emp-kyc" style="display:none">
+          <div class="glass-card" style="padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+              <div>
+                <h3 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">KYC Verification Underwriting Queue</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary)">Review customer identification documents and approve banking permissions.</p>
+              </div>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>KYC ID</th>
+                    <th>Customer & Employment</th>
+                    <th>Submitted Documents</th>
+                    <th>Status</th>
+                    <th>Decision Action</th>
+                  </tr>
+                </thead>
+                <tbody id="emp-kyc-table">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- STAFF TAB 5: LOAN UNDERWRITING -->
+        <section id="panel-emp-loans" style="display:none">
+          <div class="glass-card" style="padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+              <div>
+                <h3 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">Loan Application Credit Decisions</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary)">Underwrite credit risk, review requested principal, and issue loan approvals.</p>
+              </div>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>App ID</th>
+                    <th>Applicant Details</th>
+                    <th>Requested Loan</th>
+                    <th>Status</th>
+                    <th>Underwriter Action</th>
+                  </tr>
+                </thead>
+                <tbody id="emp-loans-table">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- STAFF TAB 6: DISPUTES RESOLUTION -->
+        <section id="panel-emp-disputes" style="display:none">
+          <div class="glass-card" style="padding:1.5rem">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem">
+              <div>
+                <h3 style="font-size:1.25rem;font-weight:700;color:var(--text-main)">Transaction Dispute Resolution Center</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary)">Adjudicate cardholder charge disputes and authorize direct transaction refunds.</p>
+              </div>
+            </div>
+
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Dispute ID</th>
+                    <th>Customer & Claim</th>
+                    <th>Disputed Amount</th>
+                    <th>Status</th>
+                    <th>Resolution</th>
+                  </tr>
+                </thead>
+                <tbody id="emp-disputes-table">
+                  <!-- Populated via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- STAFF TAB 7: EMPLOYEE ONBOARDING (SUPER ADMIN ONLY - Item 21) -->
+        <section id="panel-emp-onboard" style="display:none">
+          <div class="glass-card" style="padding:1.75rem">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
+              <div>
+                <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(99,102,241,0.15);color:var(--brand-400);font-size:0.75rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:9999px;margin-bottom:0.5rem">
+                  <span>👑</span> <span>SUPER ADMIN PRIVILEGE (admin@bank.test)</span>
+                </div>
+                <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-main)">Bank Employee Onboarding Portal</h2>
+                <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem">
+                  Register authorized bank officers, underwriters, and compliance managers into institutional records.
+                </p>
+              </div>
+            </div>
+
+            <form id="form-emp-onboard" onsubmit="event.preventDefault(); initiateEmployeeOnboarding(this);">
+              
+              <!-- SECTION 1: Personal & Contact Information -->
+              <div style="margin-bottom:1.5rem">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+                  <span>👤</span> <span>Staff Personal &amp; Contact Details</span>
+                </div>
+                
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                  <div class="form-group">
+                    <label class="form-label">First Name*</label>
+                    <input type="text" name="firstName" id="onboard-emp-fname" class="form-input" placeholder="e.g. Sarah" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Last Name*</label>
+                    <input type="text" name="lastName" id="onboard-emp-lname" class="form-input" placeholder="e.g. Jenkins" required>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                  <div class="form-group">
+                    <label class="form-label">Official Contact Phone*</label>
+                    <input type="tel" name="phone" id="onboard-emp-phone" class="form-input" placeholder="+447700900999" value="+447700900999" required>
+                    <span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-top:0.25rem">International format with country code (e.g. +447700900999 or +12025550199)</span>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Date of Birth*</label>
+                    <input type="date" name="dob" id="onboard-emp-dob" class="form-input" value="1992-04-18" required>
+                    <span style="font-size:0.72rem;color:var(--text-muted);display:block;margin-top:0.25rem">Official birth date for bank identity file</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 2: Branch Office & Physical Work Location -->
+              <div style="margin-bottom:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle)">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+                  <span>🏢</span> <span>Branch Office &amp; Work Location</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                  <div class="form-group">
+                    <label class="form-label">Office / Branch Address Line*</label>
+                    <input type="text" name="addressLine" id="onboard-emp-address" class="form-input" placeholder="e.g. 10 Fleet Street" value="10 Fleet Street" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">City*</label>
+                    <input type="text" name="city" id="onboard-emp-city" class="form-input" placeholder="e.g. London" value="London" required>
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem">
+                  <div class="form-group">
+                    <label class="form-label">Postal / Zip Code*</label>
+                    <input type="text" name="postalCode" id="onboard-emp-postal" class="form-input" placeholder="e.g. EC4Y 1AA" value="EC4Y 1AA" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Country*</label>
+                    <select name="country" id="onboard-emp-country" class="form-select">
+                      <option value="GB" selected>United Kingdom (GB)</option>
+                      <option value="US">United States (US)</option>
+                      <option value="IN">India (IN)</option>
+                      <option value="CA">Canada (CA)</option>
+                      <option value="AU">Australia (AU)</option>
+                      <option value="DE">Germany (DE)</option>
+                      <option value="FR">France (FR)</option>
+                      <option value="SG">Singapore (SG)</option>
+                      <option value="AE">United Arab Emirates (AE)</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- SECTION 3: Corporate Credentials & Role -->
+              <div style="margin-bottom:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle)">
+                <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+                  <span>🔐</span> <span>Corporate Credentials &amp; Role</span>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
+                  <div class="form-group">
+                    <label class="form-label">Corporate Email Address*</label>
+                    <input type="email" name="email" id="onboard-emp-email" class="form-input" placeholder="sarah.jenkins@bank.test" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Assigned Employee Code*</label>
+                    <input type="text" name="employeeCode" id="onboard-emp-code" class="form-input" placeholder="e.g. EMP-105" required style="font-family:monospace;letter-spacing:0.05em">
+                  </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem">
+                  <div class="form-group">
+                    <label class="form-label">Department*</label>
+                    <select name="department" id="onboard-emp-dept" class="form-select">
+                      <option value="OPERATIONS">Operations &amp; Retail</option>
+                      <option value="UNDERWRITING">Credit Underwriting</option>
+                      <option value="COMPLIANCE">KYC &amp; AML Compliance</option>
+                      <option value="BRANCH_MANAGEMENT">Branch Management</option>
+                      <option value="IT">Core Banking IT</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">System Role*</label>
+                    <select name="role" id="onboard-emp-role" class="form-select">
+                      <option value="EMPLOYEE">Bank Officer / Staff</option>
+                      <option value="ADMIN">Bank Administrator</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label">Initial Password*</label>
+                    <input type="password" name="password" id="onboard-emp-password" class="form-input" placeholder="Min 8 characters" required minlength="8" value="StaffPass123!">
+                  </div>
+                </div>
+              </div>
+
+              <div style="display:flex;justify-content:flex-end">
+                <button type="submit" class="btn btn-primary" style="font-weight:700;padding:0.75rem 2rem">
+                  👔 Onboard Employee →
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ==================== INTERACTIVE MODALS ==================== -->
+
+  <!-- MODAL: Open New Account (Existing Customer) -->
+  <div id="modal-create-account" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Open New Bank Account</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-create-account')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitOpenAccount(this);">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Account Type</label>
+            <select name="type" class="form-select">
+              <option value="CHECKING">Checking Account (With Overdraft)</option>
+              <option value="SAVINGS">High-Yield Savings Account</option>
+              <option value="BUSINESS">Commercial Business Account</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Currency</label>
+            <select name="currency" class="form-select">
+              <option value="USD">USD - United States Dollar</option>
+              <option value="EUR">EUR - Euro</option>
+              <option value="GBP">GBP - British Pound</option>
+              <option value="CAD">CAD - Canadian Dollar</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Initial Deposit Amount</label>
+            <input type="number" step="0.01" name="initialDeposit" class="form-input" placeholder="0.00" value="100.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Overdraft Limit (Checking Only)</label>
+            <input type="number" step="0.01" name="overdraftLimit" class="form-input" placeholder="0.00" value="250.00">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Account Nickname</label>
+            <input type="text" name="nickname" class="form-input" placeholder="e.g. Daily Spending">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-account')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Open Account</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Deposit Funds -->
+  <div id="modal-deposit" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Deposit Funds</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-deposit')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitDeposit(this);">
+        <div class="modal-body">
+          <input type="hidden" name="accountId" id="deposit-account-id">
+          <div class="form-group">
+            <label class="form-label">Deposit Amount (<span id="deposit-currency-label">USD</span>)</label>
+            <input type="number" step="0.01" name="amount" class="form-input" placeholder="100.00" required min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Memo / Reference</label>
+            <input type="text" name="note" class="form-input" placeholder="e.g. Payroll credit">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-deposit')">Cancel</button>
+          <button type="submit" class="btn btn-success">Confirm Deposit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Withdraw Funds -->
+  <div id="modal-withdraw" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Withdraw Funds</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-withdraw')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitWithdraw(this);">
+        <div class="modal-body">
+          <input type="hidden" name="accountId" id="withdraw-account-id">
+          <div class="form-group">
+            <label class="form-label">Withdrawal Amount (<span id="withdraw-currency-label">USD</span>)</label>
+            <input type="number" step="0.01" name="amount" class="form-input" placeholder="50.00" required min="1">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Memo / Reference</label>
+            <input type="text" name="note" class="form-input" placeholder="e.g. Cash withdrawal">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-withdraw')">Cancel</button>
+          <button type="submit" class="btn btn-danger">Confirm Withdrawal</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: OTP Verification Challenge -->
+  <div id="modal-otp-verify" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Security OTP Verification</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-otp-verify')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitOtpConfirmation(this);">
+        <div class="modal-body">
+          <input type="hidden" name="transferId" id="otp-transfer-id">
+          <input type="hidden" name="otpChallengeId" id="otp-challenge-id">
+          <p id="otp-test-hint" style="font-size:0.85rem;color:var(--amber-400);margin-bottom:1rem;background:rgba(245,158,11,0.1);padding:0.75rem;border-radius:8px">
+            High-value transfer requires security verification.
+          </p>
+          <div class="form-group">
+            <label class="form-label">Enter 6-Digit One-Time Password</label>
+            <input type="text" name="otp" class="form-input" placeholder="123456" pattern="\d{6}" maxlength="6" required style="letter-spacing:0.25em;font-size:1.25rem;text-align:center">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-otp-verify')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Authorize Transfer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Issue Card -->
+  <div id="modal-issue-card" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Issue Payment Card</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-issue-card')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitIssueCard(this);">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Linked Account</label>
+            <select name="accountId" class="form-select" id="card-linked-account" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div class="form-group">
+              <label class="form-label">Card Type</label>
+              <select name="type" class="form-select">
+                <option value="VIRTUAL">Virtual (Instant Online)</option>
+                <option value="PHYSICAL">Physical Plastic Card</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Network</label>
+              <select name="network" class="form-select">
+                <option value="VISA">Visa</option>
+                <option value="MASTERCARD">Mastercard</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Cardholder Embossed Name</label>
+            <input type="text" name="cardholderName" class="form-input" placeholder="ALEXANDER WRIGHT" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.5rem">
+            <div class="form-group">
+              <label class="form-label">Daily Limit</label>
+              <input type="number" name="dailyLimit" class="form-input" value="3000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Monthly Limit</label>
+              <input type="number" name="monthlyLimit" class="form-input" value="15000">
+            </div>
+            <div class="form-group">
+              <label class="form-label">ATM Limit</label>
+              <input type="number" name="atmLimit" class="form-input" value="1000">
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-issue-card')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Issue & Activate Card</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Change Card PIN -->
+  <div id="modal-change-pin" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Update Card PIN</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-change-pin')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitChangePin(this);">
+        <div class="modal-body">
+          <input type="hidden" name="cardId" id="pin-card-id">
+          <div class="form-group">
+            <label class="form-label">Current PIN (Default: 1234)</label>
+            <input type="password" name="oldPin" class="form-input" placeholder="••••" maxlength="4" pattern="\d{4}" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">New 4-Digit PIN</label>
+            <input type="password" name="newPin" class="form-input" placeholder="••••" maxlength="4" pattern="\d{4}" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-change-pin')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Update PIN</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Submit KYC -->
+  <div id="modal-submit-kyc" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Submit KYC Identity Documents</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-submit-kyc')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitKycForm(this);">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Document Type</label>
+            <select name="docType" class="form-select">
+              <option value="PASSPORT">Passport</option>
+              <option value="DRIVERS_LICENSE">Driver's License</option>
+              <option value="NATIONAL_ID">National Identity Card</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Document Serial / ID Number</label>
+            <input type="text" name="docNumber" class="form-input" placeholder="e.g. GB94827104" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div class="form-group">
+              <label class="form-label">Issuing Country</label>
+              <input type="text" name="country" class="form-input" value="GB" maxlength="2" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Expiry Date</label>
+              <input type="date" name="expiryDate" class="form-input" value="2032-10-15">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Employment Status</label>
+            <select name="empStatus" class="form-select">
+              <option value="EMPLOYED">Employed</option>
+              <option value="SELF_EMPLOYED">Self-Employed</option>
+              <option value="STUDENT">Student</option>
+              <option value="RETIRED">Retired</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div class="form-group">
+              <label class="form-label">Employer Name</label>
+              <input type="text" name="employer" class="form-input" placeholder="Company Ltd" value="Tech Corp">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Annual Income (USD)</label>
+              <input type="number" name="annualIncome" class="form-input" placeholder="85000" value="85000" required>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-submit-kyc')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit for Staff Review</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Apply for Loan -->
+  <div id="modal-apply-loan" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Submit Loan Credit Application</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-apply-loan')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitLoanApplication(this);">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Disbursement Account</label>
+            <select name="disbursementAccountId" class="form-select" id="loan-disbursement-account" required>
+              <!-- Populated dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Employment Status</label>
+            <select name="employmentStatus" class="form-select">
+              <option value="EMPLOYED">Employed</option>
+              <option value="SELF_EMPLOYED">Self Employed</option>
+            </select>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+            <div class="form-group">
+              <label class="form-label">Employer</label>
+              <input type="text" name="employerName" class="form-input" value="Acme Financial" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Annual Income (USD)</label>
+              <input type="number" name="annualIncome" class="form-input" value="95000" required>
+            </div>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.5rem">
+            By applying, you consent to an automated credit and risk assessment check by NeoBank.
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-apply-loan')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Loan Amortization Schedule & Repay -->
+  <div id="modal-loan-schedule" class="modal-overlay">
+    <div class="modal-box" style="max-width:640px">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Loan Schedule: <span id="loan-schedule-loan-id"></span></h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-loan-schedule')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Inst #</th>
+                <th>Due Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="loan-schedule-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-loan-schedule')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Account Transactions Viewer -->
+  <div id="modal-transactions" class="modal-overlay">
+    <div class="modal-box" style="max-width:760px">
+      <div class="modal-header">
+        <h3 id="tx-modal-title" style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Account Transactions</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-transactions')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="data-table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Date / Time</th>
+                <th>Type</th>
+                <th>Reference</th>
+                <th>Amount</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="tx-table-body">
+              <!-- Populated via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeModal('modal-transactions')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: File Transaction Dispute -->
+  <div id="modal-create-dispute" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Dispute Transaction Charge</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-create-dispute')">✕</button>
+      </div>
+      <form onsubmit="event.preventDefault(); submitDispute(this);">
+        <div class="modal-body">
+          <input type="hidden" name="txId" id="dispute-tx-id">
+          <input type="hidden" name="amount" id="dispute-amount">
+          <div class="form-group">
+            <label class="form-label">Dispute Reason</label>
+            <select name="reason" class="form-select">
+              <option value="UNAUTHORIZED">Unauthorized Charge (Fraud)</option>
+              <option value="DUPLICATE">Duplicate Billing</option>
+              <option value="WRONG_AMOUNT">Incorrect Amount Charged</option>
+              <option value="NOT_RECEIVED">Goods / Services Not Received</option>
+              <option value="OTHER">Other Issue</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Description of Incident</label>
+            <textarea name="description" class="form-input" rows="3" placeholder="Provide details regarding the disputed transaction..." required minlength="10"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="closeModal('modal-create-dispute')">Cancel</button>
+          <button type="submit" class="btn btn-danger">File Official Dispute</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: Confirmation Popup for Critical Staff Actions (Item 8) -->
+  <div id="modal-confirm-action" class="modal-overlay">
+    <div class="modal-box" style="max-width:440px">
+      <div class="modal-header">
+        <h3 id="confirm-modal-title" style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Confirm Action</h3>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-confirm-action')">✕</button>
+      </div>
+      <div class="modal-body" style="padding:1.5rem">
+        <div style="font-size:2rem;margin-bottom:0.75rem;text-align:center" id="confirm-modal-icon">⚠️</div>
+        <p id="confirm-modal-message" style="font-size:0.9rem;color:var(--text-main);line-height:1.5;text-align:center;margin-bottom:1rem">
+          Are you sure you want to proceed with this action?
+        </p>
+        <div id="confirm-modal-input-wrap" style="display:none;margin-top:0.75rem">
+          <label class="form-label" id="confirm-modal-input-label">Reason / Notes:</label>
+          <input type="text" id="confirm-modal-input" class="form-input" placeholder="Enter reason or note...">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeModal('modal-confirm-action')">Cancel</button>
+        <button type="button" id="confirm-modal-btn" class="btn btn-primary" onclick="executeConfirmedAction()">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Database Access Confirmation during Employee Onboarding (Item 21) -->
+  <div id="modal-confirm-sql-access" class="modal-overlay">
+    <div class="modal-box" style="max-width:480px">
+      <div class="modal-header">
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span style="font-size:1.2rem">⚡</span>
+          <h3 style="font-size:1.1rem;font-weight:800;color:var(--text-main);margin:0">Database Access Authorization</h3>
+        </div>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-confirm-sql-access')">✕</button>
+      </div>
+      <div class="modal-body" style="padding:1.5rem">
+        <p style="font-size:0.88rem;color:var(--text-main);line-height:1.5;margin-bottom:1rem">
+          Should this newly onboarded employee have direct access to the <strong>SQL Database GUI Workbench (/sql-gui)</strong>?
+        </p>
+        <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:0.85rem;font-size:0.78rem;color:var(--text-secondary);line-height:1.45">
+          ℹ️ <strong>Yes (Grant SQL Access):</strong> Employee can run queries and inspect ledger SQLite tables.<br>
+          🔒 <strong>No (Restrict Access):</strong> Employee is restricted to standard operations and cannot open the SQL database workbench.
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline" onclick="finalizeEmployeeOnboarding(false)">
+          No, Restrict Access
+        </button>
+        <button type="button" class="btn btn-primary" onclick="finalizeEmployeeOnboarding(true)" style="font-weight:700">
+          ✓ Yes, Grant SQL Access
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Application Review & Document Dossier Modal (Items 11, 12, 14, 15, 16) -->
+  <div id="modal-application-review" class="modal-overlay">
+    <div class="modal-box" style="max-width:880px;width:95%">
+      <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.12) 0%, rgba(16,185,129,0.08) 100%)">
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div style="width:38px;height:38px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.25rem">
+            📋
+          </div>
+          <div>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <span id="review-modal-app-num" style="font-family:monospace;font-size:1.1rem;font-weight:800;color:var(--brand-400)">APP-2026-XXXXXX</span>
+              <span id="review-modal-status-badge" class="status-pill submitted">SUBMITTED</span>
+            </div>
+            <div id="review-modal-applicant-name" style="font-size:0.8rem;color:var(--text-secondary)">Applicant Name • Email</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-application-review')">✕</button>
+      </div>
+
+      <div class="modal-body" style="padding:1.4rem;display:flex;flex-direction:column;gap:1.25rem">
+        <!-- Tab 1: Form Filled Dossier Summary -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
+          <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+            <span>📄</span> <span>Applicant Dossier Details</span>
+          </h4>
+          <div id="review-modal-dossier-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.8rem">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+
+        <!-- Tab 2: Uploaded Encrypted Documents Section (Item 11) -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin:0;display:flex;align-items:center;gap:0.4rem">
+              <span>🔒</span> <span>Encrypted Documents Vault (AES-256 in SQL)</span>
+            </h4>
+            <span style="font-size:0.72rem;color:var(--emerald-400);font-weight:600">✓ Decrypted On Demand</span>
+          </div>
+          <div id="review-modal-docs-list" style="display:flex;flex-direction:column;gap:0.6rem">
+            <!-- Dynamically populated with View and Download buttons -->
+          </div>
+        </div>
+
+        <!-- Tab 3: FOR OFFICE USE ONLY (Item 12) -->
+        <div style="background:rgba(11,37,69,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:10px;padding:1.1rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
+            <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin:0">
+              🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)
+            </h4>
+            <span style="font-size:0.72rem;background:#0b2545;color:#fff;padding:0.15rem 0.5rem;border-radius:4px;font-weight:700">OFFICIAL RECORD</span>
+          </div>
+          <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:0.75rem;font-size:0.8rem;margin-bottom:0.75rem">
+            <div>
+              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Allocated Account Number:</span>
+              <strong id="review-modal-office-acc" style="font-family:monospace;font-size:0.95rem;color:var(--emerald-400)">Pending Approval</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Verifying Officer Name:</span>
+              <strong id="review-modal-officer-name" style="color:var(--text-main)">Alexander Sterling</strong>
+            </div>
+            <div>
+              <span style="color:var(--text-muted);display:block;font-size:0.72rem">Employee Code:</span>
+              <strong id="review-modal-officer-code" style="font-family:monospace;color:var(--brand-400)">EMP01</strong>
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;gap:1.5rem;font-size:0.75rem;color:var(--text-secondary);border-top:1px dashed var(--border-subtle);padding-top:0.6rem">
+            <span>✓ In-Person Verification (IPV) Completed</span>
+            <span>✓ Original Documents Inspected</span>
+            <span style="color:var(--brand-400);font-weight:700">[ OFFICIAL BRANCH STAMP APPLIED ]</span>
+          </div>
+        </div>
+
+        <!-- Tab 4: Officer Communication & Remarks (Item 15) -->
+        <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.1rem">
+          <h4 style="font-size:0.9rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
+            <span>💬</span> <span>Officer Remarks &amp; Applicant Communication</span>
+          </h4>
+          <div id="review-modal-messages-container" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:6px">
+            <!-- Messages populated via JS -->
+          </div>
+          <div style="display:flex;gap:0.5rem">
+            <input type="text" id="review-modal-new-msg" class="form-input" placeholder="Type a message or instruction for the applicant (visible on status tracking page)..." style="font-size:0.78rem">
+            <button type="button" class="btn btn-outline btn-sm" onclick="sendReviewOfficerMessage()" style="white-space:nowrap;font-weight:600">
+              ✉️ Send Note
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="padding:1rem 1.4rem;background:rgba(255,255,255,0.02);display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-application-review')">
+            Close
+          </button>
+        </div>
+        <div id="review-modal-action-buttons" style="display:flex;gap:0.6rem">
+          <!-- Dynamic Approve, Reject, or Reopen buttons -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIGNATURE PAD MODAL ==================== -->
+  <div id="modal-signature-pad" class="signature-modal-backdrop" style="display:none" onclick="if(event.target === this) closeSignatureModal()">
+    <div class="signature-modal-card" onclick="event.stopPropagation()">
+      <div class="signature-modal-header">
+        <div style="display:flex;align-items:center;gap:0.6rem">
+          <span style="font-size:1.3rem">✍️</span>
+          <div>
+            <h3 style="font-size:1.05rem;font-weight:800;margin:0;color:inherit">Digital Specimen Signature Pad</h3>
+            <div style="font-size:0.75rem;color:var(--text-muted)">Official Signature for Account Opening Form</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm" onclick="closeSignatureModal()" style="border:none;font-size:1.2rem;line-height:1;padding:0.25rem 0.5rem" title="Close">✕</button>
+      </div>
+
+      <div style="padding:1rem 1.5rem 0.5rem 1.5rem">
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem">
+          <div id="signature-modal-sign-as" style="font-size:0.95rem;font-weight:700">
+            ✍️ Sign as: <strong style="color:var(--brand-500)">ALEXANDER WRIGHT</strong>
+          </div>
+          <div id="signature-modal-timestamp" style="font-size:0.75rem;color:var(--text-muted);font-family:monospace">
+            Date &amp; Time: --
+          </div>
+        </div>
+
+        <!-- Signature Drawing Canvas Area -->
+        <div class="signature-canvas-wrap">
+          <canvas id="signature-pad-canvas"></canvas>
+          <div class="signature-baseline-guide"></div>
+          <div class="signature-baseline-label">Applicant Signature Baseline Guide</div>
+        </div>
+
+        <!-- Canvas Tools Row -->
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;padding:0 0.25rem;flex-wrap:wrap;gap:0.5rem">
+          <div style="display:flex;align-items:center;gap:0.5rem;font-size:0.78rem">
+            <span style="font-weight:700;color:var(--text-secondary)">Ink Color:</span>
+            <button type="button" onclick="setSignaturePenColor('#1e3a8a')" style="width:20px;height:20px;border-radius:50%;background:#1e3a8a;border:2px solid #ffffff;cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,0.2)" title="Deep Bank Blue Ink"></button>
+            <button type="button" onclick="setSignaturePenColor('#0f172a')" style="width:20px;height:20px;border-radius:50%;background:#0f172a;border:2px solid #ffffff;cursor:pointer;box-shadow:0 0 4px rgba(0,0,0,0.2)" title="Classic Black Ink"></button>
+          </div>
+
+          <div style="display:flex;align-items:center;gap:0.5rem">
+            <button type="button" class="btn btn-outline btn-sm" onclick="clearSignaturePad()" style="font-size:0.75rem;padding:0.3rem 0.7rem">
+              🔄 Clear Pad
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="generateCursiveSignature()" style="font-size:0.75rem;padding:0.3rem 0.7rem" title="Auto generate cursive handwriting signature">
+              ✒️ Auto Cursive
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signature-modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeSignatureModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary" onclick="saveSignatureFromPad()" style="padding:0.6rem 1.4rem">
+          <span>✓ Save &amp; Place on Form</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST ALERTS CONTAINER -->
+  <div id="toast-container"></div>
+
+
+  <!-- JAVASCRIPT LOGIC ENGINE -->
+  <script src="/js/api.js?v=20260928_2200"></script>
+  <script src="/js/auth.js?v=20260928_2200"></script>
+  <script src="/js/onboarding.js?v=20260928_2200"></script>
+  <script src="/js/customer.js?v=20260928_2200"></script>
+  <script src="/js/employee.js?v=20260928_2200"></script>
+  <script src="/js/app.js?v=20260928_2200"></script>
+
+  <!-- Auto-fill account dropdowns helper -->
+  <script>
+    const originalRenderAccountsList = renderAccountsList;
+    renderAccountsList = function(accounts) {
+      originalRenderAccountsList(accounts);
+
+      const dropdowns = ['transfer-from-account', 'card-linked-account', 'loan-disbursement-account'];
+      dropdowns.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.innerHTML = accounts.map(a => 
+            `<option value="${a.id}">${a.nickname || a.type} (*${a.accountNumber.slice(-4)}) - $${Number(a.balance).toFixed(2)} ${a.currency}</option>`
+          ).join('');
+        }
+      });
+    };
+  </script>
+  <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+</body>
+</html>

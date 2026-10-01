@@ -1,0 +1,484 @@
+{
+  "info": {
+    "name": "NeoBank Testing Platform - Chained Workflows",
+    "_postman_id": "neobank-chained-workflow-v2",
+    "description": "Comprehensive test suite for NeoBank Testing Platform with variable propagation and automated response parsing.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://127.0.0.1:8000"},
+    {"key": "adminToken", "value": ""},
+    {"key": "userToken", "value": ""},
+    {"key": "userId", "value": ""},
+    {"key": "kycId", "value": ""},
+    {"key": "accountId", "value": ""},
+    {"key": "accountNumber", "value": ""},
+    {"key": "cardId", "value": ""},
+    {"key": "activationCode", "value": ""},
+    {"key": "transferId", "value": ""},
+    {"key": "otpChallengeId", "value": ""},
+    {"key": "otp", "value": ""},
+    {"key": "portfolioId", "value": ""},
+    {"key": "quoteId", "value": ""},
+    {"key": "statementRequestId", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "1. System & Reference",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/health"
+          }
+        },
+        {
+          "name": "Get Currencies",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reference/currencies"
+          }
+        },
+        {
+          "name": "Get Banks",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/reference/banks"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Authentication",
+      "item": [
+        {
+          "name": "Admin Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.accessToken) { pm.collectionVariables.set('adminToken', json.accessToken); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@bank.test\",\n  \"password\": \"Admin@1234\"\n}"
+            },
+            "url": "{{baseUrl}}/auth/login"
+          }
+        },
+        {
+          "name": "Register Customer",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.userId) { pm.collectionVariables.set('userId', json.userId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"testuser_\" + Date.now() + \"@bank.test\",\n  \"password\": \"Password@123\",\n  \"profile\": {\n    \"firstName\": \"Alex\",\n    \"lastName\": \"Morgan\",\n    \"dob\": \"1995-08-20\",\n    \"phone\": \"+447700900999\",\n    \"address\": {\n      \"line1\": \"10 Downing St\",\n      \"city\": \"London\",\n      \"postalCode\": \"SW1A 2AA\",\n      \"country\": \"GB\"\n    }\n  }\n}"
+            },
+            "url": "{{baseUrl}}/auth/register"
+          }
+        },
+        {
+          "name": "Customer Login (Form / Swagger Authorize)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.access_token) { pm.collectionVariables.set('userToken', json.access_token); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/x-www-form-urlencoded"}],
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "username", "value": "admin@bank.test"},
+                {"key": "password", "value": "Admin@1234"}
+              ]
+            },
+            "url": "{{baseUrl}}/auth/token"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. KYC & Accounts",
+      "item": [
+        {
+          "name": "Submit KYC",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.kycId) { pm.collectionVariables.set('kycId', json.kycId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"documents\": [\n    {\n      \"type\": \"PASSPORT\",\n      \"number\": \"GB1234567\",\n      \"issuingCountry\": \"GB\",\n      \"expiryDate\": \"2030-01-01\"\n    }\n  ],\n  \"employment\": {\n    \"status\": \"EMPLOYED\",\n    \"employer\": \"Tech Corp\",\n    \"annualIncome\": 75000\n  },\n  \"pepDeclaration\": false,\n  \"taxResidencies\": [\"GB\"]\n}"
+            },
+            "url": "{{baseUrl}}/kyc/applications"
+          }
+        },
+        {
+          "name": "Admin Approve KYC",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{adminToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"decision\": \"APPROVED\"\n}"
+            },
+            "url": "{{baseUrl}}/admin/kyc/{{kycId}}/review"
+          }
+        },
+        {
+          "name": "Open Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('accountId', json.id); }",
+                  "if (json.accountNumber) { pm.collectionVariables.set('accountNumber', json.accountNumber); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"kycId\": \"{{kycId}}\",\n  \"type\": \"CHECKING\",\n  \"currency\": \"USD\",\n  \"initialDeposit\": 5000,\n  \"overdraftLimit\": 500,\n  \"nickname\": \"Primary Checking\"\n}"
+            },
+            "url": "{{baseUrl}}/accounts"
+          }
+        },
+        {
+          "name": "Get Balance",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/accounts/{{accountId}}/balance"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Cards & Payments",
+      "item": [
+        {
+          "name": "Create Card",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('cardId', json.id); }",
+                  "if (json.testModeActivationCode) { pm.collectionVariables.set('activationCode', json.testModeActivationCode); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"VIRTUAL\",\n  \"network\": \"VISA\",\n  \"cardholderName\": \"Alex Morgan\",\n  \"limits\": {\n    \"daily\": 2000,\n    \"monthly\": 10000,\n    \"atm\": 500\n  }\n}"
+            },
+            "url": "{{baseUrl}}/accounts/{{accountId}}/cards"
+          }
+        },
+        {
+          "name": "Activate Card",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"activationCode\": \"{{activationCode}}\",\n  \"pin\": \"1234\"\n}"
+            },
+            "url": "{{baseUrl}}/cards/{{cardId}}/activate"
+          }
+        },
+        {
+          "name": "Authorize Purchase",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"merchant\": {\n    \"name\": \"Tech Emporium\",\n    \"mcc\": \"5732\",\n    \"country\": \"GB\"\n  },\n  \"amount\": 149.99,\n  \"currency\": \"USD\",\n  \"pin\": \"1234\"\n}"
+            },
+            "url": "{{baseUrl}}/cards/{{cardId}}/authorize"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Transfers & OTP Chain",
+      "item": [
+        {
+          "name": "Initiate Transfer (> 1000 for OTP)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('transferId', json.id); }",
+                  "if (json.otpChallengeId) { pm.collectionVariables.set('otpChallengeId', json.otpChallengeId); }",
+                  "if (json.testModeOtp) { pm.collectionVariables.set('otp', json.testModeOtp); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromAccountId\": \"{{accountId}}\",\n  \"destination\": {\n    \"type\": \"EXTERNAL\",\n    \"name\": \"Jane Cooper\",\n    \"iban\": \"GB29NWBK60161331926819\",\n    \"bankCode\": \"HSB002\"\n  },\n  \"amount\": 1500,\n  \"currency\": \"USD\",\n  \"reference\": \"Supplier payment\"\n}"
+            },
+            "url": "{{baseUrl}}/transfers"
+          }
+        },
+        {
+          "name": "Confirm Transfer OTP",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"otpChallengeId\": \"{{otpChallengeId}}\",\n  \"otp\": \"{{otp}}\"\n}"
+            },
+            "url": "{{baseUrl}}/transfers/{{transferId}}/confirm"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. Investments Chain",
+      "item": [
+        {
+          "name": "Get Instrument Quote (Price Lock)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.quoteId) { pm.collectionVariables.set('quoteId', json.quoteId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/investments/instruments/AAPL/quote"
+          }
+        },
+        {
+          "name": "Create Portfolio",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.id) { pm.collectionVariables.set('portfolioId', json.id); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Tech Growth\",\n  \"riskProfile\": \"HIGH\",\n  \"fundingAccountId\": \"{{accountId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/investments/portfolios"
+          }
+        },
+        {
+          "name": "Execute Buy Order",
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"AAPL\",\n  \"side\": \"BUY\",\n  \"quantity\": 5,\n  \"orderType\": \"MARKET\",\n  \"quoteId\": \"{{quoteId}}\"\n}"
+            },
+            "url": "{{baseUrl}}/investments/portfolios/{{portfolioId}}/orders"
+          }
+        },
+        {
+          "name": "Get Holdings",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/investments/portfolios/{{portfolioId}}/holdings"
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Async Statements",
+      "item": [
+        {
+          "name": "Request Statement",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "if (json.requestId) { pm.collectionVariables.set('statementRequestId', json.requestId); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {"key": "Authorization", "value": "Bearer {{userToken}}"},
+              {"key": "Content-Type", "value": "application/json"}
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"fromDate\": \"2026-01-01\",\n  \"toDate\": \"2026-09-01\",\n  \"format\": \"PDF\"\n}"
+            },
+            "url": "{{baseUrl}}/accounts/{{accountId}}/statements/requests"
+          }
+        },
+        {
+          "name": "Poll Statement Status (Call twice to reach READY)",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/statements/requests/{{statementRequestId}}"
+          }
+        },
+        {
+          "name": "Download Statement",
+          "request": {
+            "method": "GET",
+            "header": [{"key": "Authorization", "value": "Bearer {{userToken}}"}],
+            "url": "{{baseUrl}}/statements/requests/{{statementRequestId}}/download"
+          }
+        }
+      ]
+    },
+    {
+      "name": "8. Negative & Edge Cases",
+      "item": [
+        {
+          "name": "Test Flaky Service (Retries)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/flaky"
+          }
+        },
+        {
+          "name": "Test Rate Limit (429)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/rate-limit"
+          }
+        },
+        {
+          "name": "Test Custom Status 409",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/status/409"
+          }
+        },
+        {
+          "name": "Test Simulated Latency (2s)",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}/delay/2"
+          }
+        }
+      ]
+    }
+  ]
+}

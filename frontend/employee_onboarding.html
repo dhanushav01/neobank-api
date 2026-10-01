@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoBank • Bank Employee Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20260928_2200"></script>
+  <script src="/js/i18n.js?v=20260928_2200"></script>
+  <style id="anti-google-banner">
+    /* Targeted suppression of Google Translate top banner, toolbar, and balloon popups */
+    iframe.goog-te-banner-frame,
+    iframe[class*="VIpgJd"],
+    iframe[id*=":1.container"],
+    iframe[id*=":2.container"],
+    iframe[id*="container"],
+    iframe[src*="translate.google"],
+    .goog-te-banner-frame,
+    .goog-te-balloon-frame,
+    div.VIpgJd-ZVi9od-ORHb-OEVmcd,
+    div.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+    div.VIpgJd-suEOdc,
+    div.VIpgJd-yAWNEb-L7lbkb,
+    div[class*="VIpgJd-ZVi9od"],
+    div[class*="VIpgJd-suEOdc"],
+    [class*="goog-te-banner"],
+    [id*="goog-gt-"],
+    .goog-tooltip,
+    .goog-te-spinner-pos,
+    #google_translate_element {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0px !important;
+      max-height: 0px !important;
+      width: 0px !important;
+      max-width: 0px !important;
+      position: fixed !important;
+      top: -99999px !important;
+      left: -99999px !important;
+      z-index: -999999 !important;
+      clip: rect(0, 0, 0, 0) !important;
+      transform: scale(0) !important;
+      overflow: hidden !important;
+      margin: 0px !important;
+      padding: 0px !important;
+    }
+
+    /* Translated text nodes and fonts MUST ALWAYS REMAIN FULLY VISIBLE & INLINE */
+    font,
+    font[class],
+    font[class*="VIpgJd"],
+    .VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
+    [class*="VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q"],
+    .goog-text-highlight {
+      display: inline !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: inherit !important;
+      height: auto !important;
+      width: auto !important;
+      max-height: none !important;
+      max-width: none !important;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      clip: auto !important;
+      transform: none !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    html,
+    body,
+    body.translated-ltr,
+    body.translated-rtl {
+      top: 0px !important;
+      position: static !important;
+      margin-top: 0px !important;
+      padding-top: 0px !important;
+      transform: none !important;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="brand-icon">
+        <svg style="width:24px;height:24px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span class="brand-title">NeoBank</span>
+          <span style="font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:9999px;background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)">2026</span>
+        </div>
+        <div data-i18n="brand_sub" style="font-size:0.75rem;color:var(--text-muted)">Digital Banking</div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Theme, Language Selector & Navigation -->
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+
+      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
+      <div class="page-zoom-controls">
+        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+          <span class="zoom-level-text">100%</span>
+        </button>
+        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+
+      <!-- Language Selector (Protected from Auto-Translation) -->
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span style="font-size:0.9rem">🌐</span>
+        <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
+          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
+          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+        </select>
+      </div>
+
+      <a href="/" class="btn btn-outline btn-sm">
+        <span>Home</span>
+      </a>
+      <a href="/login" class="btn btn-outline btn-sm">
+        <span data-i18n="return_login">Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==================== EMPLOYEE ONBOARDING CONTAINER ==================== -->
+  <main style="display:flex;align-items:center;justify-content:center;min-height:calc(100vh - 80px);padding:1.5rem">
+    <div class="glass-card" style="width:100%;max-width:580px;padding:2.25rem">
+      <div style="text-align:center;margin-bottom:1.5rem">
+        <h2 data-i18n="emp_onboard_title" style="font-size:1.6rem;font-weight:800;color:var(--text-main)">Bank Staff Onboarding Portal</h2>
+        <p data-i18n="emp_onboard_subtitle" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem">
+          Register a newly appointed bank employee or underwriting officer with institutional role and permissions.
+        </p>
+      </div>
+
+      <form id="form-employee-register" onsubmit="event.preventDefault(); handleEmployeeRegister(this);">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" name="firstName" class="form-input" placeholder="Sarah" value="Sarah" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="lastName" class="form-input" placeholder="Jenkins" value="Jenkins" required>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">Official Bank Email</label>
+            <input type="email" name="email" class="form-input" placeholder="sarah.jenkins@bank.test" value="sarah.jenkins@bank.test" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="Min 8 characters" value="StaffPass@123" required minlength="8">
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label data-i18n="emp_code_label" class="form-label">Employee Code</label>
+            <input type="text" name="employeeCode" class="form-input" placeholder="EMP-4481" value="EMP-5012" required>
+          </div>
+          <div class="form-group">
+            <label data-i18n="emp_dept_label" class="form-label">Department</label>
+            <select name="department" class="form-select">
+              <option value="OPERATIONS">Operations</option>
+              <option value="UNDERWRITING">Underwriting</option>
+              <option value="COMPLIANCE">Compliance</option>
+              <option value="BRANCH_MANAGEMENT">Branch Management</option>
+              <option value="IT">IT & Security</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="emp_role_label" class="form-label">System Role</label>
+            <select name="role" class="form-select">
+              <option value="EMPLOYEE">Bank Staff</option>
+              <option value="ADMIN">Administrator</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" name="dob" class="form-input" value="1992-04-18" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Official Contact Phone</label>
+            <input type="tel" name="phone" class="form-input" placeholder="+447700900999" value="+447700900999" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bank Branch / Office Address</label>
+          <input type="text" name="addressLine" class="form-input" placeholder="10 Fleet Street, London, EC4Y 1AA, GB" value="10 Fleet Street, London, EC4Y 1AA, GB" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.75rem;padding:0.8rem">
+          <span data-i18n="emp_register_btn">Register Bank Employee Account</span>
+        </button>
+      </form>
+
+      <div style="text-align:center;margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border-subtle);font-size:0.85rem">
+        <a href="/login" style="color:var(--text-secondary);text-decoration:underline">
+          <span data-i18n="return_login">← Return to Sign In</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Core Scripts -->
+  <script src="/js/api.js?v=20260928_2200"></script>
+  <script>
+    if (typeof window.formatHumanText !== 'function') {
+      window.formatHumanText = function(val) {
+        if (!val || typeof val !== 'string') return val || '';
+        const trimmed = val.trim();
+        if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) return val;
+        if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
+          return trimmed.split('_').filter(Boolean).map(part => {
+            const upper = part.toUpperCase();
+            if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) return upper;
+            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+          }).join(' ');
+        }
+        return val;
+      };
+    }
+    var formatHumanText = window.formatHumanText;
+
+    if (typeof window.showToast !== 'function') {
+      window.showToast = function(msg, type) {
+        console.log(`[Toast ${type || 'info'}]:`, msg);
+      };
+    }
+    var showToast = window.showToast;
+
+    async function handleEmployeeRegister(form) {
+      try {
+        const payload = {
+          email: form.email.value.trim(),
+          password: form.password.value,
+          employeeCode: form.employeeCode.value.trim(),
+          department: form.department.value,
+          role: form.role.value,
+          profile: {
+            firstName: form.firstName.value.trim(),
+            lastName: form.lastName.value.trim(),
+            dob: form.dob.value,
+            phone: form.phone.value.trim(),
+            address: {
+              line1: form.addressLine.value.trim(),
+              city: "London",
+              postalCode: "EC4Y 1AA",
+              country: "GB"
+            }
+          }
+        };
+
+        const res = await api('/auth/register-employee', {
+          method: 'POST',
+          body: payload
+        });
+
+        showToast(`Staff member ${res.email} successfully onboarded!`, 'success');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1200);
+      } catch (err) {
+        showToast(err.message || 'Failed to onboard employee', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

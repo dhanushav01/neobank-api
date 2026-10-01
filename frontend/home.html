@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoBank • Intelligent Digital Banking Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20260928_2200"></script>
+  <script src="/js/i18n.js?v=20260928_2200"></script>
+  <style id="anti-google-banner">
+    /* Targeted suppression of Google Translate top banner, toolbar, and balloon popups */
+    iframe.goog-te-banner-frame,
+    iframe[class*="VIpgJd"],
+    iframe[id*=":1.container"],
+    iframe[id*=":2.container"],
+    iframe[id*="container"],
+    iframe[src*="translate.google"],
+    .goog-te-banner-frame,
+    .goog-te-balloon-frame,
+    div.VIpgJd-ZVi9od-ORHb-OEVmcd,
+    div.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+    div.VIpgJd-suEOdc,
+    div.VIpgJd-yAWNEb-L7lbkb,
+    div[class*="VIpgJd-ZVi9od"],
+    div[class*="VIpgJd-suEOdc"],
+    [class*="goog-te-banner"],
+    [id*="goog-gt-"],
+    .goog-tooltip,
+    .goog-te-spinner-pos,
+    #google_translate_element {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0px !important;
+      max-height: 0px !important;
+      width: 0px !important;
+      max-width: 0px !important;
+      position: fixed !important;
+      top: -99999px !important;
+      left: -99999px !important;
+      z-index: -999999 !important;
+      clip: rect(0, 0, 0, 0) !important;
+      transform: scale(0) !important;
+      overflow: hidden !important;
+      margin: 0px !important;
+      padding: 0px !important;
+    }
+
+    /* Translated text nodes and fonts MUST ALWAYS REMAIN FULLY VISIBLE & INLINE */
+    font,
+    font[class],
+    font[class*="VIpgJd"],
+    .VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
+    [class*="VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q"],
+    .goog-text-highlight {
+      display: inline !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: inherit !important;
+      height: auto !important;
+      width: auto !important;
+      max-height: none !important;
+      max-width: none !important;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      clip: auto !important;
+      transform: none !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    html,
+    body,
+    body.translated-ltr,
+    body.translated-rtl {
+      top: 0px !important;
+      position: static !important;
+      margin-top: 0px !important;
+      padding-top: 0px !important;
+      transform: none !important;
+    }
+  </style>
+  <style>
+    .hero-glow-blob {
+      position: absolute;
+      width: 800px;
+      height: 800px;
+      background: radial-gradient(circle, rgba(99,102,241,0.22) 0%, rgba(16,185,129,0.06) 50%, transparent 70%);
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 0;
+      pointer-events: none;
+      filter: blur(70px);
+    }
+    .market-ticker-wrap {
+      width: 100%;
+      overflow: hidden;
+      white-space: nowrap;
+      background: rgba(14, 20, 36, 0.7);
+      backdrop-filter: blur(12px);
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 0.6rem 0;
+      position: relative;
+      z-index: 10;
+    }
+    .market-ticker {
+      display: inline-flex;
+      gap: 3rem;
+      animation: tickerScroll 40s linear infinite;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+    .market-ticker:hover {
+      animation-play-state: paused;
+    }
+    @keyframes tickerScroll {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .ticker-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+    }
+    .ticker-up { color: var(--emerald-400); font-weight: 800; }
+    .ticker-down { color: var(--rose-500); font-weight: 800; }
+
+    .action-portal-card {
+      background: linear-gradient(145deg, rgba(20, 28, 48, 0.85) 0%, rgba(12, 17, 30, 0.95) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-top: 1px solid rgba(255, 255, 255, 0.22);
+      border-radius: 22px;
+      padding: 2.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+    }
+    .action-portal-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(99, 102, 241, 0.4);
+      border-top-color: rgba(99, 102, 241, 0.7);
+      box-shadow: 0 30px 65px -10px rgba(0, 0, 0, 0.85), 0 0 35px rgba(99, 102, 241, 0.18);
+    }
+    .action-portal-card.highlight {
+      border-color: rgba(16, 185, 129, 0.4);
+      border-top-color: rgba(16, 185, 129, 0.7);
+      background: linear-gradient(145deg, rgba(16, 185, 129, 0.09) 0%, rgba(12, 18, 32, 0.95) 100%);
+    }
+
+    /* 3D Showcase Card */
+    .hero-card-showcase {
+      perspective: 1200px;
+      margin: 3.5rem auto 4.5rem;
+      max-width: 640px;
+      position: relative;
+    }
+    .hero-titanium-card {
+      background: 
+        linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 40%),
+        linear-gradient(125deg, #070a12 0%, #171c2f 35%, #0c1220 70%, #1e1b4b 100%);
+      border: 1px solid rgba(255, 255, 255, 0.22);
+      border-top: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      padding: 2.25rem 2.5rem;
+      color: #fff;
+      box-shadow: 
+        0 40px 90px -25px rgba(0, 0, 0, 0.95),
+        0 0 50px rgba(99, 102, 241, 0.25),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+      transform: rotateX(8deg) rotateY(-6deg) rotateZ(-1deg);
+      transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-titanium-card:hover {
+      transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg) scale(1.02);
+      box-shadow: 
+        0 50px 100px -20px rgba(0, 0, 0, 0.95),
+        0 0 65px rgba(99, 102, 241, 0.35);
+    }
+    .floating-widget {
+      position: absolute;
+      background: rgba(14, 20, 36, 0.88);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      padding: 0.7rem 1.15rem;
+      border-radius: 14px;
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #fff;
+      z-index: 10;
+      animation: floatBadge 4.5s ease-in-out infinite;
+    }
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-8px); }
+    }
+    .compare-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(14, 20, 36, 0.65);
+      backdrop-filter: blur(18px);
+    }
+    .compare-table th {
+      padding: 1.25rem 1.5rem;
+      background: rgba(20, 28, 50, 0.9);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .compare-table td {
+      padding: 1.15rem 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      font-size: 0.9rem;
+    }
+    .compare-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Hero Typography & Pills */
+    .hero-title {
+      font-size: clamp(2.5rem, 5.5vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      line-height: 1.08;
+      max-width: 960px;
+      margin: 0 auto;
+      background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero-announcement-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.35);
+      padding: 0.45rem 1.15rem;
+      border-radius: 9999px;
+      box-shadow: 0 0 20px rgba(99,102,241,0.2);
+    }
+    .hero-announcement-pill span:last-child {
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      color: #e0e7ff;
+    }
+
+    [data-theme="light"] .hero-title,
+    html[data-theme="light"] .hero-title {
+      background: linear-gradient(135deg, #090e17 25%, #1e293b 65%, #2563eb 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      color: #090e17 !important;
+    }
+
+    [data-theme="light"] .hero-announcement-pill,
+    html[data-theme="light"] .hero-announcement-pill {
+      background: rgba(99,102,241,0.08) !important;
+      border: 1px solid rgba(99,102,241,0.3) !important;
+      box-shadow: 0 2px 10px rgba(99,102,241,0.08) !important;
+    }
+
+    [data-theme="light"] .hero-announcement-pill span:last-child,
+    html[data-theme="light"] .hero-announcement-pill span:last-child {
+      color: #3730a3 !important;
+    }
+
+    [data-theme="light"] .action-portal-card {
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      box-shadow: 0 6px 25px rgba(15, 23, 42, 0.06) !important;
+      color: #0f172a !important;
+    }
+    [data-theme="light"] .action-portal-card.highlight {
+      background: #f8faff !important;
+      border: 1px solid rgba(16, 185, 129, 0.35) !important;
+    }
+    [data-theme="light"] .action-portal-card h2 {
+      color: #0f172a !important;
+    }
+    .feature-badge-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.65rem;
+      margin-bottom: 1.25rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== LIVE INTERBANK MARKET TICKER ==================== -->
+  <div class="market-ticker-wrap">
+    <div class="market-ticker">
+      <div class="ticker-item"><span>🇺🇸/🇪🇺 USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
+      <div class="ticker-item"><span>🇺🇸/🇬🇧 USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
+      <div class="ticker-item"><span>🇺🇸/🇮🇳 USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
+      <div class="ticker-item"><span>📈 TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
+      <div class="ticker-item"><span>⚡ SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
+      <div class="ticker-item"><span>💳 FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
+      <div class="ticker-item"><span>🛡️ SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
+      <!-- Duplicate for seamless infinite loop -->
+      <div class="ticker-item"><span>🇺🇸/🇪🇺 USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
+      <div class="ticker-item"><span>🇺🇸/🇬🇧 USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
+      <div class="ticker-item"><span>🇺🇸/🇮🇳 USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
+      <div class="ticker-item"><span>📈 TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
+      <div class="ticker-item"><span>⚡ SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
+      <div class="ticker-item"><span>💳 FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
+      <div class="ticker-item"><span>🛡️ SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
+    </div>
+  </div>
+
+  <!-- ==================== MAIN HEADER ==================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="brand-icon">
+        <svg style="width:24px;height:24px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+      </div>
+      <div>
+        <div style="display:flex;align-items:center;gap:0.5rem">
+          <span class="brand-title">NeoBank</span>
+          <span style="font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:9999px;background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)">2026</span>
+        </div>
+        <div style="font-size:0.75rem;color:var(--text-muted)">Intelligent Digital Banking</div>
+      </div>
+    </div>
+
+    <!-- Header Navigation & Actions -->
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+
+      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
+      <div class="page-zoom-controls">
+        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+          <span class="zoom-level-text">100%</span>
+        </button>
+        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+
+      <!-- Language Selector (Protected from Auto-Translation) -->
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span style="font-size:0.9rem">🌐</span>
+        <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
+          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
+          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+        </select>
+      </div>
+
+      <a href="/existing_application" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:0.4rem">
+        <span>🔍</span>
+        <span>Track Application</span>
+      </a>
+
+      <a href="/login" class="btn btn-outline btn-sm">
+        <span>Sign In</span>
+      </a>
+
+      <a href="/open_account_customer" class="btn btn-success btn-sm">
+        <span>✨ Open Account</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <div class="hero-glow-blob"></div>
+
+  <main style="max-width:1240px;margin:0 auto;padding:3.5rem 1.5rem;position:relative;z-index:1">
+    
+    <!-- Announcement Pill Badge -->
+    <div style="text-align:center;margin-bottom:1.5rem">
+      <div class="hero-announcement-pill">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--emerald-400);box-shadow:0 0 10px var(--emerald-400)"></span>
+        <span>NEOBANK 2026 QUANTUM • NEXT-GEN RELATIONAL CORE LEDGER</span>
+      </div>
+    </div>
+
+    <!-- Top Headline -->
+    <div style="text-align:center;margin-bottom:2rem">
+      <h1 class="hero-title">
+        The Future of Private &amp; Commercial Digital Banking
+      </h1>
+
+      <p style="font-size:clamp(1rem, 2vw, 1.2rem);color:var(--text-secondary);max-width:760px;margin:1.4rem auto 2.25rem;line-height:1.65">
+        Experience sub-millisecond multi-currency settlements, up to 4.20% APY automated daily compounding, bespoke virtual titanium cards, and zero foreign exchange markups.
+      </p>
+
+      <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+        <a href="/open_account_customer" class="btn btn-success" style="padding:0.95rem 2.25rem;font-size:1.05rem;font-weight:800;border-radius:14px;box-shadow:0 12px 30px rgba(16,185,129,0.35)">
+          ✨ Open Account (3-Min KYC)
+        </a>
+        <a href="/login" class="btn btn-primary" style="padding:0.95rem 2.25rem;font-size:1.05rem;font-weight:800;border-radius:14px">
+          🔑 Launch Digital Vault
+        </a>
+      </div>
+    </div>
+
+    <!-- ==================== 3D HOLOGRAPHIC TITANIUM CARD SHOWCASE ==================== -->
+    <div class="hero-card-showcase">
+      <!-- Floating Badge Top-Right -->
+      <div class="floating-widget" style="top:-20px;right:-30px;animation-delay:0.5s">
+        <span style="font-size:1.2rem">📈</span>
+        <div>
+          <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase">Daily APY Accrual</div>
+          <div style="color:var(--emerald-400);font-weight:800">+4.20% ($16.42 today)</div>
+        </div>
+      </div>
+
+      <!-- Floating Badge Bottom-Left -->
+      <div class="floating-widget" style="bottom:-15px;left:-40px;animation-delay:1.5s">
+        <span style="font-size:1.2rem">⚡</span>
+        <div>
+          <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase">Instant Global Wire</div>
+          <div style="color:var(--sky-400);font-weight:800">Cleared in 0.02s • SWIFT</div>
+        </div>
+      </div>
+
+      <!-- 3D Card Surface -->
+      <div class="hero-titanium-card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:2.25rem">
+          <div>
+            <div style="display:flex;align-items:center;gap:0.5rem">
+              <span style="font-weight:900;font-size:1.35rem;letter-spacing:0.02em">NeoBank</span>
+              <span style="font-size:0.65rem;font-weight:800;padding:0.15rem 0.45rem;border-radius:9999px;background:rgba(200,165,87,0.2);color:#fef08a;border:1px solid rgba(200,165,87,0.4)">TITANIUM</span>
+            </div>
+            <div style="font-size:0.75rem;color:rgba(255,255,255,0.6);margin-top:0.15rem">Infinite Digital Ledger</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:0.75rem">
+            <!-- Contactless Wave Icon -->
+            <svg style="width:24px;height:24px;color:#cbd5e1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" d="M8.5 16.5a5 5 0 010-9M12 19a8.5 8.5 0 000-14M15.5 21.5a12 12 0 000-19" />
+            </svg>
+            <span style="font-weight:900;font-size:1.15rem;letter-spacing:0.05em;color:#fff">VISA</span>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:1.5rem;margin-bottom:1.75rem">
+          <div class="card-chip"></div>
+          <div style="font-size:0.75rem;letter-spacing:0.05em;color:rgba(255,255,255,0.7);text-transform:uppercase">
+            Encrypted EMV Chip
+          </div>
+        </div>
+
+        <div style="font-family:'JetBrains Mono',monospace;font-size:1.45rem;font-weight:700;letter-spacing:0.16em;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.8);margin-bottom:1.5rem">
+          4821 •••• •••• 8842
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:flex-end">
+          <div>
+            <div style="font-size:0.65rem;text-transform:uppercase;color:rgba(255,255,255,0.6);letter-spacing:0.08em">Cardholder</div>
+            <div style="font-size:0.95rem;font-weight:800;letter-spacing:0.06em;color:#fff">ALEXANDER V. VANCE</div>
+          </div>
+          <div style="text-align:right">
+            <div style="font-size:0.65rem;text-transform:uppercase;color:rgba(255,255,255,0.6);letter-spacing:0.08em">Available Liquidity</div>
+            <div style="font-size:1.35rem;font-weight:800;color:var(--emerald-400);font-family:'JetBrains Mono',monospace">$148,920.50 USD</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== 3 PRIMARY CORE ACTION PORTAL CARDS ==================== -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(320px, 1fr));gap:1.75rem;margin-bottom:5.5rem">
+
+      <!-- Card 1: Open an Account -->
+      <div class="action-portal-card highlight">
+        <div>
+          <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(16,185,129,0.05));color:var(--emerald-400)">
+            ✨
+          </div>
+          <span class="status-pill active" style="font-size:0.75rem;margin-bottom:0.75rem">NEW CUSTOMER</span>
+          <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
+            Open a Bank Account
+          </h2>
+          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1.35rem">
+            Start our seamless 3-minute onboarding. Choose High-Yield Savings, Everyday Checking, Corporate Salary, or Student Account. Complete uniform verification with instant document encryption.
+          </p>
+          <div style="font-size:0.83rem;color:var(--emerald-400);display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.75rem;font-weight:600">
+            <div>✓ Up to 4.20% APY daily compounding interest</div>
+            <div>✓ Instant digital contactless Visa Infinite card</div>
+            <div>✓ Zero monthly minimum account balance</div>
+          </div>
+        </div>
+        <a href="/open_account_customer" class="btn btn-success" style="width:100%;padding:0.9rem;font-weight:800;font-size:1rem">
+          Open an Account →
+        </a>
+      </div>
+
+      <!-- Card 2: Existing User Login -->
+      <div class="action-portal-card">
+        <div>
+          <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(99,102,241,0.25), rgba(99,102,241,0.05));color:var(--brand-500)">
+            🔑
+          </div>
+          <span class="status-pill" style="background:rgba(99,102,241,0.15);color:var(--brand-500);font-size:0.75rem;margin-bottom:0.75rem">SECURE VAULT</span>
+          <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
+            Online Banking Sign In
+          </h2>
+          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1.35rem">
+            Sign in to access your digital balances, manage your Visa debit cards, make domestic &amp; international wire transfers, and monitor your real-time transaction ledger.
+          </p>
+          <div style="font-size:0.83rem;color:var(--brand-500);display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.75rem;font-weight:600">
+            <div>✓ Passwordless Email OTP Login</div>
+            <div>✓ Mobile Phone SMS authentication</div>
+            <div>✓ Real-time ledger &amp; card controls</div>
+          </div>
+        </div>
+        <a href="/login" class="btn btn-primary" style="width:100%;padding:0.9rem;font-weight:800;font-size:1rem">
+          Existing User Login →
+        </a>
+      </div>
+
+      <!-- Card 3: Track Existing Application -->
+      <div class="action-portal-card">
+        <div>
+          <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05));color:var(--amber-400)">
+            🔍
+          </div>
+          <span class="status-pill submitted" style="font-size:0.75rem;margin-bottom:0.75rem">UNDERWRITING</span>
+          <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
+            Track Application
+          </h2>
+          <p style="font-size:0.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:1.35rem">
+            Already started an account application? Enter your unique Application Reference Number (e.g. APP-2026-XXXXXX) to monitor KYC review progress in real time or resume saved drafts.
+          </p>
+          <div style="font-size:0.83rem;color:var(--amber-400);display:flex;flex-direction:column;gap:0.45rem;margin-bottom:1.75rem;font-weight:600">
+            <div>✓ Real-time underwriting progress tracker</div>
+            <div>✓ Instant notification of account provisioning</div>
+            <div>✓ Resume saved drafts with 1-click</div>
+          </div>
+        </div>
+        <a href="/existing_application" class="btn btn-outline" style="width:100%;padding:0.9rem;font-weight:800;font-size:1rem">
+          Track Existing Application →
+        </a>
+      </div>
+
+    </div>
+
+    <!-- ==================== COMPARISON: NEOBANK VS TRADITIONAL ==================== -->
+    <section style="margin-bottom:5.5rem">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <h2 style="font-size:2.2rem;font-weight:900;letter-spacing:-0.03em;color:inherit">
+          NeoBank vs. Traditional Legacy Banking
+        </h2>
+        <p style="font-size:0.95rem;color:var(--text-secondary);margin-top:0.4rem;max-width:640px;margin-left:auto;margin-right:auto">
+          See why modern financial institutions and discerning clients are moving away from legacy branch banking.
+        </p>
+      </div>
+
+      <div style="overflow-x:auto">
+        <table class="compare-table">
+          <thead>
+            <tr>
+              <th style="text-align:left;color:var(--text-secondary)">Feature / Capability</th>
+              <th style="color:var(--emerald-400);background:rgba(16,185,129,0.12)">✨ NeoBank 2026</th>
+              <th style="color:var(--text-muted)">🏛️ Traditional Banks</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Account Opening Speed</strong></td>
+              <td style="color:var(--emerald-400);font-weight:700">⚡ 3 Minutes Digital (Anywhere)</td>
+              <td style="color:var(--text-secondary)">3 to 7 Days (In-Branch paperwork)</td>
+            </tr>
+            <tr>
+              <td><strong>Savings Treasury APY</strong></td>
+              <td style="color:var(--emerald-400);font-weight:800">4.20% APY (Daily Auto-Compounding)</td>
+              <td style="color:var(--text-secondary)">0.05% APY (Monthly/Quarterly)</td>
+            </tr>
+            <tr>
+              <td><strong>Foreign Exchange Markup</strong></td>
+              <td style="color:var(--emerald-400);font-weight:700">0.00% Zero Markup (Interbank Spot)</td>
+              <td style="color:var(--text-secondary)">3.0% to 5.0% Hidden spread fee</td>
+            </tr>
+            <tr>
+              <td><strong>Global Wire Clearance</strong></td>
+              <td style="color:var(--emerald-400);font-weight:700">Sub-second instant clearing</td>
+              <td style="color:var(--text-secondary)">3 to 5 Business Days</td>
+            </tr>
+            <tr>
+              <td><strong>Document Storage &amp; Security</strong></td>
+              <td style="color:var(--emerald-400);font-weight:700">Military-Grade AES-256 Vault</td>
+              <td style="color:var(--text-secondary)">Legacy unencrypted filing</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ==================== INSTITUTIONAL PLATFORM METRICS ==================== -->
+    <section class="glass-card" style="padding:2.75rem 2rem;border-radius:24px;margin-bottom:5rem;text-align:center">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:2.5rem">
+        <div>
+          <div class="stat-value" style="font-size:2.8rem;font-weight:900;color:var(--text-main);letter-spacing:-0.04em">$4.8B+</div>
+          <div class="stat-label" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem;font-weight:600">Processed Volume</div>
+        </div>
+        <div>
+          <div class="stat-value" style="font-size:2.8rem;font-weight:900;color:var(--emerald-400);letter-spacing:-0.04em">250,000+</div>
+          <div class="stat-label" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem;font-weight:600">Active Digital Accounts</div>
+        </div>
+        <div>
+          <div class="stat-value" style="font-size:2.8rem;font-weight:900;color:var(--brand-500);letter-spacing:-0.04em">99.999%</div>
+          <div class="stat-label" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem;font-weight:600">Core Ledger Uptime</div>
+        </div>
+        <div>
+          <div class="stat-value" style="font-size:2.8rem;font-weight:900;color:var(--amber-400);letter-spacing:-0.04em">&lt; 0.02s</div>
+          <div class="stat-label" style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem;font-weight:600">Settlement Latency</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CALL TO ACTION BANNER ==================== -->
+    <section style="background:linear-gradient(135deg, rgba(99,102,241,0.2) 0%, rgba(16,185,129,0.18) 100%);border:1px solid rgba(99,102,241,0.35);border-radius:26px;padding:3.5rem 2rem;text-align:center;margin-bottom:3rem;box-shadow:0 25px 60px -15px rgba(0,0,0,0.7)">
+      <h2 style="font-size:2.4rem;font-weight:900;letter-spacing:-0.03em;color:var(--text-main);margin-bottom:0.85rem">Ready to Experience Modern Banking?</h2>
+      <p style="font-size:1.05rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2rem;line-height:1.6">
+        Join NeoBank today in less than 3 minutes. Enjoy institutional high yields, global transfers, and complete financial clarity.
+      </p>
+      <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
+        <a href="/open_account_customer" class="btn btn-success" style="padding:0.95rem 2.5rem;font-size:1.05rem;font-weight:800;border-radius:14px">
+          Open Your Account Now →
+        </a>
+        <a href="/login" class="btn btn-outline" style="padding:0.95rem 2.5rem;font-size:1.05rem;font-weight:800;border-radius:14px">
+          Sign In to Account
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer style="padding:2.5rem 1.5rem;font-size:0.8rem;border-top:1px solid var(--border-subtle)">
+    <div style="max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;gap:2rem">
+      <div>
+        <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
+          <span style="font-size:1.1rem;font-weight:800;color:var(--text-main)">NeoBank</span>
+          <span style="font-size:0.65rem;color:var(--brand-500);border:1px solid rgba(99,102,241,0.3);padding:0.1rem 0.4rem;border-radius:9999px">FINTECH 2026</span>
+        </div>
+        <p style="max-width:320px;line-height:1.5">
+          Licensed and regulated financial technology institution. Deposits held at FDIC-insured partner banks. Documents stored under AES-256 vault encryption.
+        </p>
+      </div>
+
+      <div style="display:flex;gap:3rem;flex-wrap:wrap">
+        <div>
+          <div style="font-weight:700;color:var(--text-main);margin-bottom:0.6rem">Services</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.4rem">
+            <li><a href="/open_account_customer" style="color:var(--text-secondary);text-decoration:none">Open Account</a></li>
+            <li><a href="/existing_application" style="color:var(--text-secondary);text-decoration:none">Track Application</a></li>
+            <li><a href="/login" style="color:var(--text-secondary);text-decoration:none">Existing User Login</a></li>
+          </ul>
+        </div>
+        <div>
+          <div style="font-weight:700;color:var(--text-main);margin-bottom:0.6rem">Institutional</div>
+          <ul style="list-style:none;display:flex;flex-direction:column;gap:0.4rem">
+            <li><a href="/employee_onboarding" style="color:var(--text-secondary);text-decoration:none">Bank Employee Portal</a></li>
+            <li><a href="/docs" style="color:var(--text-secondary);text-decoration:none">Swagger API Docs</a></li>
+            <li><a href="/redoc" style="color:var(--text-secondary);text-decoration:none">ReDoc Specifications</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div style="max-width:1200px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+      <div>&copy; 2026 NeoBank Core Banking Technologies. All rights reserved.</div>
+      <div>Multi-Currency &bull; High Yield &bull; AES-256 Vault Encryption &bull; Relational SQL Ledger</div>
+    </div>
+  </footer>
+
+  <!-- Scripts loaded in head for instant execution -->
+  <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+# =====================================================================
+# NeoBank Digital Banking Platform - Git Ignore Rules
+# =====================================================================
+
+# 1. Databases, Ledgers, SQL Dumps & User Account Records (DO NOT COMMIT)
+*.db
+*.db-journal
+*.db-wal
+*.sqlite
+*.sqlite3
+*.sql.gz
+*.dump
+backend/data/*.db
+backend/data/*.sqlite*
+!backend/data/.gitkeep
+
+# 2. Security, Passwords, Secrets & Environment Variables
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+*.crt
+*.pfx
+secrets/
+credentials/
+
+# 3. Python Bytecode, Caches & Virtual Environments
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+build/
+dist/
+*.egg-info/
+.venv/
+venv/
+ENV/
+env/
+
+# 4. Scratch Scripts, Local Logs & Backups
+scratch/
+*.log
+*.bak
+*.tmp
+*.temp
+
+# 5. OS & IDE Metadata
+.DS_Store
+Thumbs.db
+ehthumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
