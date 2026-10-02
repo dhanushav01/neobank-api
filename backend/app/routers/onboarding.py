@@ -15,10 +15,11 @@ from backend.app.core.database import (
 )
 from backend.app.core.security import require_staff_or_admin
 from backend.app.core.utils import fail, generate_id, now_iso, paginate, format_money
+from backend.app.core.crypto_utils import hash_password
 from backend.app.core.sql_db import (
     store_sql_application, get_sql_application, list_sql_applications,
     store_encrypted_document, retrieve_and_decrypt_document,
-    list_documents_for_application, create_or_sync_user
+    list_documents_for_application, create_or_sync_user, get_db_connection
 )
 from backend.app.models.schemas import (
     AccountOpeningApplication, ApplicationReviewRequest
@@ -537,11 +538,10 @@ def list_applications_for_staff(
             if num not in DB["applications"]:
                 DB["applications"][num] = sa
             else:
-                DB["applications"][num]["status"] = sa.get("status", DB["applications"][num].get("status"))
-                if sa.get("applicant"):
-                    DB["applications"][num]["applicant"] = sa["applicant"]
-                if sa.get("accountType"):
-                    DB["applications"][num]["accountType"] = sa["accountType"]
+                # Update with SQL fields so persistent database is ground truth (preserves true createdAt)
+                for k, v in sa.items():
+                    if v is not None:
+                        DB["applications"][num][k] = v
     except Exception as e:
         print(f"Warning: Failed to sync applications from SQL: {e}")
 
@@ -553,26 +553,26 @@ def list_applications_for_staff(
             continue
 
         # Date parsing
-        created_str = app.get("createdAt", "")[:10]
+        created_str = (app.get("createdAt") or "")[:10]
         try:
             created_d = date.fromisoformat(created_str)
         except Exception:
-            created_d = today_date
+            created_d = None
 
         # Check Quick Date Filter
-        if date_filter == "today" and created_d != today_date:
+        if date_filter == "today" and (not created_d or created_d != today_date):
             continue
-        elif date_filter == "yesterday" and created_d != yesterday_date:
+        elif date_filter == "yesterday" and (not created_d or created_d != yesterday_date):
             continue
-        elif date_filter == "this_week" and created_d < week_start_date:
+        elif date_filter == "this_week" and (not created_d or created_d < week_start_date):
             continue
-        elif date_filter == "this_month" and created_d < month_start_date:
+        elif date_filter == "this_month" and (not created_d or created_d < month_start_date):
             continue
 
         # Check Custom Date Range
-        if start_date and created_d < start_date:
+        if start_date and (not created_d or created_d < start_date):
             continue
-        if end_date and created_d > end_date:
+        if end_date and (not created_d or created_d > end_date):
             continue
 
         # Status filter
@@ -593,7 +593,7 @@ def list_applications_for_staff(
 
     # Compute high-level date metrics for submitted apps
     all_apps = [a for a in DB["applications"].values() if not a.get("isDraft") and a.get("status") not in ("DRAFT_INITIATED", "DRAFT_SAVED")]
-    total_today = sum(1 for a in all_apps if a.get("createdAt", "")[:10] == str(today_date))
+    total_today = sum(1 for a in all_apps if (a.get("createdAt") or "")[:10] == str(today_date))
     pending_total = sum(1 for a in all_apps if a.get("status") in ("SUBMITTED", "UNDER_REVIEW"))
     approved_total = sum(1 for a in all_apps if a.get("status") in ("APPROVED", "ACCOUNT_OPENED"))
 
@@ -791,13 +791,17 @@ def review_and_open_account(
     applicant = app.get("applicant", {})
     user_email = applicant.get("email") or f"customer_{random.randint(1000,9999)}@bank.test"
     user_id = generate_id("usr")
-    customer_pwd = app.get("password") or "Password123!"
+    raw_pwd = app.get("password") or app.get("password_hash") or "Password123!"
+    if isinstance(raw_pwd, str) and raw_pwd.startswith("pbkdf2:"):
+        customer_pwd_hash = raw_pwd
+    else:
+        customer_pwd_hash = hash_password(str(raw_pwd))
 
     # 1. Create Active Customer User
     customer_user_record = {
         "id": user_id,
         "email": user_email,
-        "password": customer_pwd,
+        "password": customer_pwd_hash,
         "role": "CUSTOMER",
         "status": "ACTIVE",
         "mfa": None,
@@ -819,7 +823,7 @@ def review_and_open_account(
         create_or_sync_user(
             user_id=user_id,
             email=user_email,
-            password_hash=customer_pwd,
+            password_hash=customer_pwd_hash,
             role="CUSTOMER",
             first_name=applicant.get("firstName", "Applicant"),
             last_name=applicant.get("lastName", "Customer"),
@@ -875,35 +879,54 @@ def review_and_open_account(
     chosen_format = (app.get("cardFormat") or "BOTH").upper()
     cardholder_name = f"{applicant.get('firstName', '')} {applicant.get('lastName', '')}".strip().upper() or "BANK CUSTOMER"
 
-    if chosen_format in ("VIRTUAL", "BOTH"):
-        v_card_id = generate_id("crd")
-        DB["cards"][v_card_id] = {
-            "id": v_card_id,
+    # Issue Debit Card based on chosen scheme and format
+    # When "BOTH" (Virtual + Metal) is selected, issue ONE single consolidated card view
+    if chosen_format == "BOTH":
+        c_card_id = generate_id("crd")
+        DB["cards"][c_card_id] = {
+            "id": c_card_id,
             "ownerId": user_id,
             "accountId": acc_id,
-            "type": "VIRTUAL",
-            "network": chosen_scheme,
-            "cardholderName": cardholder_name,
-            "last4": f"{random.randint(1000, 9999):04d}",
-            "status": "ACTIVE",
-            "pin": "1234",
-            "limits": {"daily": 3000.0, "monthly": 15000.0, "atm": 1000.0},
-            "createdAt": now_iso()
-        }
-
-    if chosen_format in ("METAL", "BOTH"):
-        m_card_id = generate_id("crd")
-        DB["cards"][m_card_id] = {
-            "id": m_card_id,
-            "ownerId": user_id,
-            "accountId": acc_id,
-            "type": "METAL",
+            "type": "VIRTUAL + METAL",
+            "format": "BOTH",
             "network": chosen_scheme,
             "cardholderName": cardholder_name,
             "last4": f"{random.randint(1000, 9999):04d}",
             "status": "ACTIVE",
             "pin": "1234",
             "limits": {"daily": 10000.0, "monthly": 50000.0, "atm": 3000.0},
+            "createdAt": now_iso()
+        }
+    elif chosen_format == "METAL":
+        m_card_id = generate_id("crd")
+        DB["cards"][m_card_id] = {
+            "id": m_card_id,
+            "ownerId": user_id,
+            "accountId": acc_id,
+            "type": "METAL",
+            "format": "METAL",
+            "network": chosen_scheme,
+            "cardholderName": cardholder_name,
+            "last4": f"{random.randint(1000, 9999):04d}",
+            "status": "ACTIVE",
+            "pin": "1234",
+            "limits": {"daily": 10000.0, "monthly": 50000.0, "atm": 3000.0},
+            "createdAt": now_iso()
+        }
+    elif chosen_format == "VIRTUAL":
+        v_card_id = generate_id("crd")
+        DB["cards"][v_card_id] = {
+            "id": v_card_id,
+            "ownerId": user_id,
+            "accountId": acc_id,
+            "type": "VIRTUAL",
+            "format": "VIRTUAL",
+            "network": chosen_scheme,
+            "cardholderName": cardholder_name,
+            "last4": f"{random.randint(1000, 9999):04d}",
+            "status": "ACTIVE",
+            "pin": "1234",
+            "limits": {"daily": 3000.0, "monthly": 15000.0, "atm": 1000.0},
             "createdAt": now_iso()
         }
 
@@ -928,6 +951,26 @@ def review_and_open_account(
         store_sql_application(app)
     except Exception as e:
         print(f"Warning: Failed to persist approved application to SQL: {e}")
+
+    # --- Persist account & user to SQLite for data durability across server restarts ---
+    try:
+        sql_conn = get_db_connection()
+        with sql_conn:
+            sql_conn.execute("""
+                INSERT OR REPLACE INTO accounts
+                (id, user_id, account_number, type, currency, balance, overdraft_limit, nickname, status, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (acc_id, user_id, acc_number, account_type, currency, initial_deposit, overdraft,
+                    f"Primary {account_type.capitalize()} Account", "ACTIVE", now_iso()))
+            sql_conn.execute("""
+                INSERT OR IGNORE INTO users
+                (id, email, password_hash, role, status, first_name, last_name, dob, phone, address_json, created_at)
+                VALUES (?, ?, ?, 'CUSTOMER', 'ACTIVE', ?, ?, ?, ?, ?, ?)
+            """, (user_id, user_email, customer_pwd_hash,
+                    applicant.get("firstName", "Applicant"), applicant.get("lastName", "Customer"),
+                    applicant.get("dob", ""), applicant.get("phone", ""), "{}", now_iso()))
+    except Exception as e:
+        print(f"Warning: Failed to persist account to SQL: {e}")
 
     send_notification(user_id, f"Welcome to NeoBank! Your application #{applicationNumber} was approved and Account #{acc_number} is open.")
     audit_log(staff["id"], "ONBOARDING_APPROVE_AND_OPEN", f"{applicationNumber}:{acc_number}")

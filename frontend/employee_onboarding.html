@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20260928_2200"></script>
@@ -150,26 +153,26 @@
       </div>
 
       <!-- Language Selector (Protected from Auto-Translation) -->
-      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
-        <span style="font-size:0.9rem">🌐</span>
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.45rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span class="neobank-lang-flag-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:15px;border-radius:2px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,0.6);flex-shrink:0"><svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg></span>
         <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
-          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
-          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
-          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
-          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
-          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
-          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
-          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
-          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
-          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
-          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
-          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
-          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
-          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
-          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
-          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
-          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
-          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+          <option value="en" selected class="notranslate" translate="no">English (EN)</option>
+          <option value="es" class="notranslate" translate="no">Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">తెలుగు (TE)</option>
         </select>
       </div>
 

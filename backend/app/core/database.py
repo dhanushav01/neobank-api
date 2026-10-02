@@ -7,6 +7,122 @@ import time
 from typing import Dict, Any, List, Optional
 from backend.app.core.utils import now_iso, generate_id, format_money, fail
 
+
+def sync_from_sql_database() -> None:
+    """Sync approved applications, accounts, users, and cards from SQLite into in-memory DB.
+    This ensures data persists across server restarts."""
+    try:
+        from backend.app.core.sql_db import (
+            get_db_connection, list_sql_applications
+        )
+        import json
+
+        # --- Sync all applications from SQLite into DB["applications"] ---
+        all_sql_apps = list_sql_applications()
+        for app in all_sql_apps:
+            app_num = app.get("applicationNumber")
+            if app_num:
+                DB["applications"][app_num] = app
+
+        # --- Sync accounts from SQLite accounts table ---
+        conn = get_db_connection()
+        rows = conn.execute("SELECT * FROM accounts").fetchall()
+        for row in rows:
+            r = dict(row)
+            acc_id = r.get("id")
+            if not acc_id or acc_id in DB.get("accounts", {}):
+                continue
+            DB["accounts"][acc_id] = {
+                "id": acc_id,
+                "ownerId": r.get("user_id", ""),
+                "accountNumber": r.get("account_number", ""),
+                "type": r.get("type", "CHECKING"),
+                "currency": r.get("currency", "USD"),
+                "balance": float(r.get("balance", 0.0)),
+                "overdraftLimit": float(r.get("overdraft_limit", 0.0)),
+                "nickname": r.get("nickname", "Primary Account"),
+                "status": r.get("status", "ACTIVE"),
+                "nominees": [],
+                "createdAt": r.get("created_at", now_iso())
+            }
+
+        # --- Sync users from SQLite users table ---
+        user_rows = conn.execute("SELECT * FROM users").fetchall()
+        for row in user_rows:
+            r = dict(row)
+            uid = r.get("id")
+            if not uid or uid in DB.get("users", {}):
+                continue
+            try:
+                address = json.loads(r.get("address_json") or "{}")
+            except Exception:
+                address = {}
+            DB["users"][uid] = {
+                "id": uid,
+                "email": r.get("email", ""),
+                "password": r.get("password_hash", ""),
+                "role": r.get("role", "CUSTOMER"),
+                "status": r.get("status", "ACTIVE"),
+                "mfa": None,
+                "createdAt": r.get("created_at", now_iso()),
+                "profile": {
+                    "firstName": r.get("first_name", ""),
+                    "lastName": r.get("last_name", ""),
+                    "dob": r.get("dob", ""),
+                    "phone": r.get("phone", ""),
+                    "address": address
+                }
+            }
+
+        # --- Sync cards from SQLite cards table ---
+        card_rows = conn.execute("SELECT * FROM cards").fetchall()
+        for row in card_rows:
+            r = dict(row)
+            cid = r.get("id")
+            if not cid or cid in DB.get("cards", {}):
+                continue
+            DB["cards"][cid] = {
+                "id": cid,
+                "ownerId": r.get("user_id", ""),
+                "accountId": r.get("account_id", ""),
+                "type": r.get("type", "VIRTUAL"),
+                "network": r.get("network", "VISA"),
+                "cardholderName": r.get("cardholder_name", ""),
+                "last4": r.get("last4", "0000"),
+                "status": r.get("status", "ACTIVE"),
+                "limits": {
+                    "daily": float(r.get("daily_limit", 3000.0)),
+                    "monthly": float(r.get("monthly_limit", 15000.0)),
+                    "atm": float(r.get("atm_limit", 1000.0))
+                },
+                "createdAt": r.get("created_at", now_iso())
+            }
+
+        # --- Sync transactions from SQLite transactions table ---
+        tx_rows = conn.execute("SELECT * FROM transactions").fetchall()
+        for row in tx_rows:
+            r = dict(row)
+            tid = r.get("id")
+            if not tid or tid in DB.get("tx", {}):
+                continue
+            DB["tx"][tid] = {
+                "id": tid,
+                "accountId": r.get("account_id", ""),
+                "ownerId": "",  # not stored in SQL tx table
+                "type": r.get("type", "DEPOSIT"),
+                "amount": float(r.get("amount", 0.0)),
+                "balanceAfter": float(r.get("balance_after", 0.0)),
+                "reference": r.get("reference", ""),
+                "meta": {},
+                "createdAt": r.get("created_at", now_iso()),
+                "disputed": False
+            }
+
+        conn.close()
+        print(f"[DB-SYNC] Synced {len(all_sql_apps)} applications, {len(rows)} accounts, {len(user_rows)} users, {len(card_rows)} cards from SQLite.")
+    except Exception as e:
+        print(f"[DB-SYNC] Warning: Could not sync from SQLite: {e}")
+
 COLLECTIONS = [
     "users", "tokens", "kyc", "accounts", "tx", "transfers", "cards", "disputes",
     "quotes", "loan_apps", "loans", "fx_quotes", "notifications", "audit", "idem",
@@ -93,6 +209,7 @@ def list_owned(collection: str, user: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 def reset_db() -> None:
     """Wipe database state and re-seed default demo users, accounts, and records."""
+    from backend.app.core.crypto_utils import hash_password
     DB.clear()
     for col in COLLECTIONS:
         DB[col] = {}
@@ -101,7 +218,7 @@ def reset_db() -> None:
     DB["users"]["usr_admin"] = {
         "id": "usr_admin",
         "email": "admin@bank.test",
-        "password": "Admin@1234",
+        "password": hash_password("Admin@1234"),
         "role": "SUPER_ADMIN",
         "hasSqlAccess": True,
         "status": "ACTIVE",
@@ -126,7 +243,7 @@ def reset_db() -> None:
     DB["users"]["usr_employee"] = {
         "id": "usr_employee",
         "email": "employee@bank.test",
-        "password": "Employee@1234",
+        "password": hash_password("Employee@1234"),
         "role": "EMPLOYEE",
         "employeeCode": "EMP01",
         "hasSqlAccess": False,
@@ -152,7 +269,7 @@ def reset_db() -> None:
     DB["users"][customer_id] = {
         "id": customer_id,
         "email": "customer@bank.test",
-        "password": "Customer@1234",
+        "password": hash_password("Customer@1234"),
         "role": "CUSTOMER",
         "status": "ACTIVE",
         "mfa": None,
@@ -287,14 +404,13 @@ def reset_db() -> None:
     # Seed Notification
     send_notification(customer_id, "Welcome to NeoBank! Your primary checking account is active and funded.")
 
-    # Seed Sample Account Opening Applications (Across today, yesterday, and earlier dates)
-    from datetime import datetime, timezone, timedelta
-    now_dt = datetime.now(timezone.utc)
-    today_str = now_dt.isoformat(timespec="seconds")
-    yesterday_str = (now_dt - timedelta(days=1)).isoformat(timespec="seconds")
-    two_days_ago_str = (now_dt - timedelta(days=2)).isoformat(timespec="seconds")
+    # Seed Sample Account Opening Applications with static, fixed historical dates (never roll forward to today)
+    app1_date = "2026-10-01T11:02:31+00:00"
+    app2_date = "2026-09-30T18:11:05+00:00"
+    app3_date = "2026-09-29T14:20:00+00:00"
+    app4_date = "2026-09-28T09:15:00+00:00"
 
-    # Application 1: Submitted Today (Savings Account)
+    # Application 1: Emily Watson (Savings Account - Created 2026-10-01)
     app1_num = "APP-2026-891042"
     DB["applications"][app1_num] = {
         "applicationNumber": app1_num,
@@ -302,8 +418,9 @@ def reset_db() -> None:
         "currency": "USD",
         "initialDeposit": 250.0,
         "taxId": "TAX-998231",
-        "status": "SUBMITTED",
-        "createdAt": today_str,
+        "status": "ACCOUNT_OPENED",
+        "createdAt": app1_date,
+        "reviewedAt": "2026-10-01T11:09:19+00:00",
         "applicant": {
             "firstName": "Emily",
             "lastName": "Watson",
@@ -335,7 +452,7 @@ def reset_db() -> None:
         }
     }
 
-    # Application 2: Under Review Today (Current / Checking Account)
+    # Application 2: Marcus Vance (Current / Checking Account - Created 2026-09-30)
     app2_num = "APP-2026-773190"
     DB["applications"][app2_num] = {
         "applicationNumber": app2_num,
@@ -343,8 +460,9 @@ def reset_db() -> None:
         "currency": "USD",
         "initialDeposit": 100.0,
         "taxId": "TAX-441209",
-        "status": "UNDER_REVIEW",
-        "createdAt": today_str,
+        "status": "ACCOUNT_OPENED",
+        "createdAt": app2_date,
+        "reviewedAt": "2026-09-30T18:17:18+00:00",
         "applicant": {
             "firstName": "Marcus",
             "lastName": "Vance",
@@ -376,7 +494,7 @@ def reset_db() -> None:
         }
     }
 
-    # Application 3: Submitted Yesterday (Salary Account)
+    # Application 3: Priya Sharma (Salary Account - Created 2026-09-29)
     app3_num = "APP-2026-512849"
     DB["applications"][app3_num] = {
         "applicationNumber": app3_num,
@@ -385,8 +503,8 @@ def reset_db() -> None:
         "initialDeposit": 0.0,
         "taxId": "TAX-339182",
         "status": "APPROVED",
-        "createdAt": yesterday_str,
-        "reviewedAt": today_str,
+        "createdAt": app3_date,
+        "reviewedAt": "2026-09-29T16:00:00+00:00",
         "applicant": {
             "firstName": "Priya",
             "lastName": "Sharma",
@@ -418,7 +536,7 @@ def reset_db() -> None:
         }
     }
 
-    # Application 4: 2 Days Ago (Student Account - Rejected due to expired document)
+    # Application 4: David Miller (Student Account - Created 2026-09-28)
     app4_num = "APP-2026-309184"
     DB["applications"][app4_num] = {
         "applicationNumber": app4_num,
@@ -427,8 +545,8 @@ def reset_db() -> None:
         "initialDeposit": 0.0,
         "taxId": "TAX-118492",
         "status": "REJECTED",
-        "createdAt": two_days_ago_str,
-        "reviewedAt": yesterday_str,
+        "createdAt": app4_date,
+        "reviewedAt": "2026-09-28T10:30:00+00:00",
         "reviewNotes": "Expired identification document provided. Please submit valid non-expired ID.",
         "applicant": {
             "firstName": "David",
@@ -463,3 +581,5 @@ def reset_db() -> None:
 
 # Initialize upon module load
 reset_db()
+# Sync persisted data from SQLite (ensures data survives server restarts)
+sync_from_sql_database()

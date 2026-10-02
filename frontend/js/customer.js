@@ -2,38 +2,9 @@
  * Customer Portal Operations: Accounts, Cards, Transfers, Loans, KYC, and CRUD Actions
  */
 
-// Universal Human-Readable Formatter Fallback & Safety Guarantee
-if (typeof window.formatHumanText !== 'function') {
-  window.formatHumanText = function(val) {
-    if (!val || typeof val !== 'string') return val || '';
-    const trimmed = val.trim();
-    if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) {
-      return val;
-    }
-    if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-      return trimmed
-        .split('_')
-        .filter(Boolean)
-        .map(part => {
-          const upper = part.toUpperCase();
-          if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) {
-            return upper;
-          }
-          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-        })
-        .join(' ');
-    }
-    return val;
-  };
-}
-var formatHumanText = window.formatHumanText;
-
-if (typeof window.showToast !== 'function') {
-  window.showToast = function(msg, type) {
-    console.log(`[Toast ${type || 'info'}]:`, msg);
-  };
-}
-var showToast = window.showToast;
+// Centralized Utilities from utils.js & api.js
+var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
+var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
 
 let customerAccounts = [];
 let customerCards = [];
@@ -95,7 +66,6 @@ function renderKycBanner(kyc) {
     banner.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px">
         <div style="display:flex;align-items:center;gap:0.75rem">
-          <span style="color:var(--amber-400);font-size:1.25rem">⚠️</span>
           <div>
             <div style="font-weight:700;color:var(--text-main)">KYC Verification Incomplete</div>
             <div style="font-size:0.8rem;color:var(--text-secondary)">Identity verification is required before opening new accounts or applying for loans.</div>
@@ -107,7 +77,6 @@ function renderKycBanner(kyc) {
   } else if (kyc.status === 'SUBMITTED') {
     banner.innerHTML = `
       <div style="display:flex;align-items:center;gap:0.75rem;padding:0.85rem 1rem;background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px">
-        <span style="color:var(--amber-400)">⏳</span>
         <div style="font-size:0.85rem;color:var(--text-secondary)">Your KYC application <strong style="color:var(--text-main)">#${kyc.id}</strong> is currently pending bank staff review.</div>
       </div>
     `;
@@ -150,7 +119,7 @@ function renderAccountsList(accounts) {
   if (accounts.length === 0) {
     container.innerHTML = `
       <div class="glass-card" style="padding:2.75rem 2rem;text-align:center;grid-column:1/-1">
-        <div style="font-size:2.8rem;margin-bottom:0.75rem">🏛️</div>
+        <div style="font-size:2.8rem;margin-bottom:0.75rem"></div>
         <h3 style="font-size:1.25rem;font-weight:800;color:var(--text-main);margin-bottom:0.5rem">No Active Accounts Found</h3>
         <p style="color:var(--text-secondary);margin-bottom:1.5rem;max-width:420px;margin-left:auto;margin-right:auto;font-size:0.9rem">
           Provision your first high-yield checking or savings account with instant SEPA and Fedwire clearing.
@@ -167,10 +136,10 @@ function renderAccountsList(accounts) {
     const isFrozen = acc.status === 'FROZEN';
     const isChecking = (acc.type || '').toUpperCase() === 'CHECKING';
     const isSavings = (acc.type || '').toUpperCase() === 'SAVINGS';
-    const currencyFlag = acc.currency === 'USD' ? '🇺🇸' : (acc.currency === 'EUR' ? '🇪🇺' : (acc.currency === 'GBP' ? '🇬🇧' : '🌐'));
+    const currencyFlag = acc.currency === 'USD' ? '' : (acc.currency === 'EUR' ? '' : (acc.currency === 'GBP' ? '' : ''));
     const currencyJurisdiction = acc.currency === 'USD' ? 'US Fedwire System' : (acc.currency === 'EUR' ? 'SEPA Clearstream' : (acc.currency === 'GBP' ? 'Bank of England' : 'Global SWIFT'));
     const badgeTypeLabel = isChecking ? 'Primary Checking' : (isSavings ? 'High-Yield Vault' : formatHumanText(acc.type));
-    const badgeTypeIcon = isChecking ? '⚡' : (isSavings ? '💎' : '🏛️');
+    const badgeTypeIcon = isChecking ? '' : (isSavings ? '' : '');
 
     return `
       <div class="glass-card account-card-elevated" style="padding:1.6rem;position:relative">
@@ -181,7 +150,7 @@ function renderAccountsList(accounts) {
             <span style="font-size:0.72rem;font-weight:700;letter-spacing:0.06em;color:var(--text-secondary);text-transform:uppercase">${currencyJurisdiction}</span>
           </div>
           <div style="display:flex;align-items:center;gap:0.4rem">
-            <span class="status-pill ${acc.status.toLowerCase()}">${isFrozen ? '❄️ Frozen' : '● ' + formatHumanText(acc.status)}</span>
+            <span class="status-pill ${acc.status.toLowerCase()}">${isFrozen ? 'Frozen' : '● ' + formatHumanText(acc.status)}</span>
           </div>
         </div>
 
@@ -197,8 +166,7 @@ function renderAccountsList(accounts) {
           <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.35rem">
             <span style="font-family:var(--font-mono, monospace);font-size:0.82rem;color:var(--text-secondary)">Acct: <strong style="color:var(--text-main);letter-spacing:0.05em">${acc.accountNumber}</strong></span>
             <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${acc.accountNumber}'); showToast('Account number ${acc.accountNumber} copied!', 'success');" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:0;font-size:0.85rem;transition:color 0.2s" title="Copy Account Number" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">
-              📋
-            </button>
+                          </button>
           </div>
         </div>
 
@@ -343,7 +311,7 @@ async function loadAccountTransactions(accountId, accountNumber) {
     if (tbody) {
       if (txList.length === 0) {
         tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:3rem 1.5rem;color:var(--text-secondary)">
-          <div style="font-size:2rem;margin-bottom:0.5rem">📜</div>
+          <div style="font-size:2rem;margin-bottom:0.5rem"></div>
           <div style="font-weight:700;color:var(--text-main);margin-bottom:0.25rem">No Transactions Recorded</div>
           <div style="font-size:0.82rem">Funds transfers and ledger postings will appear here in real time.</div>
         </td></tr>`;
@@ -351,7 +319,7 @@ async function loadAccountTransactions(accountId, accountNumber) {
         tbody.innerHTML = txList.map(t => {
           const isDebit = t.amount < 0;
           const typeUpper = (t.type || '').toUpperCase();
-          const txIcon = isDebit ? (typeUpper.includes('TRANSFER') ? '📤' : (typeUpper.includes('WITHDRAW') ? '🏧' : '💳')) : '📥';
+          const txIcon = isDebit ? (typeUpper.includes('TRANSFER') ? '' : (typeUpper.includes('WITHDRAW') ? '' : '')) : '';
           let dateStr = t.createdAt || '';
           if (dateStr) {
             try {
@@ -455,10 +423,9 @@ function renderCardsList(cards) {
   const containerTab = document.getElementById('cards-display-container-tab');
   if (!container && !containerTab) return;
 
-  if (cards.length === 0) {
+  if (!cards || cards.length === 0) {
     const emptyHtml = `
       <div class="glass-card" style="padding:2.5rem;text-align:center;grid-column:1/-1">
-        <div style="font-size:2.8rem;margin-bottom:0.75rem">💳</div>
         <h3 style="font-size:1.2rem;font-weight:800;color:var(--text-main);margin-bottom:0.4rem">No Active Debit Cards</h3>
         <p style="color:var(--text-secondary);margin-bottom:1.5rem;max-width:380px;margin-left:auto;margin-right:auto;font-size:0.88rem">
           Generate an instant brushed titanium virtual debit card with zero foreign exchange fees and tokenized Apple/Google Pay.
@@ -473,19 +440,32 @@ function renderCardsList(cards) {
     return;
   }
 
-  const cardsHtml = cards.map(c => {
+  // Consolidate card records: If user selected "Both Virtual and Metal", display ONE single consolidated card
+  const consolidatedCards = [];
+  cards.forEach(c => {
+    const existing = consolidatedCards.find(item => item.accountId && item.accountId === c.accountId);
+    if (existing) {
+      existing.type = 'VIRTUAL + METAL';
+      existing.format = 'BOTH';
+    } else {
+      consolidatedCards.push({ ...c });
+    }
+  });
+
+  const cardsHtml = consolidatedCards.map(c => {
     const isBlocked = c.status === 'BLOCKED';
     const isMastercard = (c.network || '').toUpperCase() === 'MASTERCARD';
+    const cardBadgeText = (c.type === 'VIRTUAL + METAL' || c.format === 'BOTH') ? 'TITANIUM • VIRTUAL + METAL' : (c.type || 'TITANIUM');
     return `
       <div class="virtual-card" style="position:relative;overflow:hidden">
         <div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2">
           <div style="display:flex;align-items:center;gap:0.5rem">
             <span style="font-size:0.85rem;font-weight:900;letter-spacing:0.12em;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.5)">NEOBANK</span>
-            <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;background:rgba(255,255,255,0.15);color:#fff">TITANIUM</span>
+            <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;background:rgba(255,255,255,0.15);color:#fff">${cardBadgeText}</span>
           </div>
           <div style="display:flex;align-items:center;gap:0.4rem">
             <span class="status-pill ${c.status.toLowerCase()}" style="font-size:0.68rem;padding:0.2rem 0.55rem;background:${isBlocked ? 'rgba(239,68,68,0.25)' : 'rgba(16,185,129,0.25)'};color:${isBlocked ? '#fca5a5' : '#6ee7b7'};border:1px solid ${isBlocked ? 'rgba(239,68,68,0.4)' : 'rgba(16,185,129,0.4)'}">
-              ${isBlocked ? '🔒 Locked' : '● Active'}
+              ${isBlocked ? 'Locked' : 'Active'}
             </span>
           </div>
         </div>
@@ -525,10 +505,10 @@ function renderCardsList(cards) {
         <!-- Quick Card Controls Row -->
         <div style="display:flex;gap:0.4rem;margin-top:1.25rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.12);position:relative;z-index:2">
           <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:#fff" onclick="toggleBlockCard('${c.id}', ${isBlocked})">
-            ${isBlocked ? '🔓 Unlock Card' : '🔒 Lock Card'}
+            ${isBlocked ? 'Unlock Card' : 'Lock Card'}
           </button>
           <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:#fff" onclick="promptChangePin('${c.id}')">
-            🔑 Reset PIN
+            Reset PIN
           </button>
         </div>
       </div>

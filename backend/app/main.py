@@ -80,7 +80,7 @@ async def http_error_handler(request: Request, exc: StarletteHTTPException):
             "/auth/", "/onboarding/", "/users/", "/kyc/", "/accounts/",
             "/transfers/", "/cards/", "/loans/", "/disputes/", "/admin/",
             "/fx/", "/bills/", "/beneficiaries/", "/notifications/",
-            "/reference/", "/system/", "/db-admin/"
+            "/reference/", "/system/", "/db-admin/", "/api/"
         )
         is_api = any(path.startswith(prefix) for prefix in api_prefixes)
         if ("text/html" in accept or "*/*" in accept) and not is_api:

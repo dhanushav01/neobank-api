@@ -407,7 +407,7 @@ p, h1, h2, h3, h4, h5, h6, span, a, label, button, td, th {
   padding: 0.5rem;
   border-radius: var(--radius-md);
   min-height: auto;
-  transition: width 0.25s cubic-bezier(0.4, 0, 0.2, 1), padding 0.25s ease;
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), min-width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease;
   position: relative;
   scrollbar-width: thin;
 }
@@ -472,8 +472,12 @@ p, h1, h2, h3, h4, h5, h6, span, a, label, button, td, th {
   padding: 0.3rem;
   justify-content: center;
 }
-.app-sidebar.collapsed .sidebar-toggle-btn span {
+.app-sidebar.collapsed .sidebar-toggle-btn .toggle-label {
   display: none !important;
+}
+/* Keep toggle-icon (SVG) always visible - don't hide it in collapsed state */
+.app-sidebar.collapsed .sidebar-toggle-btn .toggle-icon {
+  display: inline-flex !important;
 }
 
 .nav-section-title {
@@ -591,6 +595,7 @@ p, h1, h2, h3, h4, h5, h6, span, a, label, button, td, th {
   color: var(--text-main);
   background: linear-gradient(180deg, #ffffff 40%, #cbd5e1 100%);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0.35rem 0 0.2rem;
 }
@@ -1544,6 +1549,7 @@ body.light-theme,
 [data-theme="light"] .brand-title {
   background: linear-gradient(135deg, #0f172a 0%, #334155 100%) !important;
   -webkit-background-clip: text !important;
+  background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
 
@@ -1583,6 +1589,7 @@ body.light-theme,
 html[data-theme="light"] .hero-title {
   background: linear-gradient(135deg, #090e17 25%, #1e293b 65%, #2563eb 100%) !important;
   -webkit-background-clip: text !important;
+  background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
   color: #090e17 !important;
 }
@@ -1893,6 +1900,7 @@ body.light-theme [id^="emp-stat-"] {
   color: #090e17 !important;
   background: none !important;
   -webkit-background-clip: initial !important;
+  background-clip: initial !important;
   -webkit-text-fill-color: #090e17 !important;
 }
 
@@ -1916,6 +1924,7 @@ body.light-theme .metric-value {
   color: #0f172a !important;
   background: none !important;
   -webkit-background-clip: unset !important;
+  background-clip: unset !important;
   -webkit-text-fill-color: #0f172a !important;
   text-shadow: none !important;
 }

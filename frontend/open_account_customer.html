@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20260928_2200"></script>
@@ -150,26 +153,26 @@
       </div>
 
       <!-- Language Selector (Protected from Auto-Translation) -->
-      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
-        <span style="font-size:0.9rem">🌐</span>
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.45rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span class="neobank-lang-flag-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:15px;border-radius:2px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,0.6);flex-shrink:0"><svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg></span>
         <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
-          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
-          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
-          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
-          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
-          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
-          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
-          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
-          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
-          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
-          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
-          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
-          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
-          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
-          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
-          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
-          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
-          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+          <option value="en" selected class="notranslate" translate="no">English (EN)</option>
+          <option value="es" class="notranslate" translate="no">Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">తెలుగు (TE)</option>
         </select>
       </div>
 
@@ -188,7 +191,7 @@
     <!-- HERO SECTION -->
     <section id="onboarding-hero-section" style="text-align:center;margin-bottom:3rem">
       <div style="display:inline-block;padding:0.35rem 1rem;border-radius:9999px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.3);color:var(--brand-500);font-size:0.8rem;font-weight:700;margin-bottom:1rem">
-        ✨ NEXT-GEN CORE BANKING
+        NEXT-GEN CORE BANKING
       </div>
       <h1 data-i18n="hero_title" style="font-size:clamp(1.8rem, 1.5rem + 1.5vw, 2.6rem);font-weight:800;color:var(--text-main);letter-spacing:-0.03em;line-height:1.2;max-width:820px;margin-inline:auto">
         Open Your Bank Account in Minutes
@@ -367,7 +370,6 @@
         <!-- CATEGORY 1: EVERYDAY / TRANSACTIONAL -->
         <div style="margin-bottom:2rem">
           <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-subtle)">
-            <span style="font-size:1.25rem">💳</span>
             <h3 style="font-size:1.15rem;font-weight:800;color:var(--brand-500);letter-spacing:-0.01em">Everyday / Transactional Accounts</h3>
             <span style="font-size:0.75rem;color:var(--text-muted);margin-left:auto">Daily Transactions & Savings</span>
           </div>
@@ -510,7 +512,6 @@
         <!-- CATEGORY 2: LONG-TERM / INVESTMENT -->
         <div style="margin-bottom:2rem">
           <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-subtle)">
-            <span style="font-size:1.25rem">📈</span>
             <h3 style="font-size:1.15rem;font-weight:800;color:var(--emerald-400);letter-spacing:-0.01em">Long-Term / Investment Accounts</h3>
             <span style="font-size:0.75rem;color:var(--text-muted);margin-left:auto">Wealth Accumulation & High Yield</span>
           </div>
@@ -609,7 +610,6 @@
         <!-- CATEGORY 3: SPECIALIZED / CROSS-BORDER -->
         <div style="margin-bottom:2rem">
           <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:1px solid var(--border-subtle)">
-            <span style="font-size:1.25rem">🌐</span>
             <h3 style="font-size:1.15rem;font-weight:800;color:var(--purple-400);letter-spacing:-0.01em">Specialized / Cross-Border Accounts</h3>
             <span style="font-size:0.75rem;color:var(--text-muted);margin-left:auto">Joint, Expat & Student Needs</span>
           </div>
@@ -771,40 +771,40 @@
         <input type="hidden" id="apply-selected-account-type" name="accountType" value="SAVINGS">
 
         <!-- STEP 2: CUSTOMER DETAILS (AUTHENTIC PHYSICAL BANK PAPER FORM SHEET) -->
-        <div id="onboarding-step-2" style="display:none">
+        <div id="onboarding-step-2" style="display:none;padding-bottom:90px">
           
-          <!-- Sticky Form Editor Toolbar: Part Switcher, Clear All, Save Draft, Print -->
+          <!-- Sticky Form Editor Toolbar: Part Switcher, Application Number & Account -->
           <div class="form-editor-toolbar screen-only">
             <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap">
               <div class="part-nav-pills">
                 <button type="button" class="part-nav-btn active" id="btn-tab-part1" onclick="switchFormPart('part1')">
-                  📄 Page 1: CIF &amp; CKYC
+                  Page 1: CIF &amp; CKYC
                   <span id="tab-missing-badge-part1" class="tab-missing-badge" style="display:none"></span>
                 </button>
                 <button type="button" class="part-nav-btn" id="btn-tab-part1-cont" onclick="switchFormPart('part1-cont')">
-                  📑 Page 2: KYC &amp; OVD
+                  Page 2: KYC &amp; OVD
                   <span id="tab-missing-badge-part1-cont" class="tab-missing-badge" style="display:none"></span>
                 </button>
                 <button type="button" class="part-nav-btn" id="btn-tab-part2" onclick="switchFormPart('part2')">
-                  💳 Page 3: Account Form
+                  Page 3: Account Form
                   <span id="tab-missing-badge-part2" class="tab-missing-badge" style="display:none"></span>
                 </button>
                 <button type="button" class="part-nav-btn" id="btn-tab-part3" onclick="switchFormPart('part3')">
-                  ⚖️ Page 4: Declarations
+                  Page 4: Declarations
                   <span id="tab-missing-badge-part3" class="tab-missing-badge" style="display:none"></span>
                 </button>
                 <button type="button" class="part-nav-btn" id="btn-tab-all" onclick="switchFormPart('all')">
-                  📋 View All 4 Pages
+                  View All 4 Pages
                 </button>
               </div>
             </div>
 
             <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
-              <!-- Application Number Badge (Requirement 1) -->
+              <!-- Application Number Badge -->
               <div style="display:flex;align-items:center;gap:0.35rem;background:rgba(99,102,241,0.12);padding:0.3rem 0.65rem;border-radius:8px;border:1px solid rgba(99,102,241,0.3)">
                 <span style="font-size:0.72rem;color:var(--text-muted);font-weight:700">App No:</span>
                 <span id="toolbar-app-number" style="font-family:monospace;font-size:0.82rem;font-weight:800;color:var(--brand-400)">APP-2026-PENDING</span>
-                <button type="button" onclick="copyCurrentAppNumber()" title="Copy Application Number" style="background:transparent;border:none;color:var(--text-secondary);cursor:pointer;padding:0 2px;font-size:0.8rem">📋</button>
+                <button type="button" onclick="copyCurrentAppNumber()" title="Copy Application Number" style="background:transparent;border:none;color:var(--text-secondary);cursor:pointer;padding:0 2px;font-size:0.75rem">Copy</button>
               </div>
 
               <!-- Selected Account Badge -->
@@ -812,26 +812,6 @@
                 <span style="font-size:0.72rem;color:var(--text-muted)">Selected:</span>
                 <span id="step2-selected-account-badge" class="status-pill active" style="font-size:0.72rem">SAVINGS</span>
               </div>
-
-              <!-- Clear All Button -->
-              <button type="button" class="btn btn-outline btn-sm" onclick="confirmClearAllForm()" style="color:var(--rose-500);border-color:rgba(244,63,94,0.3)" title="Clear all entered data and start fresh session">
-                🗑️ Clear All
-              </button>
-
-              <!-- Save Draft Button with Status Indicator -->
-              <button type="button" class="btn btn-outline btn-sm" id="btn-save-draft" onclick="saveCustomerFormDraft(true)" title="Save draft locally and to ledger">
-                💾 Save Draft
-              </button>
-
-              <!-- Download & Print Form Button (Requirement 19) -->
-              <button type="button" class="btn btn-outline btn-sm no-print" onclick="prepareAndPrintBankForm()" title="Download PDF &amp; Print Official 4-Page Uniform Form">
-                📥 Download &amp; Print Form
-              </button>
-
-              <!-- Submit Form Button -->
-              <button type="button" class="btn btn-primary btn-sm no-print" onclick="submitCustomerApplication()" style="font-weight:700" title="Submit completed bank form">
-                ✓ Submit Application
-              </button>
             </div>
           </div>
 
@@ -869,7 +849,7 @@
               
               <!-- Instructions Banner (Item 10) -->
               <div class="bank-sheet-instructions">
-                <strong>Instructions:</strong> Please fill in BLOCK LETTERS only using Black or Dark Blue ink. Fields marked with (*) are mandatory. Please leave a blank space between words.
+                <strong>Instructions:</strong> Fields marked with (*) are mandatory. Please leave a blank space between words.
               </div>
 
               <!-- Metadata & Control Table (Items 1, 2, 3, 4) -->
@@ -893,7 +873,7 @@
                   <td style="width:30%">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.2rem">
                       <strong>Date (DD/MM/YYYY)*:</strong>
-                      <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-header-date').showPicker ? document.getElementById('picker-header-date').showPicker() : document.getElementById('picker-header-date').focus()" title="Pick from Calendar" style="padding:0.15rem 0.4rem;font-size:0.7rem;line-height:1">📅</button>
+                      <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-header-date').showPicker ? document.getElementById('picker-header-date').showPicker() : document.getElementById('picker-header-date').focus()" title="Pick from Calendar" style="padding:0.15rem 0.4rem;font-size:0.7rem;line-height:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
                       <input type="date" id="picker-header-date" style="position:absolute;opacity:0;pointer-events:none" tabindex="-1" onchange="setDateFromPicker(this.value, 'raw-header-date', 'wrap-header-date')">
                     </div>
                     <div class="bank-box-wrap notranslate" translate="no" id="wrap-header-date" data-box-count="8" data-target="applicationDate">
@@ -1049,7 +1029,7 @@
                 <div>
                   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.2rem">
                     <label id="label-dob" style="font-size:0.78rem;font-weight:700">Date of Birth* (DD/MM/YYYY):</label>
-                    <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-dob-date').showPicker ? document.getElementById('picker-dob-date').showPicker() : document.getElementById('picker-dob-date').focus()" title="Choose Date of Birth" style="padding:0.15rem 0.4rem;font-size:0.7rem;line-height:1">📅</button>
+                    <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-dob-date').showPicker ? document.getElementById('picker-dob-date').showPicker() : document.getElementById('picker-dob-date').focus()" title="Choose Date of Birth" style="padding:0.15rem 0.4rem;font-size:0.7rem;line-height:1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
                     <input type="date" id="picker-dob-date" style="position:absolute;opacity:0;pointer-events:none" tabindex="-1" onchange="setDateFromPicker(this.value, 'raw-dob-date', 'wrap-dob-date')">
                   </div>
                   <div class="bank-box-wrap notranslate" translate="no" id="wrap-dob-date" data-box-count="8" data-target="dob">
@@ -1067,7 +1047,7 @@
                       <span class="char-cell" data-idx="7">&nbsp;</span>
                     </div>
                   </div>
-                  <div id="student-age-hint" style="display:none;font-size:0.72rem;color:var(--amber-400);margin-top:0.25rem">ℹ️ Student accounts: age 16 to 26.</div>
+                  <div id="student-age-hint" style="display:none;font-size:0.72rem;color:var(--amber-400);margin-top:0.25rem">ℹStudent accounts: age 16 to 26.</div>
                 </div>
 
                 <div>
@@ -1200,7 +1180,7 @@
               <!-- Disability Questionnaire (Requirement 6 - 5 Major Questions + UDID) -->
               <div id="disability-details-section" style="display:none;background:rgba(99,102,241,0.03);border:1px solid rgba(99,102,241,0.2);border-radius:6px;padding:0.75rem;margin-bottom:0.85rem">
                 <div style="font-size:0.8rem;font-weight:800;color:var(--brand-500);margin-bottom:0.5rem;display:flex;align-items:center;gap:6px">
-                  <span>♿</span> Person with Disability Details (Statutory Record)
+                  Person with Disability Details (Statutory Record)
                 </div>
                 
                 <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:0.75rem;margin-bottom:0.6rem">
@@ -1248,7 +1228,7 @@
                 <!-- Disability Certificate Upload -->
                 <div style="display:flex;align-items:center;gap:0.75rem;background:rgba(255,255,255,0.02);padding:0.45rem 0.65rem;border-radius:4px;border:1px dashed #cbd5e1">
                   <span style="font-size:0.76rem;font-weight:700">Upload Disability Certificate / UDID*:</span>
-                  <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-disability-cert').click()" style="padding:0.2rem 0.5rem;font-size:0.72rem">📎 Upload File</button>
+                  <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-disability-cert').click()" style="padding:0.2rem 0.5rem;font-size:0.72rem">Upload File</button>
                   <input type="file" id="file-disability-cert" accept=".pdf,image/*" style="display:none" onchange="handleGenericFileUpload(this, 'disability-file-status')">
                   <span id="disability-file-status" style="font-size:0.72rem;color:var(--text-muted)">No file uploaded</span>
                 </div>
@@ -1361,7 +1341,7 @@
                   <!-- Form 60 Document Upload Card (Req 8) -->
                   <div id="form60-upload-card" style="display:none;margin-top:0.4rem;padding:0.5rem 0.65rem;border-radius:4px;border:1px dashed #cbd5e1;background:rgba(255,255,255,0.02);align-items:center;gap:0.6rem">
                     <span style="font-size:0.74rem;font-weight:700">Upload Signed Form 60*:</span>
-                    <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-form60-doc').click()" style="padding:0.2rem 0.45rem;font-size:0.7rem">📎 Upload File</button>
+                    <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-form60-doc').click()" style="padding:0.2rem 0.45rem;font-size:0.7rem">Upload File</button>
                     <input type="file" id="file-form60-doc" accept=".pdf,image/*" style="display:none" onchange="handleGenericFileUpload(this, 'form60-file-status')">
                     <span id="form60-file-status" style="font-size:0.7rem;color:var(--text-muted)">No file uploaded</span>
                   </div>
@@ -1396,7 +1376,7 @@
                 <!-- PEP Questions Card (Req 9) -->
                 <div id="pep-details-section" style="display:none;background:rgba(99,102,241,0.03);border:1px solid rgba(99,102,241,0.2);border-radius:6px;padding:0.75rem;margin-top:0.5rem">
                   <div style="font-size:0.8rem;font-weight:800;color:var(--brand-500);margin-bottom:0.5rem">
-                    🏛️ PEP Statutory Due Diligence Questionnaire
+                    PEP Statutory Due Diligence Questionnaire
                   </div>
                   <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:0.75rem;margin-bottom:0.5rem">
                     <div>
@@ -1443,17 +1423,17 @@
                   </div>
                   <div style="display:flex;align-items:center;gap:4px">
                     <select id="mobile-country-code" name="mobileCountryCode" class="bank-field-input" style="width:auto;min-width:105px;padding:0.3rem 0.4rem;font-weight:700;font-size:0.8rem;cursor:pointer" onchange="handleCountryCodeChange('mobile', this.value)">
-                      <option value="+91" data-digits="10" selected>🇮🇳 +91</option>
-                      <option value="+1" data-digits="10">🇺🇸 +1</option>
-                      <option value="+44" data-digits="10">🇬🇧 +44</option>
-                      <option value="+971" data-digits="9">🇦🇪 +971</option>
-                      <option value="+65" data-digits="8">🇸🇬 +65</option>
-                      <option value="+61" data-digits="9">🇦🇺 +61</option>
-                      <option value="+1-CA" data-digits="10">🇨🇦 +1</option>
-                      <option value="+49" data-digits="11">🇩🇪 +49</option>
-                      <option value="+33" data-digits="9">🇫🇷 +33</option>
-                      <option value="+81" data-digits="10">🇯🇵 +81</option>
-                      <option value="+966" data-digits="9">🇸🇦 +966</option>
+                      <option value="+91" data-digits="10" selected>&#x1F1EE;&#x1F1F3; +91 (India)</option>
+                      <option value="+1" data-digits="10">&#x1F1FA;&#x1F1F8; +1 (USA)</option>
+                      <option value="+44" data-digits="10">&#x1F1EC;&#x1F1E7; +44 (UK)</option>
+                      <option value="+971" data-digits="9">&#x1F1E6;&#x1F1EA; +971 (UAE)</option>
+                      <option value="+65" data-digits="8">&#x1F1F8;&#x1F1EC; +65 (Singapore)</option>
+                      <option value="+61" data-digits="9">&#x1F1E6;&#x1F1FA; +61 (Australia)</option>
+                      <option value="+1-CA" data-digits="10">&#x1F1E8;&#x1F1E6; +1 (Canada)</option>
+                      <option value="+49" data-digits="11">&#x1F1E9;&#x1F1EA; +49 (Germany)</option>
+                      <option value="+33" data-digits="9">&#x1F1EB;&#x1F1F7; +33 (France)</option>
+                      <option value="+81" data-digits="10">&#x1F1EF;&#x1F1F5; +81 (Japan)</option>
+                      <option value="+966" data-digits="9">&#x1F1F8;&#x1F1E6; +966 (Saudi Arabia)</option>
                     </select>
                     <div class="bank-box-wrap notranslate" translate="no" data-box-count="10" data-target="mobile" style="margin:0;flex:1">
                       <input type="tel" id="raw-mobile-number" name="mobile" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" required>
@@ -1470,17 +1450,17 @@
                   </div>
                   <div style="display:flex;align-items:center;gap:4px">
                     <select id="alt-mobile-country-code" name="altMobileCountryCode" class="bank-field-input" style="width:auto;min-width:105px;padding:0.3rem 0.4rem;font-weight:700;font-size:0.8rem;cursor:pointer" onchange="handleCountryCodeChange('altMobile', this.value)">
-                      <option value="+91" data-digits="10" selected>🇮🇳 +91</option>
-                      <option value="+1" data-digits="10">🇺🇸 +1</option>
-                      <option value="+44" data-digits="10">🇬🇧 +44</option>
-                      <option value="+971" data-digits="9">🇦🇪 +971</option>
-                      <option value="+65" data-digits="8">🇸🇬 +65</option>
-                      <option value="+61" data-digits="9">🇦🇺 +61</option>
-                      <option value="+1-CA" data-digits="10">🇨🇦 +1</option>
-                      <option value="+49" data-digits="11">🇩🇪 +49</option>
-                      <option value="+33" data-digits="9">🇫🇷 +33</option>
-                      <option value="+81" data-digits="10">🇯🇵 +81</option>
-                      <option value="+966" data-digits="9">🇸🇦 +966</option>
+                      <option value="+91" data-digits="10" selected>&#x1F1EE;&#x1F1F3; +91 (India)</option>
+                      <option value="+1" data-digits="10">&#x1F1FA;&#x1F1F8; +1 (USA)</option>
+                      <option value="+44" data-digits="10">&#x1F1EC;&#x1F1E7; +44 (UK)</option>
+                      <option value="+971" data-digits="9">&#x1F1E6;&#x1F1EA; +971 (UAE)</option>
+                      <option value="+65" data-digits="8">&#x1F1F8;&#x1F1EC; +65 (Singapore)</option>
+                      <option value="+61" data-digits="9">&#x1F1E6;&#x1F1FA; +61 (Australia)</option>
+                      <option value="+1-CA" data-digits="10">&#x1F1E8;&#x1F1E6; +1 (Canada)</option>
+                      <option value="+49" data-digits="11">&#x1F1E9;&#x1F1EA; +49 (Germany)</option>
+                      <option value="+33" data-digits="9">&#x1F1EB;&#x1F1F7; +33 (France)</option>
+                      <option value="+81" data-digits="10">&#x1F1EF;&#x1F1F5; +81 (Japan)</option>
+                      <option value="+966" data-digits="9">&#x1F1F8;&#x1F1E6; +966 (Saudi Arabia)</option>
                     </select>
                     <div class="bank-box-wrap notranslate" translate="no" data-box-count="10" data-target="altMobile" style="margin:0;flex:1">
                       <input type="tel" id="raw-alt-mobile" name="altMobile" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false">
@@ -1518,25 +1498,6 @@
                   <div style="display:flex;gap:0.4rem">
                     <input type="text" name="telStd" class="bank-field-input" placeholder="STD" style="width:70px">
                     <input type="text" name="telNumber" class="bank-field-input" placeholder="Number" style="flex:1">
-                  </div>
-                </div>
-
-                <!-- Online Banking Password Field (Item 5) -->
-                <div style="grid-column: 1 / -1; background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem;margin-top:0.4rem">
-                  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem">
-                    <label for="input-onboarding-password" id="label-onboarding-password" style="font-size:0.78rem;font-weight:700;color:var(--text-main)">
-                      🔐 Online Banking Login Password*:
-                    </label>
-                    <span style="font-size:0.72rem;color:var(--brand-500);font-weight:600">Use Email or Mobile + this Password to sign in</span>
-                  </div>
-                  <div style="position:relative;display:flex;align-items:center">
-                    <input type="password" id="input-onboarding-password" name="password" class="bank-field-input" placeholder="Create a secure password (minimum 8 characters)" required style="padding-right:2.8rem;text-transform:none;font-family:sans-serif" minlength="8" value="Password123!">
-                    <button type="button" id="btn-toggle-onboarding-pwd" onclick="toggleOnboardingPasswordVisibility()" title="Show/Hide Password" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;font-size:1.1rem;padding:4px;color:var(--text-muted);display:flex;align-items:center">
-                      👁️
-                    </button>
-                  </div>
-                  <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.3rem">
-                    ℹ️ Note: Once your application is approved by bank staff, you will use your registered Email or Mobile Number along with this password to log in at <a href="/login" style="color:var(--brand-400);text-decoration:underline">Online Banking Login</a>.
                   </div>
                 </div>
               </div>
@@ -1578,7 +1539,7 @@
               <div id="demanded-docs-banner" style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem 1rem;margin-bottom:1rem">
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.4rem;flex-wrap:wrap;gap:0.5rem">
                   <div style="font-weight:800;font-size:0.82rem;color:var(--brand-500);display:flex;align-items:center;gap:6px">
-                    <span>📋</span> Demanded KYC Documents for Selected Account: <span id="demanded-account-title" style="text-decoration:underline">Savings Bank Account</span>
+                    Demanded KYC Documents for Selected Account: <span id="demanded-account-title" style="text-decoration:underline">Savings Bank Account</span>
                   </div>
                   <span style="font-size:0.7rem;background:rgba(16,185,129,0.1);color:var(--emerald-400);padding:0.15rem 0.5rem;border-radius:9999px;font-weight:700">All Listed Documents Required</span>
                 </div>
@@ -1613,7 +1574,7 @@
                     <td><input type="text" name="ovdPassportExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-passport').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-passport').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-passport" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-passport', 'PASSPORT')">
                         <span id="ovd-status-passport" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1626,7 +1587,7 @@
                     <td style="text-align:center;font-size:0.75rem;color:var(--text-muted)">N / A</td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-voter').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-voter').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-voter" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-voter', 'VOTER_ID')">
                         <span id="ovd-status-voter" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1639,7 +1600,7 @@
                     <td><input type="text" name="ovdLicenseExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-license').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-license').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-license" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-license', 'DRIVING_LICENSE')">
                         <span id="ovd-status-license" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1652,7 +1613,7 @@
                     <td style="text-align:center;font-size:0.75rem;color:var(--text-muted)">N / A</td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-aadhaar').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-aadhaar').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-aadhaar" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-aadhaar', 'AADHAAR')">
                         <span id="ovd-status-aadhaar" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1665,7 +1626,7 @@
                     <td style="text-align:center;font-size:0.75rem;color:var(--text-muted)">N / A</td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-nrega').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-nrega').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-nrega" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-nrega', 'NREGA')">
                         <span id="ovd-status-nrega" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1678,7 +1639,7 @@
                     <td style="text-align:center;font-size:0.75rem;color:var(--text-muted)">N / A</td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-npr').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-npr').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-npr" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-npr', 'NPR')">
                         <span id="ovd-status-npr" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1694,7 +1655,7 @@
                     <td><input type="text" name="ovdOtherExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-other').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-other').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-other" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-other', 'OTHER')">
                         <span id="ovd-status-other" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1711,7 +1672,7 @@
                     <td><input type="text" name="ovdSalaryDocDate" class="bank-field-input" placeholder="Month / Year"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-salary').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-salary').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-salary" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-salary', 'SALARY_PROOF')">
                         <span id="ovd-status-salary" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1727,7 +1688,7 @@
                     <td><input type="text" name="ovdStudentExpiry" class="bank-field-input" placeholder="Valid Upto"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-student').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-student').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-student" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-student', 'STUDENT_PROOF')">
                         <span id="ovd-status-student" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1743,7 +1704,7 @@
                     <td><input type="text" name="ovdPensionExpiry" class="bank-field-input" placeholder="Issuing Authority"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-pension').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-pension').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-pension" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-pension', 'PENSION_PROOF')">
                         <span id="ovd-status-pension" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1759,7 +1720,7 @@
                     <td><input type="text" name="ovdNriExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-nri').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-nri').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-nri" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-nri', 'NRI_PROOF')">
                         <span id="ovd-status-nri" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1775,7 +1736,7 @@
                     <td><input type="text" name="ovdFundsDate" class="bank-field-input" placeholder="Statement Date"></td>
                     <td style="text-align:center">
                       <div style="display:flex;align-items:center;justify-content:center;gap:4px">
-                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-funds').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">📎 Upload</button>
+                        <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-ovd-funds').click()" style="padding:0.2rem 0.45rem;font-size:0.68rem;white-space:nowrap">Upload</button>
                         <input type="file" id="file-ovd-funds" accept="image/*,application/pdf" style="display:none" onchange="handleOvdFileUpload(this, 'ovd-status-funds', 'FUNDS_PROOF')">
                         <span id="ovd-status-funds" style="font-size:0.65rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:95px">No file</span>
                       </div>
@@ -1895,7 +1856,7 @@
 
               <!-- Deemed Proof Dynamic Upload Dropzones (Req 14) -->
               <div id="deemed-proof-uploads-container" style="display:none;background:rgba(255,255,255,0.02);border:1px dashed #cbd5e1;border-radius:6px;padding:0.75rem;margin-bottom:1rem">
-                <div style="font-size:0.76rem;font-weight:700;color:var(--brand-500);margin-bottom:0.5rem">📎 Upload Certified Copies for Selected Deemed Proofs:</div>
+                <div style="font-size:0.76rem;font-weight:700;color:var(--brand-500);margin-bottom:0.5rem">Upload Certified Copies for Selected Deemed Proofs:</div>
                 <div id="deemed-proof-uploads-list" style="display:flex;flex-direction:column;gap:0.5rem"></div>
               </div>
 
@@ -1939,7 +1900,7 @@
                       
                       <div class="passport-photo-box" onclick="document.getElementById('applicant-photo-file-input').click()" title="Click to upload photograph (auto-resized)">
                         <div id="passport-photo-placeholder">
-                          <div style="font-size:1.8rem;margin-bottom:0.25rem">📷</div>
+                          <div style="font-size:1.8rem;margin-bottom:0.25rem"></div>
                           <div style="font-size:0.72rem;font-weight:700;color:var(--brand-500)">Upload Photo</div>
                           <div style="font-size:0.62rem;color:var(--text-muted);padding:0 0.5rem;margin-top:0.2rem">
                             3.5cm × 4.5cm
@@ -1965,9 +1926,12 @@
 
                       <div id="slot-applicant-signature" class="verification-slot-box" onclick="openVerificationChoiceModal(1)" title="Click to choose Digital Signature Pad or Upload Thumb Impression">
                         <div id="form-signature-placeholder">
-                          <div style="font-size:1.4rem;color:var(--brand-500);margin-bottom:0.2rem">✍️ / 🖐️</div>
-                          <div style="font-size:0.75rem;font-weight:800;color:var(--brand-500)">Click to Sign / Thumb</div>
-                          <div style="font-size:0.62rem;color:var(--text-muted)">Pad or thumb impression</div>
+                          <div style="margin-bottom:0.35rem;display:flex;align-items:center;justify-content:center;gap:0.4rem">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;color:var(--brand-500)"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:var(--text-muted)"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                          </div>
+                          <div style="font-size:0.75rem;font-weight:800;color:var(--brand-500)">Tap to Sign &amp; Verify</div>
+                          <div style="font-size:0.6rem;color:var(--text-muted);margin-top:0.1rem">Digital pad &nbsp;|&nbsp; Thumb impression</div>
                         </div>
                         <img id="form-signature-preview" class="verification-preview-img" alt="Applicant Specimen Verification">
                         <div id="form-signature-meta" style="display:none;margin-top:0.35rem"></div>
@@ -2055,7 +2019,7 @@
               <!-- Joint Members Counter (Req 15) -->
               <div id="joint-members-count-row" style="display:none;margin-bottom:1rem;background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.6rem 0.8rem;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.75rem">
                 <div>
-                  <strong style="font-size:0.8rem;color:var(--brand-500)">👥 Number of Joint Members (including Primary Applicant):</strong>
+                  <strong style="font-size:0.8rem;color:var(--brand-500)">Number of Joint Members (including Primary Applicant):</strong>
                   <div style="font-size:0.7rem;color:var(--text-muted)">Specify 2 or more joint account holders (Scales customer info, photos, and signatures)</div>
                 </div>
                 <div style="display:flex;align-items:center;gap:0.5rem">
@@ -2081,46 +2045,49 @@
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:0.4rem 0.6rem;background:rgba(11,37,69,0.02);border:1px solid #cbd5e1;border-radius:4px">
                   <span style="font-size:0.78rem;font-weight:700">ATM / Debit Card Required:</span>
                   <div>
-                    <label class="bank-option-pill" style="padding:0.15rem 0.4rem"><input type="radio" name="svcDebitRadio" value="YES" checked> <span>Yes</span></label>
-                    <label class="bank-option-pill" style="padding:0.15rem 0.4rem"><input type="radio" name="svcDebitRadio" value="NO"> <span>No</span></label>
+                    <label class="bank-option-pill" style="padding:0.15rem 0.4rem"><input type="radio" name="svcDebitRadio" value="YES" checked onchange="handleDebitCardRequiredToggle(this.value)"> <span>Yes</span></label>
+                    <label class="bank-option-pill" style="padding:0.15rem 0.4rem"><input type="radio" name="svcDebitRadio" value="NO" onchange="handleDebitCardRequiredToggle(this.value)"> <span>No</span></label>
                   </div>
                 </div>
               </div>
 
-              <!-- Item 18: Debit Card Scheme (RuPay / Visa / Mastercard) & Format (Virtual / Metal / Both) -->
-              <div style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem;margin-bottom:0.75rem">
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
-                  <div>
-                    <span style="display:block;font-size:0.78rem;font-weight:700;margin-bottom:0.35rem">Debit Card Network / Scheme*:</span>
-                    <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-                      <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="RUPAY" checked> <span>🇮🇳 RuPay</span></label>
-                      <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="VISA"> <span>💳 Visa</span></label>
-                      <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="MASTERCARD"> <span>🔴 Mastercard</span></label>
+              <!-- Dependent Debit Card Section (Conditionally shown if Debit Card is YES) -->
+              <div id="debit-card-dependent-fields">
+                <!-- Item 18: Debit Card Scheme (RuPay / Visa / Mastercard) & Format (Virtual / Metal / Both) -->
+                <div style="background:rgba(99,102,241,0.05);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem;margin-bottom:0.75rem">
+                  <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
+                    <div>
+                      <span style="display:block;font-size:0.78rem;font-weight:700;margin-bottom:0.35rem">Debit Card Network / Scheme*:</span>
+                      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="RUPAY" checked> <span>RuPay</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="VISA"> <span>Visa</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="MASTERCARD"> <span>Mastercard</span></label>
+                      </div>
+                    </div>
+                    <div>
+                      <span style="display:block;font-size:0.78rem;font-weight:700;margin-bottom:0.35rem">Debit Card Type / Format*:</span>
+                      <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="BOTH" checked> <span>Both (Virtual + Metal)</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="VIRTUAL"> <span>Virtual Card</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="METAL"> <span>Physical Metal Card</span></label>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <span style="display:block;font-size:0.78rem;font-weight:700;margin-bottom:0.35rem">Debit Card Type / Format*:</span>
-                    <div style="display:flex;gap:0.4rem;flex-wrap:wrap">
-                      <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="BOTH" checked> <span>⚡ Both (Virtual + Metal)</span></label>
-                      <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="VIRTUAL"> <span>📱 Virtual Card</span></label>
-                      <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="METAL"> <span>💳 Physical Metal Card</span></label>
-                    </div>
+                  <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.4rem">
+                    Auto-issued immediately upon account approval and accessible directly in your online banking dashboard.
                   </div>
                 </div>
-                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.4rem">
-                  ✨ Auto-issued immediately upon account approval and accessible directly in your online banking dashboard.
-                </div>
-              </div>
 
-              <!-- Name on Debit Card -->
-              <div class="char-input-group" style="margin-bottom:0.75rem">
-                <div class="char-input-label-row">
-                  <span>Name on Debit Card:</span>
-                  <span style="font-size:0.7rem;color:var(--text-muted)">Embossed on Card (Max 24 characters)</span>
-                </div>
-                <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="nameOnCard">
-                  <input type="text" id="raw-card-name" name="nameOnCard" class="bank-box-input notranslate" translate="no" maxlength="24" autocomplete="off" spellcheck="false">
-                  <div class="bank-box-cells notranslate" translate="no"></div>
+                <!-- Name on Debit Card -->
+                <div class="char-input-group" style="margin-bottom:0.75rem">
+                  <div class="char-input-label-row">
+                    <span>Name on Debit Card:</span>
+                    <span style="font-size:0.7rem;color:var(--text-muted)">Embossed on Card (Max 24 characters)</span>
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="nameOnCard">
+                    <input type="text" id="raw-card-name" name="nameOnCard" class="bank-box-input notranslate" translate="no" maxlength="24" autocomplete="off" spellcheck="false">
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
                 </div>
               </div>
 
@@ -2267,10 +2234,23 @@
                 </div>
               </div>
 
-              <!-- Password for digital portal account provisioning -->
-              <div style="background:rgba(99,102,241,0.04);border:1px solid rgba(99,102,241,0.15);padding:0.75rem;border-radius:6px;margin-bottom:1rem">
-                <label style="display:block;font-size:0.78rem;font-weight:700;margin-bottom:0.25rem">Online Banking Password*: <span style="font-size:0.7rem;font-weight:normal;color:var(--text-muted)">(Secures your portal once approved)</span></label>
-                <input type="password" name="password" id="input-password" class="bank-field-input" placeholder="Minimum 8 characters" required minlength="8" style="text-transform:none;max-width:320px">
+              <!-- Online Banking Login Password (Page 3 Only) -->
+              <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:6px;padding:0.75rem;margin-bottom:1rem">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.35rem">
+                  <label for="input-password" id="label-onboarding-password" style="font-size:0.78rem;font-weight:700;color:var(--text-main)">
+                    Online Banking Login Password*:
+                  </label>
+                  <span style="font-size:0.72rem;color:var(--brand-500);font-weight:600">Use Email or Mobile + this Password to sign in</span>
+                </div>
+                <div style="position:relative;display:flex;align-items:center;max-width:420px">
+                  <input type="password" id="input-password" name="password" class="bank-field-input" placeholder="Create a secure password (minimum 8 characters)" required minlength="8" autocomplete="new-password" style="padding-right:2.8rem;text-transform:none;font-family:sans-serif">
+                  <button type="button" id="btn-toggle-onboarding-pwd" onclick="togglePasswordVisibility('input-password', this)" title="Show/Hide Password" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-muted);display:flex;align-items:center">
+                    <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div style="font-size:0.7rem;color:var(--text-muted);margin-top:0.35rem">
+                  Note: Once your application is approved by bank staff, you will use your registered Email or Mobile Number along with this password to log in at <a href="/login" style="color:var(--brand-400);text-decoration:underline">Online Banking Login</a>.
+                </div>
               </div>
 
               <!-- 6. JOINT APPLICANT DETAILS (IF JOINT ACCOUNT) (Req 15 & 16) -->
@@ -2444,7 +2424,7 @@
                 <div class="bank-sig-slot-box" style="flex:1;min-width:180px">
                   <div style="font-size:0.72rem;font-weight:700;margin-bottom:0.5rem">Signature / LTI of 1st Applicant</div>
                   <div id="part3-sig1-preview" style="height:55px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.72rem;cursor:pointer" onclick="openSignatureModal()" title="Click to Sign as 1st Applicant">
-                    <span style="color:var(--brand-500);font-weight:700">✍️ Click to Sign</span>
+                    <span style="color:var(--brand-500);font-weight:700">Click to Sign</span>
                     <span style="font-size:0.62rem;opacity:0.8">(1st Applicant Specimen)</span>
                   </div>
                 </div>
@@ -2452,7 +2432,7 @@
                 <div class="bank-sig-slot-box" id="part3-sig2-wrap" style="flex:1;min-width:180px">
                   <div style="font-size:0.72rem;font-weight:700;margin-bottom:0.5rem">Signature of 2nd Applicant</div>
                   <div id="part3-sig2-preview" style="height:55px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.72rem;cursor:pointer" onclick="openCoSignModal('joint2')" title="Click to Sign as 2nd Applicant">
-                    <span style="color:var(--brand-500);font-weight:700">✍️ Co-Sign Slot</span>
+                    <span style="color:var(--brand-500);font-weight:700">Co-Sign Slot</span>
                     <span style="font-size:0.62rem;opacity:0.8">(Required for Joint Accounts)</span>
                   </div>
                 </div>
@@ -2460,7 +2440,7 @@
                 <div class="bank-sig-slot-box" style="flex:1;min-width:180px">
                   <div style="font-size:0.72rem;font-weight:700;margin-bottom:0.5rem">Signature of Guardian / Witness</div>
                   <div id="part3-sig3-preview" style="height:55px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.72rem;cursor:pointer" onclick="openCoSignModal('joint3')" title="Click to Sign as Guardian / Witness">
-                    <span style="color:var(--brand-500);font-weight:700">✍️ Guardian / Witness</span>
+                    <span style="color:var(--brand-500);font-weight:700">Guardian / Witness</span>
                     <span style="font-size:0.62rem;opacity:0.8">(For Minors / Special Assist)</span>
                   </div>
                 </div>
@@ -2477,23 +2457,29 @@
           </div>
           <!-- ==================== END BANK PAPER SHEET ==================== -->
 
-          <!-- STEP 2 BOTTOM ACTION NAVIGATION -->
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;flex-wrap:wrap;gap:0.75rem">
-            <button type="button" class="btn btn-outline" onclick="goToOnboardingStep(1)">
-              <span data-i18n="btn_back">Back to Account Selection</span>
-            </button>
+          <!-- UNIFIED PERSISTENT FLOATING ACTION BAR -->
+          <div id="floating-form-action-bar" class="floating-action-bar screen-only no-print" style="position:fixed;bottom:0;left:0;right:0;background:rgba(15,23,42,0.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid rgba(255,255,255,0.12);padding:0.75rem 1.5rem;z-index:99999;box-shadow:0 -10px 30px rgba(0,0,0,0.6);display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap">
+            <div style="display:flex;align-items:center;gap:0.75rem">
+              <button type="button" id="btn-floating-prev" class="btn btn-outline btn-sm" onclick="handleFormPrevStep()" style="font-size:0.8rem">
+                ← Back to Account Selection
+              </button>
+              <div id="floating-draft-status" style="font-size:0.75rem;color:var(--text-muted);display:flex;align-items:center;gap:0.35rem">
+                <span id="floating-draft-saved-text">Draft auto-saved locally</span>
+              </div>
+            </div>
+
             <div style="display:flex;gap:0.6rem;align-items:center;flex-wrap:wrap">
-              <button type="button" class="btn btn-outline" onclick="confirmClearAllForm()" style="color:var(--rose-500);border-color:rgba(244,63,94,0.3)">
-                🗑️ Clear All
+              <button type="button" class="btn btn-outline btn-sm" onclick="confirmClearAllForm()" style="color:var(--rose-500);border-color:rgba(244,63,94,0.3);font-size:0.8rem" title="Clear all entered data">
+                Clear All
               </button>
-              <button type="button" class="btn btn-outline" onclick="saveCustomerFormDraft(true)">
-                💾 Save Draft
+              <button type="button" class="btn btn-outline btn-sm" id="btn-floating-save-draft" onclick="saveCustomerFormDraft(true)" style="font-size:0.8rem" title="Save draft locally and to ledger">
+                Save Draft
               </button>
-              <button type="button" class="btn btn-outline" onclick="prepareAndPrintBankForm()" title="Download PDF &amp; Print Official 4-Page Uniform Form">
-                📥 Download &amp; Print Form
+              <button type="button" class="btn btn-outline btn-sm" onclick="prepareAndPrintBankForm()" style="font-size:0.8rem" title="Download PDF &amp; Print Official 4-Page Uniform Form">
+                Download &amp; Print Form
               </button>
-              <button type="submit" class="btn btn-success" id="btn-direct-submit-form" style="padding:0.65rem 1.6rem;font-weight:700">
-                ✓ Submit Completed Application
+              <button type="button" class="btn btn-primary" id="btn-primary-flow-action" onclick="handlePrimaryFlowAction()" style="font-weight:700;padding:0.55rem 1.5rem;font-size:0.85rem">
+                Save &amp; Next →
               </button>
             </div>
           </div>
@@ -2529,8 +2515,7 @@
               APP-2026-XXXXXX
             </div>
             <button type="button" onclick="const num = document.getElementById('confirmation-app-number').textContent.trim(); navigator.clipboard && navigator.clipboard.writeText(num); showToast('Application reference ' + num + ' copied!', 'success');" style="background:rgba(255,255,255,0.06);border:1px solid var(--border-subtle);border-radius:8px;padding:0.4rem 0.6rem;color:var(--text-main);cursor:pointer;font-size:0.9rem" title="Copy Application Reference">
-              📋
-            </button>
+                          </button>
           </div>
 
           <p style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:1.5rem">
@@ -2546,18 +2531,16 @@
           </div>
 
           <div style="display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1.25rem;font-size:0.72rem;color:var(--text-muted)">
-            <span>🔒 AES-256 Vault Encrypted</span>
-            <span>•</span>
-            <span>🏛️ Uniform Form 101-C Verified</span>
+            <span>Uniform Form 101-C Verified</span>
           </div>
         </div>
 
         <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
           <a href="/existing_application" class="btn btn-outline" style="padding:0.75rem 1.5rem">
-            <span data-i18n="track_app_btn">🔍 Track Application Status</span>
+            <span data-i18n="track_app_btn">Track Application Status</span>
           </a>
           <a href="/login" class="btn btn-primary" style="padding:0.75rem 1.75rem">
-            <span data-i18n="return_login">🔑 Proceed to Sign In →</span>
+            <span data-i18n="return_login">Proceed to Sign In →</span>
           </a>
         </div>
       </div>
@@ -2570,7 +2553,6 @@
     <div class="signature-modal-card" style="max-width:520px" onclick="event.stopPropagation()">
       <div class="signature-modal-header">
         <div style="display:flex;align-items:center;gap:0.6rem">
-          <span style="font-size:1.3rem">🔐</span>
           <div>
             <h3 style="font-size:1.05rem;font-weight:800;margin:0;color:inherit">Verification Method</h3>
             <div style="font-size:0.75rem;color:var(--text-muted)">Choose how you would like to provide your verification</div>
@@ -2583,7 +2565,7 @@
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem">
           <!-- Choice 1: Signature Pad -->
           <div class="verification-choice-card" onclick="selectVerificationMethod('SIGNATURE')">
-            <div style="font-size:2.4rem;margin-bottom:0.5rem">✍️</div>
+            <div style="font-size:2.4rem;margin-bottom:0.5rem"></div>
             <h4 style="font-size:1rem;font-weight:800;color:inherit;margin-bottom:0.35rem">Digital Signature Pad</h4>
             <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4">
               Draw your specimen signature using your mouse, touchscreen, stylus, or generate cursive script.
@@ -2595,7 +2577,7 @@
 
           <!-- Choice 2: Thumb Impression Upload -->
           <div class="verification-choice-card" onclick="selectVerificationMethod('THUMB')">
-            <div style="font-size:2.4rem;margin-bottom:0.5rem">🖐️</div>
+            <div style="font-size:2.4rem;margin-bottom:0.5rem"></div>
             <h4 style="font-size:1rem;font-weight:800;color:inherit;margin-bottom:0.35rem">Thumb Impression</h4>
             <p style="font-size:0.75rem;color:var(--text-secondary);margin:0;line-height:1.4">
               Upload a clear photograph or scanned image of your thumb impression (left or right thumb).
@@ -2620,7 +2602,6 @@
     <div class="signature-modal-card" style="max-width:500px" onclick="event.stopPropagation()">
       <div class="signature-modal-header">
         <div style="display:flex;align-items:center;gap:0.6rem">
-          <span style="font-size:1.3rem">🖐️</span>
           <div>
             <h3 style="font-size:1.05rem;font-weight:800;margin:0;color:inherit">Upload Thumb Impression Photo</h3>
             <div style="font-size:0.75rem;color:var(--text-muted)">Official Biometric Impression for Bank Form</div>
@@ -2632,7 +2613,7 @@
       <div style="padding:1.5rem">
         <div id="thumb-upload-dropzone" style="border:2px dashed #0b2545;border-radius:10px;padding:1.5rem;text-align:center;background:rgba(11,37,69,0.02);cursor:pointer" onclick="document.getElementById('input-thumb-file').click()">
           <div id="thumb-dropzone-empty">
-            <div style="font-size:2.2rem;margin-bottom:0.35rem">📷</div>
+            <div style="font-size:2.2rem;margin-bottom:0.35rem"></div>
             <div style="font-weight:800;font-size:0.9rem;color:var(--brand-500)">Click or Drag &amp; Drop Thumb Photo</div>
             <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:0.25rem">Supports JPG, PNG, WEBP (Clear ink impression recommended)</div>
           </div>
@@ -2663,7 +2644,6 @@
     <div class="signature-modal-card" onclick="event.stopPropagation()">
       <div class="signature-modal-header">
         <div style="display:flex;align-items:center;gap:0.6rem">
-          <span style="font-size:1.3rem">✍️</span>
           <div>
             <h3 style="font-size:1.05rem;font-weight:800;margin:0;color:inherit">Digital Specimen Signature Pad</h3>
             <div style="font-size:0.75rem;color:var(--text-muted)">Official Signature for Account Opening Form</div>
@@ -2675,7 +2655,7 @@
       <div style="padding:1rem 1.5rem 0.5rem 1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem">
           <div id="signature-modal-sign-as" style="font-size:0.95rem;font-weight:700">
-            ✍️ Sign as: <strong style="color:var(--brand-500)">APPLICANT</strong>
+            Sign as: <strong style="color:var(--brand-500)">APPLICANT</strong>
           </div>
           <div id="signature-modal-timestamp" style="font-size:0.75rem;color:var(--text-muted);font-family:monospace">
             Date &amp; Time: --
@@ -2699,10 +2679,10 @@
 
           <div style="display:flex;align-items:center;gap:0.5rem">
             <button type="button" class="btn btn-outline btn-sm" onclick="clearSignaturePad()" style="font-size:0.75rem;padding:0.3rem 0.7rem">
-              🔄 Clear Pad
+              Clear Pad
             </button>
             <button type="button" class="btn btn-outline btn-sm" onclick="generateCursiveSignature()" style="font-size:0.75rem;padding:0.3rem 0.7rem" title="Auto generate cursive handwriting signature">
-              ✒️ Auto Cursive
+              Auto Cursive
             </button>
           </div>
         </div>
@@ -2725,8 +2705,7 @@
       <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.15) 0%, rgba(16,185,129,0.1) 100%)">
         <div style="display:flex;align-items:center;gap:0.75rem">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem">
-            🎉
-          </div>
+                      </div>
           <div>
             <h3 style="font-size:1.15rem;font-weight:800;color:var(--text-main);margin:0">Application Successfully Submitted!</h3>
             <span style="font-size:0.75rem;color:var(--emerald-400);font-weight:600">Official bank record created &amp; queued for review</span>
@@ -2743,14 +2722,13 @@
             <div id="popup-app-number" style="font-family:monospace;font-size:1.25rem;font-weight:800;color:var(--brand-400);letter-spacing:0.04em">APP-2026-PENDING</div>
           </div>
           <button type="button" class="btn btn-outline btn-sm" onclick="copyPopupTrackingLink()" style="font-size:0.75rem;padding:0.35rem 0.75rem" title="Copy tracking URL">
-            📋 Copy Link
+            Copy Link
           </button>
         </div>
 
         <!-- Warning / Action Guidance -->
         <div style="background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.3);border-radius:10px;padding:0.9rem 1.1rem">
           <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.4rem">
-            <span style="font-size:1rem">🔍</span>
             <strong style="font-size:0.82rem;color:var(--amber-400)">How to Track Your Application Status:</strong>
           </div>
           <p style="font-size:0.78rem;color:var(--text-main);line-height:1.45;margin-bottom:0.5rem">
@@ -2766,7 +2744,6 @@
         <!-- Post-Acceptance Login Credentials Notice -->
         <div style="background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.3);border-radius:10px;padding:0.9rem 1.1rem">
           <div style="display:flex;align-items:center;gap:0.4rem;margin-bottom:0.4rem">
-            <span style="font-size:1rem">🔐</span>
             <strong style="font-size:0.82rem;color:var(--emerald-400)">Once Accepted: How to Log Into Online Banking:</strong>
           </div>
           <p style="font-size:0.78rem;color:var(--text-main);line-height:1.45;margin-bottom:0.6rem">
@@ -2784,10 +2761,10 @@
           Close &amp; View Summary
         </button>
         <a id="popup-btn-track-now" href="#" class="btn btn-outline" style="text-decoration:none">
-          🔍 Track Status
+          Track Status
         </a>
         <a href="/login" class="btn btn-primary" style="text-decoration:none;font-weight:700">
-          🔐 Go to Login Portal →
+          Go to Login Portal →
         </a>
       </div>
     </div>
@@ -2796,21 +2773,7 @@
   <!-- Core Scripts -->
 
   <script>
-    if (typeof window.formatHumanText !== 'function') {
-      window.formatHumanText = function(val) {
-        if (!val || typeof val !== 'string') return val || '';
-        const trimmed = val.trim();
-        if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) return val;
-        if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-          return trimmed.split('_').filter(Boolean).map(part => {
-            const upper = part.toUpperCase();
-            if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) return upper;
-            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-          }).join(' ');
-        }
-        return val;
-      };
-    }
+    // formatHumanText imported from utils.js
     var formatHumanText = window.formatHumanText;
   </script>
   <script src="/js/api.js?v=20261001_1300"></script>

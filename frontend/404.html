@@ -1,277 +1,787 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Item Returned | NeoBank</title>
-<script src="/js/theme.js?v=20260928_2200"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/css/style.css?v=20260928_2200">
-<style>
-:root{--fg:#eef1f8;--glow:#12244a;--mute2:#c4ccdc;--panel:rgba(255,255,255,.025);--bg:#070d18;--ink:#0d1a2e;--ivory:#f9fbff;--gold:#5b86e5;--gold2:#8db4ff;--red:#c2364a;--mute:#93a0b8;--line:rgba(79,140,255,.22);
---serif:"Cormorant Garamond",Georgia,"Times New Roman",serif;--sans:Inter,"Segoe UI",system-ui,Arial,sans-serif;--mono:"JetBrains Mono",Consolas,monospace}
-*{box-sizing:border-box;margin:0}
-html,body{min-height:100%}
-body{background:radial-gradient(900px 500px at 50% -10%,var(--glow) 0%,transparent 70%),var(--bg);color:var(--fg);font-family:var(--sans);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);overflow-x:hidden}
-#bgpat{position:fixed;inset:0;width:100%;height:100%;opacity:.5;pointer-events:none;z-index:0}
-header{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px clamp(18px,4vw,44px);flex-wrap:wrap}
-.brand-link{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
-.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(140deg,#8db4ff,#2350d8);display:grid;place-items:center}
-.logo svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.9}
-.brand b{font:700 19px var(--sans);letter-spacing:.02em;display:block;line-height:1}
-.brand span{font-size:11.5px;color:var(--mute)}
-.header-nav{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.nav-link{font-size:12.5px;font-weight:600;color:var(--mute);text-decoration:none;padding:6px 12px;border-radius:8px;border:1px solid var(--line);background:var(--panel);transition:all .2s ease}
-.nav-link:hover{border-color:var(--gold);color:#fff}
-.nav-link.primary{background:linear-gradient(135deg,#5b86e5,#2350d8);color:#fff;border:none}
-.nav-link.primary:hover{box-shadow:0 0 16px rgba(91,134,229,.4)}
-main{position:relative;z-index:1;max-width:860px;margin:0 auto;padding:clamp(10px,3vw,30px) 18px 30px}
-.intro{text-align:center;margin-bottom:34px}
-.chip{display:inline-flex;gap:8px;align-items:center;font-size:12.5px;color:var(--gold2);border:1px solid var(--line);padding:6px 14px;border-radius:99px;background:rgba(79,140,255,.07)}
-.chip i{width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 4px rgba(194,54,74,.2)}
-h1{font:700 clamp(30px,5.4vw,50px)/1.1 var(--sans);margin:20px auto 14px;max-width:16em;letter-spacing:-.01em}
-.intro p{color:var(--mute);line-height:1.65;max-width:52ch;margin:0 auto;font-size:15.5px}
-
-/* the cheque */
-.cheque{position:relative;background:var(--ivory);color:var(--ink);border-radius:10px;padding:clamp(20px,4vw,34px);box-shadow:0 40px 80px -30px #000,0 0 0 1px rgba(255,255,255,.4) inset,0 0 0 7px rgba(79,140,255,.13);transform:rotate(-1.2deg);overflow:hidden;transition:transform .3s ease}
-.cheque:hover{transform:rotate(0deg) scale(1.008)}
-.cheque::before{content:"";position:absolute;inset:10px;border:1px solid rgba(79,140,255,.5);border-radius:6px;pointer-events:none}
-#rosette{position:absolute;right:-90px;top:-70px;width:420px;height:420px;opacity:.55;pointer-events:none}
-#wave{position:absolute;inset:0;width:100%;height:100%;opacity:.35;pointer-events:none}
-.c-top,.c-mid,.c-bot{position:relative}
-.c-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
-.c-brand{display:flex;gap:11px;align-items:center}
-.c-brand .logo{width:36px;height:36px}
-.c-brand b{font:600 22px var(--serif);display:block;line-height:1}
-.c-brand span{font-size:10.5px;color:#6b6350}
-.c-meta{text-align:right;font-size:11.5px;color:#5c5644;line-height:1.7}
-.c-meta strong{font-family:var(--mono);font-weight:400;color:var(--ink)}
-.c-mid{margin:clamp(22px,4vw,34px) 0 22px;display:grid;grid-template-columns:1fr auto;gap:18px 26px;align-items:end}
-.lbl{font-size:10.5px;color:#7a715a;margin-bottom:3px}
-.payto{font:italic 500 clamp(22px,3.6vw,30px)/1.15 var(--serif);border-bottom:1px solid rgba(13,26,46,.55);padding-bottom:6px}
-.words{font:500 15px var(--serif);border-bottom:1px solid rgba(13,26,46,.55);padding-bottom:6px;grid-column:1}
-.amount{grid-row:1/3;grid-column:2;border:1.5px solid var(--ink);border-radius:4px;padding:8px 20px;font:600 clamp(40px,7vw,60px)/1 var(--serif);background:rgba(255,255,255,.4);display:flex;align-items:center;gap:6px}
-.amount small{font:500 14px var(--sans);color:#7a715a}
-.memo{display:grid;grid-template-columns:1fr auto;gap:14px 30px;align-items:end;margin-bottom:22px}
-.memo .v{font:13px/1.5 var(--mono);border-bottom:1px solid rgba(13,26,46,.55);padding-bottom:6px;overflow-wrap:anywhere}
-.sign{min-width:190px;text-align:center}
-.sign .sig{font:italic 600 24px var(--serif);border-bottom:1px solid rgba(13,26,46,.55);padding-bottom:2px;color:#2350d8}
-.micr{position:relative;font:400 clamp(11px,2.4vw,17px) var(--mono);letter-spacing:.14em;color:#28303f;padding-top:12px;border-top:1px dashed rgba(13,26,46,.3);overflow:hidden;white-space:nowrap}
-.stamp{position:absolute;left:50%;top:47%;translate:-50% -50%;rotate:-11deg;border:3px double var(--red);color:var(--red);padding:8px 22px;border-radius:6px;text-align:center;font:600 clamp(20px,4.6vw,38px)/1.05 var(--serif);letter-spacing:.06em;background:rgba(244,238,221,.2);mix-blend-mode:multiply;text-transform:uppercase;animation:slam .55s cubic-bezier(.2,1.4,.4,1) .5s both}
-.stamp small{display:block;font:500 clamp(9px,1.8vw,12px) var(--sans);letter-spacing:.22em;margin-top:5px}
-@keyframes slam{from{opacity:0;scale:1.9}to{opacity:.9;scale:1}}
-
-/* ledger */
-.ledger{display:grid;grid-template-columns:repeat(3,1fr);margin-top:38px;border:1px solid var(--line);border-radius:12px;background:var(--panel);backdrop-filter:blur(6px)}
-.cell{padding:18px 22px}
-.cell+.cell{border-left:1px solid var(--line)}
-.cell .k{font-size:12px;color:var(--mute);margin-bottom:6px}
-.cell .val{font:500 15.5px var(--sans)}
-.cell .val.mono{font-family:var(--mono);font-size:14px;color:var(--gold2)}
-.assure{margin:22px auto 0;max-width:640px;display:flex;gap:14px;align-items:flex-start;font-size:14.5px;line-height:1.6;color:var(--mute2)}
-.assure svg{flex:none;width:26px;height:26px;stroke:var(--gold2);fill:none;stroke-width:1.6;margin-top:1px}
-.assure b{color:var(--fg);font-weight:600}
-#note{text-align:center;margin-top:26px;font-size:12.5px;color:var(--mute)}
-footer{position:relative;z-index:1;text-align:center;font-size:12px;color:#6d7a94;padding:6px 0 26px}
-html[data-theme="light"]{--fg:#0a1431;--bg:#eef1f6;--glow:#cfdaf3;--mute:#4a5670;--mute2:#404c68;--gold2:#2350d8;--gold:#2350d8;--line:rgba(12,27,62,.14);--panel:rgba(255,255,255,.75)}
-html[data-theme="light"] .cheque{box-shadow:0 30px 60px -30px rgba(12,27,62,.5),0 0 0 7px rgba(79,140,255,.22)}
-html[data-theme="light"] footer{color:#5b6885}
-@media (max-width:640px){.ledger{grid-template-columns:1fr}.cell+.cell{border-left:0;border-top:1px solid var(--line)}.c-mid{grid-template-columns:1fr}.amount{grid-row:auto;grid-column:1;justify-self:start}.memo{grid-template-columns:1fr}.sign{text-align:left}.c-meta{text-align:left}.cheque{transform:none}}
-@media (prefers-reduced-motion:reduce){.stamp{animation:none;opacity:.9}}
-</style>
-</head>
-<body>
-<svg id="bgpat" aria-hidden="true"></svg>
-
-<header>
-  <a href="/" class="brand-link">
-    <div class="logo"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></div>
-    <div class="brand"><b>NeoBank</b><span>Digital Banking Platform</span></div>
-  </a>
-
-  <nav class="header-nav">
-    <!-- Dark / Light Theme Toggle Switch -->
-    <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
-      <span class="theme-toggle-track">
-        <span class="theme-toggle-indicator">
-          <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="4"></circle>
-            <path d="M12 2v2"></path>
-            <path d="M12 20v2"></path>
-            <path d="m4.93 4.93 1.41 1.41"></path>
-            <path d="m17.66 17.66 1.41 1.41"></path>
-            <path d="M2 12h2"></path>
-            <path d="M20 12h2"></path>
-            <path d="m6.34 17.66-1.41 1.41"></path>
-            <path d="m19.07 4.93-1.41 1.41"></path>
-          </svg>
-          <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-          </svg>
-        </span>
-      </span>
-      <span class="theme-toggle-label">Dark</span>
-    </button>
-    <a href="/" class="nav-link">Home</a>
-    <a href="/existing_application" class="nav-link">Track Application</a>
-    <a href="/open_account_customer" class="nav-link">Open Account</a>
-    <a href="/login" class="nav-link primary">Sign In</a>
-  </nav>
-</header>
-
-<main>
-  <div class="intro">
-    <span class="chip"><i></i>Error 404 · Item returned</span>
-    <h1>We couldn’t find this page in our records</h1>
-    <p>The address you presented isn’t registered with NeoBank, or the item has been withdrawn. No account information was accessed.</p>
-  </div>
-
-  <section class="cheque" aria-label="Returned item details">
-    <svg id="rosette" viewBox="-130 -130 260 260" aria-hidden="true"></svg>
-    <svg id="wave" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 800 300"></svg>
-
-    <div class="c-top">
-      <div class="c-brand">
-        <div class="logo"><svg viewBox="0 0 24 24"><path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18"/></svg></div>
-        <div><b>NeoBank</b><span>Records &amp; Clearing Office</span></div>
-      </div>
-      <div class="c-meta">Item no. <strong id="no">000404</strong><br>Date <strong id="date">—</strong></div>
-    </div>
-
-    <div class="c-mid">
-      <div><div class="lbl">Presented for</div><div class="payto">The page you requested</div></div>
-      <div class="amount"><small>No.</small>404</div>
-      <div class="words">Four hundred four — not on record</div>
-    </div>
-
-    <div class="memo">
-      <div><div class="lbl">Address presented</div><div class="v" id="addr">—</div></div>
-      <div class="sign"><div class="sig">NeoBank Records</div><div class="lbl" style="margin:4px 0 0">Authorised signature</div></div>
-    </div>
-
-    <div class="micr" id="micr">⑈000404⑈ ⑆0000⑆ 4040 404</div>
-
-    <div class="stamp">Returned<small>Not on record</small></div>
-  </section>
-
-  <!-- Application Context Box (Automatic Detection) -->
-  <div id="app-context-box" style="display:none;margin-top:28px;background:rgba(91,134,229,.08);border:1px solid rgba(91,134,229,.28);border-radius:12px;padding:18px 22px">
-    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-      <span style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);background:rgba(91,134,229,.15);padding:3px 10px;border-radius:99px">APPLICATION RECOVERY</span>
-      <span style="font-size:12px;color:var(--mute)">Did you mean to track an application?</span>
-    </div>
-    <div style="font-size:14px;color:var(--fg);margin-bottom:14px">
-      We detected an application inquiry in your link: <strong id="detected-app-code" style="font-family:var(--mono);color:var(--gold2)"></strong>.
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <a id="btn-redirect-app" href="/existing_application" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#5b86e5,#2350d8);color:#fff;text-decoration:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700">
-        🔍 Lookup Application Now
-      </a>
-      <a href="/open_account_customer" style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600">
-        📝 Start New Application
-      </a>
-    </div>
-  </div>
-
-  <div class="ledger">
-    <div class="cell"><div class="k">Reference</div><div class="val mono" id="ref">—</div></div>
-    <div class="cell"><div class="k">Processed</div><div class="val" id="when">—</div></div>
-    <div class="cell"><div class="k">Status</div><div class="val">Not on record · No changes made</div></div>
-  </div>
-
-  <!-- Quick Action Navigation -->
-  <div class="actions-container" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
-    <a href="/" style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#5b86e5,#2350d8);color:#fff;text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:700">
-      🏠 Return to Home
-    </a>
-    <a href="/existing_application" style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600">
-      🔍 Track Application
-    </a>
-    <a href="/open_account_customer" style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600">
-      📝 Open New Account
-    </a>
-    <button type="button" onclick="goBackOrHome()" style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);cursor:pointer;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600;font-family:inherit">
-      ↩ Return to Previous Page
-    </button>
-  </div>
-
-  <div class="assure">
-    <svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6l7-3z"/><path d="M9 12l2.200 2.200L15.500 10"/></svg>
-    <p><b>Your accounts are safe.</b> This was a routing issue only. No transaction was started, and no balances or personal details were changed.</p>
-  </div>
-  <p id="note">Refresh this page to return to the last page you had open.</p>
-</main>
-<footer>NeoBank Core Banking System · Secured by AES-256 GCM</footer>
-
-<script>
-(function(){
-  // ---- engraved guilloche patterns (banknote-style security lines)
-  function rosette(R,r,d,n){var p='',k=(R-r)/r,t;for(var i=0;i<=n;i++){t=i/n*Math.PI*2*r/gcd(R,r);p+=(i?'L':'M')+((R-r)*Math.cos(t)+d*Math.cos(k*t)).toFixed(1)+' '+((R-r)*Math.sin(t)-d*Math.sin(k*t)).toFixed(1)}return p}
-  function gcd(a,b){return b?gcd(b,a%b):a}
-  function paint(el,col,list,w){if(!el)return;el.innerHTML=list.map(function(d){return '<path d="'+rosette(84,31,d,1400)+'" fill="none" stroke="'+col+'" stroke-width="'+w+'"/>'}).join('')}
-  paint(document.getElementById('rosette'),'#5b86e5',[22,30,38,46,54,62],.45);
-  var bg=document.getElementById('bgpat');
-  if(bg){
-    bg.setAttribute('viewBox','-130 -130 260 260');
-    bg.setAttribute('preserveAspectRatio','xMidYMid slice');
-    bg.style.opacity=document.documentElement.getAttribute("data-theme")==="light"?.16:.11;
-    paint(bg,'#5b86e5',[24,34,44,54,64,74],.35);
-  }
-  var w=document.getElementById('wave');
-  if(w){
-    var s='';
-    for(var j=0;j<26;j++){var y=110+j*3.400,a=26+Math.sin(j/4)*10,q='M0 '+y;for(var x=0;x<=800;x+=20)q+='L'+x+' '+(y+Math.sin(x/70+j/5)*a*.4).toFixed(1);s+='<path d="'+q+'" fill="none" stroke="#5b86e5" stroke-width=".4"/>'}
-    w.innerHTML=s;
-  }
-
-  // ---- request details
-  var path=location.pathname+location.search,d=new Date(),p=function(n){return String(n).padStart(2,'0')};
-  var stamp=d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'-'+p(d.getHours())+p(d.getMinutes())+p(d.getSeconds());
-  var $=function(i){return document.getElementById(i)};
-  if($('ref'))$('ref').textContent='NB-404-'+stamp;
-  if($('no'))$('no').textContent='0'+String(Math.floor(d.getTime()/1000)).slice(-5);
-  if($('date'))$('date').textContent=d.toLocaleDateString([], {day:'2-digit',month:'short',year:'numeric'});
-  if($('when'))$('when').textContent=d.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'})+' local time';
-  if($('addr'))$('addr').textContent=path;
-
-  // ---- check for application keywords in the URL
-  var appMatch = path.match(/APP-\d{4}-\d{6}/i) || path.match(/app=([A-Za-z0-9\-]+)/i);
-  if(appMatch){
-    var appCode = (appMatch[1] || appMatch[0]).replace(/^app=/i, '').toUpperCase();
-    var contextBox = $('app-context-box');
-    var codeEl = $('detected-app-code');
-    var redirBtn = $('btn-redirect-app');
-    if(contextBox && codeEl && redirBtn){
-      contextBox.style.display = 'block';
-      codeEl.textContent = appCode;
-      redirBtn.href = '/existing_application?app=' + encodeURIComponent(appCode);
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Item Returned | NeoBank</title>
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <style>
+    :root {
+      --fg: #eef1f8;
+      --glow: #12244a;
+      --mute2: #c4ccdc;
+      --panel: rgba(255, 255, 255, .025);
+      --bg: #070d18;
+      --ink: #0d1a2e;
+      --ivory: #f9fbff;
+      --gold: #5b86e5;
+      --gold2: #8db4ff;
+      --red: #c2364a;
+      --mute: #93a0b8;
+      --line: rgba(79, 140, 255, .22);
+      --serif: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+      --sans: Inter, "Segoe UI", system-ui, Arial, sans-serif;
+      --mono: "JetBrains Mono", Consolas, monospace
     }
-  }
 
-  // ---- refresh returns customer to the last page they had open
-  var KEY='nb_last_page',last=null;
-  try{last=localStorage.getItem(KEY)}catch(e){}
-  var nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
-  var reload=nav?nav.type==='reload':(performance.navigation&&performance.navigation.type===1);
-  if(reload&&last&&last!==path){location.replace(last);return}
-  if(!last&&$('note'))$('note').textContent='Use your browser’s back button to return to your previous page.';
+    * {
+      box-sizing: border-box;
+      margin: 0
+    }
 
-  window.goBackOrHome = function(){
-    try{
-      var prev = localStorage.getItem('nb_last_page');
-      if(prev && prev !== path && prev !== '/404'){
-        location.href = prev;
-        return;
+    html,
+    body {
+      min-height: 100%
+    }
+
+    body {
+      background: radial-gradient(900px 500px at 50% -10%, var(--glow) 0%, transparent 70%), var(--bg);
+      color: var(--fg);
+      font-family: var(--sans);
+      padding-top: env(safe-area-inset-top, 0px);
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      overflow-x: hidden
+    }
+
+    #bgpat {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: .5;
+      pointer-events: none;
+      z-index: 0
+    }
+
+    header {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 20px clamp(18px, 4vw, 44px);
+      flex-wrap: wrap
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: inherit
+    }
+
+    .logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 11px;
+      background: linear-gradient(140deg, #8db4ff, #2350d8);
+      display: grid;
+      place-items: center
+    }
+
+    .logo svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #fff;
+      stroke-width: 1.9
+    }
+
+    .brand b {
+      font: 700 19px var(--sans);
+      letter-spacing: .02em;
+      display: block;
+      line-height: 1
+    }
+
+    .brand span {
+      font-size: 11.5px;
+      color: var(--mute)
+    }
+
+    .header-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap
+    }
+
+    .nav-link {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--mute);
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      transition: all .2s ease
+    }
+
+    .nav-link:hover {
+      border-color: var(--gold);
+      color: #fff
+    }
+
+    .nav-link.primary {
+      background: linear-gradient(135deg, #5b86e5, #2350d8);
+      color: #fff;
+      border: none
+    }
+
+    .nav-link.primary:hover {
+      box-shadow: 0 0 16px rgba(91, 134, 229, .4)
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: clamp(10px, 3vw, 30px) 18px 30px
+    }
+
+    .intro {
+      text-align: center;
+      margin-bottom: 34px
+    }
+
+    .chip {
+      display: inline-flex;
+      gap: 8px;
+      align-items: center;
+      font-size: 12.5px;
+      color: var(--gold2);
+      border: 1px solid var(--line);
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(79, 140, 255, .07)
+    }
+
+    .chip i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--red);
+      box-shadow: 0 0 0 4px rgba(194, 54, 74, .2)
+    }
+
+    h1 {
+      font: 700 clamp(30px, 5.4vw, 50px)/1.1 var(--sans);
+      margin: 20px auto 14px;
+      max-width: 16em;
+      letter-spacing: -.01em
+    }
+
+    .intro p {
+      color: var(--mute);
+      line-height: 1.65;
+      max-width: 52ch;
+      margin: 0 auto;
+      font-size: 15.5px
+    }
+
+    /* the cheque */
+    .cheque {
+      position: relative;
+      background: var(--ivory);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: clamp(20px, 4vw, 34px);
+      box-shadow: 0 40px 80px -30px #000, 0 0 0 1px rgba(255, 255, 255, .4) inset, 0 0 0 7px rgba(79, 140, 255, .13);
+      transform: rotate(-1.2deg);
+      overflow: hidden;
+      transition: transform .3s ease
+    }
+
+    .cheque:hover {
+      transform: rotate(0deg) scale(1.008)
+    }
+
+    .cheque::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px solid rgba(79, 140, 255, .5);
+      border-radius: 6px;
+      pointer-events: none
+    }
+
+    #rosette {
+      position: absolute;
+      right: -90px;
+      top: -70px;
+      width: 420px;
+      height: 420px;
+      opacity: .55;
+      pointer-events: none
+    }
+
+    #wave {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      opacity: .35;
+      pointer-events: none
+    }
+
+    .c-top,
+    .c-mid,
+    .c-bot {
+      position: relative
+    }
+
+    .c-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      flex-wrap: wrap
+    }
+
+    .c-brand {
+      display: flex;
+      gap: 11px;
+      align-items: center
+    }
+
+    .c-brand .logo {
+      width: 36px;
+      height: 36px
+    }
+
+    .c-brand b {
+      font: 600 22px var(--serif);
+      display: block;
+      line-height: 1
+    }
+
+    .c-brand span {
+      font-size: 10.5px;
+      color: #6b6350
+    }
+
+    .c-meta {
+      text-align: right;
+      font-size: 11.5px;
+      color: #5c5644;
+      line-height: 1.7
+    }
+
+    .c-meta strong {
+      font-family: var(--mono);
+      font-weight: 400;
+      color: var(--ink)
+    }
+
+    .c-mid {
+      margin: clamp(22px, 4vw, 34px) 0 22px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 18px 26px;
+      align-items: end
+    }
+
+    .lbl {
+      font-size: 10.5px;
+      color: #7a715a;
+      margin-bottom: 3px
+    }
+
+    .payto {
+      font: italic 500 clamp(22px, 3.6vw, 30px)/1.15 var(--serif);
+      border-bottom: 1px solid rgba(13, 26, 46, .55);
+      padding-bottom: 6px
+    }
+
+    .words {
+      font: 500 15px var(--serif);
+      border-bottom: 1px solid rgba(13, 26, 46, .55);
+      padding-bottom: 6px;
+      grid-column: 1
+    }
+
+    .amount {
+      grid-row: 1/3;
+      grid-column: 2;
+      border: 1.5px solid var(--ink);
+      border-radius: 4px;
+      padding: 8px 20px;
+      font: 600 clamp(40px, 7vw, 60px)/1 var(--serif);
+      background: rgba(255, 255, 255, .4);
+      display: flex;
+      align-items: center;
+      gap: 6px
+    }
+
+    .amount small {
+      font: 500 14px var(--sans);
+      color: #7a715a
+    }
+
+    .memo {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 14px 30px;
+      align-items: end;
+      margin-bottom: 22px
+    }
+
+    .memo .v {
+      font: 13px/1.5 var(--mono);
+      border-bottom: 1px solid rgba(13, 26, 46, .55);
+      padding-bottom: 6px;
+      overflow-wrap: anywhere
+    }
+
+    .sign {
+      min-width: 190px;
+      text-align: center
+    }
+
+    .sign .sig {
+      font: italic 600 24px var(--serif);
+      border-bottom: 1px solid rgba(13, 26, 46, .55);
+      padding-bottom: 2px;
+      color: #2350d8
+    }
+
+    .micr {
+      position: relative;
+      font: 400 clamp(11px, 2.4vw, 17px) var(--mono);
+      letter-spacing: .14em;
+      color: #28303f;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(13, 26, 46, .3);
+      overflow: hidden;
+      white-space: nowrap
+    }
+
+    .stamp {
+      position: absolute;
+      left: 50%;
+      top: 47%;
+      translate: -50% -50%;
+      rotate: -11deg;
+      border: 3px double var(--red);
+      color: var(--red);
+      padding: 8px 22px;
+      border-radius: 6px;
+      text-align: center;
+      font: 600 clamp(20px, 4.6vw, 38px)/1.05 var(--serif);
+      letter-spacing: .06em;
+      background: rgba(244, 238, 221, .2);
+      mix-blend-mode: multiply;
+      text-transform: uppercase;
+      animation: slam .55s cubic-bezier(.2, 1.4, .4, 1) .5s both
+    }
+
+    .stamp small {
+      display: block;
+      font: 500 clamp(9px, 1.8vw, 12px) var(--sans);
+      letter-spacing: .22em;
+      margin-top: 5px
+    }
+
+    @keyframes slam {
+      from {
+        opacity: 0;
+        scale: 1.9
       }
-    }catch(e){}
-    if(window.history.length > 1){
-      window.history.back();
-    } else {
-      location.href = '/';
+
+      to {
+        opacity: .9;
+        scale: 1
+      }
     }
-  };
-})();
-</script>
+
+    /* ledger */
+    .ledger {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      margin-top: 38px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: var(--panel);
+      backdrop-filter: blur(6px)
+    }
+
+    .cell {
+      padding: 18px 22px
+    }
+
+    .cell+.cell {
+      border-left: 1px solid var(--line)
+    }
+
+    .cell .k {
+      font-size: 12px;
+      color: var(--mute);
+      margin-bottom: 6px
+    }
+
+    .cell .val {
+      font: 500 15.5px var(--sans)
+    }
+
+    .cell .val.mono {
+      font-family: var(--mono);
+      font-size: 14px;
+      color: var(--gold2)
+    }
+
+    .assure {
+      margin: 22px auto 0;
+      max-width: 640px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: var(--mute2)
+    }
+
+    .assure svg {
+      flex: none;
+      width: 26px;
+      height: 26px;
+      stroke: var(--gold2);
+      fill: none;
+      stroke-width: 1.6;
+      margin-top: 1px
+    }
+
+    .assure b {
+      color: var(--fg);
+      font-weight: 600
+    }
+
+    #note {
+      text-align: center;
+      margin-top: 26px;
+      font-size: 12.5px;
+      color: var(--mute)
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      font-size: 12px;
+      color: #6d7a94;
+      padding: 6px 0 26px
+    }
+
+    html[data-theme="light"] {
+      --fg: #0a1431;
+      --bg: #eef1f6;
+      --glow: #cfdaf3;
+      --mute: #4a5670;
+      --mute2: #404c68;
+      --gold2: #2350d8;
+      --gold: #2350d8;
+      --line: rgba(12, 27, 62, .14);
+      --panel: rgba(255, 255, 255, .75)
+    }
+
+    html[data-theme="light"] .cheque {
+      box-shadow: 0 30px 60px -30px rgba(12, 27, 62, .5), 0 0 0 7px rgba(79, 140, 255, .22)
+    }
+
+    html[data-theme="light"] footer {
+      color: #5b6885
+    }
+
+    @media (max-width:640px) {
+      .ledger {
+        grid-template-columns: 1fr
+      }
+
+      .cell+.cell {
+        border-left: 0;
+        border-top: 1px solid var(--line)
+      }
+
+      .c-mid {
+        grid-template-columns: 1fr
+      }
+
+      .amount {
+        grid-row: auto;
+        grid-column: 1;
+        justify-self: start
+      }
+
+      .memo {
+        grid-template-columns: 1fr
+      }
+
+      .sign {
+        text-align: left
+      }
+
+      .c-meta {
+        text-align: left
+      }
+
+      .cheque {
+        transform: none
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      .stamp {
+        animation: none;
+        opacity: .9
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <svg id="bgpat" aria-hidden="true"></svg>
+
+  <header>
+    <a href="/" class="brand-link">
+      <div class="logo"><svg viewBox="0 0 24 24">
+          <path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" />
+        </svg></div>
+      <div class="brand"><b>NeoBank</b><span>Digital Banking Platform</span></div>
+    </a>
+
+    <nav class="header-nav">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme"
+        title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/existing_application" class="nav-link">Track Application</a>
+      <a href="/open_account_customer" class="nav-link">Open Account</a>
+      <a href="/login" class="nav-link primary">Sign In</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="intro">
+      <span class="chip"><i></i>Error 404 · Item returned</span>
+      <h1>We couldn’t find this page in our records</h1>
+      <p>The address you presented isn’t registered with NeoBank, or the item has been withdrawn. No account information
+        was accessed.</p>
+    </div>
+
+    <section class="cheque" aria-label="Returned item details">
+      <svg id="rosette" viewBox="-130 -130 260 260" aria-hidden="true"></svg>
+      <svg id="wave" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 800 300"></svg>
+
+      <div class="c-top">
+        <div class="c-brand">
+          <div class="logo"><svg viewBox="0 0 24 24">
+              <path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" />
+            </svg></div>
+          <div><b>NeoBank</b><span>Records &amp; Clearing Office</span></div>
+        </div>
+        <div class="c-meta">Item no. <strong id="no">000404</strong><br>Date <strong id="date">—</strong></div>
+      </div>
+
+      <div class="c-mid">
+        <div>
+          <div class="lbl">Presented for</div>
+          <div class="payto">The page you requested</div>
+        </div>
+        <div class="amount"><small>No.</small>404</div>
+        <div class="words">Four hundred four — not on record</div>
+      </div>
+
+      <div class="memo">
+        <div>
+          <div class="lbl">Address presented</div>
+          <div class="v" id="addr">—</div>
+        </div>
+        <div class="sign">
+          <div class="sig">NeoBank Records</div>
+          <div class="lbl" style="margin:4px 0 0">Authorised signature</div>
+        </div>
+      </div>
+
+      <div class="micr" id="micr">⑈000404⑈ ⑆0000⑆ 4040 404</div>
+
+      <div class="stamp">Returned<small>Not on record</small></div>
+    </section>
+
+    <!-- Application Context Box (Automatic Detection) -->
+    <div id="app-context-box"
+      style="display:none;margin-top:28px;background:rgba(91,134,229,.08);border:1px solid rgba(91,134,229,.28);border-radius:12px;padding:18px 22px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+        <span
+          style="font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--gold2);background:rgba(91,134,229,.15);padding:3px 10px;border-radius:99px">APPLICATION
+          RECOVERY</span>
+        <span style="font-size:12px;color:var(--mute)">Did you mean to track an application?</span>
+      </div>
+      <div style="font-size:14px;color:var(--fg);margin-bottom:14px">
+        We detected an application inquiry in your link: <strong id="detected-app-code"
+          style="font-family:var(--mono);color:var(--gold2)"></strong>.
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <a id="btn-redirect-app" href="/existing_application"
+          style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#5b86e5,#2350d8);color:#fff;text-decoration:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:700">
+          Lookup Application Now
+        </a>
+        <a href="/open_account_customer"
+          style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600">
+          Start New Application
+        </a>
+      </div>
+    </div>
+
+    <div class="ledger">
+      <div class="cell">
+        <div class="k">Reference</div>
+        <div class="val mono" id="ref">—</div>
+      </div>
+      <div class="cell">
+        <div class="k">Processed</div>
+        <div class="val" id="when">—</div>
+      </div>
+      <div class="cell">
+        <div class="k">Status</div>
+        <div class="val">Not on record · No changes made</div>
+      </div>
+    </div>
+
+    <!-- Quick Action Navigation -->
+    <div class="actions-container" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:24px">
+      <a href="/"
+        style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,#5b86e5,#2350d8);color:#fff;text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:700">
+        Return to Home
+      </a>
+      <a href="/existing_application"
+        style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600">
+        Track Application
+      </a>
+      <a href="/open_account_customer"
+        style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);text-decoration:none;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600">
+        Open New Account
+      </a>
+      <button type="button" onclick="goBackOrHome()"
+        style="display:inline-flex;align-items:center;gap:6px;background:var(--panel);border:1px solid var(--line);color:var(--fg);cursor:pointer;padding:10px 20px;border-radius:10px;font-size:13.5px;font-weight:600;font-family:inherit">
+        ↩ Return to Previous Page
+      </button>
+    </div>
+
+    <div class="assure">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6l7-3z" />
+        <path d="M9 12l2.200 2.200L15.500 10" />
+      </svg>
+      <p><b>Your accounts are safe.</b> This was a routing issue only. No transaction was started, and no balances or
+        personal details were changed.</p>
+    </div>
+    <p id="note">Refresh this page to return to the last page you had open.</p>
+  </main>
+  <footer>NeoBank Core Banking System</footer>
+
+  <script>
+    (function () {
+      // ---- engraved guilloche patterns (banknote-style security lines)
+      function rosette(R, r, d, n) { var p = '', k = (R - r) / r, t; for (var i = 0; i <= n; i++) { t = i / n * Math.PI * 2 * r / gcd(R, r); p += (i ? 'L' : 'M') + ((R - r) * Math.cos(t) + d * Math.cos(k * t)).toFixed(1) + ' ' + ((R - r) * Math.sin(t) - d * Math.sin(k * t)).toFixed(1) } return p }
+      function gcd(a, b) { return b ? gcd(b, a % b) : a }
+      function paint(el, col, list, w) { if (!el) return; el.innerHTML = list.map(function (d) { return '<path d="' + rosette(84, 31, d, 1400) + '" fill="none" stroke="' + col + '" stroke-width="' + w + '"/>' }).join('') }
+      paint(document.getElementById('rosette'), '#5b86e5', [22, 30, 38, 46, 54, 62], .45);
+      var bg = document.getElementById('bgpat');
+      if (bg) {
+        bg.setAttribute('viewBox', '-130 -130 260 260');
+        bg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        bg.style.opacity = document.documentElement.getAttribute("data-theme") === "light" ? .16 : .11;
+        paint(bg, '#5b86e5', [24, 34, 44, 54, 64, 74], .35);
+      }
+      var w = document.getElementById('wave');
+      if (w) {
+        var s = '';
+        for (var j = 0; j < 26; j++) { var y = 110 + j * 3.400, a = 26 + Math.sin(j / 4) * 10, q = 'M0 ' + y; for (var x = 0; x <= 800; x += 20)q += 'L' + x + ' ' + (y + Math.sin(x / 70 + j / 5) * a * .4).toFixed(1); s += '<path d="' + q + '" fill="none" stroke="#5b86e5" stroke-width=".4"/>' }
+        w.innerHTML = s;
+      }
+
+      // ---- request details
+      var path = location.pathname + location.search, d = new Date(), p = function (n) { return String(n).padStart(2, '0') };
+      var stamp = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+      var $ = function (i) { return document.getElementById(i) };
+      if ($('ref')) $('ref').textContent = 'NB-404-' + stamp;
+      if ($('no')) $('no').textContent = '0' + String(Math.floor(d.getTime() / 1000)).slice(-5);
+      if ($('date')) $('date').textContent = d.toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' });
+      if ($('when')) $('when').textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' local time';
+      if ($('addr')) $('addr').textContent = path;
+
+      // ---- check for application keywords in the URL
+      var appMatch = path.match(/APP-\d{4}-\d{6}/i) || path.match(/app=([A-Za-z0-9\-]+)/i);
+      if (appMatch) {
+        var appCode = (appMatch[1] || appMatch[0]).replace(/^app=/i, '').toUpperCase();
+        var contextBox = $('app-context-box');
+        var codeEl = $('detected-app-code');
+        var redirBtn = $('btn-redirect-app');
+        if (contextBox && codeEl && redirBtn) {
+          contextBox.style.display = 'block';
+          codeEl.textContent = appCode;
+          redirBtn.href = '/existing_application?app=' + encodeURIComponent(appCode);
+        }
+      }
+
+      // ---- refresh returns customer to the last page they had open
+      var KEY = 'nb_last_page', last = null;
+      try { last = localStorage.getItem(KEY) } catch (e) { }
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      var reload = nav ? nav.type === 'reload' : (performance.navigation && performance.navigation.type === 1);
+      if (reload && last && last !== path) { location.replace(last); return }
+      if (!last && $('note')) $('note').textContent = 'Use your browser’s back button to return to your previous page.';
+
+      window.goBackOrHome = function () {
+        try {
+          var prev = localStorage.getItem('nb_last_page');
+          if (prev && prev !== path && prev !== '/404') {
+            location.href = prev;
+            return;
+          }
+        } catch (e) { }
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          location.href = '/';
+        }
+      };
+    })();
+  </script>
 </body>
+
 </html>

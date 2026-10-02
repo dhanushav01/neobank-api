@@ -3,38 +3,9 @@
  * Role-Based Underwriting, Customer Oversight, Dispute Resolution, and Bank Administration
  */
 
-// Universal Human-Readable Formatter Fallback & Safety Guarantee
-if (typeof window.formatHumanText !== 'function') {
-  window.formatHumanText = function(val) {
-    if (!val || typeof val !== 'string') return val || '';
-    const trimmed = val.trim();
-    if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) {
-      return val;
-    }
-    if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-      return trimmed
-        .split('_')
-        .filter(Boolean)
-        .map(part => {
-          const upper = part.toUpperCase();
-          if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) {
-            return upper;
-          }
-          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-        })
-        .join(' ');
-    }
-    return val;
-  };
-}
-var formatHumanText = window.formatHumanText;
-
-if (typeof window.showToast !== 'function') {
-  window.showToast = function(msg, type) {
-    console.log(`[Toast ${type || 'info'}]:`, msg);
-  };
-}
-var showToast = window.showToast;
+// Centralized Utilities from utils.js & api.js
+var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
+var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
 
 let allBankUsers = [];
 let pendingKycQueue = [];
@@ -300,7 +271,7 @@ let activeReviewAppNumber = null;
 let pendingConfirmedAction = null;
 
 // Universal Confirmation Action Modal Controller (Item 8)
-function promptActionConfirm({ title, message, icon = '⚠️', showInput = false, inputLabel = 'Notes / Reason:', onConfirm }) {
+function promptActionConfirm({ title, message, icon = '', showInput = false, inputLabel = 'Notes / Reason:', onConfirm }) {
   const modal = document.getElementById('modal-confirm-action');
   if (!modal) {
     if (confirm(message)) {
@@ -432,7 +403,7 @@ function renderStaffApplicationsTable(apps) {
     return `
       <tr style="cursor:pointer;transition:background 0.15s ease" onclick="openApplicationReviewModal('${app.applicationNumber}')" title="Click row to inspect complete application form and documents">
         <td style="font-family:monospace;font-weight:700;color:var(--brand-400)">
-          <span>📋 ${app.applicationNumber}</span>
+          <span>${app.applicationNumber}</span>
           ${app.applicationType === 'UPDATE' ? '<span style="display:inline-block;font-size:0.65rem;background:rgba(99,102,241,0.2);color:#818cf8;padding:1px 4px;border-radius:4px;margin-left:4px">UPDATE</span>' : ''}
         </td>
         <td>
@@ -463,7 +434,7 @@ function renderStaffApplicationsTable(apps) {
           ` : `
             <div style="display:flex;align-items:center;gap:0.4rem">
               <span style="font-size:0.75rem;color:var(--rose-500)">✕ Rejected</span>
-              <button class="btn btn-outline btn-sm" style="font-size:0.7rem;padding:0.15rem 0.4rem" onclick="promptRevertStatus('${app.applicationNumber}', 'UNDER_REVIEW')" title="Reopen application">↩️ Reopen</button>
+              <button class="btn btn-outline btn-sm" style="font-size:0.7rem;padding:0.15rem 0.4rem" onclick="promptRevertStatus('${app.applicationNumber}', 'UNDER_REVIEW')" title="Reopen application">↩Reopen</button>
             </div>
           `}
         </td>
@@ -569,10 +540,10 @@ async function openApplicationReviewModal(appNumber) {
         <div style="display:flex;align-items:center;gap:0.5rem">
           <span style="color:var(--rose-500);font-size:0.85rem;font-weight:700;margin-right:0.5rem">✕ Rejected</span>
           <button type="button" class="btn btn-warning btn-sm" onclick="promptRevertStatus('${app.applicationNumber}', 'UNDER_REVIEW')">
-            ↩️ Reopen as Under Review
+            ↩Reopen as Under Review
           </button>
           <button type="button" class="btn btn-outline btn-sm" onclick="promptRevertStatus('${app.applicationNumber}', 'SUBMITTED')">
-            ↩️ Reopen as Submitted
+            ↩Reopen as Submitted
           </button>
         </div>
       `;
@@ -616,7 +587,7 @@ function renderReviewDocumentsVault(app) {
       <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:1rem;margin-bottom:0.75rem">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem">
           <strong style="font-size:0.85rem;color:var(--brand-400);display:flex;align-items:center;gap:0.4rem">
-            <span>🛡️</span> <span>Verified Form Identity Records (OVD Registered)</span>
+            <span>Verified Form Identity Records (OVD Registered)</span>
           </strong>
           <span style="font-size:0.7rem;color:var(--emerald-400);font-weight:700">✓ Legally Binding Self-Declaration</span>
         </div>
@@ -644,7 +615,7 @@ function renderReviewDocumentsVault(app) {
     <div style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;flex-wrap:wrap;gap:0.6rem">
       <div style="display:flex;align-items:center;gap:0.75rem">
         <div style="width:38px;height:38px;border-radius:8px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem">
-          ${(doc.name || '').endsWith('.pdf') ? '📑' : '🖼️'}
+          ${(doc.name || '').endsWith('.pdf') ? '' : ''}
         </div>
         <div>
           <div style="font-weight:700;color:var(--text-main);font-size:0.85rem">${doc.name}</div>
@@ -653,16 +624,16 @@ function renderReviewDocumentsVault(app) {
             <span>•</span>
             <span>${doc.size ? (doc.size / 1024).toFixed(1) + ' KB' : 'Encrypted BLOB'}</span>
             <span>•</span>
-            <span style="color:var(--emerald-400);font-weight:600">🔒 AES-256 Decrypted</span>
+            <span style="color:var(--emerald-400);font-weight:600">AES-256 Decrypted</span>
           </div>
         </div>
       </div>
       <div style="display:flex;gap:0.5rem">
         <button type="button" class="btn btn-outline btn-sm" onclick="window.viewDecryptedDocument('${doc.id}', '${doc.name}', '${doc.mime || 'application/octet-stream'}')" title="Preview decrypted document">
-          👁️ View
+          View
         </button>
         <button type="button" class="btn btn-primary btn-sm" onclick="window.downloadDecryptedDocument('${doc.id}', '${doc.name}')" title="Download decrypted file">
-          ⬇️ Download
+          Download
         </button>
       </div>
     </div>
@@ -743,7 +714,7 @@ function promptRevertStatus(appNumber, targetStatus) {
   promptActionConfirm({
     title: `Reopen Application #${appNumber}?`,
     message: `Are you sure you want to revert this application back to status ${targetStatus}? This will restore underwriting eligibility.`,
-    icon: '↩️',
+    icon: '↩',
     showInput: false,
     onConfirm: async () => {
       try {
@@ -897,7 +868,7 @@ function confirmRejectApplication(appNumber) {
   promptActionConfirm({
     title: 'Reject Customer Application?',
     message: `Are you sure you want to reject application #${appNumber}? Please provide the formal rejection reason for compliance records.`,
-    icon: '⚠️',
+    icon: '',
     showInput: true,
     inputLabel: 'Rejection Reason / Non-Compliance Note:',
     onConfirm: async (reason) => {
@@ -953,7 +924,7 @@ async function promptResetPlatform() {
   promptActionConfirm({
     title: 'Reset Sandbox Test Ledger?',
     message: 'Are you sure you want to reset all sandbox test data? This will restore the database to its pristine state.',
-    icon: '⚠️',
+    icon: '',
     showInput: false,
     onConfirm: async () => {
       try {

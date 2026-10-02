@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20260928_2200"></script>
@@ -150,26 +153,26 @@
       </div>
 
       <!-- Language Selector (Protected from Auto-Translation) -->
-      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
-        <span style="font-size:0.9rem">🌐</span>
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.45rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span class="neobank-lang-flag-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:15px;border-radius:2px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,0.6);flex-shrink:0"><svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg></span>
         <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
-          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
-          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
-          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
-          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
-          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
-          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
-          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
-          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
-          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
-          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
-          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
-          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
-          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
-          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
-          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
-          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
-          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+          <option value="en" selected class="notranslate" translate="no">English (EN)</option>
+          <option value="es" class="notranslate" translate="no">Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">తెలుగు (TE)</option>
         </select>
       </div>
 
@@ -207,7 +210,12 @@
         </div>
         <div class="form-group">
           <label data-i18n="password_label" class="form-label" for="login-password">Password</label>
-          <input type="password" id="login-password" name="password" class="form-input" data-i18n-placeholder="password_placeholder" placeholder="••••••••" required>
+          <div style="position:relative;display:flex;align-items:center">
+            <input type="password" id="login-password" name="password" class="form-input" data-i18n-placeholder="password_placeholder" placeholder="••••••••" required style="padding-right:2.8rem">
+            <button type="button" onclick="togglePasswordVisibility('login-password', this)" title="Show/Hide Password" style="position:absolute;right:8px;background:none;border:none;cursor:pointer;padding:4px;color:var(--text-muted);display:flex;align-items:center">
+              <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary" style="width:100%;margin-top:0.5rem;padding:0.8rem">
           <span data-i18n="login_submit">Authenticate & Open Dashboard</span>
@@ -218,15 +226,15 @@
       <div style="margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:0.75rem;text-align:center">
         <div>
           <a href="/open_account_customer" class="btn btn-success" style="width:100%;display:inline-block;text-decoration:none;padding:0.75rem">
-            <span data-i18n="open_account_cta">✨ Open a Bank Account (3-Step Application)</span>
+            <span data-i18n="open_account_cta">Open a Bank Account (3-Step Application)</span>
           </a>
         </div>
         <div style="display:flex;justify-content:space-between;font-size:0.8rem;flex-wrap:wrap;gap:0.5rem">
           <a href="/existing_application" style="color:var(--brand-500);text-decoration:underline">
-            <span data-i18n="track_existing_cta">🔍 Track Existing Application</span>
+            <span data-i18n="track_existing_cta">Track Existing Application</span>
           </a>
           <a href="/employee_onboarding" style="color:var(--text-secondary);text-decoration:underline">
-            <span data-i18n="employee_onboard_cta">🏢 Employee Onboarding</span>
+            <span data-i18n="employee_onboard_cta">Employee Onboarding</span>
           </a>
         </div>
       </div>
@@ -303,7 +311,6 @@
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.25rem;padding-bottom:0.75rem;border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;gap:0.75rem">
             <div>
               <div style="display:flex;align-items:center;gap:0.5rem">
-                <span style="font-size:1.2rem">📋</span>
                 <h2 style="font-size:1.35rem;font-weight:800;color:inherit;margin:0" data-i18n="step2_sheet_title">Step 2: Customer Information Sheet</h2>
               </div>
               <p style="font-size:0.82rem;color:var(--text-secondary);margin:0.25rem 0 0 0">
@@ -316,7 +323,7 @@
                 <div id="step2-selected-account-badge" class="status-pill active">SAVINGS</div>
               </div>
               <button type="button" class="btn btn-outline btn-sm no-print" onclick="window.print()" title="Print Form Sheet">
-                🖨️ Print Form
+                Print Form
               </button>
             </div>
           </div>
@@ -330,8 +337,7 @@
                 <td style="vertical-align:top">
                   <div style="display:flex;align-items:center;gap:0.65rem;margin-bottom:0.35rem">
                     <div style="width:34px;height:34px;border-radius:6px;background:#0f172a;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:18px">
-                      🏛️
-                    </div>
+                                          </div>
                     <div>
                       <div class="bank-sheet-title-main">Public / Private Sector Bank of India</div>
                       <div class="bank-sheet-title-sub">Uniform Account Opening Form for Resident Individuals</div>
@@ -457,7 +463,7 @@
                 <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Date of Birth* (DDMMYYYY):</label>
                 <input type="date" name="dob" class="bank-text-mirror-input" value="1996-08-20" required style="padding:0.35rem 0.5rem;font-size:0.82rem">
                 <div id="char-boxes-dob" class="char-box-track" style="margin-top:0.35rem"></div>
-                <div id="student-age-hint" style="display:none;font-size:0.72rem;color:var(--amber-400);margin-top:0.25rem">ℹ️ Student accounts: age 16 to 26.</div>
+                <div id="student-age-hint" style="display:none;font-size:0.72rem;color:var(--amber-400);margin-top:0.25rem">ℹStudent accounts: age 16 to 26.</div>
               </div>
               <div>
                 <label style="display:block;font-size:0.8rem;font-weight:700;margin-bottom:0.3rem">Gender*:</label>
@@ -712,7 +718,7 @@
                   
                   <div class="passport-photo-box" onclick="document.getElementById('applicant-photo-file-input').click()" title="Click to upload photograph (auto-resized)">
                     <div id="passport-photo-placeholder">
-                      <div style="font-size:1.8rem;margin-bottom:0.25rem">📷</div>
+                      <div style="font-size:1.8rem;margin-bottom:0.25rem"></div>
                       <div style="font-size:0.72rem;font-weight:700;color:var(--brand-500)">Upload Photo</div>
                       <div style="font-size:0.62rem;color:var(--text-muted);padding:0 0.5rem;margin-top:0.2rem">
                         Auto-crops &amp; resizes cleanly to 3.5cm × 4.5cm
@@ -738,7 +744,7 @@
 
                   <div id="slot-applicant-signature" class="signature-box-slot" onclick="openSignatureModal()" title="Click to sign with interactive digital pad">
                     <div id="form-signature-placeholder">
-                      <div style="font-size:1.4rem;color:var(--brand-500);margin-bottom:0.2rem">✍️</div>
+                      <div style="font-size:1.4rem;color:var(--brand-500);margin-bottom:0.2rem"></div>
                       <div style="font-size:0.75rem;font-weight:800;color:var(--brand-500)">Click to Sign Digital Specimen</div>
                       <div style="font-size:0.65rem;color:var(--text-muted)">Draw with mouse, touch, or auto-cursive</div>
                     </div>
@@ -825,7 +831,7 @@
           </div>
 
           <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;font-size:0.8rem;color:var(--text-secondary)">
-            🔒 <strong>Bank Compliance Assurance:</strong> Once submitted, the system generates your non-reusable Application Reference Number. Bank officers will inspect your documents and open your account.
+            <strong>Bank Compliance Assurance:</strong> Once submitted, the system generates your non-reusable Application Reference Number. Bank officers will inspect your documents and open your account.
           </div>
 
           <div style="display:flex;justify-content:space-between">
@@ -1015,7 +1021,9 @@
     <aside class="app-sidebar glass" id="main-app-sidebar">
       <!-- Sidebar Expand/Collapse Toggle Button (Item 17) -->
       <button type="button" class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" id="btn-toggle-sidebar" title="Expand / Collapse Sidebar">
-        <span class="toggle-icon">◀</span>
+        <span class="toggle-icon" style="display:inline-flex;align-items:center;transition:transform 0.35s cubic-bezier(0.4,0,0.2,1)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:15px;height:15px"><polyline points="15 18 9 12 15 6"/></svg>
+        </span>
         <span class="toggle-label">Collapse</span>
       </button>
       
@@ -1085,7 +1093,7 @@
         <!-- Item 9: SQL Database GUI in same tab -->
         <a id="nav-emp-sql-gui" href="/sql-gui" class="nav-item" style="text-decoration:none;color:inherit;display:none;align-items:center;gap:0.75rem" title="Open SQL Database GUI Workbench">
           <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" style="width:20px;height:20px;color:var(--emerald-400)"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4"/></svg>
-          <span>⚡ SQL Database GUI</span>
+          <span>SQL Database GUI</span>
         </a>
 
         <div style="margin-top:auto;padding-top:1rem;border-top:1px solid var(--border-subtle)">
@@ -1157,23 +1165,18 @@
           <div style="margin-top:1.5rem">
             <div class="quick-actions-bar">
               <button type="button" class="quick-action-btn" onclick="switchCustomerTab('cust-transfers')">
-                <span class="btn-icon-bubble">💸</span>
                 <span>Send Money &amp; Wire</span>
               </button>
               <button type="button" class="quick-action-btn" onclick="if(customerAccounts.length > 0){ promptDeposit(customerAccounts[0].id, customerAccounts[0].currency); } else { openModal('modal-create-account'); }">
-                <span class="btn-icon-bubble" style="background:rgba(16,185,129,0.18)">📥</span>
                 <span>Instant Deposit</span>
               </button>
               <button type="button" class="quick-action-btn" onclick="openModal('modal-issue-card')">
-                <span class="btn-icon-bubble" style="background:rgba(192,132,252,0.18)">💳</span>
                 <span>Issue Titanium Card</span>
               </button>
               <button type="button" class="quick-action-btn" onclick="switchCustomerTab('cust-loans')">
-                <span class="btn-icon-bubble" style="background:rgba(245,158,11,0.18)">📊</span>
                 <span>Instant Loan APR</span>
               </button>
               <button type="button" class="quick-action-btn" onclick="openModal('modal-submit-kyc')">
-                <span class="btn-icon-bubble" style="background:rgba(56,189,248,0.18)">🛡️</span>
                 <span>Identity &amp; Compliance</span>
               </button>
             </div>
@@ -1467,7 +1470,7 @@
 
               <div style="display:flex;justify-content:flex-end;gap:0.75rem">
                 <button type="submit" class="btn btn-primary" style="font-weight:700;padding:0.75rem 1.75rem">
-                  📤 Submit Update Application (Type: UPDATE)
+                  Submit Update Application (Type: UPDATE)
                 </button>
               </div>
             </form>
@@ -1493,8 +1496,7 @@
             <div class="glass-card metric-card">
               <div class="metric-header">
                 <span class="metric-label">Total Customers</span>
-                <span style="color:var(--brand-500)">👥</span>
-              </div>
+                </div>
               <div id="emp-stat-customers" class="metric-value">0</div>
               <div class="metric-sub">Active bank clientele</div>
             </div>
@@ -1502,8 +1504,7 @@
             <div class="glass-card metric-card">
               <div class="metric-header">
                 <span class="metric-label">Total Deposits USD</span>
-                <span style="color:var(--emerald-400)">🏦</span>
-              </div>
+                </div>
               <div id="emp-stat-deposits" class="metric-value">$0</div>
               <div class="metric-sub">Aggregate ledger balance</div>
             </div>
@@ -1511,8 +1512,7 @@
             <div class="glass-card metric-card">
               <div class="metric-header">
                 <span class="metric-label">Pending KYC</span>
-                <span style="color:var(--amber-400)">🛡️</span>
-              </div>
+                </div>
               <div id="emp-stat-kyc-pending" class="metric-value">0</div>
               <div class="metric-sub">Awaiting compliance review</div>
             </div>
@@ -1520,8 +1520,7 @@
             <div class="glass-card metric-card">
               <div class="metric-header">
                 <span class="metric-label">Pending Loans</span>
-                <span style="color:var(--purple-400)">📊</span>
-              </div>
+                </div>
               <div id="emp-stat-loans-pending" class="metric-value">0</div>
               <div class="metric-sub">Underwriting queue</div>
             </div>
@@ -1529,8 +1528,7 @@
             <div class="glass-card metric-card">
               <div class="metric-header">
                 <span class="metric-label">Open Disputes</span>
-                <span style="color:var(--rose-500)">⚖️</span>
-              </div>
+                </div>
               <div id="emp-stat-disputes" class="metric-value">0</div>
               <div class="metric-sub">Chargeback investigations</div>
             </div>
@@ -1582,7 +1580,7 @@
 
               <!-- Item 10 & 13: Universal Table Search Filter -->
               <div style="flex:1;min-width:240px;max-width:380px">
-                <input type="text" id="emp-apps-search-input" class="form-input" placeholder="🔍 Search ref #, applicant, email, phone..." oninput="handleAppTableSearch(this.value)" style="padding:0.4rem 0.75rem;font-size:0.78rem">
+                <input type="text" id="emp-apps-search-input" class="form-input" placeholder="Search ref #, applicant, email, phone..." oninput="handleAppTableSearch(this.value)" style="padding:0.4rem 0.75rem;font-size:0.78rem">
               </div>
 
               <!-- Custom Date Pickers & Status Filter -->
@@ -1751,7 +1749,7 @@
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1.5rem">
               <div>
                 <div style="display:inline-flex;align-items:center;gap:0.4rem;background:rgba(99,102,241,0.15);color:var(--brand-400);font-size:0.75rem;font-weight:700;padding:0.25rem 0.65rem;border-radius:9999px;margin-bottom:0.5rem">
-                  <span>👑</span> <span>SUPER ADMIN PRIVILEGE (admin@bank.test)</span>
+                  <span>SUPER ADMIN PRIVILEGE (admin@bank.test)</span>
                 </div>
                 <h2 style="font-size:1.4rem;font-weight:800;color:var(--text-main)">Bank Employee Onboarding Portal</h2>
                 <p style="font-size:0.85rem;color:var(--text-secondary);margin-top:0.35rem">
@@ -1765,7 +1763,7 @@
               <!-- SECTION 1: Personal & Contact Information -->
               <div style="margin-bottom:1.5rem">
                 <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-                  <span>👤</span> <span>Staff Personal &amp; Contact Details</span>
+                  <span>Staff Personal &amp; Contact Details</span>
                 </div>
                 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
@@ -1796,7 +1794,7 @@
               <!-- SECTION 2: Branch Office & Physical Work Location -->
               <div style="margin-bottom:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle)">
                 <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-                  <span>🏢</span> <span>Branch Office &amp; Work Location</span>
+                  <span>Branch Office &amp; Work Location</span>
                 </div>
 
                 <div style="display:grid;grid-template-columns:2fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
@@ -1835,7 +1833,7 @@
               <!-- SECTION 3: Corporate Credentials & Role -->
               <div style="margin-bottom:1.5rem;padding-top:1.25rem;border-top:1px solid var(--border-subtle)">
                 <div style="font-size:0.82rem;font-weight:700;color:var(--brand-400);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-                  <span>🔐</span> <span>Corporate Credentials &amp; Role</span>
+                  <span>Corporate Credentials &amp; Role</span>
                 </div>
 
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:1.25rem">
@@ -1876,7 +1874,7 @@
 
               <div style="display:flex;justify-content:flex-end">
                 <button type="submit" class="btn btn-primary" style="font-weight:700;padding:0.75rem 2rem">
-                  👔 Onboard Employee →
+                  Onboard Employee →
                 </button>
               </div>
             </form>
@@ -1894,14 +1892,22 @@
   <div id="modal-create-account" class="modal-overlay">
     <div class="modal-box">
       <div class="modal-header">
-        <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Open New Bank Account</h3>
+        <div style="display:flex;align-items:center;gap:0.75rem">
+          <div id="modal-account-type-icon" style="width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,rgba(99,102,241,0.25),rgba(99,102,241,0.05));display:flex;align-items:center;justify-content:center;color:var(--brand-500);transition:all 0.3s ease;flex-shrink:0">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+          </div>
+          <div>
+            <h3 style="font-size:1.15rem;font-weight:700;color:var(--text-main)">Open New Bank Account</h3>
+            <div id="modal-account-type-label" style="font-size:0.75rem;color:var(--text-secondary)">Checking Account (With Overdraft)</div>
+          </div>
+        </div>
         <button class="btn btn-outline btn-sm" onclick="closeModal('modal-create-account')">✕</button>
       </div>
       <form onsubmit="event.preventDefault(); submitOpenAccount(this);">
         <div class="modal-body">
           <div class="form-group">
             <label class="form-label">Account Type</label>
-            <select name="type" class="form-select">
+            <select name="type" class="form-select" onchange="updateModalAccountTypeIcon(this.value)">
               <option value="CHECKING">Checking Account (With Overdraft)</option>
               <option value="SAVINGS">High-Yield Savings Account</option>
               <option value="BUSINESS">Commercial Business Account</option>
@@ -2310,7 +2316,7 @@
         <button class="btn btn-outline btn-sm" onclick="closeModal('modal-confirm-action')">✕</button>
       </div>
       <div class="modal-body" style="padding:1.5rem">
-        <div style="font-size:2rem;margin-bottom:0.75rem;text-align:center" id="confirm-modal-icon">⚠️</div>
+        <div style="font-size:2rem;margin-bottom:0.75rem;text-align:center" id="confirm-modal-icon"></div>
         <p id="confirm-modal-message" style="font-size:0.9rem;color:var(--text-main);line-height:1.5;text-align:center;margin-bottom:1rem">
           Are you sure you want to proceed with this action?
         </p>
@@ -2331,7 +2337,6 @@
     <div class="modal-box" style="max-width:480px">
       <div class="modal-header">
         <div style="display:flex;align-items:center;gap:0.5rem">
-          <span style="font-size:1.2rem">⚡</span>
           <h3 style="font-size:1.1rem;font-weight:800;color:var(--text-main);margin:0">Database Access Authorization</h3>
         </div>
         <button class="btn btn-outline btn-sm" onclick="closeModal('modal-confirm-sql-access')">✕</button>
@@ -2341,8 +2346,8 @@
           Should this newly onboarded employee have direct access to the <strong>SQL Database GUI Workbench (/sql-gui)</strong>?
         </p>
         <div style="background:rgba(99,102,241,0.08);border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:0.85rem;font-size:0.78rem;color:var(--text-secondary);line-height:1.45">
-          ℹ️ <strong>Yes (Grant SQL Access):</strong> Employee can run queries and inspect ledger SQLite tables.<br>
-          🔒 <strong>No (Restrict Access):</strong> Employee is restricted to standard operations and cannot open the SQL database workbench.
+          ℹ<strong>Yes (Grant SQL Access):</strong> Employee can run queries and inspect ledger SQLite tables.<br>
+          <strong>No (Restrict Access):</strong> Employee is restricted to standard operations and cannot open the SQL database workbench.
         </div>
       </div>
       <div class="modal-footer">
@@ -2362,8 +2367,7 @@
       <div class="modal-header" style="background:linear-gradient(135deg, rgba(99,102,241,0.14) 0%, rgba(16,185,129,0.09) 100%);padding:1rem 1.4rem">
         <div style="display:flex;align-items:center;gap:0.75rem">
           <div style="width:40px;height:40px;border-radius:10px;background:rgba(99,102,241,0.2);display:flex;align-items:center;justify-content:center;font-size:1.35rem">
-            🏛️
-          </div>
+                      </div>
           <div>
             <div style="display:flex;align-items:center;gap:0.6rem;flex-wrap:wrap">
               <span id="review-modal-app-num" style="font-family:monospace;font-size:1.15rem;font-weight:800;color:var(--brand-400)">APP-2026-XXXXXX</span>
@@ -2374,7 +2378,7 @@
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem">
           <button type="button" class="btn btn-outline btn-sm no-print" onclick="window.printBankApplicationForm('rf')" title="Download official 4-page uniform bank form as PDF or print">
-            🖨️ Download &amp; Print Form (PDF)
+            Download &amp; Print Form (PDF)
           </button>
           <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-application-review')">✕</button>
         </div>
@@ -2383,16 +2387,16 @@
       <!-- Navigation Tabs inside Review Modal -->
       <div style="display:flex;gap:0.5rem;padding:0.75rem 1.4rem;background:rgba(0,0,0,0.25);border-bottom:1px solid var(--border-subtle);flex-wrap:wrap;flex-shrink:0">
         <button type="button" id="review-tab-btn-form" class="btn btn-sm btn-primary review-tab-btn" onclick="switchReviewModalTab('form')">
-          📄 Official Bank Form Sheet (4 Pages)
+          Official Bank Form Sheet (4 Pages)
         </button>
         <button type="button" id="review-tab-btn-docs" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('docs')">
-          🔒 Uploaded Documents &amp; ID Vault <span id="review-docs-count-badge" style="background:rgba(99,102,241,0.2);color:var(--brand-300);padding:0.1rem 0.4rem;border-radius:9999px;font-size:0.7rem;margin-left:0.25rem">0</span>
+          Uploaded Documents &amp; ID Vault <span id="review-docs-count-badge" style="background:rgba(99,102,241,0.2);color:var(--brand-300);padding:0.1rem 0.4rem;border-radius:9999px;font-size:0.7rem;margin-left:0.25rem">0</span>
         </button>
         <button type="button" id="review-tab-btn-office" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('office')">
-          🏛️ Office Verification &amp; Remarks
+          Office Verification &amp; Remarks
         </button>
         <button type="button" id="review-tab-btn-dossier" class="btn btn-sm btn-outline review-tab-btn" onclick="switchReviewModalTab('dossier')">
-          📊 Summary Dossier
+          Summary Dossier
         </button>
       </div>
 
@@ -2411,7 +2415,7 @@
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem">
               <div>
                 <h4 style="font-size:1rem;font-weight:700;color:var(--text-main);margin:0;display:flex;align-items:center;gap:0.4rem">
-                  <span>🔒</span> <span>Encrypted Verification Documents Vault</span>
+                  <span>Encrypted Verification Documents Vault</span>
                 </h4>
                 <div style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem">
                   All customer files are encrypted using bank-grade AES-256 (Fernet) in SQLite and decrypted on-demand for authorized review.
@@ -2435,7 +2439,7 @@
           <div style="background:rgba(11,37,69,0.08);border:1px solid rgba(99,102,241,0.3);border-radius:10px;padding:1.25rem;margin-bottom:1.25rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
               <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin:0">
-                🏛️ FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)
+                FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; IN-PERSON VERIFICATION)
               </h4>
               <span style="font-size:0.72rem;background:#0b2545;color:#fff;padding:0.15rem 0.5rem;border-radius:4px;font-weight:700">OFFICIAL RECORD</span>
             </div>
@@ -2463,7 +2467,7 @@
           <!-- Officer Communication & Remarks -->
           <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.25rem">
             <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-              <span>💬</span> <span>Officer Remarks &amp; Applicant Communication</span>
+              <span>Officer Remarks &amp; Applicant Communication</span>
             </h4>
             <div id="review-modal-messages-container" style="max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:0.4rem;margin-bottom:0.75rem;padding:0.5rem;background:rgba(0,0,0,0.2);border-radius:6px">
               <!-- Messages populated via JS -->
@@ -2471,7 +2475,7 @@
             <div style="display:flex;gap:0.5rem">
               <input type="text" id="review-modal-new-msg" class="form-input" placeholder="Type a message or instruction for the applicant (visible on status tracking page)..." style="font-size:0.78rem">
               <button type="button" class="btn btn-outline btn-sm" onclick="sendReviewOfficerMessage()" style="white-space:nowrap;font-weight:600">
-                ✉️ Send Note
+                Send Note
               </button>
             </div>
           </div>
@@ -2481,7 +2485,7 @@
         <div id="review-tab-content-dossier" class="review-tab-content" style="display:none">
           <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:10px;padding:1.25rem">
             <h4 style="font-size:0.95rem;font-weight:700;color:var(--text-main);margin-bottom:0.75rem;display:flex;align-items:center;gap:0.4rem">
-              <span>📊</span> <span>Applicant Dossier Key Details</span>
+              <span>Applicant Dossier Key Details</span>
             </h4>
             <div id="review-modal-dossier-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;font-size:0.8rem">
               <!-- Dynamically populated -->
@@ -2510,8 +2514,7 @@
       <div class="modal-header" style="background:linear-gradient(135deg, rgba(16,185,129,0.18) 0%, rgba(99,102,241,0.12) 100%);padding:1rem 1.4rem">
         <div style="display:flex;align-items:center;gap:0.75rem">
           <div style="width:42px;height:42px;border-radius:10px;background:rgba(16,185,129,0.2);display:flex;align-items:center;justify-content:center;font-size:1.4rem">
-            🏛️
-          </div>
+                      </div>
           <div>
             <div style="display:flex;align-items:center;gap:0.5rem">
               <h3 style="font-size:1.1rem;font-weight:800;margin:0;color:inherit">Bank Officer Underwriting &amp; Office Authorization</h3>
@@ -2528,7 +2531,7 @@
         <div class="modal-body" style="padding:1.3rem 1.5rem;overflow-y:auto;display:flex;flex-direction:column;gap:1rem;flex:1">
           
           <div style="background:rgba(99,102,241,0.06);border:1px solid rgba(99,102,241,0.25);border-radius:8px;padding:0.85rem;font-size:0.78rem;color:var(--text-secondary);line-height:1.45">
-            ℹ️ <strong style="color:var(--text-main)">Regulatory Compliance:</strong> The verifying officer must confirm risk profile, In-Person Verification (IPV/OSV), and document authenticity before ledger account provisioning. All fields are mandatory.
+            ℹ<strong style="color:var(--text-main)">Regulatory Compliance:</strong> The verifying officer must confirm risk profile, In-Person Verification (IPV/OSV), and document authenticity before ledger account provisioning. All fields are mandatory.
           </div>
 
           <!-- Officer Profile Row (Auto-filled from logged-in session, editable) -->
@@ -2548,18 +2551,18 @@
             <div class="form-group" style="margin:0">
               <label class="form-label" style="font-size:0.8rem;font-weight:700">Risk Category *</label>
               <select id="approve-risk-category" class="form-input" required style="font-size:0.85rem;font-weight:600">
-                <option value="LOW" selected>🟢 Low Risk (Standard Retail)</option>
-                <option value="MED">🟡 Medium Risk (Enhanced Scrutiny)</option>
-                <option value="HIGH">🔴 High Risk (PEP / High Volume)</option>
+                <option value="LOW" selected>Low Risk (Standard Retail)</option>
+                <option value="MED">Medium Risk (Enhanced Scrutiny)</option>
+                <option value="HIGH">High Risk (PEP / High Volume)</option>
               </select>
             </div>
             <div class="form-group" style="margin:0">
               <label class="form-label" style="font-size:0.8rem;font-weight:700">KYC Verification Mode *</label>
               <select id="approve-kyc-mode" class="form-input" required style="font-size:0.85rem;font-weight:600">
-                <option value="In-Person Verification (IPV)" selected>🏛️ In-Person Verification (IPV)</option>
-                <option value="Video KYC (V-CIP)">📹 Video KYC (V-CIP)</option>
-                <option value="Digital e-KYC (Biometric/OTP)">📱 Digital e-KYC (Biometric/OTP)</option>
-                <option value="Offline Aadhaar & OVD Copies">📄 Offline Aadhaar &amp; OVD Copies</option>
+                <option value="In-Person Verification (IPV)" selected>In-Person Verification (IPV)</option>
+                <option value="Video KYC (V-CIP)">Video KYC (V-CIP)</option>
+                <option value="Digital e-KYC (Biometric/OTP)">Digital e-KYC (Biometric/OTP)</option>
+                <option value="Offline Aadhaar & OVD Copies">Offline Aadhaar &amp; OVD Copies</option>
               </select>
             </div>
           </div>
@@ -2602,15 +2605,14 @@
     <div class="modal-box" style="max-width:850px;width:95%">
       <div class="modal-header" style="background:rgba(255,255,255,0.03);padding:0.9rem 1.25rem">
         <div style="display:flex;align-items:center;gap:0.5rem">
-          <span style="font-size:1.2rem">📄</span>
           <h3 id="doc-viewer-title" style="font-size:1rem;font-weight:700;margin:0;color:inherit">Document Inspection</h3>
         </div>
         <div style="display:flex;align-items:center;gap:0.5rem">
           <button type="button" id="doc-viewer-newtab-btn" class="btn btn-outline btn-sm" title="Open Decrypted Document in New Tab">
-            ↗️ Open in New Tab
+            ↗Open in New Tab
           </button>
           <button type="button" id="doc-viewer-download-btn" class="btn btn-primary btn-sm" title="Download Decrypted File">
-            ⬇️ Download
+            Download
           </button>
           <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-document-viewer')">✕</button>
         </div>
@@ -2628,7 +2630,6 @@
     <div class="signature-modal-card" onclick="event.stopPropagation()">
       <div class="signature-modal-header">
         <div style="display:flex;align-items:center;gap:0.6rem">
-          <span style="font-size:1.3rem">✍️</span>
           <div>
             <h3 style="font-size:1.05rem;font-weight:800;margin:0;color:inherit">Digital Specimen Signature Pad</h3>
             <div style="font-size:0.75rem;color:var(--text-muted)">Official Signature for Account Opening Form</div>
@@ -2640,7 +2641,7 @@
       <div style="padding:1rem 1.5rem 0.5rem 1.5rem">
         <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:0.5rem;flex-wrap:wrap;gap:0.5rem">
           <div id="signature-modal-sign-as" style="font-size:0.95rem;font-weight:700">
-            ✍️ Sign as: <strong style="color:var(--brand-500)">ALEXANDER WRIGHT</strong>
+            Sign as: <strong style="color:var(--brand-500)">ALEXANDER WRIGHT</strong>
           </div>
           <div id="signature-modal-timestamp" style="font-size:0.75rem;color:var(--text-muted);font-family:monospace">
             Date &amp; Time: --
@@ -2664,10 +2665,10 @@
 
           <div style="display:flex;align-items:center;gap:0.5rem">
             <button type="button" class="btn btn-outline btn-sm" onclick="clearSignaturePad()" style="font-size:0.75rem;padding:0.3rem 0.7rem">
-              🔄 Clear Pad
+              Clear Pad
             </button>
             <button type="button" class="btn btn-outline btn-sm" onclick="generateCursiveSignature()" style="font-size:0.75rem;padding:0.3rem 0.7rem" title="Auto generate cursive handwriting signature">
-              ✒️ Auto Cursive
+              Auto Cursive
             </button>
           </div>
         </div>

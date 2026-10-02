@@ -223,6 +223,23 @@ def init_sql_database():
         conn.execute("CREATE INDEX IF NOT EXISTS idx_login_otps_ident ON login_otps(identifier);")
 
     seed_sql_database()
+    migrate_plaintext_passwords()
+
+def migrate_plaintext_passwords() -> int:
+    """Migrate any legacy plaintext user passwords to PBKDF2 salted hashes."""
+    conn = get_db_connection()
+    migrated = 0
+    with conn:
+        users = conn.execute("SELECT id, password_hash FROM users").fetchall()
+        for u in users:
+            pwd = u["password_hash"]
+            if pwd and not pwd.startswith("pbkdf2:"):
+                hashed = hash_password(pwd)
+                conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (hashed, u["id"]))
+                migrated += 1
+    if migrated > 0:
+        print(f"[SECURITY] Successfully migrated {migrated} plaintext user password(s) in SQLite to PBKDF2 salted hashes.")
+    return migrated
 
 def seed_sql_database():
     """Populate default accounts if tables are fresh."""
@@ -367,10 +384,18 @@ def create_or_sync_user(
     now_str = datetime.now().isoformat()
     clean_email = email.strip().lower()
     sql_access_int = 1 if has_sql_access else 0
+    # Guarantee password is encrypted with PBKDF2
+    if password_hash and not password_hash.startswith("pbkdf2:"):
+        password_hash = hash_password(password_hash)
+
     conn = get_db_connection()
     with conn:
         existing = conn.execute("SELECT * FROM users WHERE LOWER(email) = ?", (clean_email,)).fetchone()
         if existing:
+            # If existing user has plaintext password, migrate it on the fly
+            if existing["password_hash"] and not existing["password_hash"].startswith("pbkdf2:"):
+                upgraded = hash_password(existing["password_hash"])
+                conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (upgraded, existing["id"]))
             return dict(existing)
 
         conn.execute("""
@@ -389,6 +414,8 @@ def create_or_sync_user(
 
 def update_sql_user_password(user_id: str, new_password_hash: str) -> bool:
     """Update password hash for a user in the SQL database."""
+    if new_password_hash and not new_password_hash.startswith("pbkdf2:"):
+        new_password_hash = hash_password(new_password_hash)
     conn = get_db_connection()
     with conn:
         conn.execute("UPDATE users SET password_hash = ? WHERE id = ?", (new_password_hash, user_id))
@@ -494,12 +521,24 @@ def store_sql_application(app_record: Dict[str, Any]) -> None:
         app_num = app_record["applicationNumber"]
         
         # Guard: Never allow a draft save to overwrite a submitted/active application in SQL
-        existing_row = conn.execute("SELECT status FROM applications WHERE application_number = ?", (app_num,)).fetchone()
+        # Also preserve original creation timestamp so updates never change application submission date
+        existing_row = conn.execute("SELECT status, created_at FROM applications WHERE application_number = ?", (app_num,)).fetchone()
         target_status = app_record.get("status", "SUBMITTED")
-        if existing_row and existing_row["status"] in ("SUBMITTED", "UNDER_REVIEW", "APPROVED", "ACCOUNT_OPENED", "REJECTED"):
-            if target_status in ("DRAFT_INITIATED", "DRAFT_SAVED"):
-                target_status = existing_row["status"]
-                app_record["status"] = target_status
+        if existing_row:
+            if existing_row["status"] in ("SUBMITTED", "UNDER_REVIEW", "APPROVED", "ACCOUNT_OPENED", "REJECTED"):
+                if target_status in ("DRAFT_INITIATED", "DRAFT_SAVED"):
+                    target_status = existing_row["status"]
+                    app_record["status"] = target_status
+            orig_created_at = existing_row["created_at"] or app_record.get("createdAt") or datetime.now().isoformat()
+        else:
+            orig_created_at = app_record.get("createdAt") or datetime.now().isoformat()
+        app_record["createdAt"] = orig_created_at
+
+        raw_pwd = app_record.get("password") or app_record.get("password_hash") or "Customer@1234"
+        if isinstance(raw_pwd, str) and raw_pwd.startswith("pbkdf2:"):
+            app_pwd_hash = raw_pwd
+        else:
+            app_pwd_hash = hash_password(str(raw_pwd))
 
         conn.execute("""
             INSERT OR REPLACE INTO applications (
@@ -515,11 +554,11 @@ def store_sql_application(app_record: Dict[str, Any]) -> None:
             app_record.get("currency", "USD"),
             float(app_record.get("initialDeposit", 0.0)),
             app_record.get("taxId", ""),
-            hash_password(app_record.get("password", "Customer@1234")),
+            app_pwd_hash,
             json.dumps(applicant),
             json.dumps(app_record.get("employment", {})),
             target_status,
-            app_record.get("createdAt", datetime.now().isoformat()),
+            orig_created_at,
             app_record.get("reviewedAt"),
             app_record.get("reviewedBy"),
             app_record.get("reviewNotes"),
@@ -540,6 +579,8 @@ def get_sql_application(app_number: str) -> Optional[Dict[str, Any]]:
     d["accountType"] = d.get("account_type", "SAVINGS")
     d["initialDeposit"] = float(d.get("initial_deposit") or 0.0)
     d["taxId"] = d.get("tax_id", "")
+    d["password"] = d.get("password_hash", "")
+    d["password_hash"] = d.get("password_hash", "")
     d["createdAt"] = d.get("created_at")
     d["reviewedAt"] = d.get("reviewed_at")
     d["reviewedBy"] = d.get("reviewed_by")
@@ -579,6 +620,8 @@ def list_sql_applications() -> List[Dict[str, Any]]:
         d["accountType"] = d.get("account_type", "SAVINGS")
         d["initialDeposit"] = float(d.get("initial_deposit") or 0.0)
         d["taxId"] = d.get("tax_id", "")
+        d["password"] = d.get("password_hash", "")
+        d["password_hash"] = d.get("password_hash", "")
         d["createdAt"] = d.get("created_at")
         d["reviewedAt"] = d.get("reviewed_at")
         d["reviewedBy"] = d.get("reviewed_by")

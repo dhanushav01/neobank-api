@@ -2,38 +2,9 @@
  * NeoBank Master Application Router & UI Shell Orchestrator
  */
 
-// Universal Human-Readable Formatter Fallback & Safety Guarantee
-if (typeof window.formatHumanText !== 'function') {
-  window.formatHumanText = function(val) {
-    if (!val || typeof val !== 'string') return val || '';
-    const trimmed = val.trim();
-    if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) {
-      return val;
-    }
-    if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-      return trimmed
-        .split('_')
-        .filter(Boolean)
-        .map(part => {
-          const upper = part.toUpperCase();
-          if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) {
-            return upper;
-          }
-          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-        })
-        .join(' ');
-    }
-    return val;
-  };
-}
-var formatHumanText = window.formatHumanText;
-
-if (typeof window.showToast !== 'function') {
-  window.showToast = function(msg, type) {
-    console.log(`[Toast ${type || 'info'}]:`, msg);
-  };
-}
-var showToast = window.showToast;
+// Centralized Utilities from utils.js & api.js
+var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
+var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
 
 // Application startup
 document.addEventListener('DOMContentLoaded', async () => {
@@ -170,7 +141,7 @@ function renderAppScreen(user) {
       if (btn) {
         const icon = btn.querySelector('.toggle-icon');
         const label = btn.querySelector('.toggle-label');
-        if (icon) icon.textContent = '▶';
+        if (icon) { icon.style.transform = 'rotate(180deg)'; }
         if (label) label.textContent = 'Expand';
       }
     }
@@ -230,13 +201,52 @@ function toggleSidebarCollapse() {
   if (btn) {
     const icon = btn.querySelector('.toggle-icon');
     const label = btn.querySelector('.toggle-label');
-    if (icon) icon.textContent = isCollapsed ? '▶' : '◀';
+    if (icon) {
+      // Animate the chevron rotation instead of swapping text
+      icon.style.transform = isCollapsed ? 'rotate(180deg)' : 'rotate(0deg)';
+      icon.style.transition = 'transform 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
     if (label) label.textContent = isCollapsed ? 'Expand' : 'Collapse';
   }
 
   try {
     localStorage.setItem('nb_sidebar_collapsed', isCollapsed ? '1' : '0');
   } catch(e) {}
+}
+
+// ----------------------------------------------------------------- MODAL ACCOUNT TYPE ICON UPDATER
+function updateModalAccountTypeIcon(type) {
+  const iconEl = document.getElementById('modal-account-type-icon');
+  const labelEl = document.getElementById('modal-account-type-label');
+
+  const configs = {
+    CHECKING: {
+      label: 'Checking Account (With Overdraft)',
+      bg: 'linear-gradient(135deg,rgba(99,102,241,0.25),rgba(99,102,241,0.05))',
+      color: 'var(--brand-500)',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>'
+    },
+    SAVINGS: {
+      label: 'High-Yield Savings Account',
+      bg: 'linear-gradient(135deg,rgba(16,185,129,0.25),rgba(16,185,129,0.05))',
+      color: 'var(--emerald-400)',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/><path d="M12 6v6l4 2"/></svg>'
+    },
+    BUSINESS: {
+      label: 'Commercial Business Account',
+      bg: 'linear-gradient(135deg,rgba(245,158,11,0.25),rgba(245,158,11,0.05))',
+      color: 'var(--amber-400)',
+      svg: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px"><path d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'
+    }
+  };
+
+  const cfg = configs[type] || configs.CHECKING;
+  if (iconEl) {
+    iconEl.style.background = cfg.bg;
+    iconEl.style.color = cfg.color;
+    iconEl.innerHTML = cfg.svg;
+  }
+  if (labelEl) labelEl.textContent = cfg.label;
 }
 
 // ----------------------------------------------------------------- TAB SWITCHERS
@@ -400,3 +410,19 @@ async function finalizeEmployeeOnboarding(hasSqlAccess) {
     showToast(err.message || 'Failed to onboard employee', 'error');
   }
 }
+
+function togglePasswordVisibility(inputId, btn) {
+  if (window.NeoBankUtils && typeof window.NeoBankUtils.togglePasswordVisibility === 'function') {
+    return window.NeoBankUtils.togglePasswordVisibility(inputId, btn);
+  }
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const isPwd = inp.type === 'password';
+  inp.type = isPwd ? 'text' : 'password';
+  if (btn) {
+    btn.innerHTML = isPwd
+      ? `<svg class="icon-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+      : `<svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  }
+}
+window.togglePasswordVisibility = togglePasswordVisibility;

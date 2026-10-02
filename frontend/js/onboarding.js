@@ -4,38 +4,9 @@
  * multi-step application submission, and encrypted document uploads.
  */
 
-// Universal Human-Readable Formatter Fallback & Safety Guarantee
-if (typeof window.formatHumanText !== 'function') {
-  window.formatHumanText = function(val) {
-    if (!val || typeof val !== 'string') return val || '';
-    const trimmed = val.trim();
-    if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) {
-      return val;
-    }
-    if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-      return trimmed
-        .split('_')
-        .filter(Boolean)
-        .map(part => {
-          const upper = part.toUpperCase();
-          if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) {
-            return upper;
-          }
-          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-        })
-        .join(' ');
-    }
-    return val;
-  };
-}
-var formatHumanText = window.formatHumanText;
-
-if (typeof window.showToast !== 'function') {
-  window.showToast = function(msg, type) {
-    console.log(`[Toast ${type || 'info'}]:`, msg);
-  };
-}
-var showToast = window.showToast;
+// Centralized Utilities from utils.js & api.js
+var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
+var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
 
 let selectedAccountType = 'SAVINGS';
 let currentApplicationNumber = null;
@@ -934,6 +905,11 @@ function initBankBoxInputs() {
         syncApplicantFullName();
       }
 
+      // Instant clear of validation error upon entering valid data (Requirement 3)
+      if (typeof clearErrorOnValidInput === 'function') {
+        clearErrorOnValidInput(e.target);
+      }
+
       // Auto-save draft on user change (debounced)
       debounceSaveDraft();
     });
@@ -986,6 +962,17 @@ function setDateFromPicker(val, inputId, wrapId) {
   const dd = parts[2];
   const mm = parts[1];
   const yyyy = parts[0];
+
+  // Disallow future dates and pre-1900 dates (Requirements 3 & 4)
+  const chosenYear = parseInt(yyyy, 10);
+  const today = new Date();
+  today.setHours(23, 59, 59, 999);
+  const chosenDate = new Date(chosenYear, parseInt(mm, 10) - 1, parseInt(dd, 10));
+  if (chosenYear < 1900 || chosenDate > today) {
+    showToast('Invalid date. Date must be between 1900 and today.', 'error');
+    return;
+  }
+
   const formatted = `${dd}${mm}${yyyy}`; // 8 digits
 
   const input = document.getElementById(inputId);
@@ -993,6 +980,9 @@ function setDateFromPicker(val, inputId, wrapId) {
   if (input) {
     input.value = formatted;
     if (wrap) updateBoxCells(wrap, formatted);
+    if (typeof clearErrorOnValidInput === 'function') {
+      clearErrorOnValidInput(input);
+    }
   }
 
   // Update declaration date in Section 7
@@ -1030,7 +1020,7 @@ function syncApplicantFullName() {
 
   const modalSignAs = document.getElementById('signature-modal-sign-as');
   if (modalSignAs) {
-    modalSignAs.innerHTML = `✍️ Sign as: <strong style="color:var(--brand-500)">${fullName}</strong>`;
+    modalSignAs.innerHTML = `Sign as: <strong style="color:var(--brand-500)">${fullName}</strong>`;
   }
 
   return fullName;
@@ -1195,7 +1185,110 @@ function switchFormPart(part) {
     const btn = document.getElementById('btn-tab-all');
     if (btn) btn.classList.add('active');
   }
+
+  updateFlowActionButtons(part);
 }
+
+// ----------------------------------------------------------------- FLOATING ACTION BAR & MULTI-STEP FLOW (Requirement 8)
+function updateFlowActionButtons(part) {
+  const primaryBtn = document.getElementById('btn-primary-flow-action');
+  const prevBtn = document.getElementById('btn-floating-prev');
+  if (!primaryBtn) return;
+
+  if (part === 'part3' || part === 'all') {
+    primaryBtn.textContent = 'Submit Complete Application';
+    primaryBtn.className = 'btn btn-success';
+  } else {
+    primaryBtn.textContent = 'Save & Next →';
+    primaryBtn.className = 'btn btn-primary';
+  }
+
+  if (prevBtn) {
+    if (part === 'part1') {
+      prevBtn.textContent = '← Back to Account Selection';
+    } else if (part === 'part1-cont') {
+      prevBtn.textContent = '← Back to Page 1';
+    } else if (part === 'part2') {
+      prevBtn.textContent = '← Back to Page 2';
+    } else if (part === 'part3') {
+      prevBtn.textContent = '← Back to Page 3';
+    } else {
+      prevBtn.textContent = '← Back to Page 1';
+    }
+  }
+}
+
+function handlePrimaryFlowAction() {
+  if (currentActiveFormPart === 'part3' || currentActiveFormPart === 'all') {
+    submitCustomerApplication();
+  } else {
+    handleSaveAndNext();
+  }
+}
+window.handlePrimaryFlowAction = handlePrimaryFlowAction;
+
+function handleSaveAndNext() {
+  saveCustomerFormDraft(false);
+  if (currentActiveFormPart === 'part1') {
+    switchFormPart('part1-cont');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (currentActiveFormPart === 'part1-cont') {
+    switchFormPart('part2');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (currentActiveFormPart === 'part2') {
+    switchFormPart('part3');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    submitCustomerApplication();
+  }
+}
+window.handleSaveAndNext = handleSaveAndNext;
+
+function handleFormPrevStep() {
+  if (currentActiveFormPart === 'part1') {
+    goToOnboardingStep(1);
+  } else if (currentActiveFormPart === 'part1-cont') {
+    switchFormPart('part1');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (currentActiveFormPart === 'part2') {
+    switchFormPart('part1-cont');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else if (currentActiveFormPart === 'part3') {
+    switchFormPart('part2');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } else {
+    switchFormPart('part1');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+window.handleFormPrevStep = handleFormPrevStep;
+
+// ----------------------------------------------------------------- CONDITIONAL DEBIT CARD (Requirement 11)
+function handleDebitCardRequiredToggle(val) {
+  const section = document.getElementById('debit-card-dependent-fields');
+  if (section) {
+    section.style.display = (val === 'YES') ? 'block' : 'none';
+  }
+  debounceSaveDraft();
+}
+window.handleDebitCardRequiredToggle = handleDebitCardRequiredToggle;
+
+// ----------------------------------------------------------------- PASSWORD VISIBILITY TOGGLE (Requirement 7)
+function togglePasswordVisibility(inputId, btn) {
+  if (window.NeoBankUtils && typeof window.NeoBankUtils.togglePasswordVisibility === 'function') {
+    return window.NeoBankUtils.togglePasswordVisibility(inputId, btn);
+  }
+  const inp = document.getElementById(inputId);
+  if (!inp) return;
+  const isPwd = inp.type === 'password';
+  inp.type = isPwd ? 'text' : 'password';
+  if (btn) {
+    btn.innerHTML = isPwd
+      ? `<svg class="icon-eye-off" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+      : `<svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  }
+}
+window.togglePasswordVisibility = togglePasswordVisibility;
 
 // ----------------------------------------------------------------- DYNAMIC TOGGLES: DISABILITY, FORM 60, PEP
 function handleDisabilityToggle(val) {
@@ -1355,11 +1448,11 @@ function handleDeemedProofChange() {
     html += `
       <div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.03);border:1px solid #cbd5e1;border-radius:4px;gap:0.75rem;flex-wrap:wrap">
         <div style="font-size:0.75rem;font-weight:700;color:inherit">
-          📄 ${label}
+          ${label}
         </div>
         <div style="display:flex;align-items:center;gap:0.4rem">
           <input type="date" name="deemedDate_${val}" class="bank-field-input" style="padding:0.15rem 0.35rem;font-size:0.7rem;width:120px" title="Bill / Document Issue Date">
-          <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-deemed-${val}').click()" style="padding:0.2rem 0.5rem;font-size:0.7rem">📎 Upload Certified Copy</button>
+          <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('file-deemed-${val}').click()" style="padding:0.2rem 0.5rem;font-size:0.7rem">Upload Certified Copy</button>
           <input type="file" id="file-deemed-${val}" accept="image/*,application/pdf" style="display:none" onchange="handleGenericFileUpload(this, 'deemed-status-${val}')">
           <span id="deemed-status-${val}" style="font-size:0.7rem;color:var(--text-muted);max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">No file</span>
         </div>
@@ -1436,7 +1529,7 @@ function setJointMembersCount(count) {
       p1Html += `
         <div class="glass-card" style="padding:1rem;margin-bottom:0.85rem;border-radius:8px;border:1px solid var(--border-subtle)">
           <div style="font-weight:800;font-size:0.85rem;color:var(--brand-500);margin-bottom:0.6rem;display:flex;justify-content:space-between">
-            <span>👥 ${suffix} Joint Applicant Personal Details</span>
+            <span>${suffix} Joint Applicant Personal Details</span>
             <span style="font-size:0.7rem;color:var(--text-muted)">Co-Applicant #${i}</span>
           </div>
           <div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
@@ -1467,7 +1560,7 @@ function setJointMembersCount(count) {
             <div>
               <div style="display:flex;justify-content:space-between;align-items:center">
                 <label style="font-size:0.75rem;font-weight:700">DOB* (DD/MM/YYYY):</label>
-                <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-joint${i}-dob').showPicker ? document.getElementById('picker-joint${i}-dob').showPicker() : document.getElementById('picker-joint${i}-dob').focus()" style="padding:0.1rem 0.35rem;font-size:0.65rem">📅</button>
+                <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-joint${i}-dob').showPicker ? document.getElementById('picker-joint${i}-dob').showPicker() : document.getElementById('picker-joint${i}-dob').focus()" style="padding:0.1rem 0.35rem;font-size:0.65rem"></button>
                 <input type="date" id="picker-joint${i}-dob" style="position:absolute;opacity:0;pointer-events:none" tabindex="-1" onchange="document.getElementById('input-joint${i}-dob').value = this.value">
               </div>
               <input type="text" name="joint${i}Dob" id="input-joint${i}-dob" class="bank-field-input" placeholder="DD/MM/YYYY">
@@ -1528,7 +1621,7 @@ function setJointMembersCount(count) {
             <div class="passport-photo-box" id="joint${i}-photo-box" style="width:110px;height:140px;margin:0 auto;border:2px dashed #cbd5e1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;cursor:pointer;position:relative;overflow:hidden" onclick="document.getElementById('input-joint${i}-photo-file').click()">
               <img id="joint${i}-photo-img" src="" alt="${suffix} Photo" style="display:none;width:100%;height:100%;object-fit:cover">
               <div id="joint${i}-photo-placeholder" style="color:#64748b;font-size:0.7rem;text-align:center;padding:4px">
-                📷<br>Paste / Upload<br>(3.5 x 4.5 cm)
+                <br>Paste / Upload<br>(3.5 x 4.5 cm)
               </div>
             </div>
             <input type="file" id="input-joint${i}-photo-file" accept="image/*" style="display:none" onchange="handleJointPassportPhotoUpload(this, ${i})">
@@ -1543,10 +1636,10 @@ function setJointMembersCount(count) {
             </div>
             <div style="display:flex;gap:0.4rem;margin-top:0.4rem;align-items:center">
               <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint${i}')" style="padding:0.25rem 0.6rem;font-size:0.72rem">
-                ✍️ Co-Sign
+                Co-Sign
               </button>
               <button type="button" class="btn btn-outline btn-sm no-print" onclick="openThumbUploadModalFor('joint${i}')" style="padding:0.25rem 0.6rem;font-size:0.72rem">
-                🖐️ Thumb
+                Thumb
               </button>
               <span id="joint${i}-sig-status" style="font-size:0.7rem;color:var(--text-muted)">Pending signature</span>
             </div>
@@ -1584,7 +1677,7 @@ function setJointMembersCount(count) {
           <td style="text-align:center" id="joint${i}-table-signature-slot">
             <div style="font-size:0.7rem;color:var(--text-muted);display:flex;align-items:center;justify-content:center;gap:4px">
               <span>(Specimen Slot)</span>
-              <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint${i}')" style="padding:0.15rem 0.35rem;font-size:0.62rem">✍️</button>
+              <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint${i}')" style="padding:0.15rem 0.35rem;font-size:0.62rem"></button>
             </div>
           </td>
         </tr>
@@ -1941,7 +2034,7 @@ function openCoSignModal(applicantTarget = 'primary') {
 
   const signAsEl = document.getElementById('signature-modal-sign-as');
   if (signAsEl) {
-    signAsEl.innerHTML = `✍️ Sign as: <strong style="color:var(--brand-500);letter-spacing:0.04em">${signerName}</strong>`;
+    signAsEl.innerHTML = `Sign as: <strong style="color:var(--brand-500);letter-spacing:0.04em">${signerName}</strong>`;
   }
 
   const now = new Date();
@@ -2120,7 +2213,7 @@ function saveSignatureFromPad() {
         <div style="display:flex;align-items:center;justify-content:center;gap:6px">
           <img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Co-Sign 2">
           <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">✓ Signed</span>
-          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint2')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign">✏️</button>
+          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint2')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign"></button>
         </div>
       `;
     }
@@ -2154,7 +2247,7 @@ function saveSignatureFromPad() {
         <div style="display:flex;align-items:center;justify-content:center;gap:6px">
           <img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Co-Sign 3">
           <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">✓ Signed</span>
-          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint3')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign">✏️</button>
+          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint3')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign"></button>
         </div>
       `;
     }
@@ -2720,6 +2813,241 @@ function initPaperForm() {
   // 6. Sync joint applicant section
   updateJointApplicantVisibility();
   syncApplicantFullName();
+
+  // 7. Dynamic Form Error Clearing listeners (Requirement 3)
+  const formApp = document.getElementById('form-customer-application');
+  if (formApp) {
+    formApp.addEventListener('input', (e) => clearErrorOnValidInput(e.target));
+    formApp.addEventListener('change', (e) => clearErrorOnValidInput(e.target));
+  }
+
+  // 8. Initialize conditional debit card dependent fields (Requirement 11)
+  const debitRadioVal = document.querySelector('input[name="svcDebitRadio"]:checked')?.value || 'YES';
+  handleDebitCardRequiredToggle(debitRadioVal);
+
+  // 9. Standard Date input validation constraints (1900 to today - Requirements 3 & 4)
+  const todayIso = new Date().toISOString().split('T')[0];
+  document.querySelectorAll('input[type="date"]').forEach(inp => {
+    if (!inp.name?.toLowerCase().includes('expiry') && inp.id !== 'emp-apps-end-date') {
+      inp.max = todayIso;
+    }
+    inp.min = '1900-01-01';
+  });
+}
+
+// ----------------------------------------------------------------- DYNAMIC VALIDATION & DATE HANDLING (Requirements 3 & 4)
+function validateDateString(valStr, isDob = false) {
+  if (!valStr || !valStr.trim()) {
+    return { valid: false, error: 'Date is required' };
+  }
+  let clean = String(valStr).replace(/[^0-9]/g, '');
+  if (clean.length !== 8) {
+    if (/^\d{4}-\d{2}-\d{2}$/.test(valStr.trim())) {
+      const parts = valStr.trim().split('-');
+      clean = parts[2] + parts[1] + parts[0];
+    } else {
+      return { valid: false, error: 'Complete 8-digit date required (DDMMYYYY)' };
+    }
+  }
+
+  const d = parseInt(clean.substring(0, 2), 10);
+  const m = parseInt(clean.substring(2, 4), 10);
+  const y = parseInt(clean.substring(4, 8), 10);
+
+  if (y < 1900) {
+    return { valid: false, error: 'Year cannot be earlier than 1900' };
+  }
+  const today = new Date();
+  if (y > today.getFullYear()) {
+    return { valid: false, error: 'Future dates are not allowed' };
+  }
+  if (m < 1 || m > 12) {
+    return { valid: false, error: 'Month must be between 01 and 12' };
+  }
+
+  const daysInMonth = new Date(y, m, 0).getDate();
+  if (d < 1 || d > daysInMonth) {
+    return { valid: false, error: `Day must be between 01 and ${daysInMonth}` };
+  }
+
+  const dateObj = new Date(y, m - 1, d);
+  const todayEnd = new Date();
+  todayEnd.setHours(23, 59, 59, 999);
+  if (dateObj > todayEnd) {
+    return { valid: false, error: 'Future dates are not allowed' };
+  }
+
+  if (isDob) {
+    let age = today.getFullYear() - y;
+    const mDiff = today.getMonth() - (m - 1);
+    if (mDiff < 0 || (mDiff === 0 && today.getDate() < d)) {
+      age--;
+    }
+
+    const accCategory = document.querySelector('input[name="accCategoryRadio"]:checked')?.value || 'NORMAL';
+    const accType = document.getElementById('apply-selected-account-type')?.value || 'SAVINGS';
+
+    if (accCategory === 'MINOR') {
+      if (age >= 18) {
+        return { valid: false, error: 'Minor category requires age under 18' };
+      }
+    } else if (accType === 'STUDENT') {
+      if (age < 16 || age > 26) {
+        return { valid: false, error: 'Student account requires age between 16 and 26' };
+      }
+    } else {
+      if (age < 18) {
+        return { valid: false, error: 'Standard account requires age 18 or above (select Minor for under 18)' };
+      }
+    }
+  }
+
+  return { valid: true, day: d, month: m, year: y };
+}
+
+function clearErrorOnValidInput(target) {
+  if (!target) return;
+  const wrap = target.closest ? target.closest('.bank-box-wrap') : null;
+  if (wrap) {
+    const targetName = wrap.getAttribute('data-target') || target.name || target.id;
+    const val = target.value ? target.value.trim() : '';
+    let isValid = false;
+
+    if (targetName === 'applicationDate' || target.id === 'raw-header-date') {
+      isValid = validateDateString(val, false).valid;
+    } else if (targetName === 'dob' || target.id === 'raw-dob-date') {
+      isValid = validateDateString(val, true).valid;
+    } else if (targetName === 'panNumber' || target.id === 'raw-pan-number') {
+      isValid = val.length >= 10;
+    } else if (targetName === 'aadhaarNumber' || target.id === 'raw-aadhaar-number') {
+      isValid = val.length >= 12;
+    } else if (targetName === 'mobileNumber' || target.id === 'raw-mobile-number') {
+      isValid = val.length >= 8;
+    } else if (targetName === 'postalCode' || targetName === 'corrPostalCode' || target.id === 'raw-pincode') {
+      isValid = val.length >= 6;
+    } else if (['firstName', 'fatherName', 'motherName', 'lastName'].includes(targetName) || target.id?.startsWith('raw-')) {
+      isValid = val.length > 0;
+    } else {
+      isValid = val.length > 0;
+    }
+
+    if (isValid) {
+      wrap.classList.remove('field-invalid-mandatory');
+      wrap.querySelectorAll('.char-cell').forEach(c => c.classList.remove('cell-invalid'));
+      const labelEl = wrap.closest('.char-input-group')?.querySelector('.char-input-label-row span') ||
+                      document.getElementById('label-dob') ||
+                      wrap.closest('td')?.querySelector('strong') ||
+                      wrap.parentElement?.querySelector('label');
+      if (labelEl) labelEl.classList.remove('label-invalid-mandatory');
+    }
+  } else {
+    let isValid = false;
+    if (target.type === 'radio') {
+      isValid = true;
+      const container = target.closest('td') || target.closest('div');
+      if (container) {
+        container.classList.remove('field-invalid-mandatory');
+        const strong = container.querySelector('strong') || container.parentElement?.querySelector('label') || container.parentElement?.querySelector('span');
+        if (strong) strong.classList.remove('label-invalid-mandatory');
+      }
+      if (target.name === 'namePrefix') document.getElementById('label-name-prefix')?.classList.remove('label-invalid-mandatory');
+      if (target.name === 'genderRadio') target.closest('div')?.parentElement?.querySelector('label')?.classList.remove('label-invalid-mandatory');
+      if (target.name === 'maritalRadio') document.getElementById('label-marital')?.classList.remove('label-invalid-mandatory');
+      if (target.name === 'nationalityRadio') document.getElementById('label-nationality')?.classList.remove('label-invalid-mandatory');
+      if (target.name === 'empStatusRadio') document.getElementById('label-emp-status')?.classList.remove('label-invalid-mandatory');
+    } else if (target.type === 'checkbox') {
+      const checked = document.querySelectorAll('input[name="ovdSelectChk"]:checked');
+      if (checked.length > 0) {
+        document.querySelector('.bank-table-grid')?.classList.remove('field-invalid-mandatory');
+        document.querySelector('.bank-table-grid')?.previousElementSibling?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'step2-branch-select') {
+      isValid = Boolean(target.value);
+      if (isValid) {
+        target.classList.remove('field-invalid-mandatory');
+        target.closest('td')?.querySelector('strong')?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'input-annual-income') {
+      isValid = parseFloat(target.value) > 0;
+      if (isValid) {
+        target.classList.remove('field-invalid-mandatory');
+        document.getElementById('label-annual-income')?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'email-username' || target.id === 'hidden-combined-email') {
+      const emailVal = document.getElementById('hidden-combined-email')?.value || '';
+      const usernameVal = document.getElementById('email-username')?.value || '';
+      isValid = (emailVal.includes('@') && emailVal.length > 3) || usernameVal.trim().length > 0;
+      if (isValid) {
+        document.getElementById('email-username')?.classList.remove('field-invalid-mandatory');
+        document.getElementById('email-username')?.parentElement?.previousElementSibling?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'input-password' || target.id === 'input-onboarding-password') {
+      isValid = target.value && target.value.trim().length >= 8;
+      if (isValid) {
+        target.classList.remove('field-invalid-mandatory');
+        document.getElementById('label-onboarding-password')?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'input-addr-house' || target.id === 'input-city') {
+      isValid = target.value && target.value.trim().length > 0;
+      if (isValid) {
+        target.classList.remove('field-invalid-mandatory');
+        target.parentElement?.querySelector('label')?.classList.remove('label-invalid-mandatory');
+      }
+    } else if (target.id === 'input-initial-deposit') {
+      isValid = target.value !== '' && parseFloat(target.value) >= 0;
+      if (isValid) {
+        target.classList.remove('field-invalid-mandatory');
+        target.parentElement?.querySelector('label')?.classList.remove('label-invalid-mandatory');
+      }
+    }
+
+    if (isValid && target.classList) {
+      target.classList.remove('field-invalid-mandatory');
+    }
+  }
+
+  refreshMissingBadges();
+}
+
+function refreshMissingBadges() {
+  const sections = [
+    { secId: 'header-sec-0', wrapper: document.getElementById('header-sec-0') },
+    { secId: 'header-sec-1', wrapper: document.getElementById('header-sec-1') },
+    { secId: 'header-sec-2', wrapper: document.getElementById('header-sec-2') },
+    { secId: 'header-sec-3', wrapper: document.getElementById('header-sec-3') },
+    { secId: 'header-sec-4', wrapper: document.getElementById('header-sec-4') },
+    { secId: 'header-sec-ovd', wrapper: document.getElementById('header-sec-ovd') },
+    { secId: 'header-sec-addr', wrapper: document.getElementById('header-sec-addr') },
+    { secId: 'header-sec-photo-sig', wrapper: document.getElementById('header-sec-photo-sig') },
+    { secId: 'header-sec-part2-acc', wrapper: document.getElementById('header-sec-part2-acc') },
+  ];
+
+  sections.forEach(s => {
+    if (!s.wrapper) return;
+    const parentContainer = s.wrapper.closest('.bank-sheet-section') || s.wrapper.parentElement;
+    if (!parentContainer) return;
+    const invalids = parentContainer.querySelectorAll('.field-invalid-mandatory');
+    const badge = s.wrapper.querySelector('.section-pending-badge');
+    if (invalids.length === 0) {
+      if (badge) badge.remove();
+    } else {
+      if (badge) badge.textContent = `${invalids.length} Missing`;
+    }
+  });
+
+  ['part1', 'part1-cont', 'part2', 'part3'].forEach(partId => {
+    const tabContainer = document.getElementById(`form-container-${partId}`);
+    const badgeEl = document.getElementById(`tab-missing-badge-${partId}`);
+    if (tabContainer && badgeEl) {
+      const remaining = tabContainer.querySelectorAll('.field-invalid-mandatory').length;
+      if (remaining > 0) {
+        badgeEl.style.display = 'inline-flex';
+        badgeEl.textContent = String(remaining);
+      } else {
+        badgeEl.style.display = 'none';
+      }
+    }
+  });
 }
 
 // ----------------------------------------------------------------- COMPREHENSIVE FORM VALIDATION (Item 14)
@@ -2764,9 +3092,11 @@ function validateCustomerFormFields(shouldScroll = true) {
     markInvalid(parent, parent?.querySelector('strong'), secHeader, 'Account Category');
   }
   const appDateInp = document.getElementById('raw-header-date');
-  if (!appDateInp || appDateInp.value.trim().length < 8) {
+  const appDateVal = appDateInp ? appDateInp.value.trim() : '';
+  const appDateRes = validateDateString(appDateVal, false);
+  if (!appDateRes.valid) {
     const wrap = document.getElementById('wrap-header-date');
-    markInvalid(wrap, wrap?.closest('td')?.querySelector('strong'), secHeader, 'Application Date');
+    markInvalid(wrap, wrap?.closest('td')?.querySelector('strong'), secHeader, 'Application Date: ' + appDateRes.error);
   }
   const branchSelect = document.getElementById('step2-branch-select');
   if (!branchSelect || !branchSelect.value) {
@@ -2792,9 +3122,11 @@ function validateCustomerFormFields(shouldScroll = true) {
     markInvalid(motherName?.closest('.bank-box-wrap'), motherName?.closest('.char-input-group')?.querySelector('.char-input-label-row span'), sec1, "Mother's Name");
   }
   const dob = document.getElementById('raw-dob-date') || document.getElementById('raw-dob') || document.querySelector('input[name="dob"]');
-  if (!dob || dob.value.trim().length < 8) {
+  const dobVal = dob ? dob.value.trim() : '';
+  const dobRes = validateDateString(dobVal, true);
+  if (!dobRes.valid) {
     const labelEl = document.getElementById('label-dob') || dob?.closest('.bank-box-wrap')?.parentElement?.querySelector('label');
-    markInvalid(dob?.closest('.bank-box-wrap'), labelEl, sec1, 'Date of Birth');
+    markInvalid(dob?.closest('.bank-box-wrap'), labelEl, sec1, 'Date of Birth: ' + dobRes.error);
   }
   const gender = document.querySelector('input[name="genderRadio"]:checked');
   if (!gender) {
@@ -2842,7 +3174,7 @@ function validateCustomerFormFields(shouldScroll = true) {
     markInvalid(aadhaar?.closest('.bank-box-wrap'), aadhaar?.closest('div')?.querySelector('.char-input-label-row span'), sec3, 'Aadhaar Number');
   }
 
-  // Section 4: Contact Details
+  // Section 4: Contact Details (Page 1 Continued / CIF)
   const sec4 = { el: document.getElementById('header-sec-4'), missing: [] };
   const mobile = document.getElementById('raw-mobile-number');
   if (!mobile || mobile.value.trim().length < 8) {
@@ -2854,12 +3186,6 @@ function validateCustomerFormFields(shouldScroll = true) {
   const usernameVal = emailUsernameInp?.value || '';
   if ((!emailVal.trim() || !emailVal.includes('@')) && !usernameVal.trim()) {
     markInvalid(emailUsernameInp || emailInp, document.getElementById('email-username')?.parentElement?.previousElementSibling, sec4, 'Email ID');
-  }
-
-  // Item 5: Online Banking Password Validation
-  const onboardingPwd = document.getElementById('input-onboarding-password');
-  if (onboardingPwd && (!onboardingPwd.value || onboardingPwd.value.trim().length < 8)) {
-    markInvalid(onboardingPwd, document.getElementById('label-onboarding-password'), sec4, 'Online Banking Password (min 8 chars)');
   }
 
   // Section 5 (Page 2): Proof of Identity / Address (OVD)
@@ -2899,11 +3225,15 @@ function validateCustomerFormFields(shouldScroll = true) {
     markInvalid(slot, slot?.previousElementSibling, sec7, 'Specimen Signature / Thumb');
   }
 
-  // Part II: Initial Deposit & Password
+  // Part II: Initial Deposit & Online Banking Password (Page 3: Account Form - Requirement 7)
   const secPart2 = { el: document.getElementById('header-sec-part2-acc'), missing: [] };
   const initialDep = document.getElementById('input-initial-deposit');
   if (!initialDep || !initialDep.value || parseFloat(initialDep.value) < 0) {
     markInvalid(initialDep, initialDep?.parentElement?.querySelector('label'), secPart2, 'Initial Deposit');
+  }
+  const onboardingPwd = document.getElementById('input-password') || document.getElementById('input-onboarding-password');
+  if (!onboardingPwd || !onboardingPwd.value || onboardingPwd.value.trim().length < 8) {
+    markInvalid(onboardingPwd, document.getElementById('label-onboarding-password') || onboardingPwd?.parentElement?.previousElementSibling, secPart2, 'Online Banking Password (min 8 chars)');
   }
 
   // Joint Applicants (if Jointly Operated)
@@ -2935,12 +3265,12 @@ function validateCustomerFormFields(shouldScroll = true) {
     if (!secObj || !secObj.el || secObj.missing.length === 0) return;
     const badge = document.createElement('span');
     badge.className = 'section-pending-badge';
-    badge.textContent = `⚠️ ${secObj.missing.length} Missing`;
+    badge.textContent = `${secObj.missing.length} Missing`;
     badge.setAttribute('data-pending-fields', `Missing Mandatory Fields (${secObj.missing.length}):\n• ` + secObj.missing.join('\n• '));
     secObj.el.appendChild(badge);
   }
 
-  // Item 3: Update Missing Count Badges on Toolbar Tabs (Page 1, 2, 3, 4)
+  // Update Missing Count Badges on Toolbar Tabs (Page 1, 2, 3, 4)
   const p1Missing = (secHeader.missing?.length || 0) + (sec1.missing?.length || 0) + (sec2.missing?.length || 0) + (sec3.missing?.length || 0);
   const p2Missing = (sec4.missing?.length || 0) + (secOvd.missing?.length || 0) + (secAddr.missing?.length || 0);
   const p3Missing = (secPart2.missing?.length || 0);
@@ -2951,7 +3281,7 @@ function validateCustomerFormFields(shouldScroll = true) {
     if (!badgeEl) return;
     if (count > 0) {
       badgeEl.style.display = 'inline-flex';
-      badgeEl.textContent = `⚠️ ${count}`;
+      badgeEl.textContent = String(count);
     } else {
       badgeEl.style.display = 'none';
     }
@@ -2979,7 +3309,7 @@ function validateCustomerFormFields(shouldScroll = true) {
         }
       }, 100);
     }
-    showToast(`⚠️ Please complete ${totalMissing} required field(s) marked in red. Hover over section badges to inspect missing fields.`, 'error');
+    showToast(`Please complete ${totalMissing} required field(s) marked in red. Hover over section badges to inspect missing fields.`, 'error');
     return false;
   }
 
@@ -3043,6 +3373,15 @@ function goToOnboardingStep(stepNumber) {
   const targetStep = document.getElementById(`onboarding-step-${stepNumber}`);
   if (targetStep) targetStep.style.display = 'block';
 
+  // Toggle Floating Action Bar visibility (Requirement 8)
+  const floatingBar = document.getElementById('floating-form-action-bar');
+  if (floatingBar) {
+    floatingBar.style.display = (stepNumber === 2) ? 'flex' : 'none';
+  }
+  if (stepNumber === 2) {
+    updateFlowActionButtons(currentActiveFormPart || 'part1');
+  }
+
   // Smoothly scroll directly to the wizard steps right under the header
   const wizardSection = document.getElementById('wizard-section');
   if (wizardSection) {
@@ -3088,7 +3427,8 @@ async function submitCustomerApplication(form) {
     const emailVal = (combinedEmailEl && combinedEmailEl.value) ? combinedEmailEl.value.trim() : 
                      ((form.email && form.email.value) ? form.email.value.trim() : (document.querySelector('input[name="email"]')?.value.trim() || ''));
     
-    const pwdVal = document.getElementById('input-onboarding-password')?.value || (form.password && form.password.value) || (document.getElementById('input-password')?.value || 'Password123!');
+    // Clean user password with no default fallback (Requirement 7)
+    const pwdVal = document.getElementById('input-password')?.value || document.getElementById('input-onboarding-password')?.value || (form.password && form.password.value) || '';
     const cardSchemeVal = document.querySelector('input[name="cardSchemeRadio"]:checked')?.value || 'RUPAY';
     const cardFormatVal = document.querySelector('input[name="cardFormatRadio"]:checked')?.value || 'BOTH';
     const fNameVal = (form.firstName && form.firstName.value) ? form.firstName.value.trim() : (document.getElementById('raw-first-name')?.value.trim() || 'Applicant');
@@ -3277,7 +3617,7 @@ async function trackCustomerApplication() {
     if (!res || !res.applicationNumber) {
       container.innerHTML = `
         <div class="glass-card" style="padding:2rem;text-align:center;border-color:rgba(244,63,94,0.3)">
-          <div style="font-size:2rem;color:var(--rose-500);margin-bottom:0.5rem">⚠️</div>
+          <div style="font-size:2rem;color:var(--rose-500);margin-bottom:0.5rem"></div>
           <h3 style="color:#ffffff;margin-bottom:0.5rem">Application Not Found</h3>
           <p style="font-size:0.85rem;color:var(--text-secondary)">No record matching "${appNum}" was found in the database. Please check your reference code.</p>
         </div>
@@ -3330,19 +3670,18 @@ async function trackCustomerApplication() {
           <div style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);padding:1.25rem;border-radius:12px;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
             <div>
               <div style="font-weight:700;color:#c7d2fe;font-size:0.95rem">
-                ${res.status === 'DRAFT_SAVED' ? '💾 Draft Application Saved' : '📋 Application Initiated (Incomplete)'}
+                ${res.status === 'DRAFT_SAVED' ? 'Draft Application Saved' : 'Application Initiated (Incomplete)'}
               </div>
               <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">
                 ${res.status === 'DRAFT_SAVED' ? 'Your draft was saved with your details. Click below to resume and finalize.' : 'Your Application Number is locked. Complete the uniform bank form to submit your application.'}
               </div>
             </div>
             <a href="/open_account_customer?app=${encodeURIComponent(res.applicationNumber)}" class="btn btn-primary btn-sm" style="padding:0.5rem 1.25rem;font-size:0.85rem;border-radius:8px">
-              📝 Resume Application →
+              Resume Application →
             </a>
           </div>
         ` : res.status === 'ACCOUNT_OPENED' ? `
           <div style="background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);padding:1rem;border-radius:8px;text-align:center;margin-top:1rem">
-            <span style="color:var(--emerald-400);font-size:1.2rem">🎉</span>
             <div style="font-weight:800;color:inherit;margin-top:0.25rem">Account Provisioned Successfully!</div>
             <div style="font-size:0.9rem;color:var(--emerald-400);font-family:monospace;margin:0.25rem 0">Account #: <strong>${res.generatedAccountNumber}</strong></div>
             <a href="/login" class="btn btn-success btn-sm" style="margin-top:0.5rem;display:inline-block">Sign In to Online Banking</a>
@@ -3353,7 +3692,7 @@ async function trackCustomerApplication() {
           </div>
         ` : `
           <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);padding:0.85rem;border-radius:8px;color:var(--amber-400);font-size:0.85rem;margin-top:1rem">
-            ⏳ Your application is undergoing background KYC and compliance verification. You will be notified once reviewed.
+            Your application is undergoing background KYC and compliance verification. You will be notified once reviewed.
           </div>
         `}
       </div>
@@ -3393,10 +3732,10 @@ function toggleOnboardingPasswordVisibility() {
   if (!pwd) return;
   if (pwd.type === 'password') {
     pwd.type = 'text';
-    if (btn) btn.textContent = '🙈';
+    if (btn) btn.textContent = '';
   } else {
     pwd.type = 'password';
-    if (btn) btn.textContent = '👁️';
+    if (btn) btn.textContent = '';
   }
 }
 

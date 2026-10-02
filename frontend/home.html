@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20260928_2200"></script>
@@ -271,6 +274,7 @@
       margin: 0 auto;
       background: linear-gradient(135deg, #ffffff 30%, #94a3b8 100%);
       -webkit-background-clip: text;
+      background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
@@ -295,6 +299,7 @@
     html[data-theme="light"] .hero-title {
       background: linear-gradient(135deg, #090e17 25%, #1e293b 65%, #2563eb 100%) !important;
       -webkit-background-clip: text !important;
+      background-clip: text !important;
       -webkit-text-fill-color: transparent !important;
       color: #090e17 !important;
     }
@@ -342,21 +347,21 @@
   <!-- ==================== LIVE INTERBANK MARKET TICKER ==================== -->
   <div class="market-ticker-wrap">
     <div class="market-ticker">
-      <div class="ticker-item"><span>🇺🇸/🇪🇺 USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
-      <div class="ticker-item"><span>🇺🇸/🇬🇧 USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
-      <div class="ticker-item"><span>🇺🇸/🇮🇳 USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
-      <div class="ticker-item"><span>📈 TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
-      <div class="ticker-item"><span>⚡ SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
-      <div class="ticker-item"><span>💳 FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
-      <div class="ticker-item"><span>🛡️ SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
+      <div class="ticker-item"><span>/USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
+      <div class="ticker-item"><span>/USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
+      <div class="ticker-item"><span>/USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
+      <div class="ticker-item"><span>TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
+      <div class="ticker-item"><span>SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
+      <div class="ticker-item"><span>FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
+      <div class="ticker-item"><span>SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
       <!-- Duplicate for seamless infinite loop -->
-      <div class="ticker-item"><span>🇺🇸/🇪🇺 USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
-      <div class="ticker-item"><span>🇺🇸/🇬🇧 USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
-      <div class="ticker-item"><span>🇺🇸/🇮🇳 USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
-      <div class="ticker-item"><span>📈 TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
-      <div class="ticker-item"><span>⚡ SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
-      <div class="ticker-item"><span>💳 FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
-      <div class="ticker-item"><span>🛡️ SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
+      <div class="ticker-item"><span>/USD/EUR</span> <span class="ticker-up">0.9241 ▲ +0.14%</span></div>
+      <div class="ticker-item"><span>/USD/GBP</span> <span class="ticker-up">0.7892 ▲ +0.08%</span></div>
+      <div class="ticker-item"><span>/USD/INR</span> <span class="ticker-down">83.42 ▼ -0.04%</span></div>
+      <div class="ticker-item"><span>TREASURY APY</span> <span class="ticker-up">4.20% DAILY AUTO-COMPOUND</span></div>
+      <div class="ticker-item"><span>SEPA / SWIFT</span> <span class="ticker-up">SUB-SECOND SETTLEMENT</span></div>
+      <div class="ticker-item"><span>FOREX SPREAD</span> <span class="ticker-up">0.00% INTERBANK SPOT</span></div>
+      <div class="ticker-item"><span>SECURITY</span> <span class="ticker-up">AES-256 GCM HARDWARE VAULT</span></div>
     </div>
   </div>
 
@@ -415,31 +420,30 @@
       </div>
 
       <!-- Language Selector (Protected from Auto-Translation) -->
-      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.4rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
-        <span style="font-size:0.9rem">🌐</span>
+      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.45rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
+        <span class="neobank-lang-flag-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:15px;border-radius:2px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,0.6);flex-shrink:0"><svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg></span>
         <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="handleLanguageChange(this)">
-          <option value="en" selected class="notranslate" translate="no">🇺🇸 English (EN)</option>
-          <option value="es" class="notranslate" translate="no">🇪🇸 Español (ES)</option>
-          <option value="fr" class="notranslate" translate="no">🇫🇷 Français (FR)</option>
-          <option value="de" class="notranslate" translate="no">🇩🇪 Deutsch (DE)</option>
-          <option value="hi" class="notranslate" translate="no">🇮🇳 हिन्दी (HI)</option>
-          <option value="ar" class="notranslate" translate="no">🇸🇦 العربية (AR)</option>
-          <option value="zh-CN" class="notranslate" translate="no">🇨🇳 中文 (ZH)</option>
-          <option value="ja" class="notranslate" translate="no">🇯🇵 日本語 (JA)</option>
-          <option value="ru" class="notranslate" translate="no">🇷🇺 Русский (RU)</option>
-          <option value="pt" class="notranslate" translate="no">🇵🇹 Português (PT)</option>
-          <option value="it" class="notranslate" translate="no">🇮🇹 Italiano (IT)</option>
-          <option value="ko" class="notranslate" translate="no">🇰🇷 한국어 (KO)</option>
-          <option value="tr" class="notranslate" translate="no">🇹🇷 Türkçe (TR)</option>
-          <option value="nl" class="notranslate" translate="no">🇳🇱 Nederlands (NL)</option>
-          <option value="bn" class="notranslate" translate="no">🇧🇩 বাংলা (BN)</option>
-          <option value="ta" class="notranslate" translate="no">🇮🇳 தமிழ் (TA)</option>
-          <option value="te" class="notranslate" translate="no">🇮🇳 తెలుగు (TE)</option>
+          <option value="en" selected class="notranslate" translate="no">English (EN)</option>
+          <option value="es" class="notranslate" translate="no">Español (ES)</option>
+          <option value="fr" class="notranslate" translate="no">Français (FR)</option>
+          <option value="de" class="notranslate" translate="no">Deutsch (DE)</option>
+          <option value="hi" class="notranslate" translate="no">हिन्दी (HI)</option>
+          <option value="ar" class="notranslate" translate="no">العربية (AR)</option>
+          <option value="zh-CN" class="notranslate" translate="no">中文 (ZH)</option>
+          <option value="ja" class="notranslate" translate="no">日本語 (JA)</option>
+          <option value="ru" class="notranslate" translate="no">Русский (RU)</option>
+          <option value="pt" class="notranslate" translate="no">Português (PT)</option>
+          <option value="it" class="notranslate" translate="no">Italiano (IT)</option>
+          <option value="ko" class="notranslate" translate="no">한국어 (KO)</option>
+          <option value="tr" class="notranslate" translate="no">Türkçe (TR)</option>
+          <option value="nl" class="notranslate" translate="no">Nederlands (NL)</option>
+          <option value="bn" class="notranslate" translate="no">বাংলা (BN)</option>
+          <option value="ta" class="notranslate" translate="no">தமிழ் (TA)</option>
+          <option value="te" class="notranslate" translate="no">తెలుగు (TE)</option>
         </select>
       </div>
 
       <a href="/existing_application" class="btn btn-outline btn-sm" style="display:flex;align-items:center;gap:0.4rem">
-        <span>🔍</span>
         <span>Track Application</span>
       </a>
 
@@ -448,7 +452,7 @@
       </a>
 
       <a href="/open_account_customer" class="btn btn-success btn-sm">
-        <span>✨ Open Account</span>
+        <span>Open Account</span>
       </a>
     </div>
   </header>
@@ -478,10 +482,10 @@
 
       <div style="display:flex;justify-content:center;gap:1rem;flex-wrap:wrap">
         <a href="/open_account_customer" class="btn btn-success" style="padding:0.95rem 2.25rem;font-size:1.05rem;font-weight:800;border-radius:14px;box-shadow:0 12px 30px rgba(16,185,129,0.35)">
-          ✨ Open Account (3-Min KYC)
+          Open Account (3-Min KYC)
         </a>
         <a href="/login" class="btn btn-primary" style="padding:0.95rem 2.25rem;font-size:1.05rem;font-weight:800;border-radius:14px">
-          🔑 Launch Digital Vault
+          Launch Digital Vault
         </a>
       </div>
     </div>
@@ -490,7 +494,6 @@
     <div class="hero-card-showcase">
       <!-- Floating Badge Top-Right -->
       <div class="floating-widget" style="top:-20px;right:-30px;animation-delay:0.5s">
-        <span style="font-size:1.2rem">📈</span>
         <div>
           <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase">Daily APY Accrual</div>
           <div style="color:var(--emerald-400);font-weight:800">+4.20% ($16.42 today)</div>
@@ -499,7 +502,6 @@
 
       <!-- Floating Badge Bottom-Left -->
       <div class="floating-widget" style="bottom:-15px;left:-40px;animation-delay:1.5s">
-        <span style="font-size:1.2rem">⚡</span>
         <div>
           <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase">Instant Global Wire</div>
           <div style="color:var(--sky-400);font-weight:800">Cleared in 0.02s • SWIFT</div>
@@ -556,7 +558,7 @@
       <div class="action-portal-card highlight">
         <div>
           <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(16,185,129,0.25), rgba(16,185,129,0.05));color:var(--emerald-400)">
-            ✨
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><path d="M3 9l9-6 9 6v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
           <span class="status-pill active" style="font-size:0.75rem;margin-bottom:0.75rem">NEW CUSTOMER</span>
           <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
@@ -580,7 +582,7 @@
       <div class="action-portal-card">
         <div>
           <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(99,102,241,0.25), rgba(99,102,241,0.05));color:var(--brand-500)">
-            🔑
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><rect x="5" y="11" width="14" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
           </div>
           <span class="status-pill" style="background:rgba(99,102,241,0.15);color:var(--brand-500);font-size:0.75rem;margin-bottom:0.75rem">SECURE VAULT</span>
           <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
@@ -604,7 +606,7 @@
       <div class="action-portal-card">
         <div>
           <div class="feature-badge-icon" style="background:linear-gradient(135deg, rgba(245,158,11,0.25), rgba(245,158,11,0.05));color:var(--amber-400)">
-            🔍
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:28px;height:28px"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
           </div>
           <span class="status-pill submitted" style="font-size:0.75rem;margin-bottom:0.75rem">UNDERWRITING</span>
           <h2 style="font-size:1.5rem;font-weight:800;margin-bottom:0.6rem">
@@ -642,14 +644,14 @@
           <thead>
             <tr>
               <th style="text-align:left;color:var(--text-secondary)">Feature / Capability</th>
-              <th style="color:var(--emerald-400);background:rgba(16,185,129,0.12)">✨ NeoBank 2026</th>
-              <th style="color:var(--text-muted)">🏛️ Traditional Banks</th>
+              <th style="color:var(--emerald-400);background:rgba(16,185,129,0.12)">NeoBank 2026</th>
+              <th style="color:var(--text-muted)">Traditional Banks</th>
             </tr>
           </thead>
           <tbody>
             <tr>
               <td><strong>Account Opening Speed</strong></td>
-              <td style="color:var(--emerald-400);font-weight:700">⚡ 3 Minutes Digital (Anywhere)</td>
+              <td style="color:var(--emerald-400);font-weight:700">3 Minutes Digital (Anywhere)</td>
               <td style="color:var(--text-secondary)">3 to 7 Days (In-Branch paperwork)</td>
             </tr>
             <tr>
@@ -752,7 +754,6 @@
 
     <div style="max-width:1200px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
       <div>&copy; 2026 NeoBank Core Banking Technologies. All rights reserved.</div>
-      <div>Multi-Currency &bull; High Yield &bull; AES-256 Vault Encryption &bull; Relational SQL Ledger</div>
     </div>
   </footer>
 

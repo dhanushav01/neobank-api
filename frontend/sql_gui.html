@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <style>
     :root {
@@ -660,7 +663,7 @@
   <!-- ==================== TOP APP HEADER ==================== -->
   <header class="db-header">
     <div class="db-brand">
-      <div class="db-brand-icon">⚡</div>
+      <div class="db-brand-icon"></div>
       <div>
         <span class="db-brand-title">NeoBank SQL Workbench</span>
       </div>
@@ -701,7 +704,7 @@
         <span>Staff Portal</span>
       </a>
       <a href="/docs" target="_blank" class="db-btn">
-        <span>📖 Swagger API Docs</span>
+        <span>Swagger API Docs</span>
       </a>
       <button type="button" onclick="handleSqlGuiLogout()" class="db-btn" style="color:var(--db-rose);border-color:rgba(244,63,94,0.3)">
         <span>Sign Out</span>
@@ -715,8 +718,7 @@
     <!-- CARD 1: LOGIN REQUIRED (Not authenticated) -->
     <div id="barrier-login-box" class="glass-card" style="width:100%;max-width:440px;padding:2.25rem;background:#0f172a;border:1px solid rgba(255,255,255,0.1);border-radius:18px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);display:none;text-align:center">
       <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 1.25rem;box-shadow:0 8px 20px rgba(79,70,229,0.4)">
-        🔐
-      </div>
+              </div>
       <h3 style="color:#ffffff;font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.4rem">
         Bank Staff Authentication Required
       </h3>
@@ -748,8 +750,7 @@
     <!-- CARD 2: ACCESS DENIED (Logged in as Customer) -->
     <div id="barrier-denied-box" class="glass-card" style="width:100%;max-width:480px;padding:2.25rem;background:#0f172a;border:1px solid rgba(244,63,94,0.3);border-radius:18px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);display:none;text-align:center">
       <div style="width:56px;height:56px;border-radius:14px;background:rgba(244,63,94,0.15);border:1px solid rgba(244,63,94,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 1.25rem;color:#f43f5e">
-        ⛔
-      </div>
+              </div>
       <h3 style="color:#ffffff;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.4rem">
         Access Denied: Staff &amp; Admin Only
       </h3>
@@ -779,11 +780,10 @@
     <aside class="db-sidebar">
       <div class="db-sidebar-header">
         <div class="db-file-pill" title="Physical SQLite database file on disk">
-          <span>📁 neobank.db</span>
+          <span>neobank.db</span>
           <span id="db-file-size" style="font-weight:700;color:#c7d2fe">-- KB</span>
         </div>
         <div class="db-search-box">
-          <span class="db-search-icon">🔍</span>
           <input type="text" id="table-filter-input" class="db-search-input" placeholder="Filter tables..." oninput="filterTableList(this.value)">
         </div>
       </div>
@@ -802,23 +802,23 @@
       <div class="db-toolbar">
         <div class="db-toolbar-left">
           <div class="db-active-table-title" id="active-table-title">
-            <span id="active-table-icon">📋</span>
+            <span id="active-table-icon" style="display:none"></span>
             <span id="active-table-name">applications</span>
             <span class="db-row-badge" id="active-table-count-badge" style="font-size:0.75rem">-- rows</span>
           </div>
 
           <div class="db-mode-tabs">
             <button type="button" class="db-mode-tab active" id="tab-btn-data" onclick="switchDbMode('data')">
-              📊 Browse Data
+              Browse Data
             </button>
             <button type="button" class="db-mode-tab" id="tab-btn-query" onclick="switchDbMode('query')">
-              ⚡ SQL Query
+              SQL Query
             </button>
             <button type="button" class="db-mode-tab" id="tab-btn-schema" onclick="switchDbMode('schema')">
-              🛠️ Schema &amp; DDL
+              Schema &amp; DDL
             </button>
             <button type="button" class="db-mode-tab" id="tab-btn-external" onclick="switchDbMode('external')">
-              🔄 MySQL &amp; MongoDB
+              MySQL &amp; MongoDB
             </button>
           </div>
         </div>
@@ -829,13 +829,13 @@
             <input type="text" id="table-row-search-input" class="db-search-input" placeholder="Search in table..." style="width:200px" onkeydown="if(event.key==='Enter') searchActiveTable()">
           </div>
           <button type="button" class="db-btn" onclick="refreshCurrentTable()" title="Refresh records">
-            🔄 Refresh
+            Refresh
           </button>
           <button type="button" class="db-btn" onclick="exportCurrentTableJson()" title="Download JSON dump">
-            📥 JSON
+            JSON
           </button>
           <button type="button" class="db-btn" onclick="exportCurrentTableCsv()" title="Download CSV">
-            📄 CSV
+            CSV
           </button>
         </div>
       </div>
@@ -895,7 +895,7 @@
               <button type="button" class="quick-query-btn" onclick="setQuery('SELECT doc_category, doc_type, file_name, file_size_bytes FROM encrypted_documents;')">encrypted_documents</button>
             </div>
             <button type="button" class="db-btn db-btn-primary" onclick="runCustomQuery()">
-              ⚡ Run Query
+              Run Query
             </button>
           </div>
 
@@ -919,7 +919,7 @@
           <div style="margin-bottom:1.5rem">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
               <h3 style="font-size:1.1rem;font-weight:800;color:#ffffff;margin:0">Table Definition (DDL)</h3>
-              <button type="button" class="db-btn" onclick="copyDdlText()">📋 Copy DDL</button>
+              <button type="button" class="db-btn" onclick="copyDdlText()">Copy DDL</button>
             </div>
             <pre class="ddl-code-block" id="schema-ddl-code">-- Loading DDL...</pre>
           </div>
@@ -963,7 +963,6 @@
               <div>
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
                   <div style="display:flex;align-items:center;gap:0.6rem">
-                    <span style="font-size:1.75rem">🍃</span>
                     <div>
                       <h3 style="font-size:1.15rem;font-weight:800;color:#ffffff;margin:0">MongoDB Instance</h3>
                       <span style="font-size:0.75rem;color:#94a3b8;font-family:var(--db-mono)">mongodb://127.0.0.1:27017</span>
@@ -986,7 +985,7 @@
 
               <div>
                 <button type="button" class="db-btn db-btn-primary" style="width:100%;justify-content:center;padding:0.6rem" onclick="syncToMongoDB()">
-                  🔄 Sync All SQLite Tables to MongoDB
+                  Sync All SQLite Tables to MongoDB
                 </button>
               </div>
             </div>
@@ -996,7 +995,6 @@
               <div>
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
                   <div style="display:flex;align-items:center;gap:0.6rem">
-                    <span style="font-size:1.75rem">🐬</span>
                     <div>
                       <h3 style="font-size:1.15rem;font-weight:800;color:#ffffff;margin:0">MySQL 8.0 Server</h3>
                       <span style="font-size:0.75rem;color:#94a3b8;font-family:var(--db-mono)">127.0.0.1:3306 (MySQL80 Service)</span>
@@ -1031,10 +1029,10 @@
 
               <div style="display:flex;gap:0.6rem">
                 <button type="button" class="db-btn" style="flex:1;justify-content:center" onclick="testMySqlConnection()">
-                  🔌 Test Login
+                  Test Login
                 </button>
                 <button type="button" class="db-btn db-btn-primary" style="flex:1.4;justify-content:center" onclick="syncToMySQL()">
-                  ⚡ Sync to MySQL
+                  Sync to MySQL
                 </button>
               </div>
             </div>
@@ -1043,7 +1041,7 @@
 
           <!-- USAGE INSTRUCTIONS ACCORDION / GUIDE -->
           <div style="background:rgba(255,255,255,0.02);border:1px solid var(--db-border);border-radius:12px;padding:1.25rem">
-            <h4 style="font-size:0.95rem;font-weight:700;color:#ffffff;margin:0 0 0.5rem 0">💡 How to view your data in GUI tools:</h4>
+            <h4 style="font-size:0.95rem;font-weight:700;color:#ffffff;margin:0 0 0.5rem 0">How to view your data in GUI tools:</h4>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:0.8rem;color:#94a3b8;line-height:1.6">
               <div>
                 <strong style="color:#e2e8f0;display:block;margin-bottom:0.25rem">In MySQL Workbench 8.0:</strong>
@@ -1076,7 +1074,7 @@
           <span id="cell-modal-subtitle" style="font-size:0.75rem;color:#64748b;margin-left:0.5rem"></span>
         </div>
         <div style="display:flex;gap:0.5rem">
-          <button type="button" class="db-btn" onclick="copyModalContent()">📋 Copy</button>
+          <button type="button" class="db-btn" onclick="copyModalContent()">Copy</button>
           <button type="button" class="db-btn" onclick="closeCellModal()">✕ Close</button>
         </div>
       </div>
@@ -1099,16 +1097,16 @@
     let currentTableRows = [];
 
     const TABLE_ICONS = {
-      'applications': '📋',
-      'users': '👥',
-      'accounts': '🏦',
-      'cards': '💳',
-      'transactions': '💸',
-      'loans': '🪙',
-      'disputes': '⚖️',
-      'encrypted_documents': '🔒',
-      'audit_logs': '📜',
-      'login_otps': '🔑'
+      'applications': '',
+      'users': '',
+      'accounts': '',
+      'cards': '',
+      'transactions': '',
+      'loans': '',
+      'disputes': '',
+      'encrypted_documents': '',
+      'audit_logs': '',
+      'login_otps': ''
     };
 
     // Check Authentication & Role Gate
@@ -1275,6 +1273,7 @@
 
       await loadDatabaseOverview();
       await loadTableData(currentTable);
+      await loadTableSchema(currentTable);
 
       // Keyboard shortcut for query editor: Ctrl+Enter
       const editor = document.getElementById('sql-query-editor');
@@ -1294,9 +1293,12 @@
         const res = await fetch(`${API_BASE}/overview`);
         const data = await res.json();
 
-        document.getElementById('db-file-size').textContent = data.sizeFormatted;
-        document.getElementById('db-engine-badge').textContent = `SQLite ${data.sqliteVersion}`;
-        document.getElementById('db-total-records-badge').textContent = `${data.totalRecords.toLocaleString()} Total Records`;
+        const sizeEl = document.getElementById('db-file-size');
+        if (sizeEl) sizeEl.textContent = data.sizeFormatted;
+        const engineEl = document.getElementById('db-engine-badge');
+        if (engineEl) engineEl.textContent = `SQLite ${data.sqliteVersion}`;
+        const recordsEl = document.getElementById('db-total-records-badge');
+        if (recordsEl) recordsEl.textContent = `${(data.totalRecords || 0).toLocaleString()} Total Records`;
 
         allTablesCache = data.tables || [];
         renderSidebarTables(allTablesCache);
@@ -1311,7 +1313,7 @@
       if (!container) return;
 
       container.innerHTML = tables.map(t => {
-        const icon = TABLE_ICONS[t.name] || '📄';
+        const icon = TABLE_ICONS[t.name] || '';
         const isActive = t.name === currentTable;
         return `
           <div class="db-table-item ${isActive ? 'active' : ''}" onclick="selectTable('${t.name}')" data-name="${t.name}">
@@ -1344,9 +1346,23 @@
         el.classList.toggle('active', el.getAttribute('data-name') === tableName);
       });
 
-      // Update toolbar title
-      document.getElementById('active-table-name').textContent = tableName;
-      document.getElementById('active-table-icon').textContent = TABLE_ICONS[tableName] || '📄';
+      // Update toolbar title safely
+      const nameEl = document.getElementById('active-table-name');
+      if (nameEl) nameEl.textContent = tableName;
+      const iconEl = document.getElementById('active-table-icon');
+      if (iconEl) iconEl.textContent = TABLE_ICONS[tableName] || '';
+
+      // Update query editor placeholder to selected table
+      const qEditor = document.getElementById('sql-query-editor');
+      if (qEditor && (!qEditor.value || qEditor.value.startsWith('SELECT * FROM '))) {
+        qEditor.value = `SELECT * FROM ${tableName} LIMIT 50;`;
+      }
+
+      // If user was on external bridges tab, switch back to browse data view
+      const externalPane = document.getElementById('pane-external');
+      if (externalPane && externalPane.classList.contains('active')) {
+        switchDbMode('data');
+      }
 
       await loadTableData(tableName);
       await loadTableSchema(tableName);
@@ -1356,7 +1372,9 @@
     async function loadTableData(tableName) {
       const thead = document.getElementById('db-table-head');
       const tbody = document.getElementById('db-table-body');
-      tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#64748b">Querying table "${tableName}"...</td></tr>`;
+      if (tbody) {
+        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#64748b">Querying table "${escapeHtml(tableName)}"...</td></tr>`;
+      }
 
       try {
         let url = `${API_BASE}/table/${encodeURIComponent(tableName)}?limit=${currentLimit}&offset=${currentOffset}`;
@@ -1370,24 +1388,29 @@
         currentTableRows = data.rows || [];
         totalRows = data.totalRows || 0;
 
-        document.getElementById('active-table-count-badge').textContent = `${totalRows.toLocaleString()} rows`;
-        document.getElementById('page-total-rows').textContent = totalRows.toLocaleString();
+        const countBadge = document.getElementById('active-table-count-badge');
+        if (countBadge) countBadge.textContent = `${totalRows.toLocaleString()} rows`;
+        const totalRowsEl = document.getElementById('page-total-rows');
+        if (totalRowsEl) totalRowsEl.textContent = totalRows.toLocaleString();
 
         // Render Head
-        thead.innerHTML = `
-          <tr>
-            <th style="width:40px">#</th>
-            ${currentTableColumns.map(col => `
-              <th>
-                <span>${col.name}</span>
-                ${col.pk ? '<span style="color:#f59e0b" title="Primary Key">🔑</span>' : ''}
-                <span class="db-col-header-type">${col.type || 'ANY'}</span>
-              </th>
-            `).join('')}
-          </tr>
-        `;
+        if (thead) {
+          thead.innerHTML = `
+            <tr>
+              <th style="width:40px">#</th>
+              ${currentTableColumns.map(col => `
+                <th>
+                  <span>${escapeHtml(col.name)}</span>
+                  <span class="db-col-header-type">${escapeHtml(col.type || 'ANY')}</span>
+                </th>
+              `).join('')}
+            </tr>
+          `;
+        }
 
         // Render Body
+        if (!tbody) return;
+
         if (currentTableRows.length === 0) {
           tbody.innerHTML = `<tr><td colspan="${currentTableColumns.length + 1}" style="text-align:center;padding:3rem;color:#64748b">No records found.</td></tr>`;
           updatePaginationDisplay(0, 0);
@@ -1400,7 +1423,7 @@
             const rawVal = row[col.name];
             return formatCellDisplay(col.name, rawVal, row);
           }).join('');
-          return `<tr><td style="color:#64748b;font-family:var(--db-mono);font-size:0.72rem">${globalIdx}</td>${cells}</td>`;
+          return `<tr><td style="color:#64748b;font-family:var(--db-mono);font-size:0.72rem">${globalIdx}</td>${cells}</tr>`;
         }).join('');
 
         const startIdx = currentOffset + 1;
@@ -1408,7 +1431,9 @@
         updatePaginationDisplay(startIdx, endIdx);
 
       } catch (err) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#f43f5e">Error loading table data: ${err.message}</td></tr>`;
+        if (tbody) {
+          tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#f43f5e">Error loading table data: ${escapeHtml(err.message)}</td></tr>`;
+        }
       }
     }
 
@@ -1503,18 +1528,21 @@
         const res = await fetch(`${API_BASE}/table/${encodeURIComponent(tableName)}/schema`);
         const data = await res.json();
 
-        document.getElementById('schema-ddl-code').textContent = data.ddl || '-- No DDL available';
+        const ddlEl = document.getElementById('schema-ddl-code');
+        if (ddlEl) ddlEl.textContent = data.ddl || '-- No DDL available';
 
         const tbody = document.getElementById('schema-cols-body');
-        tbody.innerHTML = (data.columns || []).map(col => `
-          <tr>
-            <td style="font-weight:700;color:#ffffff">${col.name}</td>
-            <td style="font-family:var(--db-mono);color:#38bdf8">${col.type || 'ANY'}</td>
-            <td>${col.pk ? '🔑 <strong style="color:#f59e0b">PRIMARY KEY</strong>' : '<span style="color:#64748b">No</span>'}</td>
-            <td>${col.notnull ? '<strong style="color:#f43f5e">NOT NULL</strong>' : '<span style="color:#64748b">NULL</span>'}</td>
-            <td style="font-family:var(--db-mono);color:#94a3b8">${col.dflt_value !== null ? col.dflt_value : '<span style="color:#64748b">None</span>'}</td>
-          </tr>
-        `).join('');
+        if (tbody) {
+          tbody.innerHTML = (data.columns || []).map(col => `
+            <tr>
+              <td style="font-weight:700;color:#ffffff">${escapeHtml(col.name)}</td>
+              <td style="font-family:var(--db-mono);color:#38bdf8">${escapeHtml(col.type || 'ANY')}</td>
+              <td>${col.pk ? '<strong style="color:#f59e0b">PRIMARY KEY</strong>' : '<span style="color:#64748b">No</span>'}</td>
+              <td>${col.notnull ? '<strong style="color:#f43f5e">NOT NULL</strong>' : '<span style="color:#64748b">NULL</span>'}</td>
+              <td style="font-family:var(--db-mono);color:#94a3b8">${col.dflt_value !== null ? escapeHtml(col.dflt_value) : '<span style="color:#64748b">None</span>'}</td>
+            </tr>
+          `).join('');
+        }
       } catch (err) {
         console.error('Failed to load schema:', err);
       }
@@ -1549,7 +1577,7 @@
 
         if (!data.success) {
           meta.style.color = '#f43f5e';
-          meta.textContent = `❌ SQL Error (${data.executionTimeMs} ms): ${data.error}`;
+          meta.textContent = `SQL Error (${data.executionTimeMs} ms): ${data.error}`;
           body.innerHTML = `<tr><td style="padding:1.5rem;color:#f43f5e;font-family:var(--db-mono);font-size:0.85rem">${escapeHtml(data.error)}</td></tr>`;
           head.innerHTML = '';
           return;
@@ -1588,8 +1616,18 @@
       document.querySelectorAll('.db-mode-tab').forEach(b => b.classList.remove('active'));
       document.querySelectorAll('.db-pane').forEach(p => p.classList.remove('active'));
 
-      document.getElementById(`tab-btn-${mode}`).classList.add('active');
-      document.getElementById(`pane-${mode}`).classList.add('active');
+      const tabBtn = document.getElementById(`tab-btn-${mode}`);
+      const pane = document.getElementById(`pane-${mode}`);
+      if (tabBtn) tabBtn.classList.add('active');
+      if (pane) pane.classList.add('active');
+
+      if (mode === 'schema') {
+        loadTableSchema(currentTable);
+      } else if (mode === 'data') {
+        if (!currentTableRows || currentTableRows.length === 0) {
+          loadTableData(currentTable);
+        }
+      }
     }
 
     // 8. Modal & Copy Utilities
@@ -1681,12 +1719,12 @@
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
           statusDiv.style.color = '#f43f5e';
-          statusDiv.textContent = `❌ ${data.message || data.error}`;
+          statusDiv.textContent = `${data.message || data.error}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
         statusDiv.style.color = '#f43f5e';
-        statusDiv.textContent = `❌ Error: ${e.message}`;
+        statusDiv.textContent = `Error: ${e.message}`;
       }
     }
 
@@ -1714,12 +1752,12 @@
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
           statusDiv.style.color = '#f43f5e';
-          statusDiv.textContent = `❌ ${data.message}`;
+          statusDiv.textContent = `${data.message}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
         statusDiv.style.color = '#f43f5e';
-        statusDiv.textContent = `❌ Error: ${e.message}`;
+        statusDiv.textContent = `Error: ${e.message}`;
       }
     }
 
@@ -1748,24 +1786,17 @@
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
           statusDiv.style.color = '#f43f5e';
-          statusDiv.textContent = `❌ ${data.message}`;
+          statusDiv.textContent = `${data.message}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
         statusDiv.style.color = '#f43f5e';
-        statusDiv.textContent = `❌ Error: ${e.message}`;
+        statusDiv.textContent = `Error: ${e.message}`;
       }
     }
 
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
-    }
+    // escapeHtml centralized in utils.js
+
 
     function escapeAttr(str) {
       if (str === null || str === undefined) return '';

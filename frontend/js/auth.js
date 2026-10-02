@@ -2,38 +2,9 @@
  * Authentication Module: Unified Login, Role Tracking, and Staff Onboarding
  */
 
-// Universal Human-Readable Formatter Fallback & Safety Guarantee
-if (typeof window.formatHumanText !== 'function') {
-  window.formatHumanText = function(val) {
-    if (!val || typeof val !== 'string') return val || '';
-    const trimmed = val.trim();
-    if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) {
-      return val;
-    }
-    if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-      return trimmed
-        .split('_')
-        .filter(Boolean)
-        .map(part => {
-          const upper = part.toUpperCase();
-          if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) {
-            return upper;
-          }
-          return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-        })
-        .join(' ');
-    }
-    return val;
-  };
-}
-var formatHumanText = window.formatHumanText;
-
-if (typeof window.showToast !== 'function') {
-  window.showToast = function(msg, type) {
-    console.log(`[Toast ${type || 'info'}]:`, msg);
-  };
-}
-var showToast = window.showToast;
+// Centralized Utilities from utils.js & api.js
+var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
+var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
 
 let currentUser = null;
 

@@ -6,25 +6,71 @@
  * or refreshing the page.
  */
 
-// Supported Languages Map
+// Vector SVG Country Flags Map for 100% Cross-Platform Consistency
+const COUNTRY_FLAGS_SVG = {
+  US: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg>',
+  ES: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#c60b1e" d="M0 0h640v480H0z"/><path fill="#ffc400" d="M0 120h640v240H0z"/><circle cx="160" cy="240" r="32" fill="#c60b1e"/></svg>',
+  FR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#002654" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce1126" d="M426.7 0H640v480H426.7z"/></svg>',
+  DE: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#dd0000" d="M0 160h640v160H0z"/><path fill="#ffce00" d="M0 320h640v160H0z"/></svg>',
+  IN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#f93" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#128807" d="M0 320h640v160H0z"/><circle cx="320" cy="240" r="44" fill="none" stroke="#008" stroke-width="7"/><circle cx="320" cy="240" r="10" fill="#008"/></svg>',
+  SA: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006c35" d="M0 0h640v480H0z"/><path fill="#fff" d="M160 270h320v15H160z"/><circle cx="320" cy="220" r="30" fill="none" stroke="#fff" stroke-width="6"/></svg>',
+  CN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#de2910" d="M0 0h640v480H0z"/><polygon fill="#ffde00" points="100,50 115,95 160,95 125,120 140,165 100,135 60,165 75,120 40,95 85,95"/></svg>',
+  JP: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><circle cx="320" cy="240" r="120" fill="#bc002d"/></svg>',
+  RU: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#0039a6" d="M0 160h640v160H0z"/><path fill="#d52b1e" d="M0 320h640v160H0z"/></svg>',
+  PT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006600" d="M0 0h256v480H0z"/><path fill="#ff0000" d="M256 0h384v480H256z"/><circle cx="256" cy="240" r="50" fill="#ffff00"/></svg>',
+  IT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#009246" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce2b37" d="M426.7 0H640v480H426.7z"/></svg>',
+  KR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><path fill="#cd2e3a" d="M320 140a100 100 0 0 1 0 200 50 50 0 0 1 0-100 50 50 0 0 0 0-100z"/><path fill="#0047a0" d="M320 240a50 50 0 0 1 0 100 100 100 0 0 1 0-200 50 50 0 0 0 0 100z"/></svg>',
+  TR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#e30a17" d="M0 0h640v480H0z"/><circle cx="280" cy="240" r="90" fill="#fff"/><circle cx="305" cy="240" r="72" fill="#e30a17"/><polygon fill="#fff" points="380,240 410,250 395,225 410,205 385,215 365,195 370,225 350,240 375,245 375,270"/></svg>',
+  NL: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ae1c28" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#21468b" d="M0 320h640v160H0z"/></svg>',
+  BD: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006a4e" d="M0 0h640v480H0z"/><circle cx="290" cy="240" r="110" fill="#f42a41"/></svg>'
+};
+
+function getFlagSvgForLang(code) {
+  const lang = (code || 'en').toLowerCase();
+  if (lang === 'es') return COUNTRY_FLAGS_SVG.ES;
+  if (lang === 'fr') return COUNTRY_FLAGS_SVG.FR;
+  if (lang === 'de') return COUNTRY_FLAGS_SVG.DE;
+  if (['hi', 'ta', 'te'].includes(lang)) return COUNTRY_FLAGS_SVG.IN;
+  if (lang === 'ar') return COUNTRY_FLAGS_SVG.SA;
+  if (lang.startsWith('zh')) return COUNTRY_FLAGS_SVG.CN;
+  if (lang === 'ja') return COUNTRY_FLAGS_SVG.JP;
+  if (lang === 'ru') return COUNTRY_FLAGS_SVG.RU;
+  if (lang === 'pt') return COUNTRY_FLAGS_SVG.PT;
+  if (lang === 'it') return COUNTRY_FLAGS_SVG.IT;
+  if (lang === 'ko') return COUNTRY_FLAGS_SVG.KR;
+  if (lang === 'tr') return COUNTRY_FLAGS_SVG.TR;
+  if (lang === 'nl') return COUNTRY_FLAGS_SVG.NL;
+  if (lang === 'bn') return COUNTRY_FLAGS_SVG.BD;
+  return COUNTRY_FLAGS_SVG.US;
+}
+
+function updateLanguageFlagIcons(targetLang) {
+  const code = targetLang || getCurrentLanguage() || 'en';
+  const flagSvg = getFlagSvgForLang(code);
+  document.querySelectorAll('.neobank-lang-flag-icon').forEach(iconEl => {
+    iconEl.innerHTML = flagSvg;
+  });
+}
+
+// Supported Languages Map (Clean text labels without emoji prefixes that render as text on desktop)
 const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English (EN)', flag: '🇺🇸' },
-  { code: 'es', label: 'Español (ES)', flag: '🇪🇸' },
-  { code: 'fr', label: 'Français (FR)', flag: '🇫🇷' },
-  { code: 'de', label: 'Deutsch (DE)', flag: '🇩🇪' },
-  { code: 'hi', label: 'हिन्दी (HI)', flag: '🇮🇳' },
-  { code: 'ar', label: 'العربية (AR)', flag: '🇸🇦' },
-  { code: 'zh-CN', label: '中文 (ZH)', flag: '🇨🇳' },
-  { code: 'ja', label: '日本語 (JA)', flag: '🇯🇵' },
-  { code: 'ru', label: 'Русский (RU)', flag: '🇷🇺' },
-  { code: 'pt', label: 'Português (PT)', flag: '🇵🇹' },
-  { code: 'it', label: 'Italiano (IT)', flag: '🇮🇹' },
-  { code: 'ko', label: '한국어 (KO)', flag: '🇰🇷' },
-  { code: 'tr', label: 'Türkçe (TR)', flag: '🇹🇷' },
-  { code: 'nl', label: 'Nederlands (NL)', flag: '🇳🇱' },
-  { code: 'bn', label: 'বাংলা (BN)', flag: '🇧🇩' },
-  { code: 'ta', label: 'தமிழ் (TA)', flag: '🇮🇳' },
-  { code: 'te', label: 'తెలుగు (TE)', flag: '🇮🇳' }
+  { code: 'en', label: 'English (EN)', country: 'US' },
+  { code: 'es', label: 'Español (ES)', country: 'ES' },
+  { code: 'fr', label: 'Français (FR)', country: 'FR' },
+  { code: 'de', label: 'Deutsch (DE)', country: 'DE' },
+  { code: 'hi', label: 'हिन्दी (HI)', country: 'IN' },
+  { code: 'ar', label: 'العربية (AR)', country: 'SA' },
+  { code: 'zh-CN', label: '中文 (ZH)', country: 'CN' },
+  { code: 'ja', label: '日本語 (JA)', country: 'JP' },
+  { code: 'ru', label: 'Русский (RU)', country: 'RU' },
+  { code: 'pt', label: 'Português (PT)', country: 'PT' },
+  { code: 'it', label: 'Italiano (IT)', country: 'IT' },
+  { code: 'ko', label: '한국어 (KO)', country: 'KR' },
+  { code: 'tr', label: 'Türkçe (TR)', country: 'TR' },
+  { code: 'nl', label: 'Nederlands (NL)', country: 'NL' },
+  { code: 'bn', label: 'বাংলা (BN)', country: 'BD' },
+  { code: 'ta', label: 'தமிழ் (TA)', country: 'IN' },
+  { code: 'te', label: 'తెలుగు (TE)', country: 'IN' }
 ];
 
 const CANARY_ID = 'neobank-translate-canary';
@@ -202,7 +248,7 @@ function getTransitionElements() {
 // Show frosted glass veil and pill indicator
 function showTransitionMask(targetLangCode) {
   const langObj = SUPPORTED_LANGUAGES.find(l => l.code === targetLangCode || (l.code === 'zh-CN' && targetLangCode === 'zh'));
-  const langLabel = langObj ? `${langObj.flag} ${langObj.label}` : targetLangCode.toUpperCase();
+  const langLabel = langObj ? langObj.label : targetLangCode.toUpperCase();
 
   const { backdrop, pill, pillText } = getTransitionElements();
   if (pillText) {
@@ -421,7 +467,7 @@ function protectLanguageSelects() {
       if (opt.getAttribute('translate') !== 'no') opt.setAttribute('translate', 'no');
       const langObj = SUPPORTED_LANGUAGES.find(l => l.code === opt.value || (l.code === 'zh-CN' && opt.value === 'zh'));
       if (langObj) {
-        const expected = `${langObj.flag} ${langObj.label}`;
+        const expected = langObj.label;
         if (opt.textContent.trim() !== expected || opt.children.length > 0) {
           opt.textContent = expected;
         }
@@ -434,7 +480,7 @@ function protectLanguageSelects() {
         Array.from(select.options).forEach(opt => {
           const langObj = SUPPORTED_LANGUAGES.find(l => l.code === opt.value || (l.code === 'zh-CN' && opt.value === 'zh'));
           if (langObj) {
-            const expected = `${langObj.flag} ${langObj.label}`;
+            const expected = langObj.label;
             if (opt.textContent.trim() !== expected || opt.children.length > 0) {
               opt.textContent = expected;
             }
@@ -561,6 +607,7 @@ function handleLanguageChange(target) {
     document.querySelectorAll('.neobank-lang-select').forEach(sel => {
       sel.value = 'en';
     });
+    updateLanguageFlagIcons('en');
 
     // 1. Deep Google Translate instance restore
     restoreGoogleTranslate();
@@ -603,10 +650,11 @@ function handleLanguageChange(target) {
   // Sync RTL / LTR direction for Arabic
   document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
 
-  // Sync all dropdowns on page
+  // Sync all dropdowns on page and update flag icon
   document.querySelectorAll('.neobank-lang-select').forEach(sel => {
     sel.value = lang;
   });
+  updateLanguageFlagIcons(lang);
 
   // 1. Immediately activate frosted glass blur veil to completely conceal intermediate English transition
   showTransitionMask(lang);
@@ -649,7 +697,17 @@ function handleLanguageChange(target) {
 
 // Attach to window object for global access
 window.handleLanguageChange = handleLanguageChange;
+// Export helpers globally
 window.SUPPORTED_LANGUAGES = SUPPORTED_LANGUAGES;
+window.getFlagSvgForLang = getFlagSvgForLang;
+window.updateLanguageFlagIcons = updateLanguageFlagIcons;
+
+// Auto-run flag icon update on script load / DOM ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => updateLanguageFlagIcons());
+} else {
+  updateLanguageFlagIcons();
+}
 window.getCurrentLanguage = getCurrentLanguage;
 window.clearAllTranslateCookies = clearAllTranslateCookies;
 window.setTranslateCookie = setTranslateCookie;
@@ -687,13 +745,15 @@ function initGoogleTranslator() {
     if (select.options.length < SUPPORTED_LANGUAGES.length) {
       select.innerHTML = SUPPORTED_LANGUAGES.map(item => `
         <option value="${item.code}" class="notranslate" translate="no" ${item.code === currentLang || (item.code === 'zh-CN' && currentLang === 'zh') ? 'selected' : ''}>
-          ${item.flag} ${item.label}
+          ${item.label}
         </option>
       `).join('');
     } else {
       select.value = currentLang;
     }
   });
+
+  updateLanguageFlagIcons(currentLang);
 
   protectLanguageSelects();
 

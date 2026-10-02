@@ -158,19 +158,19 @@
       <div class="form-editor-toolbar screen-only" style="position:static !important;margin-bottom:1.25rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem;background:#0d1527 !important;border:1px solid rgba(255,255,255,0.14) !important;border-radius:12px;padding:0.75rem 1.1rem;box-shadow:0 6px 20px rgba(0,0,0,0.3) !important">
         <div class="part-nav-pills" style="display:flex;gap:0.4rem;flex-wrap:wrap">
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix} active" onclick="window.switchBankFormPart('${uniquePrefix}', 'part1', this)">
-            📄 Page 1: CIF &amp; CKYC
+            Page 1: CIF &amp; CKYC
           </button>
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix}" onclick="window.switchBankFormPart('${uniquePrefix}', 'part2', this)">
-            📑 Page 2: KYC &amp; OVD
+            Page 2: KYC &amp; OVD
           </button>
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix}" onclick="window.switchBankFormPart('${uniquePrefix}', 'part3', this)">
-            💳 Page 3: Account Form
+            Page 3: Account Form
           </button>
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix}" onclick="window.switchBankFormPart('${uniquePrefix}', 'part4', this)">
-            ⚖️ Page 4: Declarations
+            Page 4: Declarations
           </button>
           <button type="button" class="btn btn-outline btn-sm part-btn-${uniquePrefix}" onclick="window.switchBankFormPart('${uniquePrefix}', 'all', this)">
-            📋 View All 4 Pages
+            View All 4 Pages
           </button>
         </div>
 
@@ -179,7 +179,7 @@
             ${appNumber}
           </div>
           <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('${uniquePrefix}')" title="Download Official 4-Page PDF / Print Document" style="font-weight:700">
-            🖨️ Download &amp; Print Form (PDF)
+            Download &amp; Print Form (PDF)
           </button>
         </div>
       </div>
@@ -194,8 +194,7 @@
           <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:2px solid #0b2545;padding-bottom:0.75rem;margin-bottom:0.85rem">
             <div style="display:flex;align-items:center;gap:12px">
               <div style="width:42px;height:42px;border-radius:6px;background:#0b2545;color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.4rem;font-weight:900">
-                🏛️
-              </div>
+                              </div>
               <div>
                 <div style="font-size:1.15rem;font-weight:900;letter-spacing:-0.01em;color:#0b2545">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
                 <div style="font-size:0.75rem;font-weight:700;color:#334155">UNIFORM ACCOUNT OPENING FORM FOR RESIDENT INDIVIDUALS</div>
@@ -378,7 +377,6 @@
                 Passport Size Photograph
               </div>
               <div style="width:120px;height:140px;margin:0 auto;border:2px solid #0b2545;background:#e2e8f0;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:4px">
-                <span style="font-size:2.5rem">👤</span>
                 <span style="font-size:0.68rem;font-weight:800;color:#0b2545;margin-top:0.25rem">${firstName}</span>
                 <span style="font-size:0.62rem;color:#64748b">Verified Bio</span>
               </div>
@@ -559,7 +557,6 @@
               <div style="margin-top:1.5rem;border:2px solid ${brandColor};border-radius:10px;overflow:hidden;background:#ffffff;box-shadow:0 6px 25px rgba(0,0,0,0.08)">
                 <div style="background:${brandColor};color:#ffffff;padding:0.6rem 1rem;font-size:0.88rem;font-weight:900;display:flex;justify-content:space-between;align-items:center;letter-spacing:0.02em">
                   <div style="display:flex;align-items:center;gap:0.5rem">
-                    <span>🏛️</span>
                     <span>FOR OFFICE USE ONLY (BANK AUTHORIZATION &amp; OFFICIAL DECISION)</span>
                   </div>
                   <span style="font-size:0.75rem;background:rgba(255,255,255,0.22);color:#ffffff;padding:0.2rem 0.65rem;border-radius:9999px;font-weight:800;letter-spacing:0.05em">
@@ -609,7 +606,7 @@
                       <tr>
                         <td style="padding:0.45rem 0;color:#64748b;font-size:0.74rem">Decision Timestamp:</td>
                         <td style="padding:0.45rem 0;font-size:0.78rem;color:#334155;font-weight:600">
-                          📅 ${reviewedTime ? reviewedTime.replace('T', ' ').slice(0, 16) : stampDate} • ${branchName} (${branchCode})
+                          ${reviewedTime ? reviewedTime.replace('T', ' ').slice(0, 16) : stampDate} • ${branchName} (${branchCode})
                         </td>
                       </tr>
                     </table>
@@ -799,7 +796,7 @@
       } else {
         bodyEl.innerHTML = `
           <div style="padding:1.5rem;text-align:center;background:rgba(255,255,255,0.03);border-radius:8px">
-            <div style="font-size:2.5rem;margin-bottom:0.5rem">📄</div>
+            <div style="font-size:2.5rem;margin-bottom:0.5rem"></div>
             <h4 style="font-size:1.05rem;font-weight:700;margin-bottom:0.4rem">${docName}</h4>
             <div style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem">
               Encrypted binary file verified &amp; decrypted with AES-256 key from SQLite storage.
@@ -807,7 +804,7 @@
             <iframe src="${inlineUrl}" style="width:100%;height:220px;border:1px solid var(--border-subtle);border-radius:6px;margin-bottom:1rem;background:#fff"></iframe>
             <div>
               <button type="button" class="btn btn-primary" onclick="window.downloadDecryptedDocument('${docId}', '${docName}')">
-                ⬇️ Download Decrypted File
+                Download Decrypted File
               </button>
             </div>
           </div>
