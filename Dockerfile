@@ -19,11 +19,11 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy application files with appropriate ownership
 COPY --chown=appuser:appgroup . .
 
-# Ensure data directories exist and permissions are set for appuser
-RUN mkdir -p /data /app/backend/data \
+# Ensure entrypoint script is executable and data directories are initialized
+RUN chmod +x /app/docker-entrypoint.sh \
+    && mkdir -p /data /app/backend/data \
     && chown -R appuser:appgroup /data /app/backend/data \
-    && chmod -R 775 /data /app/backend/data \
-    && chmod +x /app/docker-entrypoint.sh
+    && chmod -R 775 /data /app/backend/data
 
 ENV HOST=0.0.0.0 \
     PORT=8000 \

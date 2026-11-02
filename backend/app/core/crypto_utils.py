@@ -204,18 +204,15 @@ def hash_otp(code: str, salt: Optional[Any] = None) -> tuple:
     """
     if not salt:
         salt_str = secrets.token_hex(16)
-        salt_bytes = salt_str.encode("utf-8")
     elif isinstance(salt, bytes):
-        salt_bytes = salt
         salt_str = salt.hex()
     else:
         salt_str = str(salt)
-        salt_bytes = salt_str.encode("utf-8")
 
     hashed = hashlib.pbkdf2_hmac(
         "sha256",
         code.strip().encode("utf-8"),
-        salt_bytes,
+        salt_str.encode("utf-8"),
         iterations=50000
     )
     return base64.b64encode(hashed).decode("utf-8"), salt_str

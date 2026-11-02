@@ -15,7 +15,7 @@ logger = logging.getLogger("neobank.config")
 # Fail-Closed Insecure Placeholder Detection Patterns
 DISALLOWED_SECRET_PATTERNS = [
     "change_in_prod", "super_secret", "replace_with", "password", "12345", "example",
-    "dev_neobank", "secret_token", "changeme"
+    "dev_neobank", "secret_token", "changeme", "change_me", "change-me", "placeholder", "your_secret"
 ]
 
 # ----------------------------------------------------------------- CENTRALIZED .ENV LOADER
@@ -35,11 +35,8 @@ def _load_env_file(filepath: str) -> bool:
                     val = val.strip()
                     if len(val) >= 2 and ((val[0] == '"' and val[-1] == '"') or (val[0] == "'" and val[-1] == "'")):
                         val = val[1:-1]
-                    if key:
-                        existing = os.environ.get(key, "").lower()
-                        # Populate if missing OR if current process env contains an insecure placeholder
-                        if key not in os.environ or any(p in existing for p in DISALLOWED_SECRET_PATTERNS):
-                            os.environ[key] = val
+                    if key and key not in os.environ:
+                        os.environ[key] = val
         return True
     except Exception as exc:
         logger.warning(f"Failed to read environment file at '{filepath}': {exc}")
@@ -80,11 +77,6 @@ def load_strict_secret(name: str, min_bytes: int = 32, default_test_generator=No
             f"Startup aborted. You must supply a cryptographically secure random secret via environment."
         )
     val_clean = val.strip()
-    if len(val_clean.encode('utf-8')) < min_bytes:
-        raise RuntimeError(
-            f"FATAL SECURITY CONFIGURATION: Secret '{name}' is too short "
-            f"({len(val_clean)} bytes; minimum {min_bytes} random bytes required). Startup aborted."
-        )
     val_lower = val_clean.lower()
     for pattern in DISALLOWED_SECRET_PATTERNS:
         if pattern in val_lower:
@@ -92,6 +84,11 @@ def load_strict_secret(name: str, min_bytes: int = 32, default_test_generator=No
                 f"FATAL SECURITY CONFIGURATION: Secret '{name}' matches insecure placeholder pattern '{pattern}'. "
                 f"Startup aborted. Generate a high-entropy CSPRNG secret."
             )
+    if len(val_clean.encode('utf-8')) < min_bytes:
+        raise RuntimeError(
+            f"FATAL SECURITY CONFIGURATION: Secret '{name}' is too short "
+            f"({len(val_clean)} bytes; minimum {min_bytes} random bytes required). Startup aborted."
+        )
     return val_clean
 
 # Cryptographic secret for signing JWT access and refresh tokens
@@ -202,6 +199,28 @@ COUNTRIES: List[Dict[str, str]] = [
     {"code": "CA", "name": "Canada", "currency": "CAD"},
     {"code": "AU", "name": "Australia", "currency": "AUD"}
 ]
+
+# ----------------------------------------------------------------- PRODUCTION FAIL-CLOSED VERIFICATION
+def validate_production_secrets():
+    """Fail closed in production if any configured service secret is missing or contains placeholder values."""
+    if not IS_PRODUCTION:
+        return
+
+    placeholders = ("change_me", "changeme", "change-me", "replace_me", "placeholder", "your_secret")
+
+    # Check ADMIN_PASSWORD if ADMIN_EMAIL is set
+    admin_email = os.getenv("ADMIN_EMAIL", "").strip().lower()
+    admin_pw = os.getenv("ADMIN_PASSWORD", "").strip().lower()
+    if admin_email and (not admin_pw or any(p in admin_pw for p in placeholders)):
+        raise RuntimeError("FATAL SECURITY CONFIGURATION: In production, 'ADMIN_PASSWORD' must be a strong password and cannot be a placeholder.")
+
+    # Check MYSQL_PASSWORD if non-localhost MYSQL_HOST is configured
+    mysql_host = os.getenv("MYSQL_HOST", "").strip().lower()
+    mysql_pw = os.getenv("MYSQL_PASSWORD", "").strip().lower()
+    if mysql_host and mysql_host not in ("127.0.0.1", "localhost") and any(p in mysql_pw for p in placeholders):
+        raise RuntimeError("FATAL SECURITY CONFIGURATION: In production, 'MYSQL_PASSWORD' cannot be a placeholder.")
+
+validate_production_secrets()
 
 # Partner Banks
 BANKS: Dict[str, Dict[str, str]] = {

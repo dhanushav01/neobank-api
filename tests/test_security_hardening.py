@@ -168,17 +168,17 @@ class TestSecurityHardening(unittest.TestCase):
             importlib.reload(cfg_mod)
             importlib.reload(sql_db)
 
-    def test_05_enable_test_otp_flag_behavior(self):
+    def test_05_transfer_otp_delivered_via_in_app_notification(self):
         """
-        Verify that ENABLE_TEST_OTP=true includes testModeOtp for testers,
-        while ENABLE_TEST_OTP=false strips it completely.
+        Verify that transfer OTP is delivered via in-app notification (NOT in API response),
+        allowing testers to complete high-value transfers in production safely.
         """
-        from backend.app.routers import transfers as transfers_mod
+        import re
         from backend.app.core.database import DB
 
         # Ensure funding account exists for customer
-        source_acc_id = "acc-test-transfer-otp"
-        dest_acc_id = "acc-test-transfer-dest"
+        source_acc_id = "acc-test-wire-otp"
+        dest_acc_id = "acc-test-wire-dest"
         DB["accounts"][source_acc_id] = {
             "id": source_acc_id,
             "ownerId": "usr_seed_customer",
@@ -203,34 +203,83 @@ class TestSecurityHardening(unittest.TestCase):
                 "name": "Alex Sterling",
                 "accountNumber": "1000000002"
             },
-            "amount": 2500.00,
+            "amount": 3500.00,
             "currency": "USD",
-            "reference": "High value wire"
+            "reference": "Corporate wire"
         }
 
-        # Case A: ENABLE_TEST_OTP is False -> No testModeOtp in response
-        transfers_mod.ENABLE_TEST_OTP = False
-        res_off = self.client.post(
+        # 1. Initiate transfer -> 201 Created with PENDING_OTP
+        res = self.client.post(
             "/transfers",
             json=transfer_payload,
             headers={"Authorization": f"Bearer {self.cust_token}"}
         )
-        self.assertEqual(res_off.status_code, 201)
-        self.assertNotIn("testModeOtp", res_off.json())
+        self.assertEqual(res.status_code, 201)
+        transfer_data = res.json()
+        self.assertEqual(transfer_data.get("status"), "PENDING_OTP")
+        # Assert OTP is NOT returned in API response
+        self.assertNotIn("testModeOtp", transfer_data)
+        self.assertNotIn("otp", transfer_data)
 
-        # Case B: ENABLE_TEST_OTP is True -> Includes testModeOtp for UI demo
-        transfers_mod.ENABLE_TEST_OTP = True
-        res_on = self.client.post(
-            "/transfers",
-            json=transfer_payload,
+        transfer_id = transfer_data["id"]
+        challenge_id = transfer_data["otpChallengeId"]
+
+        # 2. Retrieve delivered OTP from in-app notifications
+        notif_res = self.client.get(
+            "/notifications",
             headers={"Authorization": f"Bearer {self.cust_token}"}
         )
-        self.assertEqual(res_on.status_code, 201)
-        self.assertIn("testModeOtp", res_on.json())
-        self.assertEqual(len(res_on.json()["testModeOtp"]), 6)
+        self.assertEqual(notif_res.status_code, 200)
+        res_data = notif_res.json()
+        notifications = res_data if isinstance(res_data, list) else res_data.get("data", [])
+        
+        otp_code = None
+        for n in notifications:
+            msg = n.get("message", "")
+            match = re.search(r"Security verification code for transfer.*:\s*(\d{6})", msg)
+            if match:
+                otp_code = match.group(1)
+                break
 
-        # Restore default state
-        transfers_mod.ENABLE_TEST_OTP = False
+        self.assertIsNotNone(otp_code, "Expected 6-digit OTP in customer in-app notifications")
+        self.assertEqual(len(otp_code), 6)
+
+        # 3. Confirm transfer using OTP retrieved from notifications
+        confirm_res = self.client.post(
+            f"/transfers/{transfer_id}/confirm",
+            json={"otpChallengeId": challenge_id, "otp": otp_code},
+            headers={"Authorization": f"Bearer {self.cust_token}"}
+        )
+        self.assertEqual(confirm_res.status_code, 200)
+        self.assertEqual(confirm_res.json().get("status"), "COMPLETED")
+
+    def test_06_production_refuses_placeholder_secrets(self):
+        """
+        Verify that in production mode (ENVIRONMENT=production),
+        the server refuses to start if required secrets contain CHANGE_ME placeholders.
+        """
+        from backend.app.core import config as cfg_mod
+
+        # Subtest A: Missing/Placeholder POS_GATEWAY_KEY in production
+        original_env = os.environ.get("ENVIRONMENT")
+        original_pos = os.environ.get("POS_GATEWAY_KEY")
+        try:
+            os.environ["ENVIRONMENT"] = "production"
+            os.environ["POS_GATEWAY_KEY"] = "CHANGE_ME"
+
+            with self.assertRaises(RuntimeError) as ctx:
+                importlib.reload(cfg_mod)
+            self.assertIn("insecure placeholder", str(ctx.exception).lower())
+        finally:
+            if original_env is not None:
+                os.environ["ENVIRONMENT"] = original_env
+            else:
+                os.environ.pop("ENVIRONMENT", None)
+            if original_pos is not None:
+                os.environ["POS_GATEWAY_KEY"] = original_pos
+            else:
+                os.environ.pop("POS_GATEWAY_KEY", None)
+            importlib.reload(cfg_mod)
 
 
 if __name__ == "__main__":

@@ -386,11 +386,7 @@ async function submitTransfer(form) {
       activeTransferChallenge = res;
       document.getElementById('otp-transfer-id').value = res.id;
       document.getElementById('otp-challenge-id').value = res.otpChallengeId;
-      if (res.testModeOtp) {
-        document.getElementById('otp-test-hint').textContent = `Demo Mode: Test verification code is ${res.testModeOtp}`;
-      } else {
-        document.getElementById('otp-test-hint').textContent = `High-value transfer (> $1,000). A 6-digit verification code has been dispatched.`;
-      }
+      document.getElementById('otp-test-hint').textContent = 'High-value transfer (> $1,000). A 6-digit verification code has been dispatched to your Notifications.';
       openModal('modal-otp-verify');
       showToast('High-value transfer! Please enter the 6-digit verification code.', 'info');
     } else {
