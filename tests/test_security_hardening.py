@@ -253,6 +253,46 @@ class TestSecurityHardening(unittest.TestCase):
         self.assertEqual(confirm_res.status_code, 200)
         self.assertEqual(confirm_res.json().get("status"), "COMPLETED")
 
+        # 4. Verify /confirm-otp alias also works
+        trf2_res = self.client.post(
+            "/transfers",
+            json={
+                "fromAccountId": source_acc_id,
+                "destination": {
+                    "type": "INTERNAL",
+                    "name": "Alex Sterling",
+                    "accountNumber": "1000000002"
+                },
+                "amount": 1200.0,
+                "currency": "USD"
+            },
+            headers={"Authorization": f"Bearer {self.cust_token}"}
+        )
+        self.assertEqual(trf2_res.status_code, 201)
+        trf2_id = trf2_res.json()["id"]
+        ch2_id = trf2_res.json()["otpChallengeId"]
+
+        # Get notification for transfer 2
+        notifs_res2 = self.client.get("/notifications", headers={"Authorization": f"Bearer {self.cust_token}"})
+        notifs2_data = notifs_res2.json()
+        items2 = notifs2_data if isinstance(notifs2_data, list) else notifs2_data.get("data", [])
+        otp2_code = None
+        for n in items2:
+            if trf2_id in n.get("message", ""):
+                m = re.search(r"\b(\d{6})\b", n.get("message", ""))
+                if m:
+                    otp2_code = m.group(1)
+                    break
+        self.assertIsNotNone(otp2_code)
+
+        confirm2_res = self.client.post(
+            f"/transfers/{trf2_id}/confirm-otp",
+            json={"otpChallengeId": ch2_id, "otp": otp2_code},
+            headers={"Authorization": f"Bearer {self.cust_token}"}
+        )
+        self.assertEqual(confirm2_res.status_code, 200)
+        self.assertEqual(confirm2_res.json().get("status"), "COMPLETED")
+
     def test_06_production_refuses_placeholder_secrets(self):
         """
         Verify that in production mode (ENVIRONMENT=production),

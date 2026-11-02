@@ -122,7 +122,11 @@ The platform provides a 4-tier role hierarchy:
 
 ### 2. High-Value Transfer with OTP Protection
 1. `POST /transfers` with amount > `1000` USD (triggers OTP verification challenge)
-2. `POST /transfers/{transferId}/confirm` with out-of-band verification code (completes wire and debits ledger)
+2. Retrieve OTP verification code (delivered via `OTP_DELIVERY`, default `notification` in user notification feed)
+3. `POST /transfers/{transferId}/confirm` (or `/transfers/{transferId}/confirm-otp`) with 6-digit verification code to complete transfer and debit ledger
+
+> [!WARNING]
+> **Demo-Only 2FA Notice**: In demo/sandbox mode, the 6-digit transfer OTP is dispatched to the user's in-app notification feed (`OTP_DELIVERY=notification`) so evaluators can complete end-to-end flows. In a production banking environment, delivering an OTP to the same authenticated browser session is **not** a secure second factor; genuine 2FA requires an out-of-band delivery channel (e.g., SMS, push notification to an enrolled hardware device, or TOTP authenticator). Supported flags: `OTP_DELIVERY=notification|console|none`.
 
 ### 3. Card Dispute & Automated Ledger Settlement
 1. `POST /cards/{cardId}/authorize` (Simulate merchant POS transaction)
@@ -154,6 +158,7 @@ docker run -p 8000:8000 neobank-api
 - Document attachments are encrypted using **Fernet (AES-128-CBC with HMAC-SHA256 authenticated encryption)** in SQLite BLOBs and decrypted on-demand with inline previews (images, PDFs, text) and secure file download.
 - Uniform Account Opening Applications support authentic 4-page bank paper sheet visualization with CIF & CKYC, KYC & OVD, Account Specification, and Declarations, complete with print-to-PDF export.
 - Passwords are securely hashed using **Bcrypt** (work factor 12) with per-user cryptographic salts. Card PINs are securely hashed using **PBKDF2-HMAC-SHA256** (100,000 iterations).
+- High-value transfer verification uses **HMAC-PBKDF2-SHA256** salted hashes. In sandbox/demo environments, verification codes are delivered in-app via `OTP_DELIVERY=notification`. This is intended strictly for test harness verification and does not replace true out-of-band second factor authentication (SMS, hardware tokens, TOTP).
 
 ---
 
