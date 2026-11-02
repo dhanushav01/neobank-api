@@ -17,7 +17,10 @@ backend/data/*.sqlite*
 # 2. Security, Passwords, Secrets & Environment Variables
 .env
 .env.*
+**/.env
+**/.env.*
 !.env.example
+!**/.env.example
 *.pem
 *.key
 *.cert
