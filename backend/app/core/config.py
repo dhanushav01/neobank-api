@@ -132,9 +132,10 @@ POS_GATEWAY_KEY = load_strict_secret(
     default_test_generator=lambda: secrets.token_urlsafe(32)
 )
 
-# Trusted Reverse Proxy IPs (for secure X-Forwarded-For parsing)
+# Forwarded Proxy and IP Configuration (Render, Cloudflare, Load Balancers)
+FORWARDED_ALLOW_IPS = os.getenv("FORWARDED_ALLOW_IPS", "*")
 TRUSTED_PROXIES = [
-    p.strip() for p in os.getenv("TRUSTED_PROXIES", "127.0.0.1,::1,testclient" if not IS_PRODUCTION else "127.0.0.1,::1").split(",") if p.strip()
+    p.strip() for p in os.getenv("TRUSTED_PROXIES", "127.0.0.1,::1,testclient,*" if not IS_PRODUCTION else "*").split(",") if p.strip()
 ]
 
 # ----------------------------------------------------------------- SEED & DEMO ACCOUNT CONFIGURATION

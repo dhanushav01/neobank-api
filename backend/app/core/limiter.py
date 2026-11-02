@@ -6,25 +6,36 @@ import os
 from fastapi import Request
 from slowapi import Limiter
 
-from backend.app.core.config import TRUSTED_PROXIES
+from backend.app.core.config import TRUSTED_PROXIES, FORWARDED_ALLOW_IPS
 
 def get_real_client_ip(request: Request) -> str:
     """
-    Extract real client IP address safely.
-    Strictly verifies that the direct connecting peer is a trusted reverse proxy
-    before trusting client-supplied headers (X-Forwarded-For / X-Real-IP)
-    to prevent trivial rate limit bypass via IP spoofing.
+    Extract real client IP address safely for rate limiting.
+    Supports reverse proxy setups (Render, Cloudflare, AWS ALB, Nginx) so
+    multiple users behind a platform load balancer do not share rate limit buckets.
     """
+    # 1. Cloudflare connecting IP (Render edge runs behind Cloudflare)
+    cf_ip = request.headers.get("CF-Connecting-IP")
+    if cf_ip and cf_ip.strip():
+        return cf_ip.strip()
+
     client_host = request.client.host if request.client else "127.0.0.1"
 
-    # Only trust proxy headers if connection originates from an explicitly trusted proxy
-    if client_host in TRUSTED_PROXIES:
+    # 2. Check trusted reverse proxy headers
+    trust_forwarded = (
+        FORWARDED_ALLOW_IPS == "*"
+        or "*" in TRUSTED_PROXIES
+        or client_host in TRUSTED_PROXIES
+    )
+    if trust_forwarded:
         forwarded = request.headers.get("X-Forwarded-For")
         if forwarded:
-            # Client IP is the first entry
-            return forwarded.split(",")[0].strip()
+            # The client IP is the first address in the comma-separated chain
+            first_ip = forwarded.split(",")[0].strip()
+            if first_ip:
+                return first_ip
         real_ip = request.headers.get("X-Real-IP")
-        if real_ip:
+        if real_ip and real_ip.strip():
             return real_ip.strip()
 
     return client_host

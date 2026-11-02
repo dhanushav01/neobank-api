@@ -281,6 +281,47 @@ class TestSecurityHardening(unittest.TestCase):
                 os.environ.pop("POS_GATEWAY_KEY", None)
             importlib.reload(cfg_mod)
 
+    def test_07_rate_limiter_client_ip_behind_proxy(self):
+        """
+        Verify that SlowAPI rate limiting resolves the real client IP behind
+        Render/Cloudflare proxies instead of collapsing all users to the proxy IP.
+        """
+        from backend.app.core.limiter import get_real_client_ip
+        from starlette.requests import Request
+
+        # Case 1: Reverse proxy with X-Forwarded-For chain (Render proxy IP connecting)
+        scope_forwarded = {
+            "type": "http",
+            "client": ("10.0.4.15", 54321),  # Render internal load balancer
+            "headers": [
+                (b"x-forwarded-for", b"203.0.113.195, 10.0.4.15"),
+                (b"x-forwarded-proto", b"https")
+            ]
+        }
+        req_forwarded = Request(scope_forwarded)
+        self.assertEqual(get_real_client_ip(req_forwarded), "203.0.113.195")
+
+        # Case 2: Cloudflare edge header (CF-Connecting-IP takes precedence)
+        scope_cf = {
+            "type": "http",
+            "client": ("10.0.4.15", 54321),
+            "headers": [
+                (b"cf-connecting-ip", b"198.51.100.42"),
+                (b"x-forwarded-for", b"198.51.100.42, 10.0.4.15")
+            ]
+        }
+        req_cf = Request(scope_cf)
+        self.assertEqual(get_real_client_ip(req_cf), "198.51.100.42")
+
+        # Case 3: Direct connection without proxy headers
+        scope_direct = {
+            "type": "http",
+            "client": ("192.0.2.1", 12345),
+            "headers": []
+        }
+        req_direct = Request(scope_direct)
+        self.assertEqual(get_real_client_ip(req_direct), "192.0.2.1")
+
 
 if __name__ == "__main__":
     unittest.main()
