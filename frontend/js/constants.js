@@ -94,7 +94,8 @@
     USER_ROLES,
     CURRENCIES,
     API_ENDPOINTS,
-    STATUS_PILLS
+    STATUS_PILLS,
+    MAX_NAME_LENGTH: 50
   };
 
   // Expose globally
@@ -104,5 +105,6 @@
   window.USER_ROLES = USER_ROLES;
   window.CURRENCIES = CURRENCIES;
   window.API_ENDPOINTS = API_ENDPOINTS;
+  window.MAX_NAME_LENGTH = 50;
 
 })(typeof window !== 'undefined' ? window : this);

@@ -1,0 +1,446 @@
+/* =================================================================
+   LOGIN PAGE STYLESHEET
+   Extracted from HTML styles for clean separation of concerns.
+   ================================================================= */
+
+/* Extracted Inline Styles */
+.login-s1 {
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+  text-decoration:none;
+  color:inherit;
+}
+
+.login-s2 {
+  width:24px;
+  height:24px;
+  color:var(--text-contrast);
+}
+
+.login-s3 {
+  display:flex;
+  align-items:center;
+  gap:0.5rem;
+}
+
+.login-s4 {
+  font-size:0.65rem;
+  font-weight:700;
+  padding:0.15rem 0.5rem;
+  border-radius:9999px;
+  background:var(--brand-subtle);
+  color:var(--brand-300);
+  border:1px solid var(--border-glow);
+}
+
+.login-s5 {
+  font-size:0.75rem;
+  color:var(--text-muted);
+}
+
+.login-s6 {
+  display:flex;
+  align-items:center;
+  gap:0.75rem;
+  flex-wrap:wrap;
+}
+
+.login-s7 {
+  display:flex;
+  align-items:center;
+  gap:0.45rem;
+  background:var(--bg-subtle);
+  padding:0.35rem 0.65rem;
+  border-radius:10px;
+  border:1px solid var(--border-subtle);
+}
+
+.login-s8 {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  width:20px;
+  height:15px;
+  border-radius:2px;
+  overflow:hidden;
+  box-shadow:0 0 1px rgba(0,0,0,0.6);
+  flex-shrink:0;
+}
+
+.login-s9 {
+  background:transparent;
+  border:none;
+  color:inherit;
+  font-size:0.8rem;
+  padding:0;
+  cursor:pointer;
+  outline:none;
+}
+
+.login-s10 {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-height:calc(100vh - 80px);
+  padding:1.5rem;
+}
+
+.login-s11 {
+  width:100%;
+  max-width:480px;
+  padding:2.25rem;
+}
+
+.login-s12 {
+  text-align:center;
+  margin-bottom:1.5rem;
+}
+
+.login-s13 {
+  font-size:1.65rem;
+  font-weight:800;
+  color:var(--text-main);
+  letter-spacing:-0.02em;
+}
+
+.login-s14 {
+  font-size:0.85rem;
+  color:var(--text-secondary);
+  margin-top:0.35rem;
+}
+
+.login-s15 {
+  display:flex;
+  gap:0.5rem;
+  margin-bottom:1.5rem;
+}
+
+.login-s16 {
+  display:none;
+  margin-top:1rem;
+}
+
+.login-s17 {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:0.4rem;
+}
+
+.login-s18 {
+  margin-bottom:0;
+}
+
+.login-s19 {
+  background:none;
+  border:none;
+  color:var(--brand-500);
+  font-size:0.75rem;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+.login-s20 {
+  display:none;
+  background:var(--brand-subtle);
+  border:1px solid var(--border-glow);
+  border-radius:10px;
+  padding:0.75rem 1rem;
+  margin-top:0.75rem;
+  cursor:pointer;
+}
+
+.login-s21 {
+  font-size:0.75rem;
+  color:var(--brand-300);
+  font-weight:600;
+  margin-bottom:0.25rem;
+}
+
+.login-s22 {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.login-s23 {
+  font-family:monospace;
+  font-size:1.35rem;
+  font-weight:800;
+  color:var(--status-info);
+  letter-spacing:3px;
+}
+
+.login-s24 {
+  font-size:0.75rem;
+  color:var(--emerald-400);
+  background:var(--status-success-bg);
+  padding:0.2rem 0.5rem;
+  border-radius:6px;
+  font-weight:600;
+}
+
+.login-s25 {
+  margin-top:1.25rem;
+}
+
+.login-s26 {
+  width:100%;
+  padding:0.8rem;
+}
+
+.login-s27 {
+  width:100%;
+  padding:0.8rem;
+  display:none;
+}
+
+.login-s28 {
+  display:none;
+}
+
+.login-s29 {
+  margin-bottom:0.35rem;
+}
+
+.login-s30 {
+  position:relative;
+  display:flex;
+  align-items:center;
+}
+
+.login-s31 {
+  padding-right:2.8rem;
+}
+
+.login-s32 {
+  position:absolute;
+  right:8px;
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:4px;
+  color:var(--text-muted);
+  display:flex;
+  align-items:center;
+}
+
+.login-s33 {
+  display:flex;
+  justify-content:flex-end;
+  margin-bottom:1rem;
+}
+
+.login-s34 {
+  background:none;
+  border:none;
+  color:var(--brand-500);
+  font-size:0.8rem;
+  cursor:pointer;
+  text-decoration:underline;
+}
+
+.login-s35 {
+  margin-top:1.75rem;
+  padding-top:1.25rem;
+  border-top:1px solid var(--border-subtle);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:0.75rem;
+  color:var(--text-muted);
+}
+
+.login-s36 {
+  color:var(--text-secondary);
+  text-decoration:none;
+}
+
+.login-s37 {
+  display:none;
+  position:fixed;
+  inset:0;
+  background:var(--bg-card);
+  backdrop-filter:blur(10px);
+  z-index:1000000000;
+  align-items:center;
+  align-items:safe center;
+  justify-content:center;
+  padding:clamp(12px, 2.5vh, 24px);
+  overflow-y:auto;
+}
+
+.login-s38 {
+  width:100%;
+  max-width:440px;
+  margin:auto;
+  max-height:calc(100% - 20px);
+  padding:2.25rem;
+  background:var(--bg-panel);
+  border:1px solid var(--border-subtle);
+  border-radius:18px;
+  box-shadow:0 25px 50px -12px var(--modal-shadow);
+  box-sizing:border-box;
+}
+
+.login-s39 {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:1.25rem;
+}
+
+.login-s40 {
+  display:flex;
+  align-items:center;
+  gap:0.6rem;
+}
+
+.login-s41 {
+  font-size:1.25rem;
+  font-weight:800;
+  color:var(--text-main);
+  margin:0;
+  letter-spacing:-0.02em;
+}
+
+.login-s42 {
+  background:none;
+  border:none;
+  color:var(--text-muted);
+  font-size:1.25rem;
+  cursor:pointer;
+  padding:0.25rem;
+}
+
+.login-s43 {
+  font-size:0.85rem;
+  color:var(--text-secondary);
+  margin-bottom:1.25rem;
+  line-height:1.5;
+}
+
+.login-s44 {
+  margin-bottom:1.25rem;
+}
+
+.login-s45 {
+  font-size:0.82rem;
+  color:var(--emerald-400);
+  margin-bottom:1rem;
+  background:var(--status-success-bg);
+  border:1px solid var(--status-success-border);
+  padding:0.65rem 0.85rem;
+  border-radius:8px;
+}
+
+.login-s46 {
+  display:none;
+  background:var(--brand-subtle);
+  border:1px solid var(--border-glow);
+  border-radius:10px;
+  padding:0.75rem 1rem;
+  margin-bottom:1rem;
+  cursor:pointer;
+}
+
+.login-s47 {
+  margin-bottom:1rem;
+}
+
+.login-s48 {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:0.35rem;
+}
+
+.login-s49 {
+  display:none;
+  color:var(--status-danger);
+  font-size:0.8rem;
+  margin-bottom:1rem;
+  background:var(--status-danger-bg);
+  padding:0.6rem;
+  border-radius:8px;
+}
+
+/* --- Extracted from <style> in login.html --- */
+/* Targeted suppression of Google Translate top banner, toolbar, and balloon popups */
+    iframe.goog-te-banner-frame,
+    iframe[class*="VIpgJd"],
+    iframe[id*=":1.container"],
+    iframe[id*=":2.container"],
+    iframe[id*="container"],
+    iframe[src*="translate.google"],
+    .goog-te-banner-frame,
+    .goog-te-balloon-frame,
+    div.VIpgJd-ZVi9od-ORHb-OEVmcd,
+    div.VIpgJd-ZVi9od-aZ2wEe-wOHMyf,
+    div.VIpgJd-suEOdc,
+    div.VIpgJd-yAWNEb-L7lbkb,
+    div[class*="VIpgJd-ZVi9od"],
+    div[class*="VIpgJd-suEOdc"],
+    [class*="goog-te-banner"],
+    [id*="goog-gt-"],
+    .goog-tooltip,
+    .goog-te-spinner-pos {
+      display: none !important;
+      visibility: hidden !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+      height: 0px !important;
+      max-height: 0px !important;
+      width: 0px !important;
+      max-width: 0px !important;
+      position: fixed !important;
+      top: -99999px !important;
+      left: -99999px !important;
+      z-index: -999999 !important;
+      clip: rect(0, 0, 0, 0) !important;
+      transform: scale(0) !important;
+      overflow: hidden !important;
+      margin: 0px !important;
+      padding: 0px !important;
+    }
+
+    /* Translated text nodes and fonts MUST ALWAYS REMAIN FULLY VISIBLE & INLINE */
+    font,
+    font[class],
+    font[class*="VIpgJd"],
+    .VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q,
+    [class*="VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q"],
+    .goog-text-highlight {
+      display: inline !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      pointer-events: inherit !important;
+      height: auto !important;
+      width: auto !important;
+      max-height: none !important;
+      max-width: none !important;
+      position: static !important;
+      top: auto !important;
+      left: auto !important;
+      clip: auto !important;
+      transform: none !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      border: none !important;
+    }
+
+    html,
+    body,
+    body.translated-ltr,
+    body.translated-rtl {
+      top: 0px !important;
+      position: static !important;
+      margin-top: 0px !important;
+      padding-top: 0px !important;
+      transform: none !important;
+    }

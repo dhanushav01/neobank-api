@@ -6,6 +6,8 @@
 // Centralized Utilities from utils.js & api.js
 var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
 var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
+var escapeHtml = (window.NeoBankUtils && window.NeoBankUtils.escapeHtml) || window.escapeHtml || function(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); };
+var escapeAttr = (window.NeoBankUtils && window.NeoBankUtils.escapeAttr) || window.escapeAttr || function(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); };
 
 let allBankUsers = [];
 let pendingKycQueue = [];
@@ -69,22 +71,24 @@ function renderCustomerDirectory(users) {
   tbody.innerHTML = users.map(u => {
     const isSuspended = u.status === 'SUSPENDED';
     const profile = u.profile || {};
-    const name = `${profile.firstName || ''} ${profile.lastName || ''}`.trim() || u.email;
+    const name = escapeHtml(`${profile.firstName || ''} ${profile.lastName || ''}`.trim() || u.email);
+    const email = escapeHtml(u.email || '');
+    const userId = escapeHtml(u.id || '');
     const isStaff = u.role === 'ADMIN' || u.role === 'EMPLOYEE' || u.role === 'SUPER_ADMIN';
 
     return `
       <tr>
-        <td style="font-family:monospace;font-size:0.8rem">${u.id}</td>
+        <td style="font-family:monospace;font-size:0.8rem">${userId}</td>
         <td>
           <div style="font-weight:700;color:var(--text-main)">${name}</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary)">${u.email}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary)">${email}</div>
         </td>
-        <td><span class="role-badge ${u.role.toLowerCase()}">${formatHumanText(u.role)}</span></td>
-        <td><span class="status-pill ${u.status.toLowerCase()}">${formatHumanText(u.status)}</span></td>
-        <td style="font-weight:600">$${Number(u.totalBalanceUSD || 0).toLocaleString()} (${u.accountsCount || 0} accts)</td>
+        <td><span class="role-badge ${escapeHtml(u.role || '').toLowerCase()}">${escapeHtml(formatHumanText(u.role))}</span></td>
+        <td><span class="status-pill ${escapeHtml(u.status || '').toLowerCase()}">${escapeHtml(formatHumanText(u.status))}</span></td>
+        <td style="font-weight:600">$${Number(u.totalBalanceUSD || 0).toLocaleString()} (${Number(u.accountsCount || 0)} accts)</td>
         <td>
           ${!isStaff ? `
-            <button class="btn btn-outline btn-sm" onclick="toggleUserStatus('${u.id}', ${isSuspended})">
+            <button class="btn btn-outline btn-sm" onclick="toggleUserStatus('${escapeAttr(u.id)}', ${isSuspended})">
               ${isSuspended ? 'Activate' : 'Suspend'}
             </button>
           ` : '<span style="color:var(--text-muted);font-size:0.75rem">Protected</span>'}
@@ -117,21 +121,24 @@ function renderKycQueue(pending) {
 
   tbody.innerHTML = pending.map(k => {
     const emp = k.employment || {};
-    const docs = (k.documents || []).map(d => `${formatHumanText(d.type)} (${d.number})`).join(', ');
+    const docs = (k.documents || []).map(d => `${formatHumanText(d.type)} (${escapeHtml(d.number)})`).join(', ');
+    const kycId = escapeHtml(k.id || '');
+    const owner = escapeHtml(k.ownerEmail || k.ownerId || '');
+    const employer = escapeHtml(emp.employer || 'N/A');
 
     return `
       <tr>
-        <td style="font-family:monospace;font-size:0.8rem">${k.id}</td>
+        <td style="font-family:monospace;font-size:0.8rem">${kycId}</td>
         <td>
-          <div style="font-weight:700;color:var(--text-main)">${k.ownerEmail || k.ownerId}</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary)">${formatHumanText(emp.status) || ''} at ${emp.employer || 'N/A'} ($${(emp.annualIncome || 0).toLocaleString()}/yr)</div>
+          <div style="font-weight:700;color:var(--text-main)">${owner}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary)">${escapeHtml(formatHumanText(emp.status) || '')} at ${employer} ($${Number(emp.annualIncome || 0).toLocaleString()}/yr)</div>
         </td>
         <td style="font-size:0.8rem">${docs || 'None'}</td>
-        <td><span class="status-pill submitted">${formatHumanText('SUBMITTED')}</span></td>
+        <td><span class="status-pill submitted">${escapeHtml(formatHumanText('SUBMITTED'))}</span></td>
         <td>
           <div style="display:flex;gap:0.4rem">
-            <button class="btn btn-success btn-sm" onclick="reviewKyc('${k.id}', 'APPROVED')">Approve</button>
-            <button class="btn btn-danger btn-sm" onclick="promptRejectKyc('${k.id}')">Reject</button>
+            <button class="btn btn-success btn-sm" onclick="reviewKyc('${escapeAttr(k.id)}', 'APPROVED')">Approve</button>
+            <button class="btn btn-danger btn-sm" onclick="promptRejectKyc('${escapeAttr(k.id)}')">Reject</button>
           </div>
         </td>
       </tr>
@@ -231,16 +238,16 @@ function renderDisputesQueue(disputes) {
       <tr>
         <td style="font-family:monospace;font-size:0.8rem">${d.id}</td>
         <td>
-          <div style="font-weight:700;color:var(--text-main)">${d.customerEmail || d.ownerId}</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary)">Reason: ${formatHumanText(d.reason)} • "${d.description || ''}"</div>
+          <div style="font-weight:700;color:var(--text-main)">${escapeHtml(d.customerEmail || d.ownerId)}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary)">Reason: ${escapeHtml(formatHumanText(d.reason))} • "${escapeHtml(d.description || '')}"</div>
         </td>
         <td style="font-weight:700;color:var(--rose-500)">$${Number(d.amountDisputed).toFixed(2)}</td>
-        <td><span class="status-pill ${d.status.toLowerCase()}">${formatHumanText(d.status)}</span></td>
+        <td><span class="status-pill ${escapeAttr((d.status||'').toLowerCase())}">${escapeHtml(formatHumanText(d.status))}</span></td>
         <td>
           ${!isResolved ? `
             <div style="display:flex;gap:0.4rem">
-              <button class="btn btn-success btn-sm" onclick="resolveDispute('${d.id}', 'REFUND')">Grant Refund</button>
-              <button class="btn btn-danger btn-sm" onclick="resolveDispute('${d.id}', 'REJECT')">Deny</button>
+              <button class="btn btn-success btn-sm" onclick="resolveDispute('${escapeAttr(d.id)}', 'REFUND')">Grant Refund</button>
+              <button class="btn btn-danger btn-sm" onclick="resolveDispute('${escapeAttr(d.id)}', 'REJECT')">Deny</button>
             </div>
           ` : `<span style="font-size:0.75rem;color:var(--text-muted)">Resolved (${d.resolvedAt ? d.resolvedAt.slice(0,10) : ''})</span>`}
         </td>
@@ -401,15 +408,15 @@ function renderStaffApplicationsTable(apps) {
     const isCompleted = app.status === 'ACCOUNT_OPENED' || app.status === 'REJECTED';
 
     return `
-      <tr style="cursor:pointer;transition:background 0.15s ease" onclick="openApplicationReviewModal('${app.applicationNumber}')" title="Click row to inspect complete application form and documents">
+      <tr style="cursor:pointer;transition:background 0.15s ease" onclick="openApplicationReviewModal('${escapeAttr(app.applicationNumber)}')" title="Click row to inspect complete application form and documents">
         <td style="font-family:monospace;font-weight:700;color:var(--brand-400)">
           <span>${app.applicationNumber}</span>
-          ${app.applicationType === 'UPDATE' ? '<span style="display:inline-block;font-size:0.65rem;background:rgba(99,102,241,0.2);color:#818cf8;padding:1px 4px;border-radius:4px;margin-left:4px">UPDATE</span>' : ''}
+          ${app.applicationType === 'UPDATE' ? '<span style="display:inline-block;font-size:0.65rem;background:rgba(99,102,241,0.2);color:var(--brand-400);padding:1px 4px;border-radius:4px;margin-left:4px">UPDATE</span>' : ''}
         </td>
         <td>
-          <div style="font-weight:700;color:var(--text-main)">${applicant.firstName || ''} ${applicant.lastName || ''}</div>
-          <div style="font-size:0.75rem;color:var(--text-secondary)">${applicant.email || ''} • ${applicant.phone || ''}</div>
-          <div style="font-size:0.7rem;color:var(--text-muted)">Tax ID: ${app.taxId || 'N/A'} • ${formatHumanText(emp.status) || ''}</div>
+          <div style="font-weight:700;color:var(--text-main)">${escapeHtml((applicant.firstName || '') + ' ' + (applicant.lastName || ''))}</div>
+          <div style="font-size:0.75rem;color:var(--text-secondary)">${escapeHtml(applicant.email || '')} • ${escapeHtml(applicant.phone || '')}</div>
+          <div style="font-size:0.7rem;color:var(--text-muted)">Tax ID: ${escapeHtml(app.taxId || 'N/A')} • ${escapeHtml(formatHumanText(emp.status) || '')}</div>
         </td>
         <td><span class="status-pill active">${formatHumanText(app.accountType)}</span></td>
         <td style="font-size:0.8rem;color:var(--text-secondary)">
@@ -420,10 +427,10 @@ function renderStaffApplicationsTable(apps) {
         <td onclick="event.stopPropagation()">
           ${!isCompleted ? `
             <div style="display:flex;gap:0.4rem">
-              <button class="btn btn-success btn-sm" onclick="confirmApproveApplication('${app.applicationNumber}')">
+              <button class="btn btn-success btn-sm" onclick="confirmApproveApplication('${escapeAttr(app.applicationNumber)}')">
                 Approve &amp; Open
               </button>
-              <button class="btn btn-danger btn-sm" onclick="confirmRejectApplication('${app.applicationNumber}')">
+              <button class="btn btn-danger btn-sm" onclick="confirmRejectApplication('${escapeAttr(app.applicationNumber)}')">
                 Reject
               </button>
             </div>
@@ -517,11 +524,11 @@ async function openApplicationReviewModal(appNumber) {
         ${app.linkedAccountNumber ? `<div><span style="color:var(--text-muted)">Linked Account:</span> <strong style="font-family:monospace;color:var(--brand-400)">${app.linkedAccountNumber}</strong></div>` : ''}
         <div><span style="color:var(--text-muted)">Branch:</span> <strong>${app.branchName || 'Central Digital Branch'} (${app.branchCode || 'NBK-001'})</strong></div>
         <div><span style="color:var(--text-muted)">Initial Deposit:</span> <strong>$${Number(app.initialDeposit || 0).toFixed(2)} ${app.currency || 'USD'}</strong></div>
-        <div><span style="color:var(--text-muted)">Tax ID (PAN/SSN):</span> <strong style="font-family:monospace">${app.taxId || 'N/A'}</strong></div>
-        <div><span style="color:var(--text-muted)">Date of Birth:</span> <strong>${applicant.dob || 'N/A'}</strong></div>
+        <div><span style="color:var(--text-muted)">Tax ID (PAN/SSN):</span> <strong style="font-family:monospace">${app.taxId || 'Not Provided'}</strong></div>
+        <div><span style="color:var(--text-muted)">Date of Birth:</span> <strong>${applicant.dob || 'Not Provided'}</strong></div>
         <div><span style="color:var(--text-muted)">Employment:</span> <strong>${formatHumanText(emp.status || 'EMPLOYED')} at ${emp.employer || 'Private Sector'}</strong></div>
         <div><span style="color:var(--text-muted)">Annual Income:</span> <strong>$${Number(emp.annualIncome || 0).toLocaleString()}/yr</strong></div>
-        <div><span style="color:var(--text-muted)">Residential Address:</span> <strong>${addr.line1 || app.addressLine || 'N/A'}, ${addr.city || ''} ${addr.postalCode || ''}</strong></div>
+        <div><span style="color:var(--text-muted)">Residential Address:</span> <strong>${addr.line1 || app.addressLine || 'Not Provided'}, ${addr.city || ''} ${addr.postalCode || ''}</strong></div>
         <div><span style="color:var(--text-muted)">Debit Card Network:</span> <strong style="color:var(--brand-400)">${app.cardScheme || 'RUPAY'}</strong></div>
         <div><span style="color:var(--text-muted)">Card Delivery Format:</span> <strong>${app.cardFormat || 'BOTH (Virtual + Metal)'}</strong></div>
       `;
@@ -614,7 +621,7 @@ function renderReviewDocumentsVault(app) {
   docsContainer.innerHTML = docs.map(doc => `
     <div style="display:flex;align-items:center;justify-content:space-between;padding:0.8rem 1rem;background:rgba(255,255,255,0.02);border:1px solid var(--border-subtle);border-radius:8px;flex-wrap:wrap;gap:0.6rem">
       <div style="display:flex;align-items:center;gap:0.75rem">
-        <div style="width:38px;height:38px;border-radius:8px;background:rgba(99,102,241,0.15);display:flex;align-items:center;justify-content:center;font-size:1.3rem">
+        <div style="width:38px;height:38px;border-radius:8px;background:var(--brand-subtle);display:flex;align-items:center;justify-content:center;font-size:1.3rem">
           ${(doc.name || '').endsWith('.pdf') ? '' : ''}
         </div>
         <div>
@@ -677,10 +684,10 @@ function renderReviewOfficerMessages(messages) {
   container.innerHTML = messages.map(m => `
     <div style="font-size:0.78rem;background:rgba(255,255,255,0.04);padding:0.4rem 0.65rem;border-radius:6px;border-left:3px solid var(--brand-500)">
       <div style="display:flex;justify-content:space-between;margin-bottom:0.2rem">
-        <strong style="color:var(--brand-400)">${m.author || 'Bank Officer'} (${m.officerCode || 'EMP01'})</strong>
+        <strong style="color:var(--brand-400)">${escapeHtml(m.author || 'Bank Officer')} (${escapeHtml(m.officerCode || 'EMP01')})</strong>
         <span style="font-size:0.7rem;color:var(--text-muted)">${m.timestamp ? m.timestamp.slice(0, 16).replace('T', ' ') : ''}</span>
       </div>
-      <div style="color:var(--text-main)">${m.message}</div>
+      <div style="color:var(--text-main)">${escapeHtml(m.message || '')}</div>
     </div>
   `).join('');
 }

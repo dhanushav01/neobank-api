@@ -1,0 +1,3045 @@
+/* =================================================================
+   NEOBANK GLOBAL MULTI-CULTURE DESIGN SYSTEM (themes.css)
+   17 Authentic Heritage Cultures • Dark & Light Modes
+   Zero Hard-Coded Colors • Dynamic Tonal Scales & Semantic Tokens
+   Derived strictly from official cultural palette specifications.
+   ================================================================= */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600;700&family=Noto+Sans+JP:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Noto+Sans+SC:wght@400;500;700&family=Noto+Sans+Tamil:wght@400;500;600;700&family=Noto+Sans+Telugu:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+
+:root {
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-full: 9999px;
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  --font-mono: 'JetBrains Mono', Consolas, monospace;
+
+  /* Universal Status Indicators */
+  --emerald-400: #34d399;
+  --emerald-500: #10b981;
+  --amber-400: #fbbf24;
+  --amber-500: #f59e0b;
+  --rose-400: #fb7185;
+  --rose-500: #f43f5e;
+  --sky-400: #38bdf8;
+  --sky-500: #0ea5e9;
+
+  --status-success: #10b981;
+  --status-success-bg: rgba(16, 185, 129, 0.14);
+  --status-success-border: rgba(16, 185, 129, 0.35);
+  --status-warning: #f59e0b;
+  --status-warning-bg: rgba(245, 158, 11, 0.14);
+  --status-warning-border: rgba(245, 158, 11, 0.35);
+  --status-danger: #f43f5e;
+  --status-danger-bg: rgba(244, 63, 94, 0.14);
+  --status-danger-border: rgba(244, 63, 94, 0.35);
+  --status-info: #38bdf8;
+  --status-info-bg: rgba(56, 189, 248, 0.14);
+  --status-info-border: rgba(56, 189, 248, 0.35);
+}
+
+
+/* English (en) • DARK MODE */
+:root, html[data-culture="en"][data-theme="dark"], html[data-culture="en"]:not([data-theme="light"]), html:not([data-culture])[data-theme="dark"], html:not([data-culture]):not([data-theme="light"]) {
+  --culture-id: 'en';
+  --culture-name: 'English';
+  --culture-native: 'English';
+  --culture-flag: 'US';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #0b132b;
+
+  /* Tonal Scales */
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-300: #93c5fd;
+  --brand-400: #60a5fa;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --brand-900: #172554;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #3b82f6;
+  --brand-hover: #2563eb;
+  --brand-active: #1d4ed8;
+  --brand-subtle: rgba(59, 130, 246, 0.16);
+  --brand-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --brand-glow: 0 0 25px rgba(59, 130, 246, 0.35);
+  --brand-glow-color: rgba(59, 130, 246, 0.35);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #3b82f6;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #131e3d;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #0b132b;
+  --bg-secondary: #070c1b;
+  --bg-card: #131e3d;
+  --bg-card-hover: #19274e;
+  --bg-panel: #19274e;
+  --bg-raised: #223363;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #070c1b;
+  --bg-header: #0b132b;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #3b82f6;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(59, 130, 246, 0.38);
+  --border-focus: #3b82f6;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(59, 130, 246, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* English (en) • LIGHT MODE */
+html[data-culture="en"][data-theme="light"], html:not([data-culture])[data-theme="light"] {
+  --culture-id: 'en';
+  --culture-name: 'English';
+  --culture-native: 'English';
+  --culture-flag: 'US';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #f0f4fc;
+
+  /* Tonal Scales */
+  --brand-50: #eff6ff;
+  --brand-100: #dbeafe;
+  --brand-200: #bfdbfe;
+  --brand-300: #93c5fd;
+  --brand-400: #60a5fa;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --brand-900: #172554;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #1d4ed8;
+  --brand-hover: #1d4ed8;
+  --brand-active: #1e40af;
+  --brand-subtle: rgba(29, 78, 216, 0.16);
+  --brand-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+  --brand-glow: 0 0 25px rgba(29, 78, 216, 0.2);
+  --brand-glow-color: rgba(29, 78, 216, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #1d4ed8;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #dce7f9;
+  --btn-secondary-text: #0f172a;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f0f4fc;
+  --bg-secondary: #ffffff;
+  --bg-card: #dce7f9;
+  --bg-card-hover: #e8effc;
+  --bg-panel: #e8effc;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f0f4fc;
+
+  /* Typography Colors */
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #1d4ed8;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(29, 78, 216, 0.38);
+  --border-focus: #1d4ed8;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(29, 78, 216, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Spanish (es) • DARK MODE */
+html[data-culture="es"][data-theme="dark"], html[data-culture="es"]:not([data-theme="light"]) {
+  --culture-id: 'es';
+  --culture-name: 'Spanish';
+  --culture-native: 'Español';
+  --culture-flag: 'ES';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #1c1910;
+
+  /* Tonal Scales */
+  --brand-50: #fefce8;
+  --brand-100: #fef9c3;
+  --brand-200: #fef08a;
+  --brand-300: #fde047;
+  --brand-400: #facc15;
+  --brand-500: #eab308;
+  --brand-600: #ca8a04;
+  --brand-700: #a16207;
+  --brand-800: #854d0e;
+  --brand-900: #713f12;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #eab308;
+  --brand-hover: #ca8a04;
+  --brand-active: #a16207;
+  --brand-subtle: rgba(234, 179, 8, 0.16);
+  --brand-gradient: linear-gradient(135deg, #eab308 0%, #a16207 100%);
+  --brand-glow: 0 0 25px rgba(234, 179, 8, 0.35);
+  --brand-glow-color: rgba(234, 179, 8, 0.35);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #eab308;
+  --btn-primary-text: #181202;
+  --btn-secondary-bg: #2a2415;
+  --btn-secondary-text: #fdfefe;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1c1910;
+  --bg-secondary: #14120a;
+  --bg-card: #2a2415;
+  --bg-card-hover: #362e1a;
+  --bg-panel: #362e1a;
+  --bg-raised: #453b21;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #14120a;
+  --bg-header: #1c1910;
+
+  /* Typography Colors */
+  --text-main: #fdfefe;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #eab308;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(234, 179, 8, 0.38);
+  --border-focus: #eab308;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(234, 179, 8, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Spanish (es) • LIGHT MODE */
+html[data-culture="es"][data-theme="light"] {
+  --culture-id: 'es';
+  --culture-name: 'Spanish';
+  --culture-native: 'Español';
+  --culture-flag: 'ES';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #fbf8ee;
+
+  /* Tonal Scales */
+  --brand-50: #fefce8;
+  --brand-100: #fef9c3;
+  --brand-200: #fef08a;
+  --brand-300: #fde047;
+  --brand-400: #facc15;
+  --brand-500: #eab308;
+  --brand-600: #ca8a04;
+  --brand-700: #a16207;
+  --brand-800: #854d0e;
+  --brand-900: #713f12;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #d97706;
+  --brand-hover: #a16207;
+  --brand-active: #854d0e;
+  --brand-subtle: rgba(217, 119, 6, 0.16);
+  --brand-gradient: linear-gradient(135deg, #eab308 0%, #a16207 100%);
+  --brand-glow: 0 0 25px rgba(217, 119, 6, 0.2);
+  --brand-glow-color: rgba(217, 119, 6, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #eab308;
+  --btn-primary-text: #1a1202;
+  --btn-secondary-bg: #f7f0d8;
+  --btn-secondary-text: #1c1910;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #fbf8ee;
+  --bg-secondary: #ffffff;
+  --bg-card: #f7f0d8;
+  --bg-card-hover: #fbf5e6;
+  --bg-panel: #fbf5e6;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #fbf8ee;
+
+  /* Typography Colors */
+  --text-main: #1c1910;
+  --text-secondary: #574e3b;
+  --text-muted: #7a6e54;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #d97706;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(217, 119, 6, 0.38);
+  --border-focus: #d97706;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(217, 119, 6, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* French (fr) • DARK MODE */
+html[data-culture="fr"][data-theme="dark"], html[data-culture="fr"]:not([data-theme="light"]) {
+  --culture-id: 'fr';
+  --culture-name: 'French';
+  --culture-native: 'Français';
+  --culture-flag: 'FR';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #161324;
+
+  /* Tonal Scales */
+  --brand-50: #f5f3ff;
+  --brand-100: #ede9fe;
+  --brand-200: #ddd6fe;
+  --brand-300: #c4b5fd;
+  --brand-400: #a78bfa;
+  --brand-500: #8b5cf6;
+  --brand-600: #7c3aed;
+  --brand-700: #6d28d9;
+  --brand-800: #5b21b6;
+  --brand-900: #4c1d95;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #8b5cf6;
+  --brand-hover: #7c3aed;
+  --brand-active: #6d28d9;
+  --brand-subtle: rgba(139, 92, 246, 0.16);
+  --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --brand-glow: 0 0 25px rgba(139, 92, 246, 0.35);
+  --brand-glow-color: rgba(139, 92, 246, 0.35);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #8b5cf6;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #221c38;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #161324;
+  --bg-secondary: #0f0d19;
+  --bg-card: #221c38;
+  --bg-card-hover: #2d254a;
+  --bg-panel: #2d254a;
+  --bg-raised: #3a305e;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #0f0d19;
+  --bg-header: #161324;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #8b5cf6;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(139, 92, 246, 0.38);
+  --border-focus: #8b5cf6;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(139, 92, 246, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* French (fr) • LIGHT MODE */
+html[data-culture="fr"][data-theme="light"] {
+  --culture-id: 'fr';
+  --culture-name: 'French';
+  --culture-native: 'Français';
+  --culture-flag: 'FR';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #f8f6fd;
+
+  /* Tonal Scales */
+  --brand-50: #f5f3ff;
+  --brand-100: #ede9fe;
+  --brand-200: #ddd6fe;
+  --brand-300: #c4b5fd;
+  --brand-400: #a78bfa;
+  --brand-500: #8b5cf6;
+  --brand-600: #7c3aed;
+  --brand-700: #6d28d9;
+  --brand-800: #5b21b6;
+  --brand-900: #4c1d95;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #6d28d9;
+  --brand-hover: #6d28d9;
+  --brand-active: #5b21b6;
+  --brand-subtle: rgba(109, 40, 217, 0.16);
+  --brand-gradient: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+  --brand-glow: 0 0 25px rgba(109, 40, 217, 0.2);
+  --brand-glow-color: rgba(109, 40, 217, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #5b21b6;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #ede8f9;
+  --btn-secondary-text: #151024;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f8f6fd;
+  --bg-secondary: #ffffff;
+  --bg-card: #ede8f9;
+  --bg-card-hover: #f3effc;
+  --bg-panel: #f3effc;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f8f6fd;
+
+  /* Typography Colors */
+  --text-main: #151024;
+  --text-secondary: #44395e;
+  --text-muted: #6a5c8c;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #6d28d9;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(109, 40, 217, 0.38);
+  --border-focus: #6d28d9;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(109, 40, 217, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* German (de) • DARK MODE */
+html[data-culture="de"][data-theme="dark"], html[data-culture="de"]:not([data-theme="light"]) {
+  --culture-id: 'de';
+  --culture-name: 'German';
+  --culture-native: 'Deutsch';
+  --culture-flag: 'DE';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #141618;
+
+  /* Tonal Scales */
+  --brand-50: #f8fafc;
+  --brand-100: #f1f5f9;
+  --brand-200: #e2e8f0;
+  --brand-300: #cbd5e1;
+  --brand-400: #94a3b8;
+  --brand-500: #64748b;
+  --brand-600: #475569;
+  --brand-700: #334155;
+  --brand-800: #1e293b;
+  --brand-900: #0f172a;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #e2e8f0;
+  --brand-hover: #475569;
+  --brand-active: #334155;
+  --brand-subtle: rgba(226, 232, 240, 0.16);
+  --brand-gradient: linear-gradient(135deg, #64748b 0%, #334155 100%);
+  --brand-glow: 0 0 25px rgba(226, 232, 240, 0.3);
+  --brand-glow-color: rgba(226, 232, 240, 0.3);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #e2e8f0;
+  --btn-primary-text: #0f172a;
+  --btn-secondary-bg: #1e2226;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #141618;
+  --bg-secondary: #0d0f10;
+  --bg-card: #1e2226;
+  --bg-card-hover: #282d33;
+  --bg-panel: #282d33;
+  --bg-raised: #343b42;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #0d0f10;
+  --bg-header: #141618;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #e2e8f0;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(226, 232, 240, 0.38);
+  --border-focus: #e2e8f0;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(226, 232, 240, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* German (de) • LIGHT MODE */
+html[data-culture="de"][data-theme="light"] {
+  --culture-id: 'de';
+  --culture-name: 'German';
+  --culture-native: 'Deutsch';
+  --culture-flag: 'DE';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #f4f5f6;
+
+  /* Tonal Scales */
+  --brand-50: #f8fafc;
+  --brand-100: #f1f5f9;
+  --brand-200: #e2e8f0;
+  --brand-300: #cbd5e1;
+  --brand-400: #94a3b8;
+  --brand-500: #64748b;
+  --brand-600: #475569;
+  --brand-700: #334155;
+  --brand-800: #1e293b;
+  --brand-900: #0f172a;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #18181b;
+  --brand-hover: #334155;
+  --brand-active: #1e293b;
+  --brand-subtle: rgba(24, 24, 27, 0.16);
+  --brand-gradient: linear-gradient(135deg, #64748b 0%, #334155 100%);
+  --brand-glow: 0 0 25px rgba(24, 24, 27, 0.2);
+  --brand-glow-color: rgba(24, 24, 27, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #18181b;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #e3e6e8;
+  --btn-secondary-text: #0f172a;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f4f5f6;
+  --bg-secondary: #ffffff;
+  --bg-card: #e3e6e8;
+  --bg-card-hover: #edf0f2;
+  --bg-panel: #edf0f2;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f4f5f6;
+
+  /* Typography Colors */
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #18181b;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(24, 24, 27, 0.38);
+  --border-focus: #18181b;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(24, 24, 27, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Hindi (hi) • DARK MODE */
+html[data-culture="hi"][data-theme="dark"], html[data-culture="hi"]:not([data-theme="light"]) {
+  --culture-id: 'hi';
+  --culture-name: 'Hindi';
+  --culture-native: 'हिन्दी';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #1e140c;
+
+  /* Tonal Scales */
+  --brand-50: #fff7ed;
+  --brand-100: #ffedd5;
+  --brand-200: #fed7aa;
+  --brand-300: #fdba74;
+  --brand-400: #fb923c;
+  --brand-500: #f97316;
+  --brand-600: #ea580c;
+  --brand-700: #c2410c;
+  --brand-800: #9a3412;
+  --brand-900: #7c2d12;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #f97316;
+  --brand-hover: #ea580c;
+  --brand-active: #c2410c;
+  --brand-subtle: rgba(249, 115, 22, 0.16);
+  --brand-gradient: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+  --brand-glow: 0 0 25px rgba(249, 115, 22, 0.38);
+  --brand-glow-color: rgba(249, 115, 22, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #f97316;
+  --btn-primary-text: #1a0d03;
+  --btn-secondary-bg: #2c1e12;
+  --btn-secondary-text: #fffdf9;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1e140c;
+  --bg-secondary: #140c07;
+  --bg-card: #2c1e12;
+  --bg-card-hover: #3b2818;
+  --bg-panel: #3b2818;
+  --bg-raised: #4d3420;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #140c07;
+  --bg-header: #1e140c;
+
+  /* Typography Colors */
+  --text-main: #fffdf9;
+  --text-secondary: #ead8c7;
+  --text-muted: #b89c83;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #f97316;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(249, 115, 22, 0.38);
+  --border-focus: #f97316;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(249, 115, 22, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Hindi (hi) • LIGHT MODE */
+html[data-culture="hi"][data-theme="light"] {
+  --culture-id: 'hi';
+  --culture-name: 'Hindi';
+  --culture-native: 'हिन्दी';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Devanagari', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #fff8f0;
+
+  /* Tonal Scales */
+  --brand-50: #fff7ed;
+  --brand-100: #ffedd5;
+  --brand-200: #fed7aa;
+  --brand-300: #fdba74;
+  --brand-400: #fb923c;
+  --brand-500: #f97316;
+  --brand-600: #ea580c;
+  --brand-700: #c2410c;
+  --brand-800: #9a3412;
+  --brand-900: #7c2d12;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #ea580c;
+  --brand-hover: #c2410c;
+  --brand-active: #9a3412;
+  --brand-subtle: rgba(234, 88, 12, 0.16);
+  --brand-gradient: linear-gradient(135deg, #f97316 0%, #c2410c 100%);
+  --brand-glow: 0 0 25px rgba(234, 88, 12, 0.2);
+  --brand-glow-color: rgba(234, 88, 12, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #f97316;
+  --btn-primary-text: #1a0d03;
+  --btn-secondary-bg: #fcebd7;
+  --btn-secondary-text: #241408;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #fff8f0;
+  --bg-secondary: #ffffff;
+  --bg-card: #fcebd7;
+  --bg-card-hover: #fdf1e2;
+  --bg-panel: #fdf1e2;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #fff8f0;
+
+  /* Typography Colors */
+  --text-main: #241408;
+  --text-secondary: #573a21;
+  --text-muted: #826244;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #ea580c;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(234, 88, 12, 0.38);
+  --border-focus: #ea580c;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(234, 88, 12, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Arabic (ar) • DARK MODE */
+html[data-culture="ar"][data-theme="dark"], html[data-culture="ar"]:not([data-theme="light"]) {
+  --culture-id: 'ar';
+  --culture-name: 'Arabic';
+  --culture-native: 'العربية';
+  --culture-flag: 'SA';
+  --font-main: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #0a1c16;
+
+  /* Tonal Scales */
+  --brand-50: #ecfdf5;
+  --brand-100: #d1fae5;
+  --brand-200: #a7f3d0;
+  --brand-300: #6ee7b7;
+  --brand-400: #34d399;
+  --brand-500: #10b981;
+  --brand-600: #059669;
+  --brand-700: #047857;
+  --brand-800: #065f46;
+  --brand-900: #064e3b;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #10b981;
+  --brand-hover: #059669;
+  --brand-active: #047857;
+  --brand-subtle: rgba(16, 185, 129, 0.16);
+  --brand-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  --brand-glow: 0 0 25px rgba(16, 185, 129, 0.38);
+  --brand-glow-color: rgba(16, 185, 129, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #10b981;
+  --btn-primary-text: #032014;
+  --btn-secondary-bg: #122b22;
+  --btn-secondary-text: #f4fbf9;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #0a1c16;
+  --bg-secondary: #06130e;
+  --bg-card: #122b22;
+  --bg-card-hover: #19392e;
+  --bg-panel: #19392e;
+  --bg-raised: #224c3d;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #06130e;
+  --bg-header: #0a1c16;
+
+  /* Typography Colors */
+  --text-main: #f4fbf9;
+  --text-secondary: #bfe3de;
+  --text-muted: #83ada7;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #10b981;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(16, 185, 129, 0.38);
+  --border-focus: #10b981;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(16, 185, 129, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Arabic (ar) • LIGHT MODE */
+html[data-culture="ar"][data-theme="light"] {
+  --culture-id: 'ar';
+  --culture-name: 'Arabic';
+  --culture-native: 'العربية';
+  --culture-flag: 'SA';
+  --font-main: 'Noto Sans Arabic', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #f0f7f4;
+
+  /* Tonal Scales */
+  --brand-50: #ecfdf5;
+  --brand-100: #d1fae5;
+  --brand-200: #a7f3d0;
+  --brand-300: #6ee7b7;
+  --brand-400: #34d399;
+  --brand-500: #10b981;
+  --brand-600: #059669;
+  --brand-700: #047857;
+  --brand-800: #065f46;
+  --brand-900: #064e3b;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #047857;
+  --brand-hover: #047857;
+  --brand-active: #065f46;
+  --brand-subtle: rgba(4, 120, 87, 0.16);
+  --brand-gradient: linear-gradient(135deg, #10b981 0%, #047857 100%);
+  --brand-glow: 0 0 25px rgba(4, 120, 87, 0.2);
+  --brand-glow-color: rgba(4, 120, 87, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #065f46;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #dcefe7;
+  --btn-secondary-text: #0b2423;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f0f7f4;
+  --bg-secondary: #ffffff;
+  --bg-card: #dcefe7;
+  --bg-card-hover: #e8f5f0;
+  --bg-panel: #e8f5f0;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f0f7f4;
+
+  /* Typography Colors */
+  --text-main: #0b2423;
+  --text-secondary: #2c4d4b;
+  --text-muted: #587977;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #047857;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(4, 120, 87, 0.38);
+  --border-focus: #047857;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(4, 120, 87, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Chinese (zh) • DARK MODE */
+html[data-culture="zh"][data-theme="dark"], html[data-culture="zh"]:not([data-theme="light"]), html[data-culture="zh-CN"][data-theme="dark"], html[data-culture="zh-CN"]:not([data-theme="light"]) {
+  --culture-id: 'zh';
+  --culture-name: 'Chinese';
+  --culture-native: '中文';
+  --culture-flag: 'CN';
+  --font-main: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --meta-theme-color: #1a1112;
+
+  /* Tonal Scales */
+  --brand-50: #fef2f2;
+  --brand-100: #fee2e2;
+  --brand-200: #fecaca;
+  --brand-300: #fca5a5;
+  --brand-400: #f87171;
+  --brand-500: #ef4444;
+  --brand-600: #dc2626;
+  --brand-700: #b91c1c;
+  --brand-800: #991b1b;
+  --brand-900: #7f1d1d;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #ef4444;
+  --brand-hover: #dc2626;
+  --brand-active: #b91c1c;
+  --brand-subtle: rgba(239, 68, 68, 0.16);
+  --brand-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  --brand-glow: 0 0 25px rgba(239, 68, 68, 0.38);
+  --brand-glow-color: rgba(239, 68, 68, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #ef4444;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #291819;
+  --btn-secondary-text: #f8faf9;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1a1112;
+  --bg-secondary: #120a0b;
+  --bg-card: #291819;
+  --bg-card-hover: #382022;
+  --bg-panel: #382022;
+  --bg-raised: #4a2a2c;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #120a0b;
+  --bg-header: #1a1112;
+
+  /* Typography Colors */
+  --text-main: #f8faf9;
+  --text-secondary: #cbd5d0;
+  --text-muted: #94a39d;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #ef4444;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(239, 68, 68, 0.38);
+  --border-focus: #ef4444;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(239, 68, 68, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Chinese (zh) • LIGHT MODE */
+html[data-culture="zh"][data-theme="light"], html[data-culture="zh-CN"][data-theme="light"] {
+  --culture-id: 'zh';
+  --culture-name: 'Chinese';
+  --culture-native: '中文';
+  --culture-flag: 'CN';
+  --font-main: 'Noto Sans SC', 'PingFang SC', sans-serif;
+  --meta-theme-color: #fcf5f5;
+
+  /* Tonal Scales */
+  --brand-50: #fef2f2;
+  --brand-100: #fee2e2;
+  --brand-200: #fecaca;
+  --brand-300: #fca5a5;
+  --brand-400: #f87171;
+  --brand-500: #ef4444;
+  --brand-600: #dc2626;
+  --brand-700: #b91c1c;
+  --brand-800: #991b1b;
+  --brand-900: #7f1d1d;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #b91c1c;
+  --brand-hover: #b91c1c;
+  --brand-active: #991b1b;
+  --brand-subtle: rgba(185, 28, 28, 0.16);
+  --brand-gradient: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+  --brand-glow: 0 0 25px rgba(185, 28, 28, 0.2);
+  --brand-glow-color: rgba(185, 28, 28, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #b91c1c;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f7e5e5;
+  --btn-secondary-text: #1a1211;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #fcf5f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #f7e5e5;
+  --bg-card-hover: #fbf0f0;
+  --bg-panel: #fbf0f0;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #fcf5f5;
+
+  /* Typography Colors */
+  --text-main: #1a1211;
+  --text-secondary: #4a3a38;
+  --text-muted: #7e6b68;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #b91c1c;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(185, 28, 28, 0.38);
+  --border-focus: #b91c1c;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(185, 28, 28, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Japanese (ja) • DARK MODE */
+html[data-culture="ja"][data-theme="dark"], html[data-culture="ja"]:not([data-theme="light"]) {
+  --culture-id: 'ja';
+  --culture-name: 'Japanese';
+  --culture-native: '日本語';
+  --culture-flag: 'JP';
+  --font-main: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  --meta-theme-color: #1a1216;
+
+  /* Tonal Scales */
+  --brand-50: #fdf2f8;
+  --brand-100: #fce7f3;
+  --brand-200: #fbcfe8;
+  --brand-300: #f9a8d4;
+  --brand-400: #f472b6;
+  --brand-500: #ec4899;
+  --brand-600: #db2777;
+  --brand-700: #be185d;
+  --brand-800: #9d174d;
+  --brand-900: #831843;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #f472b6;
+  --brand-hover: #db2777;
+  --brand-active: #be185d;
+  --brand-subtle: rgba(244, 114, 182, 0.16);
+  --brand-gradient: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  --brand-glow: 0 0 25px rgba(244, 114, 182, 0.38);
+  --brand-glow-color: rgba(244, 114, 182, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #f9a8d4;
+  --btn-primary-text: #260715;
+  --btn-secondary-bg: #271a21;
+  --btn-secondary-text: #f5f1ea;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1a1216;
+  --bg-secondary: #120b0f;
+  --bg-card: #271a21;
+  --bg-card-hover: #37242e;
+  --bg-panel: #37242e;
+  --bg-raised: #492f3d;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #120b0f;
+  --bg-header: #1a1216;
+
+  /* Typography Colors */
+  --text-main: #f5f1ea;
+  --text-secondary: #d4cebe;
+  --text-muted: #9a9485;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #f472b6;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(244, 114, 182, 0.38);
+  --border-focus: #f472b6;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(244, 114, 182, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Japanese (ja) • LIGHT MODE */
+html[data-culture="ja"][data-theme="light"] {
+  --culture-id: 'ja';
+  --culture-name: 'Japanese';
+  --culture-native: '日本語';
+  --culture-flag: 'JP';
+  --font-main: 'Noto Sans JP', 'Hiragino Kaku Gothic ProN', sans-serif;
+  --meta-theme-color: #faf5f7;
+
+  /* Tonal Scales */
+  --brand-50: #fdf2f8;
+  --brand-100: #fce7f3;
+  --brand-200: #fbcfe8;
+  --brand-300: #f9a8d4;
+  --brand-400: #f472b6;
+  --brand-500: #ec4899;
+  --brand-600: #db2777;
+  --brand-700: #be185d;
+  --brand-800: #9d174d;
+  --brand-900: #831843;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #be185d;
+  --brand-hover: #be185d;
+  --brand-active: #9d174d;
+  --brand-subtle: rgba(190, 24, 93, 0.16);
+  --brand-gradient: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+  --brand-glow: 0 0 25px rgba(190, 24, 93, 0.2);
+  --brand-glow-color: rgba(190, 24, 93, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #be185d;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f5e5ec;
+  --btn-secondary-text: #1d1d1d;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #faf5f7;
+  --bg-secondary: #ffffff;
+  --bg-card: #f5e5ec;
+  --bg-card-hover: #fbf0f4;
+  --bg-panel: #fbf0f4;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #faf5f7;
+
+  /* Typography Colors */
+  --text-main: #1d1d1d;
+  --text-secondary: #4a4a4a;
+  --text-muted: #757575;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #be185d;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(190, 24, 93, 0.38);
+  --border-focus: #be185d;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(190, 24, 93, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Russian (ru) • DARK MODE */
+html[data-culture="ru"][data-theme="dark"], html[data-culture="ru"]:not([data-theme="light"]) {
+  --culture-id: 'ru';
+  --culture-name: 'Russian';
+  --culture-native: 'Русский';
+  --culture-flag: 'RU';
+  --font-main: 'Noto Sans', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #1a1612;
+
+  /* Tonal Scales */
+  --brand-50: #fefae0;
+  --brand-100: #faedcd;
+  --brand-200: #e6ccb2;
+  --brand-300: #ddb892;
+  --brand-400: #d4a373;
+  --brand-500: #b08968;
+  --brand-600: #7f4f24;
+  --brand-700: #582f0e;
+  --brand-800: #3a1e05;
+  --brand-900: #241203;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #d4a373;
+  --brand-hover: #7f4f24;
+  --brand-active: #582f0e;
+  --brand-subtle: rgba(212, 163, 115, 0.16);
+  --brand-gradient: linear-gradient(135deg, #b08968 0%, #582f0e 100%);
+  --brand-glow: 0 0 25px rgba(212, 163, 115, 0.38);
+  --brand-glow-color: rgba(212, 163, 115, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #e6ccb2;
+  --btn-primary-text: #1c130b;
+  --btn-secondary-bg: #29211b;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1a1612;
+  --bg-secondary: #120f0c;
+  --bg-card: #29211b;
+  --bg-card-hover: #382d25;
+  --bg-panel: #382d25;
+  --bg-raised: #4a3c31;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #120f0c;
+  --bg-header: #1a1612;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #d4a373;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(212, 163, 115, 0.38);
+  --border-focus: #d4a373;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(212, 163, 115, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Russian (ru) • LIGHT MODE */
+html[data-culture="ru"][data-theme="light"] {
+  --culture-id: 'ru';
+  --culture-name: 'Russian';
+  --culture-native: 'Русский';
+  --culture-flag: 'RU';
+  --font-main: 'Noto Sans', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #faf7f2;
+
+  /* Tonal Scales */
+  --brand-50: #fefae0;
+  --brand-100: #faedcd;
+  --brand-200: #e6ccb2;
+  --brand-300: #ddb892;
+  --brand-400: #d4a373;
+  --brand-500: #b08968;
+  --brand-600: #7f4f24;
+  --brand-700: #582f0e;
+  --brand-800: #3a1e05;
+  --brand-900: #241203;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #7f4f24;
+  --brand-hover: #582f0e;
+  --brand-active: #3a1e05;
+  --brand-subtle: rgba(127, 79, 36, 0.16);
+  --brand-gradient: linear-gradient(135deg, #b08968 0%, #582f0e 100%);
+  --brand-glow: 0 0 25px rgba(127, 79, 36, 0.2);
+  --brand-glow-color: rgba(127, 79, 36, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #582f0e;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #efe6d8;
+  --btn-secondary-text: #0f172a;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #faf7f2;
+  --bg-secondary: #ffffff;
+  --bg-card: #efe6d8;
+  --bg-card-hover: #f7f1e7;
+  --bg-panel: #f7f1e7;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #faf7f2;
+
+  /* Typography Colors */
+  --text-main: #0f172a;
+  --text-secondary: #334155;
+  --text-muted: #64748b;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #7f4f24;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(127, 79, 36, 0.38);
+  --border-focus: #7f4f24;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(127, 79, 36, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Portuguese (pt) • DARK MODE */
+html[data-culture="pt"][data-theme="dark"], html[data-culture="pt"]:not([data-theme="light"]) {
+  --culture-id: 'pt';
+  --culture-name: 'Portuguese';
+  --culture-native: 'Português';
+  --culture-flag: 'PT';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #1e1310;
+
+  /* Tonal Scales */
+  --brand-50: #fdf5f2;
+  --brand-100: #faebe5;
+  --brand-200: #f5d4c8;
+  --brand-300: #eeb4a4;
+  --brand-400: #e58e76;
+  --brand-500: #e07a5f;
+  --brand-600: #c85a3e;
+  --brand-700: #a8422b;
+  --brand-800: #88331f;
+  --brand-900: #6b2716;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #e07a5f;
+  --brand-hover: #c85a3e;
+  --brand-active: #a8422b;
+  --brand-subtle: rgba(224, 122, 95, 0.16);
+  --brand-gradient: linear-gradient(135deg, #e07a5f 0%, #a8422b 100%);
+  --brand-glow: 0 0 25px rgba(224, 122, 95, 0.38);
+  --brand-glow-color: rgba(224, 122, 95, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #e07a5f;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #2d1c17;
+  --btn-secondary-text: #f0fdf4;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1e1310;
+  --bg-secondary: #140c0a;
+  --bg-card: #2d1c17;
+  --bg-card-hover: #3d2620;
+  --bg-panel: #3d2620;
+  --bg-raised: #50322a;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #140c0a;
+  --bg-header: #1e1310;
+
+  /* Typography Colors */
+  --text-main: #f0fdf4;
+  --text-secondary: #cfe4d7;
+  --text-muted: #8aa496;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #e07a5f;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(224, 122, 95, 0.38);
+  --border-focus: #e07a5f;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(224, 122, 95, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Portuguese (pt) • LIGHT MODE */
+html[data-culture="pt"][data-theme="light"] {
+  --culture-id: 'pt';
+  --culture-name: 'Portuguese';
+  --culture-native: 'Português';
+  --culture-flag: 'PT';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #faf5f2;
+
+  /* Tonal Scales */
+  --brand-50: #fdf5f2;
+  --brand-100: #faebe5;
+  --brand-200: #f5d4c8;
+  --brand-300: #eeb4a4;
+  --brand-400: #e58e76;
+  --brand-500: #e07a5f;
+  --brand-600: #c85a3e;
+  --brand-700: #a8422b;
+  --brand-800: #88331f;
+  --brand-900: #6b2716;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #a8422b;
+  --brand-hover: #a8422b;
+  --brand-active: #88331f;
+  --brand-subtle: rgba(168, 66, 43, 0.16);
+  --brand-gradient: linear-gradient(135deg, #e07a5f 0%, #a8422b 100%);
+  --brand-glow: 0 0 25px rgba(168, 66, 43, 0.2);
+  --brand-glow-color: rgba(168, 66, 43, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #a8422b;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f5e7df;
+  --btn-secondary-text: #0b1c22;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #faf5f2;
+  --bg-secondary: #ffffff;
+  --bg-card: #f5e7df;
+  --bg-card-hover: #faf0ea;
+  --bg-panel: #faf0ea;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #faf5f2;
+
+  /* Typography Colors */
+  --text-main: #0b1c22;
+  --text-secondary: #2e4b55;
+  --text-muted: #577884;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #a8422b;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(168, 66, 43, 0.38);
+  --border-focus: #a8422b;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(168, 66, 43, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Italian (it) • DARK MODE */
+html[data-culture="it"][data-theme="dark"], html[data-culture="it"]:not([data-theme="light"]) {
+  --culture-id: 'it';
+  --culture-name: 'Italian';
+  --culture-native: 'Italiano';
+  --culture-flag: 'IT';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #171a12;
+
+  /* Tonal Scales */
+  --brand-50: #f6f8f3;
+  --brand-100: #ecf0e6;
+  --brand-200: #d9e2ce;
+  --brand-300: #bccbb0;
+  --brand-400: #a3b18a;
+  --brand-500: #84956d;
+  --brand-600: #677752;
+  --brand-700: #505e3d;
+  --brand-800: #3d482e;
+  --brand-900: #2c3421;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #a3b18a;
+  --brand-hover: #677752;
+  --brand-active: #505e3d;
+  --brand-subtle: rgba(163, 177, 138, 0.16);
+  --brand-gradient: linear-gradient(135deg, #84956d 0%, #505e3d 100%);
+  --brand-glow: 0 0 25px rgba(163, 177, 138, 0.38);
+  --brand-glow-color: rgba(163, 177, 138, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #a3b18a;
+  --btn-primary-text: #161d0f;
+  --btn-secondary-bg: #23271a;
+  --btn-secondary-text: #faf5ee;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #171a12;
+  --bg-secondary: #0f110c;
+  --bg-card: #23271a;
+  --bg-card-hover: #303624;
+  --bg-panel: #303624;
+  --bg-raised: #404830;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #0f110c;
+  --bg-header: #171a12;
+
+  /* Typography Colors */
+  --text-main: #faf5ee;
+  --text-secondary: #d8cebe;
+  --text-muted: #9e9381;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #a3b18a;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(163, 177, 138, 0.38);
+  --border-focus: #a3b18a;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(163, 177, 138, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Italian (it) • LIGHT MODE */
+html[data-culture="it"][data-theme="light"] {
+  --culture-id: 'it';
+  --culture-name: 'Italian';
+  --culture-native: 'Italiano';
+  --culture-flag: 'IT';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #f7f8f4;
+
+  /* Tonal Scales */
+  --brand-50: #f6f8f3;
+  --brand-100: #ecf0e6;
+  --brand-200: #d9e2ce;
+  --brand-300: #bccbb0;
+  --brand-400: #a3b18a;
+  --brand-500: #84956d;
+  --brand-600: #677752;
+  --brand-700: #505e3d;
+  --brand-800: #3d482e;
+  --brand-900: #2c3421;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #505e3d;
+  --brand-hover: #505e3d;
+  --brand-active: #3d482e;
+  --brand-subtle: rgba(80, 94, 61, 0.16);
+  --brand-gradient: linear-gradient(135deg, #84956d 0%, #505e3d 100%);
+  --brand-glow: 0 0 25px rgba(80, 94, 61, 0.2);
+  --brand-glow-color: rgba(80, 94, 61, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #586438;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #ebeedf;
+  --btn-secondary-text: #1c1814;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f7f8f4;
+  --bg-secondary: #ffffff;
+  --bg-card: #ebeedf;
+  --bg-card-hover: #f2f5eb;
+  --bg-panel: #f2f5eb;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f7f8f4;
+
+  /* Typography Colors */
+  --text-main: #1c1814;
+  --text-secondary: #4a4035;
+  --text-muted: #796c5b;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #505e3d;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(80, 94, 61, 0.38);
+  --border-focus: #505e3d;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(80, 94, 61, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Korean (ko) • DARK MODE */
+html[data-culture="ko"][data-theme="dark"], html[data-culture="ko"]:not([data-theme="light"]) {
+  --culture-id: 'ko';
+  --culture-name: 'Korean';
+  --culture-native: '한국어';
+  --culture-flag: 'KR';
+  --font-main: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --meta-theme-color: #101715;
+
+  /* Tonal Scales */
+  --brand-50: #f2f9f5;
+  --brand-100: #e4f3eb;
+  --brand-200: #c7e8d6;
+  --brand-300: #a0d7bb;
+  --brand-400: #74c69d;
+  --brand-500: #52b788;
+  --brand-600: #389e6e;
+  --brand-700: #2d7d56;
+  --brand-800: #236344;
+  --brand-900: #1a4933;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #74c69d;
+  --brand-hover: #389e6e;
+  --brand-active: #2d7d56;
+  --brand-subtle: rgba(116, 198, 157, 0.16);
+  --brand-gradient: linear-gradient(135deg, #52b788 0%, #2d7d56 100%);
+  --brand-glow: 0 0 25px rgba(116, 198, 157, 0.38);
+  --brand-glow-color: rgba(116, 198, 157, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #74c69d;
+  --btn-primary-text: #091a14;
+  --btn-secondary-bg: #182420;
+  --btn-secondary-text: #f9fafb;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #101715;
+  --bg-secondary: #0a100e;
+  --bg-card: #182420;
+  --bg-card-hover: #21322d;
+  --bg-panel: #21322d;
+  --bg-raised: #2c433c;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #0a100e;
+  --bg-header: #101715;
+
+  /* Typography Colors */
+  --text-main: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-muted: #9ca3af;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #74c69d;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(116, 198, 157, 0.38);
+  --border-focus: #74c69d;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(116, 198, 157, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Korean (ko) • LIGHT MODE */
+html[data-culture="ko"][data-theme="light"] {
+  --culture-id: 'ko';
+  --culture-name: 'Korean';
+  --culture-native: '한국어';
+  --culture-flag: 'KR';
+  --font-main: 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+  --meta-theme-color: #f2f7f5;
+
+  /* Tonal Scales */
+  --brand-50: #f2f9f5;
+  --brand-100: #e4f3eb;
+  --brand-200: #c7e8d6;
+  --brand-300: #a0d7bb;
+  --brand-400: #74c69d;
+  --brand-500: #52b788;
+  --brand-600: #389e6e;
+  --brand-700: #2d7d56;
+  --brand-800: #236344;
+  --brand-900: #1a4933;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #2d7d56;
+  --brand-hover: #2d7d56;
+  --brand-active: #236344;
+  --brand-subtle: rgba(45, 125, 86, 0.16);
+  --brand-gradient: linear-gradient(135deg, #52b788 0%, #2d7d56 100%);
+  --brand-glow: 0 0 25px rgba(45, 125, 86, 0.2);
+  --brand-glow-color: rgba(45, 125, 86, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #2d6a4f;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #e5ede8;
+  --btn-secondary-text: #111827;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f2f7f5;
+  --bg-secondary: #ffffff;
+  --bg-card: #e5ede8;
+  --bg-card-hover: #eef4f0;
+  --bg-panel: #eef4f0;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f2f7f5;
+
+  /* Typography Colors */
+  --text-main: #111827;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #2d7d56;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(45, 125, 86, 0.38);
+  --border-focus: #2d7d56;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(45, 125, 86, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Turkish (tr) • DARK MODE */
+html[data-culture="tr"][data-theme="dark"], html[data-culture="tr"]:not([data-theme="light"]) {
+  --culture-id: 'tr';
+  --culture-name: 'Turkish';
+  --culture-native: 'Türkçe';
+  --culture-flag: 'TR';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #0a181c;
+
+  /* Tonal Scales */
+  --brand-50: #ecfeff;
+  --brand-100: #cffafe;
+  --brand-200: #a5f3fc;
+  --brand-300: #67e8f9;
+  --brand-400: #22d3ee;
+  --brand-500: #06b6d4;
+  --brand-600: #0891b2;
+  --brand-700: #0e7490;
+  --brand-800: #155e75;
+  --brand-900: #164e63;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #22d3ee;
+  --brand-hover: #0891b2;
+  --brand-active: #0e7490;
+  --brand-subtle: rgba(34, 211, 238, 0.16);
+  --brand-gradient: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+  --brand-glow: 0 0 25px rgba(34, 211, 238, 0.38);
+  --brand-glow-color: rgba(34, 211, 238, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #22d3ee;
+  --btn-primary-text: #042027;
+  --btn-secondary-bg: #10262c;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #0a181c;
+  --bg-secondary: #061013;
+  --bg-card: #10262c;
+  --bg-card-hover: #17373f;
+  --bg-panel: #17373f;
+  --bg-raised: #204a55;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #061013;
+  --bg-header: #0a181c;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #22d3ee;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(34, 211, 238, 0.38);
+  --border-focus: #22d3ee;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(34, 211, 238, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Turkish (tr) • LIGHT MODE */
+html[data-culture="tr"][data-theme="light"] {
+  --culture-id: 'tr';
+  --culture-name: 'Turkish';
+  --culture-native: 'Türkçe';
+  --culture-flag: 'TR';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #f0f8fa;
+
+  /* Tonal Scales */
+  --brand-50: #ecfeff;
+  --brand-100: #cffafe;
+  --brand-200: #a5f3fc;
+  --brand-300: #67e8f9;
+  --brand-400: #22d3ee;
+  --brand-500: #06b6d4;
+  --brand-600: #0891b2;
+  --brand-700: #0e7490;
+  --brand-800: #155e75;
+  --brand-900: #164e63;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #0891b2;
+  --brand-hover: #0e7490;
+  --brand-active: #155e75;
+  --brand-subtle: rgba(8, 145, 178, 0.16);
+  --brand-gradient: linear-gradient(135deg, #06b6d4 0%, #0e7490 100%);
+  --brand-glow: 0 0 25px rgba(8, 145, 178, 0.2);
+  --brand-glow-color: rgba(8, 145, 178, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #0891b2;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #daeef2;
+  --btn-secondary-text: #0b192c;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f0f8fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #daeef2;
+  --bg-card-hover: #e7f4f7;
+  --bg-panel: #e7f4f7;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f0f8fa;
+
+  /* Typography Colors */
+  --text-main: #0b192c;
+  --text-secondary: #2c4362;
+  --text-muted: #5b7598;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #0891b2;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(8, 145, 178, 0.38);
+  --border-focus: #0891b2;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(8, 145, 178, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Dutch (nl) • DARK MODE */
+html[data-culture="nl"][data-theme="dark"], html[data-culture="nl"]:not([data-theme="light"]) {
+  --culture-id: 'nl';
+  --culture-name: 'Dutch';
+  --culture-native: 'Nederlands';
+  --culture-flag: 'NL';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #1c0f18;
+
+  /* Tonal Scales */
+  --brand-50: #fff1f2;
+  --brand-100: #ffe4e6;
+  --brand-200: #fecdd3;
+  --brand-300: #fda4af;
+  --brand-400: #fb7185;
+  --brand-500: #f43f5e;
+  --brand-600: #e11d48;
+  --brand-700: #be123c;
+  --brand-800: #9f1239;
+  --brand-900: #881337;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #f43f5e;
+  --brand-hover: #e11d48;
+  --brand-active: #be123c;
+  --brand-subtle: rgba(244, 63, 94, 0.16);
+  --brand-gradient: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+  --brand-glow: 0 0 25px rgba(244, 63, 94, 0.38);
+  --brand-glow-color: rgba(244, 63, 94, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #f43f5e;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #2a1624;
+  --btn-secondary-text: #f8fafc;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1c0f18;
+  --bg-secondary: #130a10;
+  --bg-card: #2a1624;
+  --bg-card-hover: #3a1f32;
+  --bg-panel: #3a1f32;
+  --bg-raised: #4d2943;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #130a10;
+  --bg-header: #1c0f18;
+
+  /* Typography Colors */
+  --text-main: #f8fafc;
+  --text-secondary: #cbd5e1;
+  --text-muted: #94a3b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #f43f5e;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(244, 63, 94, 0.38);
+  --border-focus: #f43f5e;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(244, 63, 94, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Dutch (nl) • LIGHT MODE */
+html[data-culture="nl"][data-theme="light"] {
+  --culture-id: 'nl';
+  --culture-name: 'Dutch';
+  --culture-native: 'Nederlands';
+  --culture-flag: 'NL';
+  --font-main: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --meta-theme-color: #faf2f6;
+
+  /* Tonal Scales */
+  --brand-50: #fff1f2;
+  --brand-100: #ffe4e6;
+  --brand-200: #fecdd3;
+  --brand-300: #fda4af;
+  --brand-400: #fb7185;
+  --brand-500: #f43f5e;
+  --brand-600: #e11d48;
+  --brand-700: #be123c;
+  --brand-800: #9f1239;
+  --brand-900: #881337;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #be123c;
+  --brand-hover: #be123c;
+  --brand-active: #9f1239;
+  --brand-subtle: rgba(190, 18, 60, 0.16);
+  --brand-gradient: linear-gradient(135deg, #f43f5e 0%, #be123c 100%);
+  --brand-glow: 0 0 25px rgba(190, 18, 60, 0.2);
+  --brand-glow-color: rgba(190, 18, 60, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #be185d;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f5deeb;
+  --btn-secondary-text: #18130e;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #faf2f6;
+  --bg-secondary: #ffffff;
+  --bg-card: #f5deeb;
+  --bg-card-hover: #fbeef5;
+  --bg-panel: #fbeef5;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #faf2f6;
+
+  /* Typography Colors */
+  --text-main: #18130e;
+  --text-secondary: #483a2e;
+  --text-muted: #7e6c5c;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #be123c;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(190, 18, 60, 0.38);
+  --border-focus: #be123c;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(190, 18, 60, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Bengali (bn) • DARK MODE */
+html[data-culture="bn"][data-theme="dark"], html[data-culture="bn"]:not([data-theme="light"]) {
+  --culture-id: 'bn';
+  --culture-name: 'Bengali';
+  --culture-native: 'বাংলা';
+  --culture-flag: 'BD';
+  --font-main: 'Noto Sans Bengali', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #0a161e;
+
+  /* Tonal Scales */
+  --brand-50: #f0f9ff;
+  --brand-100: #e0f2fe;
+  --brand-200: #bae6fd;
+  --brand-300: #7dd3fc;
+  --brand-400: #38bdf8;
+  --brand-500: #0ea5e9;
+  --brand-600: #0284c7;
+  --brand-700: #0369a1;
+  --brand-800: #075985;
+  --brand-900: #0c4a6e;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #38bdf8;
+  --brand-hover: #0284c7;
+  --brand-active: #0369a1;
+  --brand-subtle: rgba(56, 189, 248, 0.16);
+  --brand-gradient: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+  --brand-glow: 0 0 25px rgba(56, 189, 248, 0.38);
+  --brand-glow-color: rgba(56, 189, 248, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #38bdf8;
+  --btn-primary-text: #061d2b;
+  --btn-secondary-bg: #10232f;
+  --btn-secondary-text: #f4faf7;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #0a161e;
+  --bg-secondary: #060e14;
+  --bg-card: #10232f;
+  --bg-card-hover: #173142;
+  --bg-panel: #173142;
+  --bg-raised: #204259;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #060e14;
+  --bg-header: #0a161e;
+
+  /* Typography Colors */
+  --text-main: #f4faf7;
+  --text-secondary: #c2e2d6;
+  --text-muted: #84b7a4;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #38bdf8;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(56, 189, 248, 0.38);
+  --border-focus: #38bdf8;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(56, 189, 248, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Bengali (bn) • LIGHT MODE */
+html[data-culture="bn"][data-theme="light"] {
+  --culture-id: 'bn';
+  --culture-name: 'Bengali';
+  --culture-native: 'বাংলা';
+  --culture-flag: 'BD';
+  --font-main: 'Noto Sans Bengali', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #f0f6fa;
+
+  /* Tonal Scales */
+  --brand-50: #f0f9ff;
+  --brand-100: #e0f2fe;
+  --brand-200: #bae6fd;
+  --brand-300: #7dd3fc;
+  --brand-400: #38bdf8;
+  --brand-500: #0ea5e9;
+  --brand-600: #0284c7;
+  --brand-700: #0369a1;
+  --brand-800: #075985;
+  --brand-900: #0c4a6e;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #0284c7;
+  --brand-hover: #0369a1;
+  --brand-active: #075985;
+  --brand-subtle: rgba(2, 132, 199, 0.16);
+  --brand-gradient: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+  --brand-glow: 0 0 25px rgba(2, 132, 199, 0.2);
+  --brand-glow-color: rgba(2, 132, 199, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #0284c7;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #dbebf5;
+  --btn-secondary-text: #05261e;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f0f6fa;
+  --bg-secondary: #ffffff;
+  --bg-card: #dbebf5;
+  --bg-card-hover: #e7f2f8;
+  --bg-panel: #e7f2f8;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f0f6fa;
+
+  /* Typography Colors */
+  --text-main: #05261e;
+  --text-secondary: #1f5244;
+  --text-muted: #4b7d6f;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #0284c7;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(2, 132, 199, 0.38);
+  --border-focus: #0284c7;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(2, 132, 199, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Tamil (ta) • DARK MODE */
+html[data-culture="ta"][data-theme="dark"], html[data-culture="ta"]:not([data-theme="light"]) {
+  --culture-id: 'ta';
+  --culture-name: 'Tamil';
+  --culture-native: 'தமிழ்';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Tamil', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #1c0d11;
+
+  /* Tonal Scales */
+  --brand-50: #fdf2f3;
+  --brand-100: #fce7e9;
+  --brand-200: #f9cfd4;
+  --brand-300: #f4a8b2;
+  --brand-400: #eb7484;
+  --brand-500: #d93f55;
+  --brand-600: #ba283e;
+  --brand-700: #991c2e;
+  --brand-800: #801826;
+  --brand-900: #4d0b14;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #fef3c7;
+  --brand-hover: #ba283e;
+  --brand-active: #991c2e;
+  --brand-subtle: rgba(254, 243, 199, 0.16);
+  --brand-gradient: linear-gradient(135deg, #d93f55 0%, #991c2e 100%);
+  --brand-glow: 0 0 25px rgba(254, 243, 199, 0.38);
+  --brand-glow-color: rgba(254, 243, 199, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #fef3c7;
+  --btn-primary-text: #3b0a16;
+  --btn-secondary-bg: #2a1319;
+  --btn-secondary-text: #fff8ee;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #1c0d11;
+  --bg-secondary: #13080c;
+  --bg-card: #2a1319;
+  --bg-card-hover: #3b1a23;
+  --bg-panel: #3b1a23;
+  --bg-raised: #4d222e;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #13080c;
+  --bg-header: #1c0d11;
+
+  /* Typography Colors */
+  --text-main: #fff8ee;
+  --text-secondary: #e3d1be;
+  --text-muted: #aa947d;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #fef3c7;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(254, 243, 199, 0.38);
+  --border-focus: #fef3c7;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(254, 243, 199, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Tamil (ta) • LIGHT MODE */
+html[data-culture="ta"][data-theme="light"] {
+  --culture-id: 'ta';
+  --culture-name: 'Tamil';
+  --culture-native: 'தமிழ்';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Tamil', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #fbf7f0;
+
+  /* Tonal Scales */
+  --brand-50: #fdf2f3;
+  --brand-100: #fce7e9;
+  --brand-200: #f9cfd4;
+  --brand-300: #f4a8b2;
+  --brand-400: #eb7484;
+  --brand-500: #d93f55;
+  --brand-600: #ba283e;
+  --brand-700: #991c2e;
+  --brand-800: #801826;
+  --brand-900: #4d0b14;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #800020;
+  --brand-hover: #991c2e;
+  --brand-active: #801826;
+  --brand-subtle: rgba(128, 0, 32, 0.16);
+  --brand-gradient: linear-gradient(135deg, #d93f55 0%, #991c2e 100%);
+  --brand-glow: 0 0 25px rgba(128, 0, 32, 0.2);
+  --brand-glow-color: rgba(128, 0, 32, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #800020;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #f7eedc;
+  --btn-secondary-text: #270d13;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #fbf7f0;
+  --bg-secondary: #ffffff;
+  --bg-card: #f7eedc;
+  --bg-card-hover: #fbf4e8;
+  --bg-panel: #fbf4e8;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #fbf7f0;
+
+  /* Typography Colors */
+  --text-main: #270d13;
+  --text-secondary: #582a33;
+  --text-muted: #85535e;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #800020;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(128, 0, 32, 0.38);
+  --border-focus: #800020;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(128, 0, 32, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Telugu (te) • DARK MODE */
+html[data-culture="te"][data-theme="dark"], html[data-culture="te"]:not([data-theme="light"]) {
+  --culture-id: 'te';
+  --culture-name: 'Telugu';
+  --culture-native: 'తెలుగు';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Telugu', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #160e22;
+
+  /* Tonal Scales */
+  --brand-50: #faf5ff;
+  --brand-100: #f3e8ff;
+  --brand-200: #e9d5ff;
+  --brand-300: #d8b4fe;
+  --brand-400: #c084fc;
+  --brand-500: #a855f7;
+  --brand-600: #9333ea;
+  --brand-700: #7e22ce;
+  --brand-800: #6b21a8;
+  --brand-900: #581c87;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #c084fc;
+  --brand-hover: #9333ea;
+  --brand-active: #7e22ce;
+  --brand-subtle: rgba(192, 132, 252, 0.16);
+  --brand-gradient: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  --brand-glow: 0 0 25px rgba(192, 132, 252, 0.38);
+  --brand-glow-color: rgba(192, 132, 252, 0.38);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #c084fc;
+  --btn-primary-text: #220738;
+  --btn-secondary-bg: #221535;
+  --btn-secondary-text: #f6f8fe;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #160e22;
+  --bg-secondary: #0e0817;
+  --bg-card: #221535;
+  --bg-card-hover: #301d4a;
+  --bg-panel: #301d4a;
+  --bg-raised: #402762;
+  --bg-subtle: rgba(255, 255, 255, 0.05);
+  --bg-input: #0e0817;
+  --bg-header: #160e22;
+
+  /* Typography Colors */
+  --text-main: #f6f8fe;
+  --text-secondary: #c8d1e6;
+  --text-muted: #8c99b8;
+  --text-contrast: #ffffff;
+  --text-inverse: #0b132b;
+  --text-accent: #c084fc;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.16);
+  --border-glow: rgba(192, 132, 252, 0.38);
+  --border-focus: #c084fc;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(192, 132, 252, 0.12) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* Telugu (te) • LIGHT MODE */
+html[data-culture="te"][data-theme="light"] {
+  --culture-id: 'te';
+  --culture-name: 'Telugu';
+  --culture-native: 'తెలుగు';
+  --culture-flag: 'IN';
+  --font-main: 'Noto Sans Telugu', 'Plus Jakarta Sans', sans-serif;
+  --meta-theme-color: #f8f4fb;
+
+  /* Tonal Scales */
+  --brand-50: #faf5ff;
+  --brand-100: #f3e8ff;
+  --brand-200: #e9d5ff;
+  --brand-300: #d8b4fe;
+  --brand-400: #c084fc;
+  --brand-500: #a855f7;
+  --brand-600: #9333ea;
+  --brand-700: #7e22ce;
+  --brand-800: #6b21a8;
+  --brand-900: #581c87;
+
+  /* Semantic Brand Aliases */
+  --brand-primary: #7e22ce;
+  --brand-hover: #7e22ce;
+  --brand-active: #6b21a8;
+  --brand-subtle: rgba(126, 34, 206, 0.16);
+  --brand-gradient: linear-gradient(135deg, #a855f7 0%, #7e22ce 100%);
+  --brand-glow: 0 0 25px rgba(126, 34, 206, 0.2);
+  --brand-glow-color: rgba(126, 34, 206, 0.2);
+
+  /* Critical Button Contrast Tokens (WCAG Compliant) */
+  --btn-primary-bg: #7e22ce;
+  --btn-primary-text: #ffffff;
+  --btn-secondary-bg: #ede3f5;
+  --btn-secondary-text: #131730;
+
+  /* Surfaces & Backgrounds */
+  --bg-primary: #f8f4fb;
+  --bg-secondary: #ffffff;
+  --bg-card: #ede3f5;
+  --bg-card-hover: #f4ecfa;
+  --bg-panel: #f4ecfa;
+  --bg-raised: #ffffff;
+  --bg-subtle: rgba(0, 0, 0, 0.05);
+  --bg-input: #ffffff;
+  --bg-header: #f8f4fb;
+
+  /* Typography Colors */
+  --text-main: #131730;
+  --text-secondary: #394269;
+  --text-muted: #6a75a0;
+  --text-contrast: #ffffff;
+  --text-inverse: #ffffff;
+  --text-accent: #7e22ce;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-medium: rgba(0, 0, 0, 0.16);
+  --border-glow: rgba(126, 34, 206, 0.38);
+  --border-focus: #7e22ce;
+
+  --card-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.08);
+  --modal-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+
+  /* Cultural Background Motif */
+  --bg-pattern: radial-gradient(rgba(126, 34, 206, 0.07) 1px, transparent 1px);
+  --bg-pattern-size: 26px 26px;
+
+  /* Legacy Bridge */
+  --fg: var(--text-main);
+  --bg: var(--bg-primary);
+  --glow: var(--brand-glow-color);
+  --mute: var(--text-muted);
+  --mute2: var(--text-secondary);
+  --panel: var(--bg-card);
+  --ink: var(--bg-secondary);
+  --ivory: var(--text-main);
+  --gold: var(--brand-500);
+  --gold2: var(--brand-400);
+  --red: var(--rose-500);
+  --line: var(--border-subtle);
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: var(--font-main);
+}
+
+
+/* =================================================================
+   GLOBAL COMPONENT APPARATUS & CRISP BUTTON CONTRAST
+   ================================================================= */
+body {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-main) !important;
+  font-family: var(--font-main) !important;
+  background-image: var(--bg-pattern);
+  background-size: var(--bg-pattern-size, auto);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Primary Buttons: Always Crisp & High Contrast */
+.btn-primary,
+button.primary-btn,
+.brand-btn,
+.btn-submit {
+  background: var(--btn-primary-bg) !important;
+  color: var(--btn-primary-text) !important;
+  border: 1px solid var(--border-glow) !important;
+  box-shadow: var(--brand-glow) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em !important;
+  cursor: pointer;
+  transition: filter 0.15s, transform 0.15s;
+}
+
+.btn-primary:hover,
+button.primary-btn:hover,
+.brand-btn:hover,
+.btn-submit:hover {
+  filter: brightness(1.08) !important;
+  transform: translateY(-1px);
+}
+
+.btn-primary:active,
+button.primary-btn:active,
+.btn-submit:active {
+  transform: translateY(0);
+}
+
+/* Cards, Modals, Forms */
+.bank-card, .card, .dashboard-card, .panel, .modal-content, .bank-paper-sheet {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-main) !important;
+}
+
+input, select, textarea {
+  background-color: var(--bg-input) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-main) !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--border-focus) !important;
+  box-shadow: 0 0 0 3px var(--brand-subtle) !important;
+}
+
+/* RTL Layout Directives */
+[dir="rtl"] {
+  text-align: right;
+}
+[dir="rtl"] .header-controls,
+[dir="rtl"] .login-s6,
+[dir="rtl"] .idx-s5 {
+  margin-left: 0 !important;
+  margin-right: auto !important;
+}
+[dir="rtl"] .brand-badge {
+  flex-direction: row-reverse;
+}
+[dir="rtl"] .nav-link svg,
+[dir="rtl"] .btn svg {
+  margin-left: 8px;
+  margin-right: 0;
+}

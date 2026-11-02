@@ -171,10 +171,9 @@
     ta.value = text;
     ta.style.position = 'fixed';
     ta.style.opacity = '0';
-    document.body.appendChild(ta);
-    ta.select();
+    if (typeof ta.select === 'function') ta.select();
     try {
-      document.execCommand('copy');
+      if (typeof document.execCommand === 'function') document.execCommand('copy');
       if (typeof window.showToast === 'function') {
         window.showToast(successMsg, 'success');
       }
@@ -202,6 +201,56 @@
     }
   }
 
+  function setDateFromPicker(val, inputId, wrapId) {
+    if (!val || !val.includes('-')) return;
+    const parts = val.split('-');
+    const dd = parts[2];
+    const mm = parts[1];
+    const yyyy = parts[0];
+
+    const chosenYear = parseInt(yyyy, 10);
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+    const chosenDate = new Date(chosenYear, parseInt(mm, 10) - 1, parseInt(dd, 10));
+    if (chosenYear < 1900 || chosenDate > today) {
+      if (typeof window.showToast === 'function') {
+        window.showToast('Invalid date. Date must be between 1900 and today.', 'error');
+      }
+      return;
+    }
+
+    const formatted = `${dd}${mm}${yyyy}`;
+    const input = document.getElementById(inputId);
+    const wrap = document.getElementById(wrapId);
+    if (input) {
+      input.value = formatted;
+      if (wrap && typeof window.updateBoxCells === 'function') {
+        window.updateBoxCells(wrap, formatted);
+      }
+      if (typeof window.clearErrorOnValidInput === 'function') {
+        window.clearErrorOnValidInput(input);
+      }
+    }
+
+    if (inputId === 'raw-header-date') {
+      const declDateEl = document.getElementById('paper-declaration-date');
+      if (declDateEl) declDateEl.textContent = `${dd} / ${mm} / ${yyyy}`;
+    }
+
+    if (typeof window.debounceSaveDraft === 'function') {
+      window.debounceSaveDraft();
+    }
+  }
+
+  function copyCurrentAppNumber() {
+    const num = window.currentApplicationNumber;
+    if (!num) {
+      if (typeof window.showToast === 'function') window.showToast('No Application Number generated yet', 'info');
+      return;
+    }
+    copyToClipboard(num, `Application Number ${num} copied to clipboard!`);
+  }
+
   const NeoBankUtils = {
     formatHumanText,
     replaceUnderscoreWords,
@@ -211,7 +260,9 @@
     validateDateRange,
     formatCurrency,
     copyToClipboard,
-    clearErrorOnValidInput
+    clearErrorOnValidInput,
+    setDateFromPicker,
+    copyCurrentAppNumber
   };
 
   // Expose both on namespace and on window for direct backwards compatibility
@@ -225,5 +276,7 @@
   window.formatCurrency = formatCurrency;
   window.copyToClipboard = copyToClipboard;
   window.clearErrorOnValidInput = clearErrorOnValidInput;
+  window.setDateFromPicker = setDateFromPicker;
+  window.copyCurrentAppNumber = copyCurrentAppNumber;
 
 })(typeof window !== 'undefined' ? window : this);

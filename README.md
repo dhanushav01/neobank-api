@@ -70,12 +70,12 @@ python backend/run.py
 
 The platform provides a 4-tier role hierarchy:
 
-| Role | Default Demo Account | Privileges |
+| Role | Provisioning / Setup | Privileges |
 |---|---|---|
-| **Super Admin** | `admin@bank.test` / `Admin@1234` | Complete system oversight, staff onboarding, SQL database workbench access, platform resets |
-| **Bank Administrator** | Configured during onboarding | KYC underwriting, loan decisioning, dispute resolution, user status management |
-| **Bank Staff (Employee)** | `employee@bank.test` / `Employee@1234` | Customer directory, account applications, review queues (SQL access configurable per account) |
-| **Customer** | `customer@bank.test` / `Customer@1234` | Personal accounts, debit cards, transfers, bill payments, FX swaps, investment portfolios |
+| **Super Admin** | Provisioned via environment secrets | Complete system oversight, staff onboarding, SQL database workbench access, platform resets |
+| **Bank Administrator** | Created by Super Admin with dual-approval | KYC underwriting, loan decisioning, dispute resolution, user status management |
+| **Bank Staff (Employee)** | Created by Super Admin with employee verification | Customer directory, account applications, review queues (SQL access configurable per account) |
+| **Customer** | Self-service registered via `/auth/register` or `/onboarding` | Personal accounts, debit cards, transfers, bill payments, FX swaps, investment portfolios |
 
 ---
 
@@ -122,7 +122,7 @@ The platform provides a 4-tier role hierarchy:
 
 ### 2. High-Value Transfer with OTP Protection
 1. `POST /transfers` with amount > `1000` USD (triggers OTP verification challenge)
-2. `POST /transfers/{transferId}/confirm` with `testModeOtp` (completes wire and debits ledger)
+2. `POST /transfers/{transferId}/confirm` with out-of-band verification code (completes wire and debits ledger)
 
 ### 3. Card Dispute & Automated Ledger Settlement
 1. `POST /cards/{cardId}/authorize` (Simulate merchant POS transaction)
@@ -151,7 +151,30 @@ docker run -p 8000:8000 neobank-api
 ## Security & Privacy Notice
 
 - All physical SQLite databases (`*.db`), credentials, and local runtime scratch scripts are strictly excluded from version control via `.gitignore`.
-- Document attachments are encrypted using **AES-256** symmetric encryption (Fernet) in SQLite BLOBs and decrypted on-demand with inline previews (images, PDFs, text) and secure file download.
+- Document attachments are encrypted using **Fernet (AES-128-CBC with HMAC-SHA256 authenticated encryption)** in SQLite BLOBs and decrypted on-demand with inline previews (images, PDFs, text) and secure file download.
 - Uniform Account Opening Applications support authentic 4-page bank paper sheet visualization with CIF & CKYC, KYC & OVD, Account Specification, and Declarations, complete with print-to-PDF export.
-- Passwords are encrypted using **PBKDF2-HMAC-SHA256** with 100,000 iterations and 16-byte random salts.
+- Passwords are securely hashed using **Bcrypt** (work factor 12) with per-user cryptographic salts. Card PINs are securely hashed using **PBKDF2-HMAC-SHA256** (100,000 iterations).
+
+---
+
+## Production Deployment & Security Configuration (Render / Cloud)
+
+When deploying to Render, Railway, or standard Docker environments:
+
+1. **Environment Mode & Secrets**:
+   - `ENVIRONMENT=production`: Enforces secure cookie policies (`COOKIE_SECURE=true`), disables interactive documentation (`/docs`, `/redoc`), and deactivates platform data reset endpoints.
+   - `JWT_SECRET`: Mandatory high-entropy secret (minimum 32 bytes) for signing authentication tokens.
+   - `NEOBANK_DOC_KEY`: Mandatory base64 Fernet 256-bit key for AES document encryption.
+   - `NEOBANK_DB_PATH`: Absolute path to SQLite database on persistent storage (e.g. `/data/neobank.db`).
+   - `SEED_DEMO_USERS=false`: Ensures demo accounts are never provisioned in production.
+
+2. **Persistent Storage Warning (Render Ephemeral Storage)**:
+   > **Note on Render Data Retention**: On container hosting platforms with ephemeral filesystems (such as Render standard web services without a persistent disk), the local SQLite database resets upon every redeployment or service restart. To persist ledger state on Render, add a **Persistent Disk** (e.g. mounted at `/data`) and specify `NEOBANK_DB_PATH=/data/neobank.db`.
+
+3. **Dependency Vulnerability Scanning**:
+   Run audits with `pip-audit`:
+   ```bash
+   pip install pip-audit
+   pip-audit -r requirements.txt
+   ```
 

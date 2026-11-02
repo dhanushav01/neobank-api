@@ -10,6 +10,13 @@ var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${
 
 let selectedAccountType = 'SAVINGS';
 let currentApplicationNumber = null;
+let currentDraftSecret = (function() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('draftSecret') || params.get('secret') || '';
+  } catch (_) { return ''; }
+})();
+window.currentDraftSecret = currentDraftSecret;
 
 // Branch directory with codes
 const BRANCH_DIRECTORY = {
@@ -97,6 +104,10 @@ async function initiateAndProceedToStep2() {
     }
 
     currentApplicationNumber = res.applicationNumber;
+    currentDraftSecret = res.draftSecret || '';
+    window.currentApplicationNumber = currentApplicationNumber;
+    window.currentDraftSecret = currentDraftSecret;
+    try { sessionStorage.setItem('draft_secret_' + currentApplicationNumber, currentDraftSecret); } catch (_) {}
 
     // Update URL without page reload
     if (window.history && window.history.pushState) {
@@ -118,6 +129,14 @@ async function initiateAndProceedToStep2() {
 
     // Save initial draft
     saveCustomerFormDraft(false);
+
+    // Suppress validation warnings upon initial draft / application number generation
+    window.hasAttemptedSubmit = false;
+    if (typeof updateLiveMissingCounters === 'function') {
+      updateLiveMissingCounters();
+    }
+    const valBanner = document.getElementById('validation-summary-banner');
+    if (valBanner) valBanner.style.display = 'none';
 
     // Advance to Step 2
     goToOnboardingStep(2);
@@ -381,7 +400,7 @@ function selectAccountType(type) {
       if (circle) {
         circle.style.borderColor = 'var(--brand-500)';
         circle.style.background = 'var(--brand-500)';
-        circle.style.color = '#ffffff';
+        circle.style.color = 'var(--text-contrast)';
       }
       const text = card.querySelector('.account-radio-text');
       if (text) {
@@ -812,7 +831,7 @@ let signaturePadState = {
   ctx: null,
   isDrawing: false,
   hasSignature: false,
-  penColor: '#0b2545', // Deep Bank Navy ink
+  penColor: 'var(--bg-panel)', // Deep Bank Navy ink
   lineWidth: 2.5,
   lastX: 0,
   lastY: 0
@@ -823,19 +842,44 @@ let currentActiveFormPart = 'part1';
 
 // ----------------------------------------------------------------- DIRECT SEGMENTED BOX INPUTS CONTROLLER
 function initBankBoxInputs() {
+  if (typeof window.initBankBoxInputsModular === 'function') {
+    return window.initBankBoxInputsModular();
+  }
+
   const boxWraps = document.querySelectorAll('.bank-box-wrap');
-  
+  const maxFreeTextLen = window.MAX_NAME_LENGTH || (typeof NeoBankConstants !== 'undefined' ? NeoBankConstants.MAX_NAME_LENGTH : 50);
+
   boxWraps.forEach(wrap => {
     const boxCount = parseInt(wrap.getAttribute('data-box-count') || '24', 10);
     const cellsContainer = wrap.querySelector('.bank-box-cells');
     const input = wrap.querySelector('.bank-box-input');
+    const targetName = wrap.getAttribute('data-target') || '';
     if (!cellsContainer || !input) return;
+
+    const isFixed = ['taxId', 'ckycNumber', 'cifNumber', 'mobile', 'altMobile', 'postalCode', 'corrPostalCode', 'aadhaarNumber', 'applicationDate', 'dob', 'accountNumber'].includes(targetName);
+    if (!isFixed) {
+      input.maxLength = maxFreeTextLen;
+      const parent = wrap.closest('.char-input-group') || wrap.parentElement;
+      const labelRow = parent ? parent.querySelector('.char-input-label-row') : null;
+      const hintContainer = labelRow ? (labelRow.querySelector('.char-label-with-hint') || labelRow) : null;
+      if (hintContainer && !labelRow.querySelector('.char-box-limit-hint')) {
+        const hintSpan = document.createElement('span');
+        hintSpan.className = 'char-box-limit-hint notranslate';
+        hintSpan.setAttribute('translate', 'no');
+        hintSpan.setAttribute('data-target-input', input.id || targetName);
+        hintSpan.innerHTML = `
+          <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+          <span class="char-limit-counter"><span class="char-count-current">${(input.value || '').length}</span>/50</span>
+        `;
+        hintContainer.appendChild(hintSpan);
+      }
+    }
 
     // Check if custom segmented markup (like date with separators) already exists
     const hasStaticCells = cellsContainer.querySelectorAll('.char-cell').length > 0;
     if (!hasStaticCells) {
       let cellsHtml = '';
-      if (boxCount === 12 && wrap.getAttribute('data-target') === 'aadhaarNumber') {
+      if (boxCount === 12 && targetName === 'aadhaarNumber') {
         // Special 4-4-4 Aadhaar segment formatting
         for (let i = 0; i < 12; i++) {
           if (i === 4 || i === 8) {
@@ -861,7 +905,6 @@ function initBankBoxInputs() {
     // Update cells on typing / pasting
     input.addEventListener('input', (e) => {
       let val = e.target.value;
-      const targetName = wrap.getAttribute('data-target');
 
       // Sanitize input based on field type
       if (targetName === 'taxId') {
@@ -895,7 +938,7 @@ function initBankBoxInputs() {
         val = val.replace(/\D/g, '').slice(0, 8);
         e.target.value = val;
       } else {
-        val = val.toUpperCase();
+        val = val.toUpperCase().slice(0, maxFreeTextLen);
         e.target.value = val;
       }
 
@@ -932,11 +975,43 @@ function initBankBoxInputs() {
 }
 
 function updateBoxCells(wrap, text) {
-  const cells = wrap.querySelectorAll('.bank-box-cells .char-cell');
+  if (typeof window.updateBoxCellsModular === 'function') {
+    return window.updateBoxCellsModular(wrap, text);
+  }
+  const cellsContainer = wrap.querySelector('.bank-box-cells');
   const input = wrap.querySelector('.bank-box-input');
+  if (!cellsContainer) return;
+
   const isFocused = input === document.activeElement;
   const str = (text || '').toString();
+  const targetName = wrap.getAttribute('data-target') || '';
+  const initialBoxCount = parseInt(wrap.getAttribute('data-box-count') || '24', 10);
+  const isFixed = ['taxId', 'ckycNumber', 'cifNumber', 'mobile', 'altMobile', 'postalCode', 'corrPostalCode', 'aadhaarNumber', 'applicationDate', 'dob', 'accountNumber'].includes(targetName);
 
+  if (!isFixed) {
+    const maxLen = window.MAX_NAME_LENGTH || (typeof NeoBankConstants !== 'undefined' ? NeoBankConstants.MAX_NAME_LENGTH : 50);
+    // Keep at least initialBoxCount boxes, and always at least str.length + 1 boxes ready for the next character (up to maxLen)
+    const neededCount = Math.min(maxLen, Math.max(initialBoxCount, str.length + 1));
+    let cellList = cellsContainer.querySelectorAll('.char-cell');
+
+    while (cellList.length < neededCount) {
+      const idx = cellList.length;
+      const newCell = document.createElement('span');
+      newCell.className = 'char-cell notranslate';
+      newCell.setAttribute('translate', 'no');
+      newCell.setAttribute('data-idx', String(idx));
+      newCell.innerHTML = '&nbsp;';
+      cellsContainer.appendChild(newCell);
+      cellList = cellsContainer.querySelectorAll('.char-cell');
+    }
+
+    while (cellList.length > neededCount && cellList.length > initialBoxCount) {
+      cellsContainer.removeChild(cellsContainer.lastElementChild);
+      cellList = cellsContainer.querySelectorAll('.char-cell');
+    }
+  }
+
+  const cells = cellsContainer.querySelectorAll('.char-cell');
   cells.forEach((cell, idx) => {
     cell.classList.remove('caret-active');
     if (idx < str.length) {
@@ -999,14 +1074,10 @@ function syncApplicantFullName() {
   const firstInput = document.getElementById('raw-first-name');
   const middleInput = document.getElementById('raw-middle-name');
   const lastInput = document.getElementById('raw-last-name');
-  const noMiddleChk = document.getElementById('chk-no-middle-name');
 
   const first = firstInput ? firstInput.value.trim() : '';
   const last = lastInput ? lastInput.value.trim() : '';
-  let middle = '';
-  if (middleInput && (!noMiddleChk || !noMiddleChk.checked)) {
-    middle = middleInput.value.trim();
-  }
+  const middle = middleInput ? middleInput.value.trim() : '';
 
   const parts = [first, middle, last].filter(Boolean);
   const fullName = parts.join(' ').toUpperCase() || 'APPLICANT';
@@ -1020,29 +1091,18 @@ function syncApplicantFullName() {
 
   const modalSignAs = document.getElementById('signature-modal-sign-as');
   if (modalSignAs) {
-    modalSignAs.innerHTML = `Sign as: <strong style="color:var(--brand-500)">${fullName}</strong>`;
+    const escFn = window.escapeHtml || (s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])));
+    modalSignAs.innerHTML = `Sign as: <strong style="color:var(--brand-500)">${escFn(fullName)}</strong>`;
   }
 
   return fullName;
 }
 
-// ----------------------------------------------------------------- MIDDLE NAME TOGGLE
+// ----------------------------------------------------------------- MIDDLE NAME TOGGLE (LEGACY SAFEGUARD)
 function toggleMiddleName(isOmitted) {
+  // Middle name is a standard optional text input without toggle removal
   const inputWrap = document.getElementById('middle-name-input-wrap');
-  const omittedBadge = document.getElementById('middle-name-omitted-indicator');
-  const middleInput = document.getElementById('raw-middle-name');
-
-  if (isOmitted) {
-    if (inputWrap) inputWrap.style.display = 'none';
-    if (omittedBadge) omittedBadge.style.display = 'inline-flex';
-    if (middleInput) {
-      middleInput.value = '';
-      updateBoxCells(inputWrap, '');
-    }
-  } else {
-    if (inputWrap) inputWrap.style.display = 'flex';
-    if (omittedBadge) omittedBadge.style.display = 'none';
-  }
+  if (inputWrap) inputWrap.style.display = 'inline-flex';
   syncApplicantFullName();
   debounceSaveDraft();
 }
@@ -1117,11 +1177,30 @@ function handleOvdFileUpload(input, statusSpanId, docType) {
     span.title = file.name;
   }
 
-  // Automatically select this document row's radio button
-  const radio = document.querySelector(`input[name="ovdSelectRadio"][value="${docType}"]`);
-  if (radio) {
-    radio.checked = true;
-    syncOvdSelection(docType);
+  // Automatically check this document row's checkbox
+  const chk = document.querySelector(`input[name="ovdSelectChk"][value="${docType}"]`) ||
+              document.querySelector(`input[name="ovdSelectRadio"][value="${docType}"]`);
+  if (chk) {
+    chk.checked = true;
+    if (typeof syncOvdSelection === 'function') syncOvdSelection(docType, true);
+  }
+
+  // Immediately clear any OVD validation error on header and table
+  const ovdHeader = document.getElementById('header-sec-ovd');
+  if (ovdHeader) {
+    ovdHeader.classList.remove('field-invalid-mandatory');
+    ovdHeader.classList.remove('label-invalid-mandatory');
+  }
+  const ovdTable = document.querySelector('.bank-table-grid');
+  if (ovdTable) {
+    ovdTable.classList.remove('field-invalid-mandatory');
+  }
+
+  if (typeof updateLiveMissingCounters === 'function') {
+    updateLiveMissingCounters();
+  }
+  if (typeof refreshMissingBadges === 'function') {
+    refreshMissingBadges();
   }
 
   showToast(`Attached certified copy: ${file.name}`, 'success');
@@ -1130,11 +1209,15 @@ function handleOvdFileUpload(input, statusSpanId, docType) {
 
 // Sync OVD inputs when user enters text into doc number fields
 function syncOvdInput(docType, val) {
-  const radio = document.querySelector(`input[name="ovdSelectRadio"][value="${docType}"]`);
-  if (radio && !radio.checked && val && val.trim().length > 0) {
-    radio.checked = true;
+  const chk = document.querySelector(`input[name="ovdSelectChk"][value="${docType}"]`) ||
+              document.querySelector(`input[name="ovdSelectRadio"][value="${docType}"]`);
+  if (chk && !chk.checked && val && val.trim().length > 0) {
+    chk.checked = true;
   }
-  syncOvdSelection(docType);
+  if (typeof syncOvdSelection === 'function') syncOvdSelection(docType, true);
+  if (typeof updateLiveMissingCounters === 'function') {
+    updateLiveMissingCounters();
+  }
 }
 
 // ----------------------------------------------------------------- PART SWITCHER (Item 11)
@@ -1187,6 +1270,10 @@ function switchFormPart(part) {
   }
 
   updateFlowActionButtons(part);
+  if (typeof window.translatePage === 'function') {
+    const curLang = (typeof window.getCurrentLanguage === 'function') ? window.getCurrentLanguage() : 'en';
+    window.translatePage(curLang);
+  }
 }
 
 // ----------------------------------------------------------------- FLOATING ACTION BAR & MULTI-STEP FLOW (Requirement 8)
@@ -1329,31 +1416,42 @@ function handleGenericFileUpload(input, statusSpanId) {
   debounceSaveDraft();
 }
 
-// ----------------------------------------------------------------- EMAIL DOMAIN SELECTOR (Item 11)
+// ----------------------------------------------------------------- EMAIL DOMAIN SELECTOR & POPUP MODAL (Fix 6)
+let previousEmailDomain = '@gmail.com';
+
 function handleEmailDomainChange(domain) {
-  const customWrap = document.getElementById('email-custom-domain-wrap');
-  const customInp = document.getElementById('email-custom-domain');
-  if (domain === 'OTHER') {
-    if (customWrap) customWrap.style.display = 'flex';
-    if (customInp) customInp.focus();
-  } else {
-    if (customWrap) customWrap.style.display = 'none';
+  if (typeof window.handleEmailDomainChange === 'function' && window.handleEmailDomainChange !== handleEmailDomainChange) {
+    window.handleEmailDomainChange(domain);
+    return;
   }
-  syncCombinedEmail();
+  const dSel = document.getElementById('email-domain-select');
+  const inlineWrap = document.getElementById('email-domain-custom-inline');
+  const inlineInput = document.getElementById('inline-custom-domain-input');
+  if (domain === 'OTHER') {
+    if (dSel) dSel.style.display = 'none';
+    if (inlineWrap) inlineWrap.style.display = 'inline-flex';
+    if (inlineInput) {
+      inlineInput.value = '';
+      inlineInput.focus();
+    }
+  } else {
+    previousEmailDomain = domain;
+    syncCombinedEmail();
+  }
+}
+if (!window.handleEmailDomainChange) {
+  window.handleEmailDomainChange = handleEmailDomainChange;
 }
 
 function syncCombinedEmail() {
   const uInp = document.getElementById('email-username');
   const dSel = document.getElementById('email-domain-select');
-  const cInp = document.getElementById('email-custom-domain');
   const hEmail = document.getElementById('hidden-combined-email');
 
   const username = uInp ? uInp.value.trim() : '';
   let domain = dSel ? dSel.value : '@gmail.com';
   if (domain === 'OTHER') {
-    let customVal = cInp ? cInp.value.trim() : '';
-    if (customVal && !customVal.startsWith('@')) customVal = '@' + customVal;
-    domain = customVal || '@custom.com';
+    domain = previousEmailDomain || '@custom.com';
   }
 
   const combined = username ? `${username}${domain}` : '';
@@ -1446,7 +1544,7 @@ function handleDeemedProofChange() {
     const val = chk.value;
     const label = proofLabels[val] || val;
     html += `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.03);border:1px solid #cbd5e1;border-radius:4px;gap:0.75rem;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.03);border:1px solid var(--border-subtle);border-radius:4px;gap:0.75rem;flex-wrap:wrap">
         <div style="font-size:0.75rem;font-weight:700;color:inherit">
           ${label}
         </div>
@@ -1499,7 +1597,7 @@ function updateDemandedDocsChecklist(type) {
 
   const docs = docsMap[type] || ['Proof of Identity', 'Proof of Address', 'PAN Card'];
   listEl.innerHTML = docs.map(d => `
-    <span style="background:rgba(255,255,255,0.04);border:1px solid #cbd5e1;padding:0.25rem 0.55rem;border-radius:4px;display:flex;align-items:center;gap:4px">
+    <span style="background:rgba(255,255,255,0.04);border:1px solid var(--border-subtle);padding:0.25rem 0.55rem;border-radius:4px;display:flex;align-items:center;gap:4px">
       <span style="color:var(--brand-500)">✓</span> ${d}
     </span>
   `).join('');
@@ -1520,66 +1618,97 @@ function setJointMembersCount(count) {
   const countInp = document.getElementById('input-joint-members-count');
   if (countInp && parseInt(countInp.value) !== n) countInp.value = n;
 
-  // 1. Part I: Personal Information Cards for Applicants 2..N
+  // 1. Part I: Comprehensive Personal Information Sections for Applicants 2..N (Full Parity with Applicant 1)
   const part1Container = document.getElementById('joint-applicants-part1-container');
   if (part1Container) {
     let p1Html = '';
     for (let i = 2; i <= n; i++) {
       const suffix = (i === 2) ? '2nd' : (i === 3) ? '3rd' : `${i}th`;
       p1Html += `
-        <div class="glass-card" style="padding:1rem;margin-bottom:0.85rem;border-radius:8px;border:1px solid var(--border-subtle)">
-          <div style="font-weight:800;font-size:0.85rem;color:var(--brand-500);margin-bottom:0.6rem;display:flex;justify-content:space-between">
-            <span>${suffix} Joint Applicant Personal Details</span>
-            <span style="font-size:0.7rem;color:var(--text-muted)">Co-Applicant #${i}</span>
+        <div class="joint-applicant-comprehensive-card" style="margin-top:1.5rem;padding:1.25rem;border:1px solid var(--border-subtle);border-radius:10px;background:rgba(255,255,255,0.015)">
+          <div class="bank-section-bar" style="margin-bottom:1rem">
+            <span>${suffix} Joint Applicant Details • Co-Applicant #${i} (Same as ID Proof)</span>
+            <span class="oac-s122">Direct Box Input • Block Letters</span>
           </div>
-          <div style="display:grid;grid-template-columns:100px 1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">Prefix*:</label>
-              <select name="joint${i}Prefix" class="bank-field-input" style="font-size:0.78rem">
-                <option value="Mr.">Mr.</option>
-                <option value="Mrs.">Mrs.</option>
-                <option value="Ms.">Ms.</option>
-                <option value="Dr./Other">Dr./Other</option>
-              </select>
+
+          <!-- Full Name Prefix -->
+          <div class="oac-s123">
+            <span class="oac-s124" id="label-joint${i}-name-prefix">Full Name* (Prefix):</span>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Mr." checked> <span>Mr.</span></label>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Mrs."> <span>Mrs.</span></label>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Ms."> <span>Ms.</span></label>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Dr."> <span>Dr.</span></label>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Prof."> <span>Prof.</span></label>
+            <label class="bank-option-pill"><input type="radio" name="joint${i}Prefix" value="Other"> <span>Other</span></label>
+          </div>
+
+          <!-- First Name Direct Box Input -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>First Name*:</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-first-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
             </div>
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">First Name*:</label>
-              <input type="text" name="joint${i}FirstName" id="raw-joint${i}-first-name" class="bank-field-input" placeholder="First Name" required oninput="syncJointApplicantName(${i})">
-            </div>
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">Middle Name:</label>
-              <input type="text" name="joint${i}MiddleName" id="raw-joint${i}-middle-name" class="bank-field-input" placeholder="Middle Name" oninput="syncJointApplicantName(${i})">
-            </div>
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">Last Name*:</label>
-              <input type="text" name="joint${i}LastName" id="raw-joint${i}-last-name" class="bank-field-input" placeholder="Last Name" required oninput="syncJointApplicantName(${i})">
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}FirstName">
+              <input type="text" id="raw-joint${i}-first-name" name="joint${i}FirstName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required oninput="syncJointApplicantName(${i})">
+              <div class="bank-box-cells notranslate" translate="no"></div>
             </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:0.6rem;margin-bottom:0.6rem">
-            <div>
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <label style="font-size:0.75rem;font-weight:700">DOB* (DD/MM/YYYY):</label>
-                <button type="button" class="btn btn-outline btn-sm no-print" onclick="document.getElementById('picker-joint${i}-dob').showPicker ? document.getElementById('picker-joint${i}-dob').showPicker() : document.getElementById('picker-joint${i}-dob').focus()" style="padding:0.1rem 0.35rem;font-size:0.65rem"></button>
-                <input type="date" id="picker-joint${i}-dob" style="position:absolute;opacity:0;pointer-events:none" tabindex="-1" onchange="document.getElementById('input-joint${i}-dob').value = this.value">
-              </div>
-              <input type="text" name="joint${i}Dob" id="input-joint${i}-dob" class="bank-field-input" placeholder="DD/MM/YYYY">
+          <!-- Middle Name Direct Box Input (Standard Optional Input, No Toggle) -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>Middle Name:</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-middle-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
             </div>
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">Gender*:</label>
-              <select name="joint${i}Gender" class="bank-field-input" style="font-size:0.78rem">
-                <option value="MALE">Male</option>
-                <option value="FEMALE">Female</option>
-                <option value="TRANSGENDER">Transgender</option>
-              </select>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}MiddleName">
+              <input type="text" id="raw-joint${i}-middle-name" name="joint${i}MiddleName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" oninput="syncJointApplicantName(${i})">
+              <div class="bank-box-cells notranslate" translate="no"></div>
             </div>
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">PAN / Form 60*:</label>
-              <input type="text" name="joint${i}Pan" class="bank-field-input" placeholder="PAN Number (10 Char)" maxlength="10">
+          </div>
+
+          <!-- Last Name Direct Box Input -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>Last Name*:</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-last-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
             </div>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}LastName">
+              <input type="text" id="raw-joint${i}-last-name" name="joint${i}LastName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required oninput="syncJointApplicantName(${i})">
+              <div class="bank-box-cells notranslate" translate="no"></div>
+            </div>
+          </div>
+
+          <!-- Previous Name / Name Before Marriage (if any) -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>Previous Name / Name Before Marriage (if any):</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-previous-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
+            </div>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}PreviousName">
+              <input type="text" id="raw-joint${i}-previous-name" name="joint${i}PreviousName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+              <div class="bank-box-cells notranslate" translate="no"></div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Demographics Grid: Relationship, DOB with Calendar Picker, Gender, Marital, Nationality -->
+          <div class="oac-s128" style="margin-top:0.75rem">
+            <!-- Mandatory Relationship with Primary* (Requirement 4) -->
             <div>
-              <label style="font-size:0.75rem;font-weight:700">Relationship with Primary*:</label>
-              <select name="joint${i}Relationship" class="bank-field-input" style="font-size:0.78rem">
+              <label class="oac-s131" id="label-joint${i}-relationship">Relationship with Primary*:</label>
+              <select name="joint${i}Relationship" id="select-joint${i}-relationship" class="bank-field-input" style="height:42px;font-size:0.85rem;font-weight:600" required>
+                <option value="" disabled selected>Select Relationship*</option>
                 <option value="Spouse">Spouse</option>
                 <option value="Son / Daughter">Son / Daughter</option>
                 <option value="Parent">Parent</option>
@@ -1588,16 +1717,154 @@ function setJointMembersCount(count) {
                 <option value="Other">Other</option>
               </select>
             </div>
+
+            <!-- Date of Birth with Calendar SVG Button Trigger (Requirement 5) -->
+            <div>
+              <div class="oac-s106">
+                <label class="oac-s129" id="label-joint${i}-dob">Date of Birth* (DD/MM/YYYY):</label>
+                <button type="button" class="btn btn-outline btn-sm no-print oac-s107" onclick="document.getElementById('picker-joint${i}-dob-date').showPicker ? document.getElementById('picker-joint${i}-dob-date').showPicker() : document.getElementById('picker-joint${i}-dob-date').focus()" title="Choose Date of Birth">
+                  <svg class="oac-s108" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+                  </svg>
+                </button>
+                <input class="oac-s109" type="date" id="picker-joint${i}-dob-date" tabindex="-1" onchange="setDateFromPicker(this.value, 'raw-joint${i}-dob-date', 'wrap-joint${i}-dob-date')">
+              </div>
+              <div class="bank-box-wrap notranslate" translate="no" id="wrap-joint${i}-dob-date" data-box-count="8" data-target="joint${i}Dob">
+                <input type="text" id="raw-joint${i}-dob-date" name="joint${i}Dob" class="bank-box-input notranslate" translate="no" maxlength="8" autocomplete="off" spellcheck="false" required>
+                <div class="bank-box-cells notranslate oac-s110" translate="no">
+                  <span class="char-cell" data-idx="0">&nbsp;</span>
+                  <span class="char-cell" data-idx="1">&nbsp;</span>
+                  <span class="date-separator">/</span>
+                  <span class="char-cell" data-idx="2">&nbsp;</span>
+                  <span class="char-cell" data-idx="3">&nbsp;</span>
+                  <span class="date-separator">/</span>
+                  <span class="char-cell" data-idx="4">&nbsp;</span>
+                  <span class="char-cell" data-idx="5">&nbsp;</span>
+                  <span class="char-cell" data-idx="6">&nbsp;</span>
+                  <span class="char-cell" data-idx="7">&nbsp;</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <label class="oac-s131">Gender*:</label>
+              <div class="oac-s132">
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Gender" value="MALE" checked> <span>Male</span></label>
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Gender" value="FEMALE"> <span>Female</span></label>
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Gender" value="TRANSGENDER"> <span>Transgender</span></label>
+              </div>
+            </div>
+
+            <div>
+              <label class="oac-s131">Marital Status*:</label>
+              <div class="oac-s132">
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Marital" value="MARRIED" checked> <span>Married</span></label>
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Marital" value="UNMARRIED"> <span>Unmarried</span></label>
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Marital" value="OTHERS"> <span>Others</span></label>
+              </div>
+            </div>
+
+            <div>
+              <label class="oac-s131">Nationality*:</label>
+              <div class="oac-s132">
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Nationality" value="IN" checked> <span>IN - Indian</span></label>
+                <label class="bank-option-pill"><input type="radio" name="joint${i}Nationality" value="OTHERS"> <span>Others</span></label>
+              </div>
+            </div>
           </div>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem">
-            <div>
-              <label style="font-size:0.75rem;font-weight:700">Mobile Number*:</label>
-              <input type="tel" name="joint${i}Phone" class="bank-field-input" placeholder="Mobile Number (10 digits)" maxlength="10">
+          <!-- Father's Name Direct Box Input -->
+          <div class="char-input-group" style="margin-top:0.75rem">
+            <div class="char-input-label-row">
+              <span>Father's Name*:</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-father-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
             </div>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}FatherName">
+              <input type="text" id="raw-joint${i}-father-name" name="joint${i}FatherName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+              <div class="bank-box-cells notranslate" translate="no"></div>
+            </div>
+          </div>
+
+          <!-- Mother's Name Direct Box Input -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>Mother's Name*:</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-mother-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
+            </div>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}MotherName">
+              <input type="text" id="raw-joint${i}-mother-name" name="joint${i}MotherName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+              <div class="bank-box-cells notranslate" translate="no"></div>
+            </div>
+          </div>
+
+          <!-- Spouse Name (if married) Direct Box Input -->
+          <div class="char-input-group">
+            <div class="char-input-label-row">
+              <span>Spouse Name (if married):</span>
+              <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-spouse-name">
+                <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+              </span>
+            </div>
+            <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="joint${i}SpouseName">
+              <input type="text" id="raw-joint${i}-spouse-name" name="joint${i}SpouseName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+              <div class="bank-box-cells notranslate" translate="no"></div>
+            </div>
+          </div>
+
+          <!-- Tax ID (PAN) & Aadhaar Box Grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-top:0.75rem">
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>PAN Number*:</span>
+                <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-pan-number">
+                  <span class="char-limit-counter"><span class="char-count-current">0</span>/10</span>
+                </span>
+              </div>
+              <div class="bank-box-wrap notranslate" translate="no" data-box-count="10" data-target="joint${i}Pan">
+                <input type="text" id="raw-joint${i}-pan-number" name="joint${i}Pan" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" required>
+                <div class="bank-box-cells notranslate" translate="no"></div>
+              </div>
+            </div>
+
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Aadhaar Number*:</span>
+                <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-aadhaar-number">
+                  <span class="char-limit-counter"><span class="char-count-current">0</span>/12</span>
+                </span>
+              </div>
+              <div class="bank-box-wrap notranslate" translate="no" data-box-count="12" data-target="joint${i}Aadhaar">
+                <input type="text" id="raw-joint${i}-aadhaar-number" name="joint${i}Aadhaar" class="bank-box-input notranslate" translate="no" maxlength="12" autocomplete="off" spellcheck="false" required>
+                <div class="bank-box-cells notranslate" translate="no"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile & Email Contact Grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.85rem;margin-top:0.75rem">
+            <div class="char-input-group">
+              <div class="char-input-label-row">
+                <span>Mobile Number*:</span>
+                <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-joint${i}-mobile-number">
+                  <span class="char-limit-counter"><span class="char-count-current">0</span>/10</span>
+                </span>
+              </div>
+              <div class="bank-box-wrap notranslate" translate="no" data-box-count="10" data-target="joint${i}Mobile">
+                <input type="text" id="raw-joint${i}-mobile-number" name="joint${i}Phone" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" required>
+                <div class="bank-box-cells notranslate" translate="no"></div>
+              </div>
+            </div>
+
             <div>
-              <label style="font-size:0.75rem;font-weight:700">Aadhaar Number*:</label>
-              <input type="text" name="joint${i}Aadhaar" class="bank-field-input" placeholder="12-digit Aadhaar" maxlength="12">
+              <label class="oac-s131">Email Address:</label>
+              <input type="email" id="joint${i}-email" name="joint${i}Email" class="bank-field-input" placeholder="applicant${i}@example.com" style="height:42px;margin-top:0.35rem">
             </div>
           </div>
         </div>
@@ -1605,45 +1872,77 @@ function setJointMembersCount(count) {
     }
     part1Container.innerHTML = p1Html;
     part1Container.style.display = 'block';
+
+    // Initialize segmented character boxes for all dynamically mounted applicant inputs
+    if (typeof window.initBankBoxInputs === 'function') {
+      window.initBankBoxInputs();
+    }
   }
 
-  // 2. Section 7: Scalable Photo and Signature Uploads for Applicants 2..N
+  // 2. Section 7: Scalable Photo and Signature Uploads for Applicants 2..N (Exact UI Parity with Applicant 1)
   const sec7JointContainer = document.getElementById('joint-photos-signatures-dynamic');
   if (sec7JointContainer) {
     let s7Html = '';
     for (let i = 2; i <= n; i++) {
       const suffix = (i === 2) ? '2nd' : (i === 3) ? '3rd' : `${i}th`;
       s7Html += `
-        <div style="display:grid;grid-template-columns:160px 1fr;gap:1rem;align-items:center;background:rgba(255,255,255,0.02);padding:0.75rem;border-radius:8px;border:1px dashed #cbd5e1;margin-bottom:0.75rem">
-          <!-- Photo Box -->
-          <div style="text-align:center">
-            <div style="font-size:0.72rem;font-weight:700;margin-bottom:0.3rem">${suffix} Applicant Photo</div>
-            <div class="passport-photo-box" id="joint${i}-photo-box" style="width:110px;height:140px;margin:0 auto;border:2px dashed #cbd5e1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;cursor:pointer;position:relative;overflow:hidden" onclick="document.getElementById('input-joint${i}-photo-file').click()">
-              <img id="joint${i}-photo-img" src="" alt="${suffix} Photo" style="display:none;width:100%;height:100%;object-fit:cover">
-              <div id="joint${i}-photo-placeholder" style="color:#64748b;font-size:0.7rem;text-align:center;padding:4px">
-                <br>Paste / Upload<br>(3.5 x 4.5 cm)
-              </div>
+        <div class="applicant-photo-sig-pair oac-s241" id="photo-sig-pair-applicant-${i}" style="margin-top:1rem">
+          <!-- PASSPORT PHOTO UPLOAD (Auto-Resized to 3.5cm x 4.5cm) -->
+          <div class="oac-s214">
+            <div class="oac-s242">
+              ${suffix} Applicant Photo
             </div>
-            <input type="file" id="input-joint${i}-photo-file" accept="image/*" style="display:none" onchange="handleJointPassportPhotoUpload(this, ${i})">
+            
+            <div class="passport-photo-box" id="joint${i}-photo-box" onclick="document.getElementById('input-joint${i}-photo-file').click()" title="Click to upload photograph (auto-resized)">
+              <div id="joint${i}-photo-placeholder">
+                <div class="oac-s243"></div>
+                <div class="oac-s244">Upload Photo</div>
+                <div class="oac-s245">
+                  3.5cm × 4.5cm
+                </div>
+              </div>
+              <img id="joint${i}-photo-img" class="passport-photo-img" style="display:none" alt="${suffix} Photograph">
+              <span id="joint${i}-photo-stamp-badge" class="passport-stamp-badge" style="display:none">PHOTO ✓</span>
+            </div>
+
+            <input class="oac-s159" type="file" id="input-joint${i}-photo-file" accept="image/*" onchange="handlePassportPhotoUpload(this, ${i})">
             <input type="hidden" name="joint${i}PhotoData" id="input-joint${i}-photo-data">
+
+            <div class="oac-s246">
+              (Paste cleanly. Do not staple)
+            </div>
           </div>
 
-          <!-- Specimen Signature Slot -->
-          <div>
-            <div style="font-size:0.75rem;font-weight:700;margin-bottom:0.3rem">${suffix} Applicant Specimen Signature / Thumb:</div>
-            <div class="applicant-signature-slot" id="joint${i}-signature-slot" style="min-height:75px;border:1.5px dashed #cbd5e1;border-radius:6px;display:flex;align-items:center;justify-content:center;padding:0.5rem;background:rgba(255,255,255,0.02);text-align:center">
-              <span style="font-size:0.72rem;color:var(--text-muted)">Specimen signature required</span>
+          <!-- SIGNATURE / THUMB IMPRESSION VERIFICATION SLOT (Parity with Applicant 1) -->
+          <div class="oac-s247">
+            <div class="oac-s242">
+              Signature / Thumb (${suffix} Applicant)
             </div>
-            <div style="display:flex;gap:0.4rem;margin-top:0.4rem;align-items:center">
-              <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint${i}')" style="padding:0.25rem 0.6rem;font-size:0.72rem">
-                Co-Sign
-              </button>
-              <button type="button" class="btn btn-outline btn-sm no-print" onclick="openThumbUploadModalFor('joint${i}')" style="padding:0.25rem 0.6rem;font-size:0.72rem">
-                Thumb
-              </button>
-              <span id="joint${i}-sig-status" style="font-size:0.7rem;color:var(--text-muted)">Pending signature</span>
+
+            <div id="slot-joint${i}-signature" class="verification-slot-box" onclick="openVerificationChoiceModal(${i})" title="Click to choose Digital Signature Pad or Upload Thumb Impression">
+              <div id="joint${i}-signature-placeholder">
+                <div class="oac-s248">
+                  <svg class="oac-s249" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  <svg class="oac-s250" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                </div>
+                <div class="oac-s251">Tap to Sign &amp; Verify</div>
+                <div class="oac-s252">Digital Pad or Biometric Thumb Impression</div>
+              </div>
+              <img id="joint${i}-signature-preview" class="form-signature-preview" style="display:none" alt="${suffix} Specimen Verification">
+              <div id="joint${i}-signature-meta" class="form-signature-meta" style="display:none"></div>
             </div>
+
             <input type="hidden" name="joint${i}SignatureData" id="input-joint${i}-signature-data">
+            <input type="hidden" name="joint${i}ThumbData" id="input-joint${i}-thumb-data">
+
+            <div class="oac-s253">
+              <div class="oac-s254">
+                <span>Specimen Record</span>
+                <span>•</span>
+                <span>Biometric Vault</span>
+              </div>
+              <button type="button" class="btn btn-outline btn-sm no-print oac-s255" onclick="openVerificationChoiceModal(${i})" title="Change or re-sign verification">Change</button>
+            </div>
           </div>
         </div>
       `;
@@ -1658,7 +1957,7 @@ function setJointMembersCount(count) {
     let rowsHtml = `
       <tr>
         <td><strong>1st Applicant</strong></td>
-        <td><span id="joint-primary-name" style="font-weight:700">${syncApplicantFullName()}</span></td>
+        <td><span id="joint-primary-name" style="font-weight:700">${(window.escapeHtml || (s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))))(syncApplicantFullName())}</span></td>
         <td><span style="font-family:monospace">AS PER PART-I</span></td>
         <td style="text-align:center" id="joint-primary-signature-slot">
           <div id="joint-primary-sig-preview" style="height:40px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.7rem">
@@ -1692,11 +1991,11 @@ function setJointMembersCount(count) {
   const part3Container = document.getElementById('part3-signatures-container');
   if (part3Container) {
     let p3Html = `
-      <div style="border:1px dashed #cbd5e1;padding:0.75rem;text-align:center;border-radius:4px">
+      <div style="border:1px dashed var(--border-subtle);padding:0.75rem;text-align:center;border-radius:4px">
         <div id="part3-sig1-preview" style="height:50px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.75rem">
           (Primary Specimen)
         </div>
-        <div style="border-top:1px solid #000;margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
+        <div style="border-top:1px solid var(--text-main);margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
           Signature / LTI of 1st Applicant
         </div>
       </div>
@@ -1704,22 +2003,22 @@ function setJointMembersCount(count) {
     for (let i = 2; i <= n; i++) {
       const suffix = (i === 2) ? '2nd' : (i === 3) ? '3rd' : `${i}th`;
       p3Html += `
-        <div style="border:1px dashed #cbd5e1;padding:0.75rem;text-align:center;border-radius:4px" id="part3-sig-box-${i}">
+        <div style="border:1px dashed var(--border-subtle);padding:0.75rem;text-align:center;border-radius:4px" id="part3-sig-box-${i}">
           <div id="part3-sig${i}-preview" style="height:50px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.75rem">
             (Specimen Slot)
           </div>
-          <div style="border-top:1px solid #000;margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
+          <div style="border-top:1px solid var(--text-main);margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
             Signature of ${suffix} Applicant
           </div>
         </div>
       `;
     }
     p3Html += `
-      <div style="border:1px dashed #cbd5e1;padding:0.75rem;text-align:center;border-radius:4px">
+      <div style="border:1px dashed var(--border-subtle);padding:0.75rem;text-align:center;border-radius:4px">
         <div id="part3-sig3-preview" style="height:50px;display:flex;align-items:center;justify-content:center;color:var(--text-muted);font-size:0.75rem">
           (Witness / Guardian)
         </div>
-        <div style="border-top:1px solid #000;margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
+        <div style="border-top:1px solid var(--text-main);margin-top:0.4rem;padding-top:0.25rem;font-size:0.72rem;font-weight:700">
           Signature of Guardian / Witness
         </div>
       </div>
@@ -1831,7 +2130,7 @@ function syncSelectedProductFromPart2(type) {
 }
 
 // ----------------------------------------------------------------- PASSPORT PHOTO CROP & RESIZE
-function handlePassportPhotoUpload(input) {
+function handlePassportPhotoUpload(input, applicantNum = 1) {
   if (!input || !input.files || !input.files[0]) return;
   const file = input.files[0];
 
@@ -1863,16 +2162,17 @@ function handlePassportPhotoUpload(input) {
         sy = (img.height - sHeight) / 2;
       }
 
-      ctx.fillStyle = '#ffffff';
+      ctx.fillStyle = 'var(--text-contrast)';
       ctx.fillRect(0, 0, targetW, targetH);
       ctx.drawImage(img, sx, sy, sWidth, sHeight, 0, 0, targetW, targetH);
 
       const resizedDataUrl = canvas.toDataURL('image/jpeg', 0.92);
 
-      const previewImg = document.getElementById('passport-photo-img');
-      const placeholder = document.getElementById('passport-photo-placeholder');
-      const stampBadge = document.getElementById('passport-stamp-badge');
-      const hiddenInput = document.getElementById('input-applicant-photo-data');
+      const isPrimary = (applicantNum === 1 || applicantNum === 'primary');
+      const previewImg = isPrimary ? document.getElementById('passport-photo-img') : document.getElementById(`joint${applicantNum}-photo-img`);
+      const placeholder = isPrimary ? document.getElementById('passport-photo-placeholder') : document.getElementById(`joint${applicantNum}-photo-placeholder`);
+      const stampBadge = isPrimary ? document.getElementById('passport-stamp-badge') : document.getElementById(`joint${applicantNum}-photo-stamp-badge`);
+      const hiddenInput = isPrimary ? document.getElementById('input-applicant-photo-data') : document.getElementById(`input-joint${applicantNum}-photo-data`);
 
       if (previewImg) {
         previewImg.src = resizedDataUrl;
@@ -1882,7 +2182,7 @@ function handlePassportPhotoUpload(input) {
       if (stampBadge) stampBadge.style.display = 'block';
       if (hiddenInput) hiddenInput.value = resizedDataUrl;
 
-      showToast('Passport photograph resized cleanly to 3.5cm x 4.5cm.', 'success');
+      showToast(`Applicant ${isPrimary ? '1' : '#' + applicantNum} photograph resized cleanly to 3.5cm x 4.5cm.`, 'success');
       debounceSaveDraft();
     };
     img.src = e.target.result;
@@ -1891,7 +2191,11 @@ function handlePassportPhotoUpload(input) {
 }
 
 // ----------------------------------------------------------------- VERIFICATION CHOICE MODAL (Item 10)
-function openVerificationChoiceModal() {
+let currentVerificationApplicantIdx = 1;
+
+function openVerificationChoiceModal(applicantIdx = 1) {
+  currentVerificationApplicantIdx = applicantIdx;
+  currentSigningTarget = (applicantIdx === 1 || applicantIdx === 'primary') ? 'primary' : `joint${applicantIdx}`;
   const modal = document.getElementById('modal-verification-choice');
   if (!modal) return;
   modal.style.display = 'flex';
@@ -1914,7 +2218,7 @@ function closeVerificationChoiceModal() {
 function selectVerificationMethod(method) {
   closeVerificationChoiceModal();
   if (method === 'SIGNATURE') {
-    setTimeout(openSignatureModal, 210);
+    setTimeout(() => openCoSignModal(currentSigningTarget), 210);
   } else if (method === 'THUMB') {
     setTimeout(openThumbUploadModal, 210);
   }
@@ -1965,43 +2269,89 @@ function saveThumbImpression() {
     return;
   }
 
-  const previewImg = document.getElementById('form-signature-preview');
-  const placeholder = document.getElementById('form-signature-placeholder');
-  const metaContainer = document.getElementById('form-signature-meta');
-  const hiddenThumb = document.getElementById('input-applicant-thumb-data');
-  const hiddenSig = document.getElementById('input-applicant-signature-data');
-
-  if (previewImg) {
-    previewImg.src = currentUploadedThumbData;
-    previewImg.style.display = 'block';
-  }
-  if (placeholder) placeholder.style.display = 'none';
-
-  const fullName = syncApplicantFullName();
+  const isPrimary = (currentVerificationApplicantIdx === 1 || currentSigningTarget === 'primary');
   const now = new Date();
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
 
-  if (metaContainer) {
-    metaContainer.style.display = 'block';
-    metaContainer.innerHTML = `
-      <div style="font-weight:800;color:var(--emerald-400);font-size:0.75rem">${fullName}</div>
-      <div style="font-size:0.68rem;color:var(--text-muted)">Date: ${dateStr} • Biometric Thumb Verified ✓</div>
-    `;
-  }
+  if (isPrimary) {
+    const previewImg = document.getElementById('form-signature-preview');
+    const placeholder = document.getElementById('form-signature-placeholder');
+    const metaContainer = document.getElementById('form-signature-meta');
+    const hiddenThumb = document.getElementById('input-applicant-thumb-data');
+    const hiddenSig = document.getElementById('input-applicant-signature-data');
 
-  if (hiddenThumb) hiddenThumb.value = currentUploadedThumbData;
-  if (hiddenSig) hiddenSig.value = ''; // Marked as thumb impression
+    if (previewImg) {
+      previewImg.src = currentUploadedThumbData;
+      previewImg.style.display = 'block';
+    }
+    if (placeholder) placeholder.style.display = 'none';
 
-  // Also sync into Part-III preview
-  const part3Sig = document.getElementById('part3-sig1-preview');
-  if (part3Sig) {
-    part3Sig.innerHTML = `<img src="${currentUploadedThumbData}" style="max-height:45px;max-width:100%;object-fit:contain"><br><span style="font-size:0.65rem;color:var(--emerald-400);font-weight:700">Thumb Verified</span>`;
-  }
+    const fullName = syncApplicantFullName();
+    if (metaContainer) {
+      metaContainer.style.display = 'block';
+      metaContainer.innerHTML = `
+        <div style="font-weight:800;color:var(--emerald-400);font-size:0.75rem">${fullName}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted)">Date: ${dateStr} • Biometric Thumb Verified ✓</div>
+      `;
+    }
 
-  // Also sync into Part-II Joint Table primary slot (Item 15)
-  const jointPrimarySlot = document.getElementById('joint-primary-signature-slot');
-  if (jointPrimarySlot) {
-    jointPrimarySlot.innerHTML = `<img src="${currentUploadedThumbData}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Primary Thumb"><br><span style="font-size:0.65rem;color:var(--emerald-400);font-weight:700">✓ Biometric Thumb</span>`;
+    if (hiddenThumb) hiddenThumb.value = currentUploadedThumbData;
+    if (hiddenSig) hiddenSig.value = ''; // Marked as thumb impression
+
+    // Sync into Part-III preview
+    const part3Sig = document.getElementById('part3-sig1-preview');
+    if (part3Sig) {
+      part3Sig.innerHTML = `<img src="${currentUploadedThumbData}" style="max-height:45px;max-width:100%;object-fit:contain"><br><span style="font-size:0.65rem;color:var(--emerald-400);font-weight:700">Thumb Verified</span>`;
+    }
+
+    // Sync into Part-II Joint Table primary slot
+    const jointPrimarySlot = document.getElementById('joint-primary-signature-slot');
+    if (jointPrimarySlot) {
+      jointPrimarySlot.innerHTML = `<img src="${currentUploadedThumbData}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid var(--border-subtle)" alt="Primary Thumb"><br><span style="font-size:0.65rem;color:var(--emerald-400);font-weight:700">✓ Biometric Thumb</span>`;
+    }
+  } else {
+    const idx = currentVerificationApplicantIdx || parseInt(currentSigningTarget.replace('joint', '')) || 2;
+    const previewImg = document.getElementById(`joint${idx}-signature-preview`);
+    const placeholder = document.getElementById(`joint${idx}-signature-placeholder`);
+    const metaContainer = document.getElementById(`joint${idx}-signature-meta`);
+    const hiddenThumb = document.getElementById(`input-joint${idx}-thumb-data`);
+    const hiddenSig = document.getElementById(`input-joint${idx}-signature-data`);
+
+    if (previewImg) {
+      previewImg.src = currentUploadedThumbData;
+      previewImg.style.display = 'block';
+    }
+    if (placeholder) placeholder.style.display = 'none';
+
+    const f = document.getElementById(`raw-joint${idx}-first-name`)?.value.trim() || '';
+    const l = document.getElementById(`raw-joint${idx}-last-name`)?.value.trim() || '';
+    const jName = [f, l].filter(Boolean).join(' ').toUpperCase() || `CO-APPLICANT #${idx}`;
+
+    if (metaContainer) {
+      metaContainer.style.display = 'block';
+      metaContainer.innerHTML = `
+        <div style="font-weight:800;color:var(--emerald-400);font-size:0.75rem">${jName}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted)">Date: ${dateStr} • Biometric Thumb Verified ✓</div>
+      `;
+    }
+
+    if (hiddenThumb) hiddenThumb.value = currentUploadedThumbData;
+    if (hiddenSig) hiddenSig.value = '';
+
+    const part3Sig = document.getElementById(`part3-sig${idx}-preview`);
+    if (part3Sig) {
+      part3Sig.innerHTML = `<img src="${currentUploadedThumbData}" style="max-height:45px;max-width:100%;object-fit:contain"><br><span style="font-size:0.65rem;color:var(--emerald-400);font-weight:700">${jName} Thumb Verified</span>`;
+    }
+
+    const tableSlot = document.getElementById(`joint${idx}-table-signature-slot`) || document.getElementById(`joint${idx}-signature-slot`);
+    if (tableSlot) {
+      tableSlot.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
+          <img src="${currentUploadedThumbData}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid var(--border-subtle)" alt="Co-Sign ${idx}">
+          <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">✓ Thumb Verified</span>
+        </div>
+      `;
+    }
   }
 
   closeThumbUploadModal();
@@ -2022,12 +2372,11 @@ function openCoSignModal(applicantTarget = 'primary') {
   if (!modal) return;
 
   let signerName = '';
-  if (applicantTarget === 'joint2') {
-    const inp = document.getElementById('input-joint2-name');
-    signerName = (inp && inp.value.trim()) ? inp.value.trim().toUpperCase() : '2ND APPLICANT (CO-SIGNER)';
-  } else if (applicantTarget === 'joint3') {
-    const inp = document.getElementById('input-joint3-name');
-    signerName = (inp && inp.value.trim()) ? inp.value.trim().toUpperCase() : '3RD APPLICANT / GUARDIAN';
+  if (applicantTarget.startsWith('joint')) {
+    const idx = parseInt(applicantTarget.replace('joint', '')) || 2;
+    const f = document.getElementById(`raw-joint${idx}-first-name`)?.value.trim() || '';
+    const l = document.getElementById(`raw-joint${idx}-last-name`)?.value.trim() || '';
+    signerName = [f, l].filter(Boolean).join(' ').toUpperCase() || `CO-APPLICANT #${idx}`;
   } else {
     signerName = syncApplicantFullName();
   }
@@ -2151,12 +2500,11 @@ function setSignaturePenColor(color) {
 
 function generateCursiveSignature() {
   let fullName = '';
-  if (currentSigningTarget === 'joint2') {
-    const inp = document.getElementById('input-joint2-name');
-    fullName = (inp && inp.value.trim()) ? inp.value.trim() : '2nd Applicant';
-  } else if (currentSigningTarget === 'joint3') {
-    const inp = document.getElementById('input-joint3-name');
-    fullName = (inp && inp.value.trim()) ? inp.value.trim() : '3rd Applicant';
+  if (currentSigningTarget.startsWith('joint')) {
+    const idx = parseInt(currentSigningTarget.replace('joint', '')) || 2;
+    const f = document.getElementById(`raw-joint${idx}-first-name`)?.value.trim() || '';
+    const l = document.getElementById(`raw-joint${idx}-last-name`)?.value.trim() || '';
+    fullName = [f, l].filter(Boolean).join(' ') || `Co-Applicant #${idx}`;
   } else {
     fullName = syncApplicantFullName();
   }
@@ -2199,70 +2547,57 @@ function saveSignatureFromPad() {
   const dateStr = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
   const timeStr = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
-  if (currentSigningTarget === 'joint2') {
-    const hiddenInput = document.getElementById('input-joint2-signature-data');
+  if (currentSigningTarget.startsWith('joint')) {
+    const idx = parseInt(currentSigningTarget.replace('joint', '')) || 2;
+    const hiddenInput = document.getElementById(`input-joint${idx}-signature-data`);
     if (hiddenInput) hiddenInput.value = dataUrl;
+    const hiddenThumb = document.getElementById(`input-joint${idx}-thumb-data`);
+    if (hiddenThumb) hiddenThumb.value = '';
 
-    const j2NameInput = document.getElementById('input-joint2-name');
-    const j2Name = (j2NameInput && j2NameInput.value.trim()) ? j2NameInput.value.trim().toUpperCase() : '2ND APPLICANT';
+    const f = document.getElementById(`raw-joint${idx}-first-name`)?.value.trim() || '';
+    const l = document.getElementById(`raw-joint${idx}-last-name`)?.value.trim() || '';
+    const jName = [f, l].filter(Boolean).join(' ').toUpperCase() || `CO-APPLICANT #${idx}`;
+
+    const previewImg = document.getElementById(`joint${idx}-signature-preview`);
+    const placeholder = document.getElementById(`joint${idx}-signature-placeholder`);
+    const metaContainer = document.getElementById(`joint${idx}-signature-meta`);
+
+    if (previewImg) {
+      previewImg.src = dataUrl;
+      previewImg.style.display = 'block';
+    }
+    if (placeholder) placeholder.style.display = 'none';
+    if (metaContainer) {
+      metaContainer.style.display = 'block';
+      metaContainer.innerHTML = `
+        <div style="font-weight:800;color:var(--emerald-400);font-size:0.75rem">${jName}</div>
+        <div style="font-size:0.68rem;color:var(--text-muted)">Date: ${dateStr} • Digital Signature Verified ✓</div>
+      `;
+    }
 
     // Update Section 6 Joint Table Cell
-    const cell = document.getElementById('joint2-signature-slot');
+    const cell = document.getElementById(`joint${idx}-table-signature-slot`) || document.getElementById(`joint${idx}-signature-slot`);
     if (cell) {
       cell.innerHTML = `
         <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-          <img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Co-Sign 2">
+          <img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid var(--border-subtle)" alt="Co-Sign ${idx}">
           <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">✓ Signed</span>
-          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint2')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign"></button>
+          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint${idx}')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign">Re-sign</button>
         </div>
       `;
     }
 
-    // Render visually in Part III slot 2 (Item 15)
-    const part3Sig2 = document.getElementById('part3-sig2-preview');
-    if (part3Sig2) {
-      part3Sig2.innerHTML = `
+    // Render visually in Part III slot
+    const part3Sig = document.getElementById(`part3-sig${idx}-preview`);
+    if (part3Sig) {
+      part3Sig.innerHTML = `
         <img src="${dataUrl}" style="max-height:46px;max-width:90%;object-fit:contain"><br>
-        <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">${j2Name} ✓</span>
+        <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">${jName} ✓</span>
       `;
     }
 
     closeSignatureModal();
-    showToast('2nd Applicant specimen signature placed successfully.', 'success');
-    debounceSaveDraft();
-    return;
-  }
-
-  if (currentSigningTarget === 'joint3') {
-    const hiddenInput = document.getElementById('input-joint3-signature-data');
-    if (hiddenInput) hiddenInput.value = dataUrl;
-
-    const j3NameInput = document.getElementById('input-joint3-name');
-    const j3Name = (j3NameInput && j3NameInput.value.trim()) ? j3NameInput.value.trim().toUpperCase() : '3RD APPLICANT / GUARDIAN';
-
-    // Update Section 6 Joint Table Cell
-    const cell = document.getElementById('joint3-signature-slot');
-    if (cell) {
-      cell.innerHTML = `
-        <div style="display:flex;align-items:center;justify-content:center;gap:6px">
-          <img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Co-Sign 3">
-          <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">✓ Signed</span>
-          <button type="button" class="btn btn-outline btn-sm no-print" onclick="openCoSignModal('joint3')" style="padding:0.15rem 0.35rem;font-size:0.62rem" title="Re-sign"></button>
-        </div>
-      `;
-    }
-
-    // Render visually in Part III slot 3 (Item 15)
-    const part3Sig3 = document.getElementById('part3-sig3-preview');
-    if (part3Sig3) {
-      part3Sig3.innerHTML = `
-        <img src="${dataUrl}" style="max-height:46px;max-width:90%;object-fit:contain"><br>
-        <span style="font-size:0.68rem;color:var(--emerald-400);font-weight:700">${j3Name} ✓</span>
-      `;
-    }
-
-    closeSignatureModal();
-    showToast('3rd applicant / witness specimen signature placed successfully.', 'success');
+    showToast(`Applicant #${idx} specimen signature placed successfully.`, 'success');
     debounceSaveDraft();
     return;
   }
@@ -2301,7 +2636,7 @@ function saveSignatureFromPad() {
   // Visually render in Part II Joint Table primary slot (Item 15)
   const jointPrimarySlot = document.getElementById('joint-primary-signature-slot');
   if (jointPrimarySlot) {
-    jointPrimarySlot.innerHTML = `<img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Primary Sig"><br><span style="font-size:0.65rem;color:var(--brand-500);font-weight:700">✓ 1st Applicant</span>`;
+    jointPrimarySlot.innerHTML = `<img src="${dataUrl}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid var(--border-subtle)" alt="Primary Sig"><br><span style="font-size:0.65rem;color:var(--brand-500);font-weight:700">✓ 1st Applicant</span>`;
   }
 
   closeSignatureModal();
@@ -2320,10 +2655,10 @@ let isApplicationSubmitted = false;
 let draftSaveTimeout = null;
 
 function debounceSaveDraft() {
-  if (isApplicationSubmitted) return;
+  if (isApplicationSubmitted || !currentApplicationNumber) return;
   if (draftSaveTimeout) clearTimeout(draftSaveTimeout);
   draftSaveTimeout = setTimeout(() => {
-    if (!isApplicationSubmitted) {
+    if (!isApplicationSubmitted && currentApplicationNumber) {
       saveCustomerFormDraft(false);
     }
   }, 1000);
@@ -2384,72 +2719,49 @@ function extractFullFormData(form) {
   const jointCountInp = document.getElementById('input-joint-members-count');
   if (jointCountInp) data.jointMembersCount = jointCountInp.value;
 
+  // Save language and custom email domain
+  data.language = (typeof window.getCurrentLanguage === 'function') ? window.getCurrentLanguage() : (localStorage.getItem('preferred_language') || 'en');
+  data.middleNameOmitted = false;
+  data.customEmailDomain = previousEmailDomain;
+
   return data;
 }
 
 async function saveCustomerFormDraft(notify = true) {
   if (isApplicationSubmitted) return;
+  // Guard: Never attempt saving a backend draft before Step 1 is completed (branch selected & draft initiated)
+  if (!currentApplicationNumber) return;
+
   try {
     const form = document.getElementById('form-customer-application');
     if (!form) return;
 
     const data = extractFullFormData(form);
 
-    // If no application number has been allocated yet, initiate draft on the backend to acquire a unique application number!
-    if (!currentApplicationNumber) {
-      try {
-        const branchSelect = document.getElementById('step2-branch-select') || document.getElementById('step1-branch-select');
-        const branchName = branchSelect ? branchSelect.value : '';
-        const branchCode = document.getElementById('step2-branch-code')?.value || document.getElementById('step1-branch-code')?.value || '';
-        const initRes = await api('/onboarding/initiate-draft', {
-          method: 'POST',
-          body: {
-            accountType: selectedAccountType,
-            branchName: branchName,
-            branchCode: branchCode,
-            applicant: {},
-            formData: data
-          }
-        });
-        if (initRes && initRes.applicationNumber) {
-          currentApplicationNumber = initRes.applicationNumber;
-          data.applicationNumber = currentApplicationNumber;
-          const toolbarApp = document.getElementById('toolbar-app-number');
-          if (toolbarApp) toolbarApp.textContent = currentApplicationNumber;
-          const headerApp = document.getElementById('header-app-number-display');
-          if (headerApp) headerApp.textContent = currentApplicationNumber;
-          const hiddenApp = document.getElementById('hidden-application-number');
-          if (hiddenApp) hiddenApp.value = currentApplicationNumber;
+    const secret = currentDraftSecret || window.currentDraftSecret || (function() {
+      try { return sessionStorage.getItem('draft_secret_' + currentApplicationNumber); } catch (_) { return ''; }
+    })() || '';
+
+    // Persist draft to backend
+    const branchSelect = document.getElementById('step2-branch-select') || document.getElementById('step1-branch-select');
+    const branchName = branchSelect ? branchSelect.value : '';
+    const branchCode = document.getElementById('step2-branch-code')?.value || document.getElementById('step1-branch-code')?.value || '';
+    try {
+      await api('/onboarding/save-draft', {
+        method: 'POST',
+        headers: secret ? { 'X-Draft-Secret': secret } : {},
+        body: {
+          applicationNumber: currentApplicationNumber,
+          draftSecret: secret,
+          accountType: selectedAccountType,
+          branchName: branchName,
+          branchCode: branchCode,
+          formData: data
         }
-      } catch (initErr) {
-        console.warn('Backend draft initiation note:', initErr);
-      }
+      });
+    } catch (backendErr) {
+      console.warn('Backend draft sync note:', backendErr);
     }
-
-    const storageKey = getDraftStorageKey(currentApplicationNumber);
-    localStorage.setItem(storageKey, JSON.stringify(data));
-
-    // Also persist draft to backend if currentApplicationNumber exists
-    if (currentApplicationNumber) {
-      const branchSelect = document.getElementById('step2-branch-select') || document.getElementById('step1-branch-select');
-      const branchName = branchSelect ? branchSelect.value : '';
-      const branchCode = document.getElementById('step2-branch-code')?.value || document.getElementById('step1-branch-code')?.value || '';
-      try {
-        await api('/onboarding/save-draft', {
-          method: 'POST',
-          body: {
-            applicationNumber: currentApplicationNumber,
-            accountType: selectedAccountType,
-            branchName: branchName,
-            branchCode: branchCode,
-            formData: data
-          }
-        });
-      } catch (backendErr) {
-        console.warn('Backend draft sync note:', backendErr);
-      }
-    }
-
     // Update draft timestamp indicator
     const ind = document.getElementById('draft-status-indicator');
     const tsEl = document.getElementById('draft-saved-timestamp');
@@ -2461,8 +2773,8 @@ async function saveCustomerFormDraft(notify = true) {
     if (notify) {
       showToast('Form draft saved! Application Number: ' + (currentApplicationNumber || 'Draft') + ' (Track & resume anytime)', 'success');
     }
-  } catch (e) {
-    console.warn('Failed to save draft:', e);
+  } catch (err) {
+    console.warn('Draft auto-save exception:', err);
   }
 }
 
@@ -2506,6 +2818,12 @@ async function loadCustomerFormDraft(targetAppNum) {
     const form = document.getElementById('form-customer-application');
     if (!form) return false;
 
+    // Restore saved language across forms/refresh only if user hasn't actively selected one
+    const activeUserLang = localStorage.getItem('neobank_lang');
+    if (!activeUserLang && data.language && typeof window.handleLanguageChange === 'function') {
+      window.handleLanguageChange(data.language, false);
+    }
+
     if (data.accountType) {
       selectAccountType(data.accountType);
     }
@@ -2531,7 +2849,11 @@ async function loadCustomerFormDraft(targetAppNum) {
       });
     }
 
-    // Restore email username and domain
+    // Ensure middle name input is visible
+    const middleInputWrap = document.getElementById('middle-name-input-wrap');
+    if (middleInputWrap) middleInputWrap.style.display = 'inline-flex';
+
+    // Restore email username and domain (including custom domains)
     if (data.inputs && data.inputs['email']) {
       const emailFull = data.inputs['email'];
       if (emailFull.includes('@')) {
@@ -2540,22 +2862,29 @@ async function loadCustomerFormDraft(targetAppNum) {
         const domain = '@' + parts[1];
         const uInp = document.getElementById('email-username');
         const dSel = document.getElementById('email-domain-select');
-        const customWrap = document.getElementById('email-custom-domain-wrap');
-        const cInp = document.getElementById('email-custom-domain');
         if (uInp) uInp.value = username;
         if (dSel) {
           let found = false;
           for (let opt of dSel.options) {
             if (opt.value === domain) {
               dSel.value = domain;
+              previousEmailDomain = domain;
               found = true;
               break;
             }
           }
           if (!found) {
-            dSel.value = 'OTHER';
-            if (customWrap) customWrap.style.display = 'flex';
-            if (cInp) cInp.value = parts[1];
+            const opt = document.createElement('option');
+            opt.value = domain;
+            opt.textContent = domain;
+            const otherOpt = dSel.querySelector('option[value="OTHER"]');
+            if (otherOpt) {
+              dSel.insertBefore(opt, otherOpt);
+            } else {
+              dSel.appendChild(opt);
+            }
+            dSel.value = domain;
+            previousEmailDomain = domain;
           }
         }
       }
@@ -2621,7 +2950,7 @@ async function loadCustomerFormDraft(targetAppNum) {
       }
       const jointSlot = document.getElementById('joint-primary-signature-slot');
       if (jointSlot) {
-        jointSlot.innerHTML = `<img src="${data.signature}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid #cbd5e1" alt="Primary Sig"><br><span style="font-size:0.65rem;color:var(--brand-500);font-weight:700">✓ 1st Applicant</span>`;
+        jointSlot.innerHTML = `<img src="${data.signature}" style="max-height:36px;max-width:110px;object-fit:contain;background:rgba(255,255,255,0.9);padding:2px 4px;border-radius:4px;border:1px solid var(--border-subtle)" alt="Primary Sig"><br><span style="font-size:0.65rem;color:var(--brand-500);font-weight:700">✓ 1st Applicant</span>`;
       }
     } else if (data.thumb) {
       const previewImg = document.getElementById('form-signature-preview');
@@ -2710,24 +3039,55 @@ function confirmClearAllForm() {
   }
 }
 
-// ----------------------------------------------------------------- SET DEFAULT TODAY DATE
-function setTodayDateDefaults() {
-  const today = new Date();
-  const dd = String(today.getDate()).padStart(2, '0');
-  const mm = String(today.getMonth() + 1).padStart(2, '0');
-  const yyyy = String(today.getFullYear());
-  const dateFormatted = `${dd}${mm}${yyyy}`;
+// ----------------------------------------------------------------- CUSTOM PHONE COUNTRY DROPDOWN (Delegated to dropdown.js)
+function initCustomPhoneDropdowns() {
+  if (typeof window.initCustomFlagDropdowns === 'function') {
+    window.initCustomFlagDropdowns();
+  }
+}
+window.initCustomPhoneDropdowns = initCustomPhoneDropdowns;
 
+function handleCountryCodeChange(type, code) {
+  if (typeof window.handleCountryCodeChange === 'function' && window.handleCountryCodeChange !== handleCountryCodeChange) {
+    window.handleCountryCodeChange(type, code);
+    return;
+  }
+  const isAlt = type === 'altMobile';
+  const sel = document.getElementById(isAlt ? 'alt-mobile-country-code' : 'mobile-country-code');
+  if (sel && sel.value !== code) {
+    sel.value = code;
+  }
+  const rawInput = document.getElementById(isAlt ? 'raw-alt-mobile' : 'raw-mobile-number');
+  if (!isAlt) {
+    const hPhone = document.getElementById('hidden-phone');
+    if (hPhone && rawInput) {
+      hPhone.value = rawInput.value ? code + rawInput.value : '';
+    }
+  }
+  debounceSaveDraft();
+}
+if (!window.handleCountryCodeChange) {
+  window.handleCountryCodeChange = handleCountryCodeChange;
+}
+
+// ----------------------------------------------------------------- SET DEFAULT TODAY DATE (Fix 9)
+function setTodayDateDefaults() {
   const headerDateInput = document.getElementById('raw-header-date');
   const headerDateWrap = document.getElementById('wrap-header-date');
-  if (headerDateInput) {
+  if (headerDateInput && (!headerDateInput.value || !headerDateInput.value.trim())) {
+    const today = new Date(); // Local system date (not UTC)
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = String(today.getFullYear());
+    const dateFormatted = `${dd}${mm}${yyyy}`;
+
     headerDateInput.value = dateFormatted;
     if (headerDateWrap) updateBoxCells(headerDateWrap, dateFormatted);
-  }
 
-  const declDateEl = document.getElementById('paper-declaration-date');
-  if (declDateEl) {
-    declDateEl.textContent = `${dd} / ${mm} / ${yyyy}`;
+    const declDateEl = document.getElementById('paper-declaration-date');
+    if (declDateEl) {
+      declDateEl.textContent = `${dd} / ${mm} / ${yyyy}`;
+    }
   }
 }
 
@@ -2772,6 +3132,9 @@ function initPaperForm() {
   // 1. Initialize segmented box inputs
   initBankBoxInputs();
 
+  // 1b. Initialize custom phone country code dropdowns with SVG flags (Fix 7 & Fix 8)
+  initCustomPhoneDropdowns();
+
   // 2. City change listener to update declaration place
   const cityInput = document.getElementById('input-city');
   if (cityInput) {
@@ -2805,10 +3168,8 @@ function initPaperForm() {
   // 4. Try restoring saved draft from localStorage
   const hasDraft = loadCustomerFormDraft();
 
-  // 5. If no saved draft, set default today's date in header and leave all other fields clean & empty
-  if (!hasDraft) {
-    setTodayDateDefaults();
-  }
+  // 5. If no saved draft or header date is empty, set default today's date in local time (Fix 9)
+  setTodayDateDefaults();
 
   // 6. Sync joint applicant section
   updateJointApplicantVisibility();
@@ -3010,48 +3371,83 @@ function clearErrorOnValidInput(target) {
 }
 
 function refreshMissingBadges() {
-  const sections = [
-    { secId: 'header-sec-0', wrapper: document.getElementById('header-sec-0') },
-    { secId: 'header-sec-1', wrapper: document.getElementById('header-sec-1') },
-    { secId: 'header-sec-2', wrapper: document.getElementById('header-sec-2') },
-    { secId: 'header-sec-3', wrapper: document.getElementById('header-sec-3') },
-    { secId: 'header-sec-4', wrapper: document.getElementById('header-sec-4') },
-    { secId: 'header-sec-ovd', wrapper: document.getElementById('header-sec-ovd') },
-    { secId: 'header-sec-addr', wrapper: document.getElementById('header-sec-addr') },
-    { secId: 'header-sec-photo-sig', wrapper: document.getElementById('header-sec-photo-sig') },
-    { secId: 'header-sec-part2-acc', wrapper: document.getElementById('header-sec-part2-acc') },
-  ];
-
-  sections.forEach(s => {
-    if (!s.wrapper) return;
-    const parentContainer = s.wrapper.closest('.bank-sheet-section') || s.wrapper.parentElement;
-    if (!parentContainer) return;
-    const invalids = parentContainer.querySelectorAll('.field-invalid-mandatory');
-    const badge = s.wrapper.querySelector('.section-pending-badge');
-    if (invalids.length === 0) {
-      if (badge) badge.remove();
-    } else {
-      if (badge) badge.textContent = `${invalids.length} Missing`;
-    }
-  });
-
-  ['part1', 'part1-cont', 'part2', 'part3'].forEach(partId => {
-    const tabContainer = document.getElementById(`form-container-${partId}`);
-    const badgeEl = document.getElementById(`tab-missing-badge-${partId}`);
-    if (tabContainer && badgeEl) {
-      const remaining = tabContainer.querySelectorAll('.field-invalid-mandatory').length;
-      if (remaining > 0) {
-        badgeEl.style.display = 'inline-flex';
-        badgeEl.textContent = String(remaining);
-      } else {
-        badgeEl.style.display = 'none';
-      }
-    }
-  });
+  document.querySelectorAll('.section-pending-badge').forEach(el => el.remove());
+  if (typeof window.updateLiveMissingCounters === 'function') {
+    window.updateLiveMissingCounters();
+  }
 }
 
 // ----------------------------------------------------------------- COMPREHENSIVE FORM VALIDATION (Item 14)
 function validateCustomerFormFields(shouldScroll = true) {
+  if (typeof window.getDetailedValidationReport === 'function') {
+    document.querySelectorAll('.field-invalid-mandatory').forEach(el => el.classList.remove('field-invalid-mandatory'));
+    document.querySelectorAll('.cell-invalid').forEach(el => el.classList.remove('cell-invalid'));
+    document.querySelectorAll('.label-invalid-mandatory').forEach(el => el.classList.remove('label-invalid-mandatory'));
+    document.querySelectorAll('.section-pending-badge').forEach(el => el.remove());
+
+    const report = window.getDetailedValidationReport();
+
+    report.sections.forEach(sec => {
+      sec.fields.forEach(f => {
+        if (!f.el) return;
+
+        // If f.el is an input inside bank-box-wrap or is bank-box-wrap
+        const boxWrap = f.el.classList.contains('bank-box-wrap')
+          ? f.el
+          : (f.el.closest ? f.el.closest('.bank-box-wrap') : null);
+
+        if (boxWrap) {
+          boxWrap.classList.add('field-invalid-mandatory');
+          boxWrap.querySelectorAll('.char-cell').forEach(c => c.classList.add('cell-invalid'));
+        } else {
+          f.el.classList.add('field-invalid-mandatory');
+        }
+
+        // Highlight associated label
+        const targetLabel = f.labelEl ||
+          (boxWrap ? (boxWrap.closest('.char-input-group')?.querySelector('.char-input-label-row span:first-child') || boxWrap.parentElement?.querySelector('label')) : null) ||
+          (f.el.tagName === 'LABEL' || f.el.tagName === 'SPAN' ? f.el : null) ||
+          f.el.closest('div')?.querySelector('label') ||
+          f.el.parentElement?.querySelector('label') ||
+          f.el.closest('td')?.querySelector('strong');
+
+        if (targetLabel) {
+          targetLabel.classList.add('label-invalid-mandatory');
+        }
+      });
+    });
+
+    if (typeof window.updateGlassmorphicValidationIndicator === 'function') {
+      window.updateGlassmorphicValidationIndicator(report);
+    }
+    if (typeof window.updateLiveMissingCounters === 'function') {
+      window.updateLiveMissingCounters();
+    }
+
+    if (!report.isValid) {
+      if (shouldScroll && report.firstInvalidEl) {
+        const firstSec = report.sections[0];
+        if (firstSec && typeof window.switchFormPart === 'function') {
+          window.switchFormPart(firstSec.part);
+        }
+        setTimeout(() => {
+          if (typeof report.firstInvalidEl.scrollIntoView === 'function') {
+            report.firstInvalidEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+          if (typeof report.firstInvalidEl.focus === 'function') {
+            report.firstInvalidEl.focus();
+          } else {
+            const inner = report.firstInvalidEl.querySelector('input, select');
+            if (inner) inner.focus();
+          }
+        }, 150);
+      }
+      showToast(`Please complete ${report.totalMissing} required field(s) marked in red. Hover over the indicator to view details.`, 'error');
+      return false;
+    }
+    return true;
+  }
+
   // Clear all previous validation states
   document.querySelectorAll('.field-invalid-mandatory').forEach(el => el.classList.remove('field-invalid-mandatory'));
   document.querySelectorAll('.cell-invalid').forEach(el => el.classList.remove('cell-invalid'));
@@ -3255,41 +3651,10 @@ function validateCustomerFormFields(shouldScroll = true) {
         markInvalid(document.getElementById(`joint${i}-signature-slot`), null, secJoint, `Applicant #${i} Specimen Signature`);
       }
     }
-    renderSectionBadge(secJoint);
   }
 
-  // Render Section Badges with missing lists
-  [secHeader, sec1, sec2, sec3, sec4, secOvd, secAddr, sec7, secPart2].forEach(sec => renderSectionBadge(sec));
-
-  function renderSectionBadge(secObj) {
-    if (!secObj || !secObj.el || secObj.missing.length === 0) return;
-    const badge = document.createElement('span');
-    badge.className = 'section-pending-badge';
-    badge.textContent = `${secObj.missing.length} Missing`;
-    badge.setAttribute('data-pending-fields', `Missing Mandatory Fields (${secObj.missing.length}):\n• ` + secObj.missing.join('\n• '));
-    secObj.el.appendChild(badge);
-  }
-
-  // Update Missing Count Badges on Toolbar Tabs (Page 1, 2, 3, 4)
-  const p1Missing = (secHeader.missing?.length || 0) + (sec1.missing?.length || 0) + (sec2.missing?.length || 0) + (sec3.missing?.length || 0);
-  const p2Missing = (sec4.missing?.length || 0) + (secOvd.missing?.length || 0) + (secAddr.missing?.length || 0);
-  const p3Missing = (secPart2.missing?.length || 0);
-  const p4Missing = (sec7.missing?.length || 0);
-
-  function setPageTabBadge(tabId, count) {
-    const badgeEl = document.getElementById(`tab-missing-badge-${tabId}`);
-    if (!badgeEl) return;
-    if (count > 0) {
-      badgeEl.style.display = 'inline-flex';
-      badgeEl.textContent = String(count);
-    } else {
-      badgeEl.style.display = 'none';
-    }
-  }
-  setPageTabBadge('part1', p1Missing);
-  setPageTabBadge('part1-cont', p2Missing);
-  setPageTabBadge('part2', p3Missing);
-  setPageTabBadge('part3', p4Missing);
+  // Ensure all badges and tab counters are removed (Fix 2)
+  refreshMissingBadges();
 
   if (totalMissing > 0) {
     if (shouldScroll && firstInvalidEl) {
@@ -3309,7 +3674,7 @@ function validateCustomerFormFields(shouldScroll = true) {
         }
       }, 100);
     }
-    showToast(`Please complete ${totalMissing} required field(s) marked in red. Hover over section badges to inspect missing fields.`, 'error');
+    showToast(`Please complete ${totalMissing} required field(s) marked in red.`, 'error');
     return false;
   }
 
@@ -3397,6 +3762,23 @@ async function submitCustomerApplication(form) {
     if (!form || !form.elements) {
       form = document.getElementById('form-customer-application');
     }
+
+    // Intercept "Submit Application" action on the final step before generating the application number or initiating backend submission
+    window.hasAttemptedSubmit = true;
+    const validationReport = typeof window.getDetailedValidationReport === 'function' ? window.getDetailedValidationReport() : null;
+    if (validationReport && !validationReport.isValid) {
+      if (typeof window.updateLiveMissingCounters === 'function') {
+        window.updateLiveMissingCounters();
+      }
+      validateCustomerFormFields(false);
+      const toolbar = document.querySelector('.form-editor-toolbar') || document.getElementById('btn-tab-part1');
+      if (toolbar) {
+        toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      showToast(`Cannot Submit Application: ${validationReport.totalMissing} mandatory field(s) missing. Hover over the red badges on the page tabs above to see details.`, 'error');
+      return;
+    }
+
     const isValid = validateCustomerFormFields(true);
     if (!isValid) return;
 
@@ -3553,6 +3935,9 @@ async function submitCustomerApplication(form) {
       btn.href = `/existing_application?app=${encodeURIComponent(res.applicationNumber)}`;
     });
 
+    // Render official application summary dossier into Step 4
+    renderApplicationSummaryDossier(payload);
+
     // Transition to Step 4
     goToOnboardingStep(4);
     showToast(`Application ${res.applicationNumber} registered successfully!`, 'success');
@@ -3563,6 +3948,395 @@ async function submitCustomerApplication(form) {
   } catch (err) {
     showToast(err.message || 'Error submitting application', 'error');
   }
+}
+
+// ----------------------------------------------------------------- OFFICIAL APPLICATION SUMMARY & REVIEW DOSSIER
+function renderApplicationSummaryDossier(payload) {
+  const container = document.getElementById('confirmation-summary-sections-container');
+  if (!container) return;
+
+  const applicant = (payload && payload.applicant) || {};
+  const emp = (payload && payload.employment) || {};
+  const addr = (applicant && applicant.address) || {};
+  const idDoc = (payload && payload.identityDocument) || {};
+  const addrDoc = (payload && payload.addressProof) || {};
+  const formData = (payload && payload.formData) || {};
+  const inputs = formData.inputs || {};
+  const radios = formData.radios || {};
+  const selects = formData.selects || {};
+
+  const formatVal = (v) => {
+    if (v === undefined || v === null || String(v).trim() === '' || String(v).trim().toUpperCase() === 'N/A' || String(v).trim().toLowerCase() === 'undefined') {
+      return '<span class="not-provided">Not Provided</span>';
+    }
+    return String(v).trim();
+  };
+
+  const prefix = radios.namePrefix || inputs['prefix-other-input'] || 'Mr.';
+  const firstName = applicant.firstName || inputs['raw-first-name'] || '';
+  const middleName = inputs['raw-middle-name'] || '';
+  const lastName = applicant.lastName || inputs['raw-last-name'] || '';
+  const previousName = inputs['raw-previous-name'] || '';
+  const dob = applicant.dob || inputs['raw-dob-date'] || '';
+  const gender = radios.genderRadio || 'MALE';
+  const marital = radios.maritalRadio || 'MARRIED';
+  const nationality = radios.nationalityRadio || 'IN - Indian';
+  const fatherName = inputs['raw-father-name'] || '';
+  const motherName = inputs['raw-mother-name'] || '';
+  const spouseName = inputs['raw-spouse-name'] || '';
+  const guardianName = inputs['raw-guardian-name'] || '';
+
+  const panNumber = payload.taxId || inputs['raw-pan-number'] || '';
+  const aadhaarNumber = idDoc.number || inputs['raw-aadhaar-number'] || '';
+  const form60 = radios.form60Radio === 'YES' ? 'YES (Exemption Claimed)' : 'NO';
+  const idDocType = idDoc.type || radios.idDocTypeRadio || 'NATIONAL_ID / AADHAAR';
+  const addrDocType = addrDoc.type || radios.addrDocTypeRadio || 'OVD CERTIFIED';
+
+  const phone = applicant.phone || inputs['raw-mobile-number'] || '';
+  const altPhone = inputs['raw-alt-mobile-number'] || '';
+  const email = payload.email || inputs['hidden-combined-email'] || inputs['email-username'] || '';
+
+  const fullStreet = addr.line1 || inputs['input-addr-house'] || '';
+  const city = addr.city || inputs['input-city'] || '';
+  const state = inputs['input-state'] || '';
+  const postalCode = addr.postalCode || inputs['raw-pincode'] || '';
+  const country = addr.country || 'India';
+
+  const accountType = payload.accountType || window.selectedAccountType || 'SAVINGS';
+  const deposit = payload.initialDeposit !== undefined ? `₹ ${Number(payload.initialDeposit).toFixed(2)}` : '₹ 0.00';
+  const branchName = payload.branchName || 'Downtown Main Branch';
+  const branchCode = payload.branchCode || 'BR001';
+  const empStatus = emp.status || radios.empStatusRadio || 'EMPLOYED';
+  const employer = emp.employer || inputs['input-employer-name'] || 'FinTech Ltd';
+  const annualIncome = emp.annualIncome ? `₹ ${Number(emp.annualIncome).toLocaleString()}/year` : '';
+  const incomeBracket = radios.incomeBracketRadio || '';
+  const sourceFunds = radios.sourceFundsRadio || '';
+  const cardScheme = payload.cardScheme || radios.cardSchemeRadio || 'RUPAY';
+  const cardFormat = payload.cardFormat || radios.cardFormatRadio || 'BOTH (Virtual + Metal)';
+
+  const nomChoice = radios.nominationChoiceRadio || 'REGISTER';
+  const nomName = (nomChoice === 'REGISTER') ? (inputs['raw-nominee-name'] || '') : '';
+  const nomRel = (nomChoice === 'REGISTER') ? (inputs['select-nominee-relationship'] || inputs['raw-nominee-rel'] || '') : '';
+  const nomAge = (nomChoice === 'REGISTER') ? (inputs['nomineeAge'] || '') : '';
+  const nomAddr = (nomChoice === 'REGISTER') ? (inputs['nomineeAddress'] || '') : '';
+  const fatca = radios.fatcaRadio ? radios.fatcaRadio.toUpperCase() : 'NO';
+
+  const modeVal = radios.modeOperationRadio || 'SELF_SINGLE';
+  const jointCount = (modeVal === 'JOINTLY') ? parseInt(inputs['input-joint-members-count'] || '2', 10) : 1;
+
+  let jointHtml = '';
+  if (jointCount >= 2) {
+    jointHtml = `
+      <div class="app-summary-section">
+        <div class="app-summary-section-header">
+          <span>👥</span>
+          <span>Joint &amp; Secondary Applicant Profiles (${jointCount - 1} Co-Applicant(s))</span>
+        </div>
+    `;
+
+    for (let i = 2; i <= jointCount; i++) {
+      const suffix = (i === 2) ? '2nd' : (i === 3) ? '3rd' : `${i}th`;
+      const jRel = selects[`joint${i}Relationship`] || inputs[`joint${i}Relationship`] || '';
+      const jFirst = inputs[`raw-joint${i}-first-name`] || inputs[`joint${i}FirstName`] || '';
+      const jMiddle = inputs[`raw-joint${i}-middle-name`] || inputs[`joint${i}MiddleName`] || '';
+      const jLast = inputs[`raw-joint${i}-last-name`] || inputs[`joint${i}LastName`] || '';
+      const jPrev = inputs[`raw-joint${i}-previous-name`] || inputs[`joint${i}PreviousName`] || '';
+      const jDob = inputs[`raw-joint${i}-dob-date`] || inputs[`raw-joint${i}-dob`] || inputs[`joint${i}Dob`] || '';
+      const jGender = radios[`joint${i}Gender`] || 'MALE';
+      const jMarital = radios[`joint${i}Marital`] || 'MARRIED';
+      const jNationality = radios[`joint${i}Nationality`] || 'IN - Indian';
+      const jFather = inputs[`raw-joint${i}-father-name`] || inputs[`joint${i}FatherName`] || '';
+      const jMother = inputs[`raw-joint${i}-mother-name`] || inputs[`joint${i}MotherName`] || '';
+      const jSpouse = inputs[`raw-joint${i}-spouse-name`] || inputs[`joint${i}SpouseName`] || '';
+      const jPan = inputs[`raw-joint${i}-pan-number`] || inputs[`joint${i}Pan`] || '';
+      const jAadhaar = inputs[`raw-joint${i}-aadhaar-number`] || inputs[`joint${i}Aadhaar`] || '';
+      const jPhone = inputs[`raw-joint${i}-mobile-number`] || inputs[`joint${i}Phone`] || '';
+      const jEmail = inputs[`joint${i}-email`] || inputs[`joint${i}Email`] || '';
+
+      jointHtml += `
+        <div style="margin-bottom:1rem;padding-bottom:0.75rem;border-bottom:1px dashed var(--border-subtle)">
+          <div style="font-weight:700;font-size:0.82rem;color:var(--text-main);margin-bottom:0.5rem">
+            ${suffix} Co-Applicant Details (#${i})
+          </div>
+          <div class="app-summary-grid">
+            <div class="app-summary-item">
+              <span class="app-summary-label">Relationship with Primary</span>
+              <span class="app-summary-val" style="color:var(--brand-500)">${formatVal(jRel)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Full Name</span>
+              <span class="app-summary-val">${formatVal([jFirst, jMiddle, jLast].filter(Boolean).join(' '))}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Middle Name</span>
+              <span class="app-summary-val">${formatVal(jMiddle)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Previous Name</span>
+              <span class="app-summary-val">${formatVal(jPrev)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Date of Birth</span>
+              <span class="app-summary-val">${formatVal(jDob)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Gender / Marital / Nationality</span>
+              <span class="app-summary-val">${formatVal(jGender)} • ${formatVal(jMarital)} • ${formatVal(jNationality)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Father's / Mother's Name</span>
+              <span class="app-summary-val">${formatVal(jFather)} / ${formatVal(jMother)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Spouse Name</span>
+              <span class="app-summary-val">${formatVal(jSpouse)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Tax ID (PAN) / Aadhaar</span>
+              <span class="app-summary-val" style="font-family:monospace">${formatVal(jPan)} / ${formatVal(jAadhaar)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Mobile Number / Email</span>
+              <span class="app-summary-val">${formatVal(jPhone)} • ${formatVal(jEmail)}</span>
+            </div>
+            <div class="app-summary-item">
+              <span class="app-summary-label">Verification Specimen</span>
+              <span class="app-summary-val" style="color:var(--emerald-400)">Specimen Attached ✓</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    jointHtml += `</div>`;
+  }
+
+  container.innerHTML = `
+    <!-- Section 1: Personal & Demographic Details -->
+    <div class="app-summary-section">
+      <div class="app-summary-section-header">
+        <span>👤</span>
+        <span>Personal &amp; Demographic Details</span>
+      </div>
+      <div class="app-summary-grid">
+        <div class="app-summary-item">
+          <span class="app-summary-label">Applicant Full Name</span>
+          <span class="app-summary-val">${formatVal(`${prefix} ${firstName} ${middleName ? middleName + ' ' : ''}${lastName}`.trim())}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">First Name</span>
+          <span class="app-summary-val">${formatVal(firstName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Middle Name</span>
+          <span class="app-summary-val">${formatVal(middleName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Last Name</span>
+          <span class="app-summary-val">${formatVal(lastName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Previous / Maiden Name</span>
+          <span class="app-summary-val">${formatVal(previousName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Date of Birth (DOB)</span>
+          <span class="app-summary-val">${formatVal(dob)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Gender</span>
+          <span class="app-summary-val">${formatVal(gender)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Marital Status</span>
+          <span class="app-summary-val">${formatVal(marital)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nationality</span>
+          <span class="app-summary-val">${formatVal(nationality)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Father's Name</span>
+          <span class="app-summary-val">${formatVal(fatherName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Mother's Name</span>
+          <span class="app-summary-val">${formatVal(motherName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Spouse Name</span>
+          <span class="app-summary-val">${formatVal(spouseName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Guardian Name (Minor)</span>
+          <span class="app-summary-val">${formatVal(guardianName)}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: Identification, Tax & KYC Documentation -->
+    <div class="app-summary-section">
+      <div class="app-summary-section-header">
+        <span>🪪</span>
+        <span>Identification, Tax &amp; KYC Documentation</span>
+      </div>
+      <div class="app-summary-grid">
+        <div class="app-summary-item">
+          <span class="app-summary-label">Tax ID (PAN Number)</span>
+          <span class="app-summary-val" style="font-family:monospace">${formatVal(panNumber)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Aadhaar / National ID</span>
+          <span class="app-summary-val" style="font-family:monospace">${formatVal(aadhaarNumber)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Form 60 Declaration</span>
+          <span class="app-summary-val">${formatVal(form60)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Primary ID Proof Category</span>
+          <span class="app-summary-val">${formatVal(idDocType)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Address Proof Document Type</span>
+          <span class="app-summary-val">${formatVal(addrDocType)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Residential Address</span>
+          <span class="app-summary-val">${formatVal(fullStreet)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">City, State &amp; Country</span>
+          <span class="app-summary-val">${formatVal(`${city}${state ? ', ' + state : ''}, ${country}`)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Postal / PIN Code</span>
+          <span class="app-summary-val" style="font-family:monospace">${formatVal(postalCode)}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Contact Details -->
+    <div class="app-summary-section">
+      <div class="app-summary-section-header">
+        <span>📞</span>
+        <span>Contact Information</span>
+      </div>
+      <div class="app-summary-grid">
+        <div class="app-summary-item">
+          <span class="app-summary-label">Primary Mobile Number</span>
+          <span class="app-summary-val">${formatVal(phone)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Alternate Mobile / Landline</span>
+          <span class="app-summary-val">${formatVal(altPhone)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Email Address</span>
+          <span class="app-summary-val">${formatVal(email)}</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Account Specifications & Banking Facilities -->
+    <div class="app-summary-section">
+      <div class="app-summary-section-header">
+        <span>🏦</span>
+        <span>Account Specifications &amp; Banking Facilities</span>
+      </div>
+      <div class="app-summary-grid">
+        <div class="app-summary-item">
+          <span class="app-summary-label">Account Product</span>
+          <span class="app-summary-val" style="color:var(--brand-500)">${formatVal(formatHumanText(accountType))}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Initial Opening Deposit</span>
+          <span class="app-summary-val" style="color:var(--emerald-400)">${formatVal(deposit)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Assigned Branch &amp; Code</span>
+          <span class="app-summary-val">${formatVal(`${branchName} (${branchCode})`)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Occupation Status</span>
+          <span class="app-summary-val">${formatVal(formatHumanText(empStatus))}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Employer / Business Name</span>
+          <span class="app-summary-val">${formatVal(employer)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Gross Annual Income</span>
+          <span class="app-summary-val">${formatVal(annualIncome)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Income Bracket</span>
+          <span class="app-summary-val">${formatVal(incomeBracket)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Source of Funds</span>
+          <span class="app-summary-val">${formatVal(sourceFunds)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Debit Card Network</span>
+          <span class="app-summary-val">${formatVal(cardScheme)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Card Delivery Format</span>
+          <span class="app-summary-val">${formatVal(cardFormat)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Digital Banking Facilities</span>
+          <span class="app-summary-val" style="color:var(--emerald-400)">NetBanking • Mobile • SMS Alerts ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 5: Nomination & Regulatory Declarations -->
+    <div class="app-summary-section">
+      <div class="app-summary-section-header">
+        <span>📜</span>
+        <span>Nomination, Declarations &amp; Verification Signatures</span>
+      </div>
+      <div class="app-summary-grid">
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nomination Registration</span>
+          <span class="app-summary-val">${nomChoice === 'REGISTER' ? 'REGISTERED' : 'OPTED OUT'}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nominee Full Name</span>
+          <span class="app-summary-val">${formatVal(nomName)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nominee Relationship</span>
+          <span class="app-summary-val">${formatVal(nomRel)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nominee Age / DOB</span>
+          <span class="app-summary-val">${formatVal(nomAge)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Nominee Address</span>
+          <span class="app-summary-val">${formatVal(nomAddr)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">FATCA Foreign Tax Liability</span>
+          <span class="app-summary-val">${formatVal(fatca)}</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Applicant Declaration</span>
+          <span class="app-summary-val" style="color:var(--emerald-400)">Statutory Consent Given ✓</span>
+        </div>
+        <div class="app-summary-item">
+          <span class="app-summary-label">Specimen Verification</span>
+          <span class="app-summary-val" style="color:var(--emerald-400)">Verified Specimen Captured ✓</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Joint Applicant Section (if applicable) -->
+    ${jointHtml}
+  `;
 }
 
 // Upload mock files to SQL AES-256 document vault
@@ -3618,7 +4392,7 @@ async function trackCustomerApplication() {
       container.innerHTML = `
         <div class="glass-card" style="padding:2rem;text-align:center;border-color:rgba(244,63,94,0.3)">
           <div style="font-size:2rem;color:var(--rose-500);margin-bottom:0.5rem"></div>
-          <h3 style="color:#ffffff;margin-bottom:0.5rem">Application Not Found</h3>
+          <h3 style="color:var(--text-contrast);margin-bottom:0.5rem">Application Not Found</h3>
           <p style="font-size:0.85rem;color:var(--text-secondary)">No record matching "${appNum}" was found in the database. Please check your reference code.</p>
         </div>
       `;
@@ -3667,9 +4441,9 @@ async function trackCustomerApplication() {
         ${docsHtml}
 
         ${(res.status === 'DRAFT_INITIATED' || res.status === 'DRAFT_SAVED' || res.isDraft) ? `
-          <div style="background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);padding:1.25rem;border-radius:12px;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
+          <div style="background:rgba(99,102,241,0.12);border:1px solid var(--border-glow);padding:1.25rem;border-radius:12px;margin-top:1rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem">
             <div>
-              <div style="font-weight:700;color:#c7d2fe;font-size:0.95rem">
+              <div style="font-weight:700;color:var(--brand-200);font-size:0.95rem">
                 ${res.status === 'DRAFT_SAVED' ? 'Draft Application Saved' : 'Application Initiated (Incomplete)'}
               </div>
               <div style="font-size:0.8rem;color:var(--text-muted);margin-top:0.25rem">

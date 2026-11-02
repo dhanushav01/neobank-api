@@ -7,671 +7,42 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css"></link>
+  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <link rel="stylesheet" href="/css/sql_gui.css?v=20261011_01">
   <script src="/js/constants.js?v=20261002_01"></script>
   <script src="/js/utils.js?v=20261002_01"></script>
   <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
-  <style>
-    :root {
-      --db-bg: #090d16;
-      --db-card: rgba(17, 24, 39, 0.75);
-      --db-border: rgba(255, 255, 255, 0.08);
-      --db-accent: #6366f1;
-      --db-emerald: #10b981;
-      --db-amber: #f59e0b;
-      --db-rose: #f43f5e;
-      --db-mono: 'JetBrains Mono', monospace;
-    }
-
-    [data-theme="light"] {
-      --db-bg: #f8fafc;
-      --db-card: #ffffff;
-      --db-border: #cbd5e1;
-      --db-accent: #4f46e5;
-    }
-
-    [data-theme="light"] body {
-      background: #f8fafc !important;
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] .db-header {
-      background: #ffffff !important;
-      border-bottom: 1px solid #cbd5e1 !important;
-      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.05) !important;
-    }
-
-    [data-theme="light"] .db-brand-title {
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] .db-sidebar {
-      background: #ffffff !important;
-      border-right: 1px solid #cbd5e1 !important;
-    }
-
-    [data-theme="light"] .db-main {
-      background: #f8fafc !important;
-    }
-
-    [data-theme="light"] .db-table-item {
-      color: #334155 !important;
-    }
-
-    [data-theme="light"] .db-table-item:hover,
-    [data-theme="light"] .db-table-item.active {
-      background: #e0e7ff !important;
-      color: #312e81 !important;
-    }
-
-    [data-theme="light"] .db-table {
-      background: #ffffff !important;
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] .db-table th {
-      background: #f1f5f9 !important;
-      color: #1e293b !important;
-      border-color: #cbd5e1 !important;
-    }
-
-    [data-theme="light"] .db-table td {
-      border-color: #e2e8f0 !important;
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] .db-btn {
-      background: #ffffff !important;
-      border-color: #cbd5e1 !important;
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] .db-btn:hover {
-      background: #f1f5f9 !important;
-    }
-
-    [data-theme="light"] .db-editor-box,
-    [data-theme="light"] .db-console-output {
-      background: #ffffff !important;
-      border: 1px solid #cbd5e1 !important;
-      color: #0f172a !important;
-    }
-
-    [data-theme="light"] #staff-user-name {
-      color: #0f172a !important;
-    }
-
-    body {
-      background: var(--db-bg);
-      color: #f1f5f9;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      margin: 0;
-      padding: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* Top App Header */
-    .db-header {
-      background: rgba(15, 23, 42, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--db-border);
-      padding: 0.6rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 56px;
-      box-sizing: border-box;
-      z-index: 50;
-    }
-
-    .db-brand {
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .db-brand-icon {
-      width: 32px;
-      height: 32px;
-      background: linear-gradient(135deg, #4f46e5, #06b6d4);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 800;
-      font-size: 16px;
-      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.35);
-    }
-
-    .db-brand-title {
-      font-weight: 800;
-      font-size: 1.05rem;
-      letter-spacing: -0.02em;
-      color: #ffffff;
-    }
-
-    .db-brand-badge {
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 0.15rem 0.5rem;
-      border-radius: 9999px;
-      background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      font-family: var(--db-mono);
-    }
-
-    .db-nav-links {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    .db-btn {
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--db-border);
-      color: #cbd5e1;
-      padding: 0.35rem 0.75rem;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      transition: all 0.2s;
-    }
-
-    .db-btn:hover {
-      background: rgba(255, 255, 255, 0.1);
-      color: #ffffff;
-      border-color: rgba(255, 255, 255, 0.2);
-    }
-
-    .db-btn-primary {
-      background: var(--db-accent);
-      border-color: var(--db-accent);
-      color: #ffffff;
-    }
-
-    .db-btn-primary:hover {
-      background: #4f46e5;
-    }
-
-    /* Main Workspace Layout */
-    .db-workspace {
-      display: flex;
-      flex: 1;
-      height: calc(100vh - 56px);
-      overflow: hidden;
-    }
-
-    /* Left Sidebar: Tables List */
-    .db-sidebar {
-      width: 290px;
-      min-width: 290px;
-      background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(10px);
-      border-right: 1px solid var(--db-border);
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      box-sizing: border-box;
-    }
-
-    .db-sidebar-header {
-      padding: 0.85rem 1rem;
-      border-bottom: 1px solid var(--db-border);
-    }
-
-    .db-file-pill {
-      font-family: var(--db-mono);
-      font-size: 0.72rem;
-      color: #94a3b8;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.3rem 0.6rem;
-      border-radius: 6px;
-      border: 1px solid var(--db-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      word-break: break-all;
-    }
-
-    .db-search-box {
-      margin-top: 0.65rem;
-      position: relative;
-    }
-
-    .db-search-input {
-      width: 100%;
-      background: rgba(0, 0, 0, 0.35);
-      border: 1px solid var(--db-border);
-      border-radius: 8px;
-      padding: 0.4rem 0.65rem 0.4rem 1.8rem;
-      font-size: 0.78rem;
-      color: #f1f5f9;
-      box-sizing: border-box;
-      outline: none;
-      transition: border-color 0.2s;
-    }
-
-    .db-search-input:focus {
-      border-color: var(--db-accent);
-    }
-
-    .db-search-icon {
-      position: absolute;
-      left: 0.6rem;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.75rem;
-      color: #64748b;
-    }
-
-    .db-table-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .db-table-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.55rem 0.75rem;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      color: #94a3b8;
-      transition: all 0.15s ease;
-      user-select: none;
-    }
-
-    .db-table-item:hover {
-      background: rgba(255, 255, 255, 0.05);
-      color: #ffffff;
-    }
-
-    .db-table-item.active {
-      background: rgba(99, 102, 241, 0.18);
-      color: #c7d2fe;
-      border: 1px solid rgba(99, 102, 241, 0.35);
-    }
-
-    .db-table-item-name {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .db-row-badge {
-      font-family: var(--db-mono);
-      font-size: 0.68rem;
-      padding: 0.1rem 0.4rem;
-      border-radius: 9999px;
-      background: rgba(255, 255, 255, 0.06);
-      color: #94a3b8;
-    }
-
-    .db-table-item.active .db-row-badge {
-      background: rgba(99, 102, 241, 0.3);
-      color: #e0e7ff;
-    }
-
-    /* Content Area */
-    .db-content {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      overflow: hidden;
-      background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.06), transparent 40%);
-    }
-
-    /* Toolbar above table/query */
-    .db-toolbar {
-      padding: 0.75rem 1.25rem;
-      border-bottom: 1px solid var(--db-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      background: rgba(15, 23, 42, 0.4);
-    }
-
-    .db-toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .db-active-table-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .db-mode-tabs {
-      display: flex;
-      background: rgba(0, 0, 0, 0.3);
-      padding: 0.2rem;
-      border-radius: 8px;
-      border: 1px solid var(--db-border);
-    }
-
-    .db-mode-tab {
-      padding: 0.3rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.78rem;
-      font-weight: 700;
-      color: #94a3b8;
-      cursor: pointer;
-      border: none;
-      background: transparent;
-      transition: all 0.15s;
-    }
-
-    .db-mode-tab.active {
-      background: var(--db-accent);
-      color: #ffffff;
-    }
-
-    .db-toolbar-right {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-    }
-
-    /* Tab Panes */
-    .db-pane {
-      flex: 1;
-      display: none;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .db-pane.active {
-      display: flex;
-    }
-
-    /* Data Grid Pane */
-    .db-grid-container {
-      flex: 1;
-      overflow: auto;
-      border-bottom: 1px solid var(--db-border);
-    }
-
-    .db-grid-table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-      text-align: left;
-    }
-
-    .db-grid-table th {
-      position: sticky;
-      top: 0;
-      background: #111827;
-      color: #e2e8f0;
-      padding: 0.6rem 0.85rem;
-      font-weight: 700;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.12);
-      white-space: nowrap;
-      z-index: 10;
-    }
-
-    .db-col-header-type {
-      font-family: var(--db-mono);
-      font-size: 0.65rem;
-      color: #64748b;
-      margin-left: 0.35rem;
-      font-weight: 500;
-    }
-
-    .db-grid-table td {
-      padding: 0.55rem 0.85rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-      color: #cbd5e1;
-      white-space: nowrap;
-      max-width: 320px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .db-grid-table tr:hover td {
-      background: rgba(255, 255, 255, 0.03);
-      color: #ffffff;
-    }
-
-    .cell-blob {
-      font-family: var(--db-mono);
-      font-size: 0.72rem;
-      background: rgba(244, 63, 94, 0.12);
-      color: #f43f5e;
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      border: 1px solid rgba(244, 63, 94, 0.25);
-    }
-
-    .cell-json-btn {
-      background: rgba(99, 102, 241, 0.15);
-      color: #a5b4fc;
-      border: 1px solid rgba(99, 102, 241, 0.3);
-      padding: 0.15rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.72rem;
-      font-family: var(--db-mono);
-      cursor: pointer;
-    }
-
-    .cell-json-btn:hover {
-      background: rgba(99, 102, 241, 0.3);
-      color: #ffffff;
-    }
-
-    .cell-status-pill {
-      font-size: 0.68rem;
-      font-weight: 700;
-      padding: 0.15rem 0.45rem;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.03em;
-    }
-    .status-active, .status-approved { background: rgba(16, 185, 129, 0.15); color: #34d399; }
-    .status-submitted, .status-pending { background: rgba(245, 158, 11, 0.15); color: #fbbf24; }
-    .status-draft_saved, .status-draft_initiated { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
-    .status-rejected { background: rgba(244, 63, 94, 0.15); color: #f87171; }
-
-    /* Footer Pagination Bar */
-    .db-pagination-bar {
-      padding: 0.6rem 1.25rem;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.5);
-      border-top: 1px solid var(--db-border);
-      font-size: 0.78rem;
-      color: #94a3b8;
-    }
-
-    /* SQL Query Pane */
-    .db-query-pane {
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      height: 100%;
-      box-sizing: border-box;
-      overflow-y: auto;
-    }
-
-    .db-sql-textarea {
-      width: 100%;
-      height: 120px;
-      min-height: 100px;
-      background: #0b1120;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 10px;
-      padding: 0.85rem;
-      font-family: var(--db-mono);
-      font-size: 0.85rem;
-      color: #e2e8f0;
-      box-sizing: border-box;
-      outline: none;
-      resize: vertical;
-    }
-
-    .db-sql-textarea:focus {
-      border-color: var(--db-accent);
-      box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
-    }
-
-    .db-quick-queries {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      flex-wrap: wrap;
-    }
-
-    .quick-query-btn {
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid var(--db-border);
-      color: #94a3b8;
-      padding: 0.25rem 0.55rem;
-      border-radius: 6px;
-      font-size: 0.72rem;
-      font-family: var(--db-mono);
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-
-    .quick-query-btn:hover {
-      background: rgba(99, 102, 241, 0.15);
-      color: #c7d2fe;
-      border-color: rgba(99, 102, 241, 0.3);
-    }
-
-    /* Schema Pane */
-    .db-schema-pane {
-      padding: 1.25rem;
-      overflow-y: auto;
-      height: 100%;
-      box-sizing: border-box;
-    }
-
-    .ddl-code-block {
-      background: #0b1120;
-      border: 1px solid var(--db-border);
-      border-radius: 10px;
-      padding: 1rem;
-      font-family: var(--db-mono);
-      font-size: 0.82rem;
-      color: #38bdf8;
-      white-space: pre-wrap;
-      word-break: break-all;
-      position: relative;
-    }
-
-    /* Modal for JSON / Long Text */
-    .db-modal-overlay {
-      position: fixed;
-      inset: 0;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.82);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      display: none;
-      align-items: center;
-      align-items: safe center;
-      justify-content: center;
-      z-index: 1000000000;
-      padding: clamp(12px, 2.5vh, 24px) clamp(10px, 2vw, 20px);
-      overflow-y: auto;
-      box-sizing: border-box;
-    }
-
-    .db-modal-card {
-      width: 100%;
-      max-width: 680px;
-      max-height: calc(100% - 20px);
-      max-height: min(88vh, calc(100% - 20px));
-      margin: auto;
-      background: #0f172a;
-      border: 1px solid var(--db-border);
-      border-radius: 16px;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-      overflow: hidden;
-      box-sizing: border-box;
-    }
-
-    .db-modal-header {
-      padding: 1rem 1.25rem;
-      border-bottom: 1px solid var(--db-border);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .db-modal-body {
-      padding: 1rem 1.25rem;
-      overflow-y: auto;
-      flex: 1;
-    }
-
-    .db-modal-body pre {
-      margin: 0;
-      font-family: var(--db-mono);
-      font-size: 0.82rem;
-      color: #a5f3fc;
-      background: #020617;
-      padding: 1rem;
-      border-radius: 8px;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-  </style>
+  <script src="/js/zoom.js?v=20261005_01"></script>
+    <script src="/js/i18n.js?v=20261011_08"></script>
 </head>
 <body>
 
   <!-- ==================== TOP APP HEADER ==================== -->
   <header class="db-header">
     <div class="db-brand">
+      <button type="button" class="db-btn db-sidebar-toggle-btn" onclick="toggleSqlSidebar()" aria-label="Toggle database tables sidebar" title="Toggle Tables (Sidebar)">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+        <span class="db-sidebar-toggle-text">Tables</span>
+      </button>
       <div class="db-brand-icon"></div>
       <div>
         <span class="db-brand-title">NeoBank SQL Workbench</span>
       </div>
       <span class="db-brand-badge" id="db-engine-badge">SQLite 3</span>
-      <span class="db-brand-badge" id="db-total-records-badge" style="background:rgba(16,185,129,0.12);color:#34d399;border-color:rgba(16,185,129,0.25)">-- Records</span>
+      <span class="db-brand-badge sql-s1" id="db-total-records-badge">-- Records</span>
     </div>
 
     <div class="db-nav-links">
+      <!-- On-Page Deep Accessibility Zoom Controller (10% to 500%) -->
+      <div class="zoom-controls-wrapper sql-s2">
+        <button type="button" class="zoom-out-btn db-btn sql-s3" onclick="window.zoomPageOut()" title="Zoom Out (10% min)">−</button>
+        <button type="button" class="zoom-reset-btn db-btn sql-s4" onclick="window.resetPageZoom()" title="Click to reset zoom to 100%"><span class="zoom-level-text">100%</span></button>
+        <button type="button" class="zoom-in-btn db-btn sql-s3" onclick="window.zoomPageIn()" title="Zoom In (500% max)">+</button>
+      </div>
+
       <!-- Dark / Light Theme Toggle Switch -->
       <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
         <span class="theme-toggle-track">
@@ -695,10 +66,10 @@
         <span class="theme-toggle-label">Dark</span>
       </button>
 
-      <div id="staff-auth-badge" style="display:none;align-items:center;gap:0.5rem;margin-right:0.5rem;font-size:0.8rem">
-        <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981"></span>
-        <span id="staff-user-name" style="font-weight:700;color:#f8fafc">Bank Staff</span>
-        <span id="staff-role-pill" class="db-brand-badge" style="background:rgba(99,102,241,0.2);color:#a5b4fc">ADMIN</span>
+      <div class="sql-s5" id="staff-auth-badge">
+        <span class="sql-s6"></span>
+        <span class="sql-s7" id="staff-user-name">Bank Staff</span>
+        <span id="staff-role-pill" class="db-brand-badge sql-s8">ADMIN</span>
       </div>
       <a href="/app" class="db-btn">
         <span>Staff Portal</span>
@@ -706,65 +77,65 @@
       <a href="/docs" target="_blank" class="db-btn">
         <span>Swagger API Docs</span>
       </a>
-      <button type="button" onclick="handleSqlGuiLogout()" class="db-btn" style="color:var(--db-rose);border-color:rgba(244,63,94,0.3)">
+      <button type="button" onclick="handleSqlGuiLogout()" class="db-btn sql-s9">
         <span>Sign Out</span>
       </button>
     </div>
   </header>
 
   <!-- ==================== AUTHENTICATION & ROLE GATE BARRIER ==================== -->
-  <div id="auth-barrier-container" style="display:none;position:fixed;inset:0;background:rgba(9,13,22,0.96);backdrop-filter:blur(16px);z-index:9999;align-items:center;justify-content:center;padding:1.5rem">
+  <div class="sql-s10" id="auth-barrier-container">
     
     <!-- CARD 1: LOGIN REQUIRED (Not authenticated) -->
-    <div id="barrier-login-box" class="glass-card" style="width:100%;max-width:440px;padding:2.25rem;background:#0f172a;border:1px solid rgba(255,255,255,0.1);border-radius:18px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);display:none;text-align:center">
-      <div style="width:52px;height:52px;border-radius:14px;background:linear-gradient(135deg,#4f46e5,#06b6d4);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 1.25rem;box-shadow:0 8px 20px rgba(79,70,229,0.4)">
+    <div id="barrier-login-box" class="glass-card sql-s11">
+      <div class="sql-s12">
               </div>
-      <h3 style="color:#ffffff;font-size:1.35rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.4rem">
+      <h3 class="sql-s13">
         Bank Staff Authentication Required
       </h3>
-      <p style="color:#94a3b8;font-size:0.85rem;line-height:1.45;margin-bottom:1.5rem">
+      <p class="sql-s14">
         The SQL Database GUI contains direct backend ledger tables. Access is restricted to <strong>Bank Administrators</strong> and <strong>Bank Staff</strong>.
       </p>
 
-      <form id="form-barrier-login" onsubmit="event.preventDefault(); handleBarrierStaffLogin();" style="text-align:left">
-        <div style="margin-bottom:1rem">
-          <label style="display:block;font-size:0.8rem;color:#cbd5e1;font-weight:600;margin-bottom:0.35rem">Staff Email Address</label>
-          <input type="email" id="barrier-email" class="form-input" placeholder="e.g. admin@bank.test" required style="width:100%;padding:0.75rem;background:#1e293b;border:1px solid rgba(255,255,255,0.12);color:#ffffff;border-radius:8px">
+      <form class="sql-s15" id="form-barrier-login" onsubmit="event.preventDefault(); handleBarrierStaffLogin();">
+        <div class="sql-s16">
+          <label class="sql-s17">Staff Email Address</label>
+          <input type="email" id="barrier-email" class="form-input sql-s18" placeholder="e.g. admin@bank.test" required>
         </div>
-        <div style="margin-bottom:1.25rem">
-          <label style="display:block;font-size:0.8rem;color:#cbd5e1;font-weight:600;margin-bottom:0.35rem">Password</label>
-          <input type="password" id="barrier-password" class="form-input" placeholder="••••••••" required style="width:100%;padding:0.75rem;background:#1e293b;border:1px solid rgba(255,255,255,0.12);color:#ffffff;border-radius:8px">
+        <div class="sql-s19">
+          <label class="sql-s17">Password</label>
+          <input type="password" id="barrier-password" class="form-input sql-s18" placeholder="••••••••" required>
         </div>
-        <div id="barrier-login-error" style="display:none;color:#f43f5e;font-size:0.8rem;margin-bottom:1rem;background:rgba(244,63,94,0.1);padding:0.6rem;border-radius:8px"></div>
-        <button type="submit" class="db-btn db-btn-primary" style="width:100%;justify-content:center;padding:0.8rem;font-size:0.9rem">
+        <div class="sql-s20" id="barrier-login-error"></div>
+        <button type="submit" class="db-btn db-btn-primary sql-s21">
           <span>Authenticate &amp; Open SQL Workbench</span>
         </button>
       </form>
 
-      <div style="margin-top:1.25rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.08);display:flex;justify-content:space-between;font-size:0.8rem">
-        <a href="/login" style="color:#818cf8;text-decoration:none">Standard Sign In</a>
-        <a href="/" style="color:#64748b;text-decoration:none">Return to Home</a>
+      <div class="sql-s22">
+        <a class="sql-s23" href="/login">Standard Sign In</a>
+        <a class="sql-s24" href="/">Return to Home</a>
       </div>
     </div>
 
     <!-- CARD 2: ACCESS DENIED (Logged in as Customer) -->
-    <div id="barrier-denied-box" class="glass-card" style="width:100%;max-width:480px;padding:2.25rem;background:#0f172a;border:1px solid rgba(244,63,94,0.3);border-radius:18px;box-shadow:0 25px 50px -12px rgba(0,0,0,0.7);display:none;text-align:center">
-      <div style="width:56px;height:56px;border-radius:14px;background:rgba(244,63,94,0.15);border:1px solid rgba(244,63,94,0.3);display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 1.25rem;color:#f43f5e">
+    <div id="barrier-denied-box" class="glass-card sql-s25">
+      <div class="sql-s26">
               </div>
-      <h3 style="color:#ffffff;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em;margin-bottom:0.4rem">
+      <h3 class="sql-s27">
         Access Denied: Staff &amp; Admin Only
       </h3>
-      <p style="color:#cbd5e1;font-size:0.85rem;line-height:1.5;margin-bottom:1rem">
-        You are currently authenticated as <strong id="barrier-denied-role">a Customer</strong> (<span id="barrier-denied-email" style="color:#38bdf8"></span>).
+      <p class="sql-s28">
+        You are currently authenticated as <strong id="barrier-denied-role">a Customer</strong> (<span class="sql-s29" id="barrier-denied-email"></span>).
       </p>
-      <div id="barrier-denied-reason" style="background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.06);border-radius:10px;padding:0.85rem;font-size:0.8rem;color:#94a3b8;margin-bottom:1.5rem;text-align:left">
+      <div class="sql-s30" id="barrier-denied-reason">
         The SQL Database GUI allows low-level inspection of schema definitions, database records, and query execution. It is strictly reserved for authorized bank personnel. Customers are not permitted to access this tool.
       </div>
-      <div style="display:flex;flex-direction:column;gap:0.75rem">
-        <a href="/app" class="db-btn db-btn-primary" style="justify-content:center;padding:0.8rem;text-decoration:none">
+      <div class="sql-s31">
+        <a href="/app" class="db-btn db-btn-primary sql-s32">
           <span>← Return to Portal (/app)</span>
         </a>
-        <button type="button" onclick="barrierSwitchAccount()" class="db-btn" style="justify-content:center;padding:0.75rem">
+        <button type="button" onclick="barrierSwitchAccount()" class="db-btn sql-s33">
           <span>Sign In with Different Staff Account</span>
         </button>
       </div>
@@ -781,7 +152,7 @@
       <div class="db-sidebar-header">
         <div class="db-file-pill" title="Physical SQLite database file on disk">
           <span>neobank.db</span>
-          <span id="db-file-size" style="font-weight:700;color:#c7d2fe">-- KB</span>
+          <span class="sql-s34" id="db-file-size">-- KB</span>
         </div>
         <div class="db-search-box">
           <input type="text" id="table-filter-input" class="db-search-input" placeholder="Filter tables..." oninput="filterTableList(this.value)">
@@ -789,7 +160,7 @@
       </div>
 
       <div class="db-table-list" id="sidebar-tables-container">
-        <div style="text-align:center;padding:2rem 1rem;color:#64748b;font-size:0.8rem">
+        <div class="sql-s35">
           Loading tables...
         </div>
       </div>
@@ -802,9 +173,9 @@
       <div class="db-toolbar">
         <div class="db-toolbar-left">
           <div class="db-active-table-title" id="active-table-title">
-            <span id="active-table-icon" style="display:none"></span>
+            <span class="sql-s36" id="active-table-icon"></span>
             <span id="active-table-name">applications</span>
-            <span class="db-row-badge" id="active-table-count-badge" style="font-size:0.75rem">-- rows</span>
+            <span class="db-row-badge sql-s37" id="active-table-count-badge">-- rows</span>
           </div>
 
           <div class="db-mode-tabs">
@@ -825,8 +196,8 @@
 
         <div class="db-toolbar-right">
           <!-- In-table search input -->
-          <div style="position:relative;display:inline-block">
-            <input type="text" id="table-row-search-input" class="db-search-input" placeholder="Search in table..." style="width:200px" onkeydown="if(event.key==='Enter') searchActiveTable()">
+          <div class="sql-s38">
+            <input type="text" id="table-row-search-input" class="db-search-input sql-s39" placeholder="Search in table..." onkeydown="if(event.key==='Enter') searchActiveTable()">
           </div>
           <button type="button" class="db-btn" onclick="refreshCurrentTable()" title="Refresh records">
             Refresh
@@ -856,19 +227,19 @@
         <!-- Pagination Bar -->
         <div class="db-pagination-bar">
           <div>
-            Showing <strong id="page-start-idx" style="color:#ffffff">0</strong> to <strong id="page-end-idx" style="color:#ffffff">0</strong> of <strong id="page-total-rows" style="color:#ffffff">0</strong> records
+            Showing <strong class="sql-s40" id="page-start-idx">0</strong> to <strong class="sql-s40" id="page-end-idx">0</strong> of <strong class="sql-s40" id="page-total-rows">0</strong> records
           </div>
-          <div style="display:flex;align-items:center;gap:0.75rem">
-            <label style="display:flex;align-items:center;gap:0.35rem">
+          <div class="sql-s41">
+            <label class="sql-s42">
               <span>Per page:</span>
-              <select id="select-rows-per-page" class="db-search-input" style="width:auto;padding:0.2rem 0.4rem" onchange="changeLimit(this.value)">
+              <select id="select-rows-per-page" class="db-search-input sql-s43" onchange="changeLimit(this.value)">
                 <option value="25">25</option>
                 <option value="50" selected>50</option>
                 <option value="100">100</option>
               </select>
             </label>
             <button type="button" class="db-btn" id="btn-page-prev" onclick="prevPage()">← Previous</button>
-            <span id="page-num-display" style="font-weight:700;color:#c7d2fe">Page 1</span>
+            <span class="sql-s34" id="page-num-display">Page 1</span>
             <button type="button" class="db-btn" id="btn-page-next" onclick="nextPage()">Next →</button>
           </div>
         </div>
@@ -878,16 +249,16 @@
       <section class="db-pane" id="pane-query">
         <div class="db-query-pane">
           <div>
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem">
-              <span style="font-size:0.85rem;font-weight:700;color:#e2e8f0">Interactive SQL Query Editor:</span>
-              <span style="font-size:0.75rem;color:#64748b">Tip: Press <kbd style="background:#1e293b;padding:0.15rem 0.35rem;border-radius:4px;color:#a5b4fc">Ctrl+Enter</kbd> to execute</span>
+            <div class="sql-s44">
+              <span class="sql-s45">Interactive SQL Query Editor:</span>
+              <span class="sql-s46">Tip: Press <kbd class="sql-s47">Ctrl+Enter</kbd> to execute</span>
             </div>
             <textarea id="sql-query-editor" class="db-sql-textarea" spellcheck="false">SELECT * FROM applications ORDER BY created_at DESC LIMIT 50;</textarea>
           </div>
 
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:0.75rem">
+          <div class="sql-s48">
             <div class="db-quick-queries">
-              <span style="font-size:0.75rem;color:#64748b">Sample Queries:</span>
+              <span class="sql-s46">Sample Queries:</span>
               <button type="button" class="quick-query-btn" onclick="setQuery('SELECT * FROM applications ORDER BY created_at DESC LIMIT 25;')">applications</button>
               <button type="button" class="quick-query-btn" onclick="setQuery('SELECT id, email, role, first_name, last_name FROM users;')">users</button>
               <button type="button" class="quick-query-btn" onclick="setQuery('SELECT account_number, type, balance, overdraft_limit FROM accounts;')">accounts</button>
@@ -900,13 +271,13 @@
           </div>
 
           <!-- Query execution results -->
-          <div id="query-result-meta" style="display:none;font-size:0.8rem;color:#10b981;font-weight:600"></div>
+          <div class="sql-s49" id="query-result-meta"></div>
           
-          <div class="db-grid-container" style="flex:1;border:1px solid var(--db-border);border-radius:10px;background:#060a12">
+          <div class="db-grid-container sql-s50">
             <table class="db-grid-table" id="query-results-table">
               <thead id="query-results-head"></thead>
               <tbody id="query-results-body">
-                <tr><td style="text-align:center;padding:3rem;color:#64748b">Write and run a SQL query above to view results.</td></tr>
+                <tr><td class="sql-s51">Write and run a SQL query above to view results.</td></tr>
               </tbody>
             </table>
           </div>
@@ -916,18 +287,18 @@
       <!-- PANE 3: SCHEMA & DDL INSPECTOR -->
       <section class="db-pane" id="pane-schema">
         <div class="db-schema-pane">
-          <div style="margin-bottom:1.5rem">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem">
-              <h3 style="font-size:1.1rem;font-weight:800;color:#ffffff;margin:0">Table Definition (DDL)</h3>
+          <div class="sql-s52">
+            <div class="sql-s53">
+              <h3 class="sql-s54">Table Definition (DDL)</h3>
               <button type="button" class="db-btn" onclick="copyDdlText()">Copy DDL</button>
             </div>
             <pre class="ddl-code-block" id="schema-ddl-code">-- Loading DDL...</pre>
           </div>
 
-          <div style="margin-bottom:1.5rem">
-            <h3 style="font-size:1.1rem;font-weight:800;color:#ffffff;margin:0 0 0.75rem 0">Column Specifications</h3>
-            <div style="border:1px solid var(--db-border);border-radius:10px;overflow:hidden">
-              <table class="db-grid-table" style="background:#0b1120">
+          <div class="sql-s52">
+            <h3 class="sql-s55">Column Specifications</h3>
+            <div class="sql-s56">
+              <table class="db-grid-table sql-s57">
                 <thead>
                   <tr>
                     <th>Column Name</th>
@@ -945,93 +316,93 @@
       </section>
 
       <!-- PANE 4: EXTERNAL DATABASE BRIDGES (MySQL & MongoDB) -->
-      <section class="db-pane" id="pane-external" style="padding:1.5rem;overflow-y:auto">
-        <div style="max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:1.75rem">
+      <section class="db-pane sql-s58" id="pane-external">
+        <div class="sql-s59">
           
           <div>
-            <h2 style="font-size:1.35rem;font-weight:800;color:#ffffff;margin:0 0 0.35rem 0">External Database Bridges (MySQL &amp; MongoDB)</h2>
-            <p style="font-size:0.85rem;color:#94a3b8;margin:0">
+            <h2 class="sql-s60">External Database Bridges (MySQL &amp; MongoDB)</h2>
+            <p class="sql-s61">
               Synchronize NeoBank core banking tables and customer applications directly to your local MySQL 8.0 and MongoDB instances.
             </p>
           </div>
 
           <!-- GRID OF 2 CARDS: MONGODB & MYSQL -->
-          <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(420px, 1fr));gap:1.5rem">
+          <div class="sql-s62">
             
             <!-- CARD 1: MONGODB -->
-            <div style="background:#0f172a;border:1px solid rgba(16,185,129,0.3);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between">
+            <div class="sql-s63">
               <div>
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
-                  <div style="display:flex;align-items:center;gap:0.6rem">
+                <div class="sql-s64">
+                  <div class="sql-s65">
                     <div>
-                      <h3 style="font-size:1.15rem;font-weight:800;color:#ffffff;margin:0">MongoDB Instance</h3>
-                      <span style="font-size:0.75rem;color:#94a3b8;font-family:var(--db-mono)">mongodb://127.0.0.1:27017</span>
+                      <h3 class="sql-s66">MongoDB Instance</h3>
+                      <span class="sql-s67">mongodb://127.0.0.1:27017</span>
                     </div>
                   </div>
-                  <span class="db-brand-badge" style="background:rgba(16,185,129,0.15);color:#34d399;border-color:rgba(16,185,129,0.35)">CONNECTED</span>
+                  <span class="db-brand-badge sql-s68">CONNECTED</span>
                 </div>
 
-                <p style="font-size:0.82rem;color:#cbd5e1;line-height:1.5;margin-bottom:1rem">
+                <p class="sql-s69">
                   Your local MongoDB server is online and running without authentication. Database <strong>neobank</strong> contains collections matching all tables.
                 </p>
 
-                <div style="background:#020617;padding:0.75rem 1rem;border-radius:8px;border:1px solid var(--db-border);margin-bottom:1rem;font-size:0.78rem">
-                  <div style="color:#64748b;font-weight:700;margin-bottom:0.25rem">MongoDB Compass Connection URI:</div>
-                  <div style="font-family:var(--db-mono);color:#38bdf8;user-select:all">mongodb://127.0.0.1:27017/neobank</div>
+                <div class="sql-s70">
+                  <div class="sql-s71">MongoDB Compass Connection URI:</div>
+                  <div class="sql-s72">mongodb://127.0.0.1:27017/neobank</div>
                 </div>
 
-                <div id="mongo-sync-status" style="display:none;font-size:0.8rem;padding:0.6rem;border-radius:6px;margin-bottom:1rem"></div>
+                <div class="sql-s73" id="mongo-sync-status"></div>
               </div>
 
               <div>
-                <button type="button" class="db-btn db-btn-primary" style="width:100%;justify-content:center;padding:0.6rem" onclick="syncToMongoDB()">
+                <button type="button" class="db-btn db-btn-primary sql-s74" onclick="syncToMongoDB()">
                   Sync All SQLite Tables to MongoDB
                 </button>
               </div>
             </div>
 
             <!-- CARD 2: MYSQL -->
-            <div style="background:#0f172a;border:1px solid rgba(59,130,246,0.3);border-radius:14px;padding:1.5rem;display:flex;flex-direction:column;justify-content:space-between">
+            <div class="sql-s75">
               <div>
-                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
-                  <div style="display:flex;align-items:center;gap:0.6rem">
+                <div class="sql-s64">
+                  <div class="sql-s65">
                     <div>
-                      <h3 style="font-size:1.15rem;font-weight:800;color:#ffffff;margin:0">MySQL 8.0 Server</h3>
-                      <span style="font-size:0.75rem;color:#94a3b8;font-family:var(--db-mono)">127.0.0.1:3306 (MySQL80 Service)</span>
+                      <h3 class="sql-s66">MySQL 8.0 Server</h3>
+                      <span class="sql-s67">127.0.0.1:3306 (MySQL80 Service)</span>
                     </div>
                   </div>
-                  <span class="db-brand-badge" style="background:rgba(59,130,246,0.15);color:#60a5fa;border-color:rgba(59,130,246,0.35)">SERVICE ACTIVE</span>
+                  <span class="db-brand-badge sql-s76">SERVICE ACTIVE</span>
                 </div>
 
-                <p style="font-size:0.82rem;color:#cbd5e1;line-height:1.5;margin-bottom:1rem">
+                <p class="sql-s69">
                   The Windows service <strong>MySQL80</strong> is running on port 3306. Enter your MySQL password to provision the <code>neobank</code> database and sync all tables.
                 </p>
 
                 <!-- Connection Form -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.75rem">
+                <div class="sql-s77">
                   <div>
-                    <label style="font-size:0.72rem;color:#94a3b8;font-weight:700">Username</label>
-                    <input type="text" id="mysql-user-input" class="db-search-input" value="root" style="margin-top:0.2rem">
+                    <label class="sql-s78">Username</label>
+                    <input type="text" id="mysql-user-input" class="db-search-input sql-s79" value="root">
                   </div>
                   <div>
-                    <label style="font-size:0.72rem;color:#94a3b8;font-weight:700">Target Database</label>
-                    <input type="text" id="mysql-db-input" class="db-search-input" value="neobank" style="margin-top:0.2rem">
+                    <label class="sql-s78">Target Database</label>
+                    <input type="text" id="mysql-db-input" class="db-search-input sql-s79" value="neobank">
                   </div>
                 </div>
 
-                <div style="margin-bottom:1rem">
-                  <label style="font-size:0.72rem;color:#94a3b8;font-weight:700">MySQL Password</label>
-                  <input type="password" id="mysql-pwd-input" class="db-search-input" placeholder="Enter root password" style="margin-top:0.2rem">
+                <div class="sql-s16">
+                  <label class="sql-s78">MySQL Password</label>
+                  <input type="password" id="mysql-pwd-input" class="db-search-input sql-s79" placeholder="Enter root password">
                 </div>
 
-                <div id="mysql-sync-status" style="display:none;font-size:0.8rem;padding:0.6rem;border-radius:6px;margin-bottom:1rem"></div>
+                <div class="sql-s73" id="mysql-sync-status"></div>
               </div>
 
-              <div style="display:flex;gap:0.6rem">
-                <button type="button" class="db-btn" style="flex:1;justify-content:center" onclick="testMySqlConnection()">
+              <div class="sql-s80">
+                <button type="button" class="db-btn sql-s81" onclick="testMySqlConnection()">
                   Test Login
                 </button>
-                <button type="button" class="db-btn db-btn-primary" style="flex:1.4;justify-content:center" onclick="syncToMySQL()">
+                <button type="button" class="db-btn db-btn-primary sql-s82" onclick="syncToMySQL()">
                   Sync to MySQL
                 </button>
               </div>
@@ -1040,18 +411,18 @@
           </div>
 
           <!-- USAGE INSTRUCTIONS ACCORDION / GUIDE -->
-          <div style="background:rgba(255,255,255,0.02);border:1px solid var(--db-border);border-radius:12px;padding:1.25rem">
-            <h4 style="font-size:0.95rem;font-weight:700;color:#ffffff;margin:0 0 0.5rem 0">How to view your data in GUI tools:</h4>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;font-size:0.8rem;color:#94a3b8;line-height:1.6">
+          <div class="sql-s83">
+            <h4 class="sql-s84">How to view your data in GUI tools:</h4>
+            <div class="sql-s85">
               <div>
-                <strong style="color:#e2e8f0;display:block;margin-bottom:0.25rem">In MySQL Workbench 8.0:</strong>
+                <strong class="sql-s86">In MySQL Workbench 8.0:</strong>
                 1. Open <strong>MySQL Workbench</strong> (installed at <code>C:\Program Files\MySQL\MySQL Workbench 8.0</code>).<br>
                 2. Click your local MySQL connection.<br>
                 3. Expand the <strong>neobank</strong> schema in the left navigator.<br>
                 4. Right click any table (e.g. <code>applications</code>) → <strong>Select Rows - Limit 1000</strong>.
               </div>
               <div>
-                <strong style="color:#e2e8f0;display:block;margin-bottom:0.25rem">In MongoDB Compass:</strong>
+                <strong class="sql-s86">In MongoDB Compass:</strong>
                 1. Open <strong>MongoDB Compass</strong>.<br>
                 2. Paste connection URI: <code>mongodb://127.0.0.1:27017/neobank</code> and click <strong>Connect</strong>.<br>
                 3. Click on the <strong>neobank</strong> database to browse collections as visual documents, view indexes, and filter with queries.
@@ -1070,10 +441,10 @@
     <div class="db-modal-card">
       <div class="db-modal-header">
         <div>
-          <strong id="cell-modal-title" style="color:#ffffff;font-size:0.95rem">Cell Detail</strong>
-          <span id="cell-modal-subtitle" style="font-size:0.75rem;color:#64748b;margin-left:0.5rem"></span>
+          <strong class="sql-s87" id="cell-modal-title">Cell Detail</strong>
+          <span class="sql-s88" id="cell-modal-subtitle"></span>
         </div>
-        <div style="display:flex;gap:0.5rem">
+        <div class="sql-s89">
           <button type="button" class="db-btn" onclick="copyModalContent()">Copy</button>
           <button type="button" class="db-btn" onclick="closeCellModal()">✕ Close</button>
         </div>
@@ -1109,6 +480,18 @@
       'login_otps': ''
     };
 
+    function authFetch(url, options = {}) {
+      const token = localStorage.getItem('neobank_token') || '';
+      const headers = Object.assign({}, options.headers || {});
+      if (token && !headers['Authorization']) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      return fetch(url, Object.assign({}, options, {
+        headers: headers,
+        credentials: 'include'
+      }));
+    }
+
     // Check Authentication & Role Gate
     async function checkSqlGuiAccess() {
       const token = localStorage.getItem('neobank_token');
@@ -1124,9 +507,7 @@
       }
 
       try {
-        const res = await fetch('/auth/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
+        const res = await authFetch('/auth/me');
         if (!res.ok) {
           localStorage.removeItem('neobank_token');
           localStorage.removeItem('neobank_user');
@@ -1138,7 +519,7 @@
 
         const user = await res.json();
         const role = (user.role || '').toUpperCase();
-        const isSuperAdmin = role === 'SUPER_ADMIN' || user.email === 'admin@bank.test';
+        const isSuperAdmin = role === 'SUPER_ADMIN';
         const hasSqlAccess = isSuperAdmin || role === 'ADMIN' || user.hasSqlAccess === true || user.hasSqlAccess === 1;
 
         if (!['ADMIN', 'EMPLOYEE', 'SUPER_ADMIN'].includes(role) || !hasSqlAccess) {
@@ -1186,7 +567,7 @@
           try {
             const u = JSON.parse(storedUser);
             const r = (u.role || '').toUpperCase();
-            const isSuper = r === 'SUPER_ADMIN' || u.email === 'admin@bank.test';
+            const isSuper = r === 'SUPER_ADMIN';
             const hasAccess = isSuper || r === 'ADMIN' || u.hasSqlAccess === true || u.hasSqlAccess === 1;
             if (['ADMIN', 'EMPLOYEE', 'SUPER_ADMIN'].includes(r) && hasAccess) {
               overlay.style.display = 'none';
@@ -1220,7 +601,7 @@
           return;
         }
         const role = (data.role || '').toUpperCase();
-        const isSuperAdmin = role === 'SUPER_ADMIN' || email.toLowerCase() === 'admin@bank.test';
+        const isSuperAdmin = role === 'SUPER_ADMIN';
         const hasSqlAccess = isSuperAdmin || role === 'ADMIN' || data.hasSqlAccess === true || (data.user && (data.user.hasSqlAccess === true || data.user.hasSqlAccess === 1));
 
         if (!['ADMIN', 'EMPLOYEE', 'SUPER_ADMIN'].includes(role) || !hasSqlAccess) {
@@ -1290,7 +671,11 @@
     // 1. Load DB Overview & Tables
     async function loadDatabaseOverview() {
       try {
-        const res = await fetch(`${API_BASE}/overview`);
+        const res = await authFetch(`${API_BASE}/overview`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || `HTTP ${res.status}`);
+        }
         const data = await res.json();
 
         const sizeEl = document.getElementById('db-file-size');
@@ -1373,7 +758,7 @@
       const thead = document.getElementById('db-table-head');
       const tbody = document.getElementById('db-table-body');
       if (tbody) {
-        tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#64748b">Querying table "${escapeHtml(tableName)}"...</td></tr>`;
+        tbody.innerHTML = `<tr><td class="sql-s51" colspan="10">Querying table "${escapeHtml(tableName)}"...</td></tr>`;
       }
 
       try {
@@ -1381,7 +766,11 @@
         if (currentSearch) {
           url += `&search=${encodeURIComponent(currentSearch)}`;
         }
-        const res = await fetch(url);
+        const res = await authFetch(url);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || `HTTP ${res.status}: Failed to load table data`);
+        }
         const data = await res.json();
 
         currentTableColumns = data.columns || [];
@@ -1397,7 +786,7 @@
         if (thead) {
           thead.innerHTML = `
             <tr>
-              <th style="width:40px">#</th>
+              <th class="sql-s90">#</th>
               ${currentTableColumns.map(col => `
                 <th>
                   <span>${escapeHtml(col.name)}</span>
@@ -1412,7 +801,7 @@
         if (!tbody) return;
 
         if (currentTableRows.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="${currentTableColumns.length + 1}" style="text-align:center;padding:3rem;color:#64748b">No records found.</td></tr>`;
+          tbody.innerHTML = `<tr><td class="sql-s51" colspan="${currentTableColumns.length + 1}">No records found.</td></tr>`;
           updatePaginationDisplay(0, 0);
           return;
         }
@@ -1423,7 +812,7 @@
             const rawVal = row[col.name];
             return formatCellDisplay(col.name, rawVal, row);
           }).join('');
-          return `<tr><td style="color:#64748b;font-family:var(--db-mono);font-size:0.72rem">${globalIdx}</td>${cells}</tr>`;
+          return `<tr><td class="sql-s91">${globalIdx}</td>${cells}</tr>`;
         }).join('');
 
         const startIdx = currentOffset + 1;
@@ -1432,7 +821,7 @@
 
       } catch (err) {
         if (tbody) {
-          tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:3rem;color:#f43f5e">Error loading table data: ${escapeHtml(err.message)}</td></tr>`;
+          tbody.innerHTML = `<tr><td class="sql-s92" colspan="10">Error loading table data: ${escapeHtml(err.message)}</td></tr>`;
         }
       }
     }
@@ -1440,7 +829,7 @@
     // Format individual cell contents
     function formatCellDisplay(colName, val, row) {
       if (val === null || val === undefined) {
-        return `<td style="color:#64748b;font-style:italic">null</td>`;
+        return `<td class="sql-s93">null</td>`;
       }
 
       const strVal = String(val);
@@ -1470,7 +859,7 @@
       // Long text truncation with click-to-view
       if (strVal.length > 40) {
         const safeText = escapeHtml(strVal);
-        return `<td title="${safeText}" style="cursor:pointer" onclick="openCellModal('${colName}', '${escapeAttr(safeText)}')">${escapeHtml(strVal.slice(0, 36))}...</td>`;
+        return `<td class="sql-s94" title="${safeText}" onclick="openCellModal('${colName}', '${escapeAttr(safeText)}')">${escapeHtml(strVal.slice(0, 36))}...</td>`;
       }
 
       return `<td>${escapeHtml(strVal)}</td>`;
@@ -1525,7 +914,11 @@
     // 5. Schema & DDL
     async function loadTableSchema(tableName) {
       try {
-        const res = await fetch(`${API_BASE}/table/${encodeURIComponent(tableName)}/schema`);
+        const res = await authFetch(`${API_BASE}/table/${encodeURIComponent(tableName)}/schema`);
+        if (!res.ok) {
+          const errData = await res.json().catch(() => ({}));
+          throw new Error(errData.detail || errData.message || `HTTP ${res.status}`);
+        }
         const data = await res.json();
 
         const ddlEl = document.getElementById('schema-ddl-code');
@@ -1535,11 +928,11 @@
         if (tbody) {
           tbody.innerHTML = (data.columns || []).map(col => `
             <tr>
-              <td style="font-weight:700;color:#ffffff">${escapeHtml(col.name)}</td>
-              <td style="font-family:var(--db-mono);color:#38bdf8">${escapeHtml(col.type || 'ANY')}</td>
-              <td>${col.pk ? '<strong style="color:#f59e0b">PRIMARY KEY</strong>' : '<span style="color:#64748b">No</span>'}</td>
-              <td>${col.notnull ? '<strong style="color:#f43f5e">NOT NULL</strong>' : '<span style="color:#64748b">NULL</span>'}</td>
-              <td style="font-family:var(--db-mono);color:#94a3b8">${col.dflt_value !== null ? escapeHtml(col.dflt_value) : '<span style="color:#64748b">None</span>'}</td>
+              <td class="sql-s95">${escapeHtml(col.name)}</td>
+              <td class="sql-s96">${escapeHtml(col.type || 'ANY')}</td>
+              <td>${col.pk ? '<strong class="sql-s97">PRIMARY KEY</strong>' : '<span class="sql-s98">No</span>'}</td>
+              <td>${col.notnull ? '<strong class="sql-s99">NOT NULL</strong>' : '<span class="sql-s98">NULL</span>'}</td>
+              <td class="sql-s100">${col.dflt_value !== null ? escapeHtml(col.dflt_value) : '<span class="sql-s98">None</span>'}</td>
             </tr>
           `).join('');
         }
@@ -1563,12 +956,12 @@
       const body = document.getElementById('query-results-body');
 
       meta.style.display = 'block';
-      meta.style.color = '#38bdf8';
+      meta.style.color = 'var(--status-info)';
       meta.textContent = 'Executing SQL statement...';
-      body.innerHTML = `<tr><td style="text-align:center;padding:2rem;color:#64748b">Running query...</td></tr>`;
+      body.innerHTML = `<tr><td class="sql-s101">Running query...</td></tr>`;
 
       try {
-        const res = await fetch(`${API_BASE}/query`, {
+        const res = await authFetch(`${API_BASE}/query`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ query: query, limit: 100 })
@@ -1576,37 +969,37 @@
         const data = await res.json();
 
         if (!data.success) {
-          meta.style.color = '#f43f5e';
+          meta.style.color = 'var(--status-danger)';
           meta.textContent = `SQL Error (${data.executionTimeMs} ms): ${data.error}`;
-          body.innerHTML = `<tr><td style="padding:1.5rem;color:#f43f5e;font-family:var(--db-mono);font-size:0.85rem">${escapeHtml(data.error)}</td></tr>`;
+          body.innerHTML = `<tr><td class="sql-s102">${escapeHtml(data.error)}</td></tr>`;
           head.innerHTML = '';
           return;
         }
 
-        meta.style.color = '#34d399';
+        meta.style.color = 'var(--status-success)';
         meta.textContent = `✓ Query executed successfully in ${data.executionTimeMs} ms • Returned ${data.rowCount} rows`;
 
         const cols = data.columns || [];
         head.innerHTML = `
           <tr>
-            <th style="width:40px">#</th>
+            <th class="sql-s90">#</th>
             ${cols.map(c => `<th>${escapeHtml(c)}</th>`).join('')}
           </tr>
         `;
 
         const rows = data.rows || [];
         if (rows.length === 0) {
-          body.innerHTML = `<tr><td colspan="${cols.length + 1}" style="text-align:center;padding:2rem;color:#64748b">0 rows returned.</td></tr>`;
+          body.innerHTML = `<tr><td class="sql-s101" colspan="${cols.length + 1}">0 rows returned.</td></tr>`;
           return;
         }
 
         body.innerHTML = rows.map((r, i) => {
           const cells = cols.map(c => formatCellDisplay(c, r[c], r)).join('');
-          return `<tr><td style="color:#64748b;font-family:var(--db-mono);font-size:0.72rem">${i + 1}</td>${cells}</tr>`;
+          return `<tr><td class="sql-s91">${i + 1}</td>${cells}</tr>`;
         }).join('');
 
       } catch (err) {
-        meta.style.color = '#f43f5e';
+        meta.style.color = 'var(--status-danger)';
         meta.textContent = `Request error: ${err.message}`;
       }
     }
@@ -1702,11 +1095,11 @@
       const statusDiv = document.getElementById('mongo-sync-status');
       statusDiv.style.display = 'block';
       statusDiv.style.background = 'rgba(99,102,241,0.15)';
-      statusDiv.style.color = '#a5b4fc';
+      statusDiv.style.color = 'var(--brand-300)';
       statusDiv.textContent = 'Synchronizing SQLite tables to MongoDB...';
 
       try {
-        const res = await fetch(`${API_BASE}/mongo/sync`, {
+        const res = await authFetch(`${API_BASE}/mongo/sync`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ uri: 'mongodb://127.0.0.1:27017/', database: 'neobank' })
@@ -1714,16 +1107,16 @@
         const data = await res.json();
         if (data.success) {
           statusDiv.style.background = 'rgba(16,185,129,0.15)';
-          statusDiv.style.color = '#34d399';
+          statusDiv.style.color = 'var(--status-success)';
           statusDiv.textContent = `✓ ${data.message}`;
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
-          statusDiv.style.color = '#f43f5e';
+          statusDiv.style.color = 'var(--status-danger)';
           statusDiv.textContent = `${data.message || data.error}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
-        statusDiv.style.color = '#f43f5e';
+        statusDiv.style.color = 'var(--status-danger)';
         statusDiv.textContent = `Error: ${e.message}`;
       }
     }
@@ -1735,11 +1128,11 @@
 
       statusDiv.style.display = 'block';
       statusDiv.style.background = 'rgba(99,102,241,0.15)';
-      statusDiv.style.color = '#a5b4fc';
+      statusDiv.style.color = 'var(--brand-300)';
       statusDiv.textContent = `Testing MySQL connection to 127.0.0.1:3306 as user '${user}'...`;
 
       try {
-        const res = await fetch(`${API_BASE}/mysql/test`, {
+        const res = await authFetch(`${API_BASE}/mysql/test`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user: user, password: pwd, host: '127.0.0.1', port: 3306 })
@@ -1747,16 +1140,16 @@
         const data = await res.json();
         if (data.connected) {
           statusDiv.style.background = 'rgba(16,185,129,0.15)';
-          statusDiv.style.color = '#34d399';
+          statusDiv.style.color = 'var(--status-success)';
           statusDiv.textContent = `✓ ${data.message}! Databases found: ${data.databases.join(', ')}`;
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
-          statusDiv.style.color = '#f43f5e';
+          statusDiv.style.color = 'var(--status-danger)';
           statusDiv.textContent = `${data.message}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
-        statusDiv.style.color = '#f43f5e';
+        statusDiv.style.color = 'var(--status-danger)';
         statusDiv.textContent = `Error: ${e.message}`;
       }
     }
@@ -1769,11 +1162,11 @@
 
       statusDiv.style.display = 'block';
       statusDiv.style.background = 'rgba(99,102,241,0.15)';
-      statusDiv.style.color = '#a5b4fc';
+      statusDiv.style.color = 'var(--brand-300)';
       statusDiv.textContent = `Connecting to MySQL, provisioning '${dbName}' database and syncing tables...`;
 
       try {
-        const res = await fetch(`${API_BASE}/mysql/sync`, {
+        const res = await authFetch(`${API_BASE}/mysql/sync`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ user: user, password: pwd, host: '127.0.0.1', port: 3306, database: dbName })
@@ -1781,16 +1174,16 @@
         const data = await res.json();
         if (data.success) {
           statusDiv.style.background = 'rgba(16,185,129,0.15)';
-          statusDiv.style.color = '#34d399';
+          statusDiv.style.color = 'var(--status-success)';
           statusDiv.textContent = `✓ ${data.message}`;
         } else {
           statusDiv.style.background = 'rgba(244,63,94,0.15)';
-          statusDiv.style.color = '#f43f5e';
+          statusDiv.style.color = 'var(--status-danger)';
           statusDiv.textContent = `${data.message}`;
         }
       } catch (e) {
         statusDiv.style.background = 'rgba(244,63,94,0.15)';
-        statusDiv.style.color = '#f43f5e';
+        statusDiv.style.color = 'var(--status-danger)';
         statusDiv.textContent = `Error: ${e.message}`;
       }
     }
@@ -1807,6 +1200,14 @@
         .replace(/\n/g, '\\n')
         .replace(/\r/g, '');
     }
+
+    window.toggleSqlSidebar = function() {
+      const sidebar = document.querySelector('.db-sidebar');
+      if (sidebar) {
+        sidebar.classList.toggle('active-mobile');
+        sidebar.classList.toggle('collapsed');
+      }
+    };
   </script>
 </body>
 </html>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoBank • 2026 Next-Gen Banking & Testing Console</title>
+  <title>NeoBank • Next-Gen Banking & Testing Console</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
@@ -12,18 +12,18 @@
         extend: {
           colors: {
             brand: {
-              50: '#eef2ff',
-              100: '#e0e7ff',
-              400: '#818cf8',
-              500: '#6366f1',
-              600: '#4f46e5',
-              700: '#4338ca',
+              50: 'var(--brand-50)',
+              100: 'var(--brand-100)',
+              400: 'var(--brand-400)',
+              500: 'var(--brand-500)',
+              600: 'var(--brand-600)',
+              700: 'var(--brand-700)',
             },
             surface: {
-              base: '#07090e',
-              card: '#0e131f',
-              panel: '#151b2b',
-              border: 'rgba(255, 255, 255, 0.08)'
+              base: 'var(--bg-primary)',
+              card: 'var(--bg-card)',
+              panel: 'var(--bg-panel)',
+              border: 'var(--border-subtle)'
             }
           }
         }
@@ -60,18 +60,50 @@
     .glow-amber {
       box-shadow: 0 0 25px -5px rgba(245, 158, 11, 0.3);
     }
+    /* Cross-Browser Custom Slim Scrollbars (WebKit & Firefox) */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: rgba(99, 102, 241, 0.4) rgba(15, 23, 42, 0.4);
+    }
+    ::-webkit-scrollbar,
     .custom-scrollbar::-webkit-scrollbar {
       width: 5px;
       height: 5px;
     }
-    .custom-scrollbar::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
+    ::-webkit-scrollbar-track,
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.4);
       border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb,
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.45);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover,
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: rgba(99, 102, 241, 0.85);
+    }
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
     }
     .credit-card {
       background: linear-gradient(135deg, #1e1b4b 0%, #312e81 40%, #0f172a 100%);
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.7), 0 0 25px -5px rgba(99, 102, 241, 0.4);
+    }
+    /* Deep Zoom 10%-500% & Smartwatch Adaptations */
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+      }
+      .page-zoom-controls {
+        align-self: center !important;
+      }
     }
   </style>
 </head>
@@ -91,7 +123,6 @@
         <div>
           <div class="flex items-center space-x-2">
             <h1 class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent">NeoBank</h1>
-            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">v2.0 2026 Edition</span>
           </div>
           <p class="text-xs text-slate-400 hidden sm:block">Stateful Sandbox & Testing Platform</p>
         </div>

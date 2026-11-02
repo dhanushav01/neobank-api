@@ -1,863 +1,849 @@
 /**
- * NeoBank Global Translation & Internationalization Engine
- * Powered by Google Website Translator with silent DOM translation.
- * Completely eliminates Google Translate banner/toolbar iframes and provides
- * smooth frosted-glass transitions without any white screen flashes when switching languages
- * or refreshing the page.
+ * NeoBank Global Google Website Translator Engine
+ * Self-mounting, universal multi-language translation for all application pages.
+ * Supports all 50+ target languages sorted strictly A-Z with SVG country flags,
+ * sticky search filter dropdown, frosted-glass loading transition veil,
+ * full English first-load default, and bi-directional RTL support.
  */
 
-// Vector SVG Country Flags Map for 100% Cross-Platform Consistency
-const COUNTRY_FLAGS_SVG = {
-  US: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg>',
-  ES: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#c60b1e" d="M0 0h640v480H0z"/><path fill="#ffc400" d="M0 120h640v240H0z"/><circle cx="160" cy="240" r="32" fill="#c60b1e"/></svg>',
-  FR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#002654" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce1126" d="M426.7 0H640v480H426.7z"/></svg>',
-  DE: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#dd0000" d="M0 160h640v160H0z"/><path fill="#ffce00" d="M0 320h640v160H0z"/></svg>',
-  IN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#f93" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#128807" d="M0 320h640v160H0z"/><circle cx="320" cy="240" r="44" fill="none" stroke="#008" stroke-width="7"/><circle cx="320" cy="240" r="10" fill="#008"/></svg>',
-  SA: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006c35" d="M0 0h640v480H0z"/><path fill="#fff" d="M160 270h320v15H160z"/><circle cx="320" cy="220" r="30" fill="none" stroke="#fff" stroke-width="6"/></svg>',
-  CN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#de2910" d="M0 0h640v480H0z"/><polygon fill="#ffde00" points="100,50 115,95 160,95 125,120 140,165 100,135 60,165 75,120 40,95 85,95"/></svg>',
-  JP: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><circle cx="320" cy="240" r="120" fill="#bc002d"/></svg>',
-  RU: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#0039a6" d="M0 160h640v160H0z"/><path fill="#d52b1e" d="M0 320h640v160H0z"/></svg>',
-  PT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006600" d="M0 0h256v480H0z"/><path fill="#ff0000" d="M256 0h384v480H256z"/><circle cx="256" cy="240" r="50" fill="#ffff00"/></svg>',
-  IT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#009246" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce2b37" d="M426.7 0H640v480H426.7z"/></svg>',
-  KR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><path fill="#cd2e3a" d="M320 140a100 100 0 0 1 0 200 50 50 0 0 1 0-100 50 50 0 0 0 0-100z"/><path fill="#0047a0" d="M320 240a50 50 0 0 1 0 100 100 100 0 0 1 0-200 50 50 0 0 0 0 100z"/></svg>',
-  TR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#e30a17" d="M0 0h640v480H0z"/><circle cx="280" cy="240" r="90" fill="#fff"/><circle cx="305" cy="240" r="72" fill="#e30a17"/><polygon fill="#fff" points="380,240 410,250 395,225 410,205 385,215 365,195 370,225 350,240 375,245 375,270"/></svg>',
-  NL: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ae1c28" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#21468b" d="M0 320h640v160H0z"/></svg>',
-  BD: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006a4e" d="M0 0h640v480H0z"/><circle cx="290" cy="240" r="110" fill="#f42a41"/></svg>'
-};
+(function(window, document) {
+  'use strict';
 
-function getFlagSvgForLang(code) {
-  const lang = (code || 'en').toLowerCase();
-  if (lang === 'es') return COUNTRY_FLAGS_SVG.ES;
-  if (lang === 'fr') return COUNTRY_FLAGS_SVG.FR;
-  if (lang === 'de') return COUNTRY_FLAGS_SVG.DE;
-  if (['hi', 'ta', 'te'].includes(lang)) return COUNTRY_FLAGS_SVG.IN;
-  if (lang === 'ar') return COUNTRY_FLAGS_SVG.SA;
-  if (lang.startsWith('zh')) return COUNTRY_FLAGS_SVG.CN;
-  if (lang === 'ja') return COUNTRY_FLAGS_SVG.JP;
-  if (lang === 'ru') return COUNTRY_FLAGS_SVG.RU;
-  if (lang === 'pt') return COUNTRY_FLAGS_SVG.PT;
-  if (lang === 'it') return COUNTRY_FLAGS_SVG.IT;
-  if (lang === 'ko') return COUNTRY_FLAGS_SVG.KR;
-  if (lang === 'tr') return COUNTRY_FLAGS_SVG.TR;
-  if (lang === 'nl') return COUNTRY_FLAGS_SVG.NL;
-  if (lang === 'bn') return COUNTRY_FLAGS_SVG.BD;
-  return COUNTRY_FLAGS_SVG.US;
-}
+  // 1. Comprehensive Vector SVG Flags lookup for all target locales
+  const COUNTRY_FLAGS_SVG = {
+    US: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg>',
+    ZA: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#000" d="M0 0h640v480H0z"/><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#e03c31" d="M0 0h640v133.3H0z"/><path fill="#001489" d="M0 346.7h640V480H0z"/><path fill="#fcb514" d="M0 0l240 240L0 480z"/><path fill="#000" d="M0 35l205 205L0 445z"/><path fill="#007749" d="M0 160h180l200 80-200 80H0v-40l140-40L0 200z"/><path fill="#007749" d="M240 200h400v80H240z"/></svg>',
+    SA: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006c35" d="M0 0h640v480H0z"/><path fill="#fff" d="M160 270h320v15H160z"/><circle cx="320" cy="220" r="30" fill="none" stroke="#fff" stroke-width="6"/></svg>',
+    AZ: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#00b5e2" d="M0 0h640v160H0z"/><path fill="#ed2939" d="M0 160h640v160H0z"/><path fill="#3f9c35" d="M0 320h640v160H0z"/><circle cx="300" cy="240" r="45" fill="#fff"/><circle cx="310" cy="240" r="38" fill="#ed2939"/><polygon fill="#fff" points="340,240 348,245 352,238 358,244 360,235 368,238 365,230 373,230 367,224 372,217 364,216 364,208 357,212 352,206 350,214 342,212 346,220 338,225 346,228"/></svg>',
+    BG: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#00966e" d="M0 160h640v160H0z"/><path fill="#d62612" d="M0 320h640v160H0z"/></svg>',
+    BD: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006a4e" d="M0 0h640v480H0z"/><circle cx="290" cy="240" r="110" fill="#f42a41"/></svg>',
+    MM: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fecb00" d="M0 0h640v160H0z"/><path fill="#34b233" d="M0 160h640v160H0z"/><path fill="#ea2839" d="M0 320h640v160H0z"/><polygon fill="#fff" points="320,130 348,216 438,216 365,269 393,355 320,302 247,355 275,269 202,216 292,216"/></svg>',
+    CN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#de2910" d="M0 0h640v480H0z"/><polygon fill="#ffde00" points="100,50 115,95 160,95 125,120 140,165 100,135 60,165 75,120 40,95 85,95"/><circle cx="200" cy="60" r="10" fill="#ffde00"/><circle cx="240" cy="100" r="10" fill="#ffde00"/><circle cx="240" cy="150" r="10" fill="#ffde00"/><circle cx="200" cy="190" r="10" fill="#ffde00"/></svg>',
+    HR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ff0000" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#171796" d="M0 320h640v160H0z"/><rect x="270" y="180" width="100" height="120" fill="#ff0000" stroke="#fff" stroke-width="4"/></svg>',
+    CZ: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v240H0z"/><path fill="#d7141a" d="M0 240h640v240H0z"/><polygon fill="#11457e" points="0,0 320,240 0,480"/></svg>',
+    DK: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#c60c30" d="M0 0h640v480H0z"/><path fill="#fff" d="M180 0h60v480h-60zM0 210h640v60H0z"/></svg>',
+    NL: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ae1c28" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#21468b" d="M0 320h640v160H0z"/></svg>',
+    FI: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><path fill="#002f6c" d="M175 0h90v480h-90zM0 195h640v90H0z"/></svg>',
+    FR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#002654" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce1126" d="M426.7 0H640v480H426.7z"/></svg>',
+    DE: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#000" d="M0 0h640v160H0z"/><path fill="#dd0000" d="M0 160h640v160H0z"/><path fill="#ffce00" d="M0 320h640v160H0z"/></svg>',
+    GR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#0d5eaf" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="53.3" d="M0 80h640M0 186.7h640M0 293.3h640M0 400h640"/><path fill="#0d5eaf" d="M0 0h266.7v266.7H0z"/><path stroke="#fff" stroke-width="53.3" d="M133.3 0v266.7M0 133.3h266.7"/></svg>',
+    IN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#f93" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#128807" d="M0 320h640v160H0z"/><circle cx="320" cy="240" r="44" fill="none" stroke="#008" stroke-width="7"/><circle cx="320" cy="240" r="10" fill="#008"/></svg>',
+    IL: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><path fill="#0038b8" d="M0 60h640v60H0zM0 360h640v60H0z"/><polygon points="320,180 370,270 270,270" fill="none" stroke="#0038b8" stroke-width="12"/><polygon points="320,300 370,210 270,210" fill="none" stroke="#0038b8" stroke-width="12"/></svg>',
+    HU: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ce2939" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#477050" d="M0 320h640v160H0z"/></svg>',
+    ID: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#e70011" d="M0 0h640v240H0z"/><path fill="#fff" d="M0 240h640v240H0z"/></svg>',
+    IT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#009246" d="M0 0h213.3v480H0z"/><path fill="#fff" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce2b37" d="M426.7 0H640v480H426.7z"/></svg>',
+    JP: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><circle cx="320" cy="240" r="120" fill="#bc002d"/></svg>',
+    KZ: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#00afca" d="M0 0h640v480H0z"/><circle cx="320" cy="240" r="60" fill="#fec50c"/></svg>',
+    KR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v480H0z"/><path fill="#cd2e3a" d="M320 140a100 100 0 0 1 0 200 50 50 0 0 1 0-100 50 50 0 0 0 0-100z"/><path fill="#0047a0" d="M320 240a50 50 0 0 1 0 100 100 100 0 0 1 0-200 50 50 0 0 0 0 100z"/></svg>',
+    MY: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#cc0001" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="34.3" d="M0 51.4h640M0 120h640M0 188.6h640M0 257.1h640M0 325.7h640M0 394.3h640"/><path fill="#010066" d="M0 0h320v274.3H0z"/><circle cx="160" cy="137" r="70" fill="#ffcc00"/></svg>',
+    NP: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#003893" d="M0 0h400v480H0z"/><polygon fill="#dc143c" points="30,30 330,220 150,220 330,450 30,450"/><circle cx="120" cy="150" r="35" fill="#fff"/><circle cx="120" cy="350" r="40" fill="#fff"/></svg>',
+    NO: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ba0c2f" d="M0 0h640v480H0z"/><path fill="#fff" d="M160 0h120v480h-120zM0 180h640v120H0z"/><path fill="#00205b" d="M190 0h60v480h-60zM0 210h640v60H0z"/></svg>',
+    IR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#239f40" d="M0 0h640v160H0z"/><path fill="#fff" d="M0 160h640v160H0z"/><path fill="#da0000" d="M0 320h640v160H0z"/><circle cx="320" cy="240" r="45" fill="#da0000"/></svg>',
+    PL: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v240H0z"/><path fill="#dc143c" d="M0 240h640v240H0z"/></svg>',
+    PT: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006600" d="M0 0h256v480H0z"/><path fill="#ff0000" d="M256 0h384v480H256z"/><circle cx="256" cy="240" r="50" fill="#ffff00"/></svg>',
+    RO: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#002b7f" d="M0 0h213.3v480H0z"/><path fill="#fcd116" d="M213.3 0h213.4v480H213.3z"/><path fill="#ce1126" d="M426.7 0H640v480H426.7z"/></svg>',
+    RU: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#0039a6" d="M0 160h640v160H0z"/><path fill="#d52b1e" d="M0 320h640v160H0z"/></svg>',
+    RS: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#c6363c" d="M0 0h640v160H0z"/><path fill="#0c4076" d="M0 160h640v160H0z"/><path fill="#fff" d="M0 320h640v160H0z"/></svg>',
+    LK: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#ffbe29" d="M0 0h640v480H0z"/><path fill="#005f56" d="M60 40h70v400H60z"/><path fill="#eb7400" d="M150 40h70v400h-70z"/><path fill="#8d153a" d="M240 40h340v400H240z"/><circle cx="410" cy="240" r="60" fill="#ffbe29"/></svg>',
+    SK: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#fff" d="M0 0h640v160H0z"/><path fill="#0b4ea2" d="M0 160h640v160H0z"/><path fill="#ee1c25" d="M0 320h640v160H0z"/><circle cx="210" cy="240" r="50" fill="#fff" stroke="#ee1c25" stroke-width="8"/></svg>',
+    ES: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#c60b1e" d="M0 0h640v480H0z"/><path fill="#ffc400" d="M0 120h640v240H0z"/><circle cx="160" cy="240" r="32" fill="#c60b1e"/></svg>',
+    KE: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#000" d="M0 0h640v133.3H0z"/><path fill="#fff" d="M0 133.3h640v26.7H0z"/><path fill="#bb0000" d="M0 160h640v160H0z"/><path fill="#fff" d="M0 320h640v26.7H0z"/><path fill="#006600" d="M0 346.7h640V480H0z"/><ellipse cx="320" cy="240" rx="50" ry="100" fill="#bb0000" stroke="#fff" stroke-width="10"/></svg>',
+    SE: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#006aa7" d="M0 0h640v480H0z"/><path fill="#fecc00" d="M180 0h80v480h-80zM0 200h640v80H0z"/></svg>',
+    PH: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#0038a8" d="M0 0h640v240H0z"/><path fill="#ce1126" d="M0 240h640v240H0z"/><polygon fill="#fff" points="0,0 280,240 0,480"/><circle cx="100" cy="240" r="32" fill="#fcd116"/></svg>',
+    TH: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#a51931" d="M0 0h640v80H0zM0 400h640v80H0z"/><path fill="#f4f5f8" d="M0 80h640v80H0zM0 320h640v80H0z"/><path fill="#2d2a4a" d="M0 160h640v160H0z"/></svg>',
+    TR: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#e30a17" d="M0 0h640v480H0z"/><circle cx="280" cy="240" r="90" fill="#fff"/><circle cx="305" cy="240" r="72" fill="#e30a17"/><polygon fill="#fff" points="380,240 410,250 395,225 410,205 385,215 365,195 370,225 350,240 375,245 375,270"/></svg>',
+    UA: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#005bbb" d="M0 0h640v240H0z"/><path fill="#ffd500" d="M0 240h640v240H0z"/></svg>',
+    PK: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#01411c" d="M0 0h640v480H0z"/><path fill="#fff" d="M0 0h160v480H0z"/><circle cx="400" cy="240" r="90" fill="#fff"/><circle cx="425" cy="225" r="85" fill="#01411c"/><polygon fill="#fff" points="435,200 445,215 460,205 450,225 465,235 445,235 440,255 430,238 410,245 425,230 415,215 430,220"/></svg>',
+    UZ: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#0099b5" d="M0 0h640v150H0z"/><path fill="#ce1126" d="M0 150h640v15H0z"/><path fill="#fff" d="M0 165h640v150H0z"/><path fill="#ce1126" d="M0 315h640v15H0z"/><path fill="#1eb53a" d="M0 330h640v150H0z"/><circle cx="80" cy="75" r="30" fill="#fff"/><circle cx="90" cy="75" r="25" fill="#0099b5"/></svg>',
+    VN: '<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#da251d" d="M0 0h640v480H0z"/><polygon fill="#ff0" points="320,110 358,228 482,228 382,300 420,418 320,345 220,418 258,300 158,228 282,228"/></svg>'
+  };
 
-function updateLanguageFlagIcons(targetLang) {
-  const code = targetLang || getCurrentLanguage() || 'en';
-  const flagSvg = getFlagSvgForLang(code);
-  document.querySelectorAll('.neobank-lang-flag-icon').forEach(iconEl => {
-    iconEl.innerHTML = flagSvg;
-  });
-}
+  // 2. Strict Alphabetical Order (A-Z by English display name) for all 52 supported target languages
+  const LANGUAGES = [
+    { code: 'af', name: 'Afrikaans (ZA)', flag: 'ZA' },
+    { code: 'ar', name: 'Arabic (SA/AE)', flag: 'SA', dir: 'rtl' },
+    { code: 'az', name: 'Azerbaijani (AZ)', flag: 'AZ' },
+    { code: 'bn', name: 'Bengali (BD/IN)', flag: 'BD' },
+    { code: 'bg', name: 'Bulgarian (BG)', flag: 'BG' },
+    { code: 'my', name: 'Burmese (MM)', flag: 'MM' },
+    { code: 'zh-CN', name: 'Chinese Mandarin (CN)', flag: 'CN' },
+    { code: 'hr', name: 'Croatian (HR)', flag: 'HR' },
+    { code: 'cs', name: 'Czech (CZ)', flag: 'CZ' },
+    { code: 'da', name: 'Danish (DK)', flag: 'DK' },
+    { code: 'nl', name: 'Dutch (NL)', flag: 'NL' },
+    { code: 'en', name: 'English (US/UK)', flag: 'US' },
+    { code: 'fi', name: 'Finnish (FI)', flag: 'FI' },
+    { code: 'fr', name: 'French (FR)', flag: 'FR' },
+    { code: 'de', name: 'German (DE)', flag: 'DE' },
+    { code: 'el', name: 'Greek (GR)', flag: 'GR' },
+    { code: 'gu', name: 'Gujarati (IN)', flag: 'IN' },
+    { code: 'he', name: 'Hebrew (IL)', flag: 'IL', dir: 'rtl' },
+    { code: 'hi', name: 'Hindi (IN)', flag: 'IN' },
+    { code: 'hu', name: 'Hungarian (HU)', flag: 'HU' },
+    { code: 'id', name: 'Indonesian (ID)', flag: 'ID' },
+    { code: 'it', name: 'Italian (IT)', flag: 'IT' },
+    { code: 'ja', name: 'Japanese (JP)', flag: 'JP' },
+    { code: 'kn', name: 'Kannada (IN)', flag: 'IN' },
+    { code: 'kk', name: 'Kazakh (KZ)', flag: 'KZ' },
+    { code: 'ko', name: 'Korean (KR)', flag: 'KR' },
+    { code: 'ms', name: 'Malay (MY)', flag: 'MY' },
+    { code: 'ml', name: 'Malayalam (IN)', flag: 'IN' },
+    { code: 'mr', name: 'Marathi (IN)', flag: 'IN' },
+    { code: 'ne', name: 'Nepali (NP)', flag: 'NP' },
+    { code: 'no', name: 'Norwegian (NO)', flag: 'NO' },
+    { code: 'fa', name: 'Persian (IR)', flag: 'IR', dir: 'rtl' },
+    { code: 'pl', name: 'Polish (PL)', flag: 'PL' },
+    { code: 'pt', name: 'Portuguese (PT/BR)', flag: 'PT' },
+    { code: 'pa', name: 'Punjabi (IN)', flag: 'IN' },
+    { code: 'ro', name: 'Romanian (RO)', flag: 'RO' },
+    { code: 'ru', name: 'Russian (RU)', flag: 'RU' },
+    { code: 'sr', name: 'Serbian (RS)', flag: 'RS' },
+    { code: 'si', name: 'Sinhala (LK)', flag: 'LK' },
+    { code: 'sk', name: 'Slovak (SK)', flag: 'SK' },
+    { code: 'es', name: 'Spanish (ES)', flag: 'ES' },
+    { code: 'sw', name: 'Swahili (KE/TZ)', flag: 'KE' },
+    { code: 'sv', name: 'Swedish (SE)', flag: 'SE' },
+    { code: 'tl', name: 'Tagalog (PH)', flag: 'PH' },
+    { code: 'ta', name: 'Tamil (IN)', flag: 'IN' },
+    { code: 'te', name: 'Telugu (IN)', flag: 'IN' },
+    { code: 'th', name: 'Thai (TH)', flag: 'TH' },
+    { code: 'tr', name: 'Turkish (TR)', flag: 'TR' },
+    { code: 'uk', name: 'Ukrainian (UA)', flag: 'UA' },
+    { code: 'ur', name: 'Urdu (PK)', flag: 'PK', dir: 'rtl' },
+    { code: 'uz', name: 'Uzbek (UZ)', flag: 'UZ' },
+    { code: 'vi', name: 'Vietnamese (VN)', flag: 'VN' }
+  ];
 
-// Supported Languages Map (Clean text labels without emoji prefixes that render as text on desktop)
-const SUPPORTED_LANGUAGES = [
-  { code: 'en', label: 'English (EN)', country: 'US' },
-  { code: 'es', label: 'Español (ES)', country: 'ES' },
-  { code: 'fr', label: 'Français (FR)', country: 'FR' },
-  { code: 'de', label: 'Deutsch (DE)', country: 'DE' },
-  { code: 'hi', label: 'हिन्दी (HI)', country: 'IN' },
-  { code: 'ar', label: 'العربية (AR)', country: 'SA' },
-  { code: 'zh-CN', label: '中文 (ZH)', country: 'CN' },
-  { code: 'ja', label: '日本語 (JA)', country: 'JP' },
-  { code: 'ru', label: 'Русский (RU)', country: 'RU' },
-  { code: 'pt', label: 'Português (PT)', country: 'PT' },
-  { code: 'it', label: 'Italiano (IT)', country: 'IT' },
-  { code: 'ko', label: '한국어 (KO)', country: 'KR' },
-  { code: 'tr', label: 'Türkçe (TR)', country: 'TR' },
-  { code: 'nl', label: 'Nederlands (NL)', country: 'NL' },
-  { code: 'bn', label: 'বাংলা (BN)', country: 'BD' },
-  { code: 'ta', label: 'தமிழ் (TA)', country: 'IN' },
-  { code: 'te', label: 'తెలుగు (TE)', country: 'IN' }
-];
+  function getFlagSvgByCode(flagKey) {
+    return COUNTRY_FLAGS_SVG[flagKey] || COUNTRY_FLAGS_SVG.US;
+  }
 
-const CANARY_ID = 'neobank-translate-canary';
-const ORIGINAL_CANARY_TEXT = 'Digital Banking Platform';
+  function getFlagSvg(langCode) {
+    const clean = (langCode || 'en').toLowerCase();
+    const item = LANGUAGES.find(l => l.code.toLowerCase() === clean || 
+      (clean === 'zh' && l.code.startsWith('zh')) ||
+      (clean === 'iw' && l.code === 'he'));
+    if (item && item.flag && COUNTRY_FLAGS_SVG[item.flag]) {
+      return COUNTRY_FLAGS_SVG[item.flag];
+    }
+    return COUNTRY_FLAGS_SVG.US;
+  }
 
-// Pre-activate frosted blur immediately if non-English language is detected from cookie/storage
-(function preActivateTransition() {
-  try {
-    const local = localStorage.getItem('neobank_lang');
-    if (local === 'en') {
-      // User explicitly wants English; purge any stray cookies immediately
-      document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/;';
-      document.cookie = 'googtrans=none; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/;';
+  // 3. Pre-activation of frosted blur immediately on document evaluation if non-English
+  (function preActivateBlur() {
+    try {
+      const stored = localStorage.getItem('neobank_lang');
+      let lang = stored;
+      if (!lang) {
+        const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([a-zA-Z-]+)/);
+        lang = match && match[1];
+      }
+      if (lang && lang !== 'en') {
+        const style = document.createElement('style');
+        style.id = 'neobank-early-blur';
+        style.textContent = `
+          main, #screen-auth, .dashboard-container, #wizard-section, .bank-paper-sheet {
+            filter: blur(12px) saturate(1.15) !important;
+            opacity: 0.65 !important;
+          }
+        `;
+        (document.head || document.documentElement).appendChild(style);
+      }
+    } catch (e) {}
+  })();
+
+  // 4. Frosted Glass Transition Elements
+  function getTransitionElements() {
+    let backdrop = document.getElementById('neobank-lang-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'neobank-lang-backdrop';
+      backdrop.className = 'lang-transition-backdrop';
+      backdrop.innerHTML = `
+        <div id="neobank-lang-pill" class="lang-transition-pill">
+          <span class="lang-pulse-dot"></span>
+          <span id="neobank-lang-pill-text">Translating...</span>
+        </div>
+      `;
+      const mountPoint = document.body || document.documentElement;
+      if (mountPoint) {
+        mountPoint.appendChild(backdrop);
+      }
+    }
+    const pill = document.getElementById('neobank-lang-pill');
+    const pillText = document.getElementById('neobank-lang-pill-text');
+    return { backdrop, pill, pillText };
+  }
+
+  function showTransitionMask(targetLangCode) {
+    const langObj = LANGUAGES.find(l => l.code === targetLangCode || (l.code === 'zh-CN' && targetLangCode === 'zh'));
+    const langLabel = langObj ? langObj.name : (targetLangCode ? targetLangCode.toUpperCase() : 'English');
+
+    const { backdrop, pill, pillText } = getTransitionElements();
+    if (pillText) {
+      pillText.textContent = (targetLangCode === 'en') ? 'Restoring English...' : `Translating to ${langLabel}...`;
+    }
+
+    if (document.body) {
+      document.body.classList.add('lang-transitioning');
+    }
+    if (backdrop) backdrop.classList.add('active');
+    if (pill) pill.classList.add('active');
+  }
+
+  function hideTransitionMask() {
+    const earlyStyle = document.getElementById('neobank-early-blur');
+    if (earlyStyle) earlyStyle.remove();
+
+    const backdrop = document.getElementById('neobank-lang-backdrop');
+    const pill = document.getElementById('neobank-lang-pill');
+
+    if (document.body) {
+      document.body.classList.remove('lang-transitioning');
+    }
+    if (pill) pill.classList.remove('active');
+    if (backdrop) backdrop.classList.remove('active');
+  }
+
+  function waitForTranslationComplete(targetLang, callback) {
+    if (targetLang === 'en') {
+      setTimeout(() => {
+        if (typeof callback === 'function') callback();
+      }, 80);
       return;
     }
-    const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([a-zA-Z-]+)/);
-    const lang = (match && match[1] && match[1] !== 'en') ? match[1] : local;
-    if (lang && lang !== 'en') {
-      const style = document.createElement('style');
-      style.id = 'neobank-early-blur';
-      style.textContent = `
-        main, #screen-auth, .dashboard-container, #wizard-section { filter: blur(12px) saturate(1.15) !important; opacity: 0.65 !important; }
-      `;
-      if (document.head) {
-        document.head.appendChild(style);
-      } else {
-        document.addEventListener('DOMContentLoaded', () => {
-          if (document.head && !document.getElementById('neobank-early-blur')) {
-            document.head.appendChild(style);
+
+    let completed = false;
+    const finish = () => {
+      if (completed) return;
+      completed = true;
+      if (observer) observer.disconnect();
+      if (typeof callback === 'function') callback();
+    };
+
+    const fallbackTimer = setTimeout(finish, 1300);
+
+    let observer = null;
+    if (typeof MutationObserver !== 'undefined' && document.body) {
+      observer = new MutationObserver((mutations) => {
+        for (const m of mutations) {
+          if (m.addedNodes) {
+            for (const node of m.addedNodes) {
+              if (node.nodeName === 'FONT' || (node.querySelector && node.querySelector('font'))) {
+                clearTimeout(fallbackTimer);
+                setTimeout(finish, 100);
+                return;
+              }
+            }
           }
-        });
-      }
-      // Fail-safe auto-unblur: never leave the screen stuck blurred for more than 1.8s
-      setTimeout(() => {
-        const s = document.getElementById('neobank-early-blur');
-        if (s) s.remove();
-        if (typeof hideTransitionMask === 'function') hideTransitionMask();
-      }, 1800);
-    }
-  } catch (e) {}
-})();
-
-// Helper to clear all translation cookies thoroughly across paths and hostnames
-function clearAllTranslateCookies() {
-  const host = window.location.hostname;
-  const isIp = /^(\d+\.){3}\d+$/.test(host);
-  
-  const hostParts = host.split('.');
-  while (hostParts.length > 2) hostParts.shift();
-  const parentDomain = hostParts.join('.');
-
-  const paths = ['/', window.location.pathname, ''];
-  const pathSegments = window.location.pathname.split('/').filter(Boolean);
-  let acc = '';
-  pathSegments.forEach(s => {
-    acc += '/' + s;
-    paths.push(acc);
-    paths.push(acc + '/');
-  });
-
-  const domains = isIp ? ['', host] : ['', host, '.' + host, parentDomain, '.' + parentDomain];
-  const names = ['googtrans', 'googtrans_saved', 'googtrans_prev', 'googtransopt'];
-
-  try {
-    localStorage.removeItem('googtrans');
-    sessionStorage.removeItem('googtrans');
-    localStorage.setItem('neobank_lang', 'en');
-    sessionStorage.setItem('neobank_lang', 'en');
-  } catch (e) {}
-
-  names.forEach(name => {
-    paths.forEach(p => {
-      domains.forEach(d => {
-        const pathPart = p ? `path=${p};` : 'path=/;';
-        const domainPart = d ? `domain=${d};` : '';
-        document.cookie = `${name}=; ${pathPart} ${domainPart} expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;`;
-        document.cookie = `${name}=none; ${pathPart} ${domainPart} expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;`;
-        document.cookie = `${name}=; ${pathPart} expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;`;
+        }
       });
-    });
-  });
-
-  // Explicitly remove googtrans without setting /en/en
-  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/;';
-  document.cookie = 'googtrans=none; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/;';
-  document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;';
-
-  // Clean URL hash if it contains googtrans
-  if (window.location.hash && window.location.hash.includes('googtrans')) {
-    try {
-      history.pushState("", document.title, window.location.pathname + window.location.search);
-    } catch (e) {}
-  }
-}
-
-// Helper to set cookie for Google Translate
-function setTranslateCookie(lang) {
-  let gCode = lang;
-  if (lang === 'zh') gCode = 'zh-CN';
-  
-  if (lang === 'en') {
-    clearAllTranslateCookies();
-  } else {
-    const cookieVal = `/en/${gCode}`;
-    document.cookie = `googtrans=${cookieVal}; path=/;`;
-    const host = window.location.hostname;
-    const isIp = /^(\d+\.){3}\d+$/.test(host);
-    if (host && !isIp) {
-      document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`;
+      observer.observe(document.body, { childList: true, subtree: true });
     }
   }
-}
 
-// Get current active language code
-function getCurrentLanguage() {
-  const local = localStorage.getItem('neobank_lang');
-  if (local === 'en') {
+  // 5. Default Application Language strictly to English (EN) on first visit
+  function getActiveLanguage() {
+    try {
+      const stored = localStorage.getItem('neobank_lang');
+      if (stored) return stored;
+    } catch (e) {}
+
+    // If no explicit user selection was stored, default strictly to English (EN)
     return 'en';
   }
-  const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([a-zA-Z-]+)/);
-  if (match && match[1] && match[1] !== 'en') {
-    return match[1];
-  }
-  if (local && local !== 'en') {
-    return local;
-  }
-  return 'en';
-}
 
-// Ensure translation canary element exists in the DOM for deterministic state tracking
-function ensureCanaryElement() {
-  let canary = document.getElementById(CANARY_ID);
-  if (!canary) {
-    canary = document.createElement('div');
-    canary.id = CANARY_ID;
-    canary.setAttribute('aria-hidden', 'true');
-    canary.style.cssText = 'position:fixed;bottom:-9999px;right:-9999px;width:1px;height:1px;overflow:hidden;opacity:0.01;pointer-events:none;';
-    canary.textContent = ORIGINAL_CANARY_TEXT;
-    const mountPoint = document.body || document.documentElement;
-    if (mountPoint) {
-      mountPoint.appendChild(canary);
-    }
-  }
-  return canary;
-}
+  function purgeAllGoogtransCookies() {
+    const host = window.location.hostname;
+    const isLocal = host === 'localhost' || /^(\d+\.){3}\d+$/.test(host);
+    const hostParts = host.split('.');
+    const parentDomain = hostParts.length > 2 ? hostParts.slice(-2).join('.') : host;
 
-function getCanaryText() {
-  const el = ensureCanaryElement();
-  return el ? (el.textContent || '').trim() : '';
-}
+    const paths = ['/', window.location.pathname, ''];
+    const pathSegments = window.location.pathname.split('/').filter(Boolean);
+    let acc = '';
+    pathSegments.forEach(s => {
+      acc += '/' + s;
+      paths.push(acc);
+      paths.push(acc + '/');
+    });
 
-// Ensure smooth transition frosted-glass backdrop and pill UI
-function getTransitionElements() {
-  let backdrop = document.getElementById('neobank-lang-backdrop');
-  if (!backdrop) {
-    backdrop = document.createElement('div');
-    backdrop.id = 'neobank-lang-backdrop';
-    backdrop.className = 'lang-transition-backdrop';
-    backdrop.innerHTML = `
-      <div id="neobank-lang-pill" class="lang-transition-pill">
-        <span class="lang-pulse-dot"></span>
-        <span id="neobank-lang-pill-text">Translating...</span>
-      </div>
-    `;
-    const mountPoint = document.body || document.documentElement;
-    if (mountPoint) {
-      mountPoint.appendChild(backdrop);
-    }
-  }
-  const pill = document.getElementById('neobank-lang-pill');
-  const pillText = document.getElementById('neobank-lang-pill-text');
-  return { backdrop, pill, pillText };
-}
+    const domains = isLocal ? [''] : ['', host, '.' + host, parentDomain, '.' + parentDomain];
+    const names = ['googtrans', 'googtrans_saved', 'googtrans_prev', 'googtransopt'];
 
-// Show frosted glass veil and pill indicator
-function showTransitionMask(targetLangCode) {
-  const langObj = SUPPORTED_LANGUAGES.find(l => l.code === targetLangCode || (l.code === 'zh-CN' && targetLangCode === 'zh'));
-  const langLabel = langObj ? langObj.label : targetLangCode.toUpperCase();
-
-  const { backdrop, pill, pillText } = getTransitionElements();
-  if (pillText) {
-    pillText.textContent = (targetLangCode === 'en') ? 'Restoring English...' : `Translating to ${langLabel}...`;
-  }
-
-  if (document.body) {
-    document.body.classList.add('lang-transitioning');
-  }
-  if (backdrop) backdrop.classList.add('active');
-  if (pill) pill.classList.add('active');
-}
-
-// Hide frosted glass veil
-function hideTransitionMask() {
-  const earlyStyle = document.getElementById('neobank-early-blur');
-  if (earlyStyle) earlyStyle.remove();
-
-  const backdrop = document.getElementById('neobank-lang-backdrop');
-  const pill = document.getElementById('neobank-lang-pill');
-
-  if (document.body) {
-    document.body.classList.remove('lang-transitioning');
-  }
-
-  if (pill) pill.classList.remove('active');
-  if (backdrop) {
-    backdrop.classList.remove('active');
-  }
-}
-
-// Deep restore function to invoke internal Google Translate restore routines
-function restoreGoogleTranslate() {
-  let restored = false;
-
-  const inst = window.googleTranslator || 
-    (window.google && window.google.translate && window.google.translate.TranslateElement && window.google.translate.TranslateElement.getInstance && window.google.translate.TranslateElement.getInstance());
-
-  if (inst) {
-    try {
-      if (inst.o && typeof inst.o.ra === 'function') {
-        inst.o.ra(''); // Silently resets combo without triggering change event
-      }
-    } catch (e) {}
-    try {
-      inst.l = '';
-      inst.H = false;
-    } catch (e) {}
-    try {
-      if (inst.G && inst.G.j && typeof inst.G.j.restore === 'function') {
-        inst.G.j.restore();
-        restored = true;
-      }
-    } catch (e) {}
-    try {
-      if (inst.G && typeof inst.G.restore === 'function') {
-        inst.G.restore();
-        restored = true;
-      }
-    } catch (e) {}
-    try {
-      if (typeof inst.restore === 'function') {
-        inst.restore();
-        restored = true;
-      }
-    } catch (e) {}
-  }
-
-  // 1. Google TranslateService instance restore
-  try {
-    if (window.google && window.google.translate && window.google.translate.TranslateService) {
-      const ts = window.google.translate.TranslateService.getInstance();
-      if (ts && typeof ts.restore === 'function') {
-        ts.restore();
-        restored = true;
-      }
-    }
-  } catch (e) {}
-
-  // 2. Saved global instance fallback
-  try {
-    if (window.googleTranslator) {
-      Object.keys(window.googleTranslator).forEach(k => {
-        const item = window.googleTranslator[k];
-        if (item && typeof item.restore === 'function') {
-          try { item.restore(); restored = true; } catch (e) {}
-        }
+    names.forEach(name => {
+      paths.forEach(p => {
+        domains.forEach(d => {
+          const pathPart = p ? `path=${p};` : 'path=/;';
+          const domainPart = d ? `domain=${d};` : '';
+          document.cookie = `${name}=; ${pathPart} ${domainPart} expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;`;
+          document.cookie = `${name}=; ${pathPart} expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0;`;
+        });
       });
-    }
-  } catch (e) {}
+    });
 
-  // 3. Trigger restore button in Google banner iframe
-  try {
-    document.querySelectorAll('iframe.goog-te-banner-frame, iframe[class*="VIpgJd"]').forEach(banner => {
-      try {
-        const doc = banner.contentDocument || banner.contentWindow.document;
-        const btn = doc.querySelector('button[id*="restore"], .goog-te-button button, button');
-        if (btn) {
-          btn.click();
+    document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 GMT; max-age=0; path=/;';
+  }
+
+  function setLanguageCookies(lang) {
+    const clean = (lang === 'zh') ? 'zh-CN' : (lang || 'en');
+    try {
+      localStorage.setItem('neobank_lang', clean);
+      sessionStorage.setItem('neobank_lang', clean);
+    } catch (e) {}
+
+    purgeAllGoogtransCookies();
+
+    if (clean === 'en') {
+      return;
+    }
+
+    const host = window.location.hostname;
+    const isLocal = host === 'localhost' || /^(\d+\.){3}\d+$/.test(host);
+    const cookieVal = `/en/${clean}`;
+
+    document.cookie = `googtrans=${cookieVal}; path=/;`;
+    if (!isLocal) {
+      document.cookie = `googtrans=${cookieVal}; path=/; domain=${host};`;
+      const parts = host.split('.');
+      if (parts.length > 2) {
+        document.cookie = `googtrans=${cookieVal}; path=/; domain=.${parts.slice(-2).join('.')};`;
+      }
+    }
+  }
+
+  function syncRtlDirection(lang) {
+    if (['ar', 'fa', 'ur', 'he'].includes(lang)) {
+      document.documentElement.setAttribute('dir', 'rtl');
+    } else {
+      document.documentElement.setAttribute('dir', 'ltr');
+    }
+  }
+
+  function restoreGoogleTranslate() {
+    let restored = false;
+    try {
+      if (window.google && window.google.translate && window.google.translate.TranslateService) {
+        const ts = window.google.translate.TranslateService.getInstance();
+        if (ts && typeof ts.restore === 'function') {
+          ts.restore();
           restored = true;
         }
-      } catch (e) {}
-    });
-  } catch (e) {}
-
-  return restored;
-}
-
-// Reliable translation settlement checker
-let activeVerifyTimer = null;
-let activeVerifyObserver = null;
-
-function waitForTranslationComplete(targetLang, oldCanaryText, onComplete) {
-  if (activeVerifyTimer) clearInterval(activeVerifyTimer);
-  if (activeVerifyObserver) {
-    try { activeVerifyObserver.disconnect(); } catch (e) {}
-  }
-
-  const startTime = Date.now();
-  const MAX_WAIT_MS = 2500; // Safe upper bound to never block users
-
-  let isSettled = false;
-  const finish = () => {
-    if (isSettled) return;
-    isSettled = true;
-    if (activeVerifyTimer) clearInterval(activeVerifyTimer);
-    if (activeVerifyObserver) {
-      try { activeVerifyObserver.disconnect(); } catch (e) {}
-    }
-    setTimeout(() => {
-      onComplete();
-    }, 60);
-  };
-
-  const checkStatus = () => {
-    const elapsed = Date.now() - startTime;
-    if (elapsed >= MAX_WAIT_MS) {
-      finish();
-      return;
-    }
-
-    const currentCanary = getCanaryText();
-    const fontCount = document.querySelectorAll('font').length;
-
-    if (targetLang === 'en') {
-      if (currentCanary === ORIGINAL_CANARY_TEXT && fontCount === 0) {
-        finish();
       }
-    } else {
-      const isNotEnglish = (currentCanary !== ORIGINAL_CANARY_TEXT && currentCanary.length > 0);
-      const isNotOldLang = !oldCanaryText || (currentCanary !== oldCanaryText);
-      const hasTranslatedFonts = fontCount >= 2;
+    } catch (e) {}
 
-      if (isNotEnglish && isNotOldLang && hasTranslatedFonts) {
-        finish();
-      }
-    }
-  };
-
-  activeVerifyTimer = setInterval(checkStatus, 35);
-
-  try {
-    activeVerifyObserver = new MutationObserver(() => {
-      checkStatus();
-    });
-    if (document.body) {
-      activeVerifyObserver.observe(document.body, {
-        childList: true,
-        subtree: true,
-        characterData: true
+    try {
+      document.querySelectorAll('iframe.goog-te-banner-frame, iframe[class*="VIpgJd"]').forEach(banner => {
+        try {
+          const doc = banner.contentDocument || banner.contentWindow.document;
+          const btn = doc.querySelector('button[id*="restore"], .goog-te-button button, button');
+          if (btn) {
+            btn.click();
+            restored = true;
+          }
+        } catch (e) {}
       });
-    }
-  } catch (e) {}
+    } catch (e) {}
 
-  checkStatus();
-}
-
-// Global initialization callback for Google Translate
-window.googleTranslateElementInit = function() {
-  const container = document.getElementById('google_translate_element');
-  if (!container) {
-    const el = document.createElement('div');
-    el.id = 'google_translate_element';
-    el.style.display = 'none';
-    const mount = document.body || document.documentElement;
-    if (mount) mount.appendChild(el);
+    return restored;
   }
 
-  if (window.google && window.google.translate) {
-    window.googleTranslator = new window.google.translate.TranslateElement({
-      pageLanguage: 'en',
-      includedLanguages: 'en,es,fr,de,hi,ar,zh-CN,ja,ru,pt,it,ko,tr,nl,bn,ta,te,mr,ur',
-      autoDisplay: false
-    }, 'google_translate_element');
-  }
-};
+  // 6. Custom Searchable Dropdown with Sticky Search & SVG Country Flags in Every List Item
+  function renderLanguageDropdown(container, currentLang) {
+    if (!container) return;
 
-// Protect language select elements from ever being translated by Google Translate
-function protectLanguageSelects() {
-  document.querySelectorAll('.neobank-lang-select').forEach(select => {
-    if (!select.classList.contains('notranslate')) select.classList.add('notranslate');
-    select.classList.remove('skiptranslate');
-    if (select.getAttribute('translate') !== 'no') select.setAttribute('translate', 'no');
-    const parent = select.parentElement;
-    if (parent) {
-      if (!parent.classList.contains('neobank-lang-wrap')) parent.classList.add('neobank-lang-wrap');
-      if (!parent.classList.contains('notranslate')) parent.classList.add('notranslate');
-      parent.classList.remove('skiptranslate');
-      if (parent.getAttribute('translate') !== 'no') parent.setAttribute('translate', 'no');
+    const activeItem = LANGUAGES.find(l => l.code === currentLang || (l.code === 'zh-CN' && currentLang === 'zh')) || LANGUAGES.find(l => l.code === 'en');
+    const flagSvg = getFlagSvg(currentLang);
+    const displayName = activeItem ? activeItem.name : 'English (US/UK)';
+
+    // Build the list items HTML containing country flags for each option
+    const itemsHtml = LANGUAGES.map(l => {
+      const isSelected = (l.code === currentLang || (l.code === 'zh-CN' && currentLang === 'zh'));
+      const itemFlagSvg = getFlagSvgByCode(l.flag);
+      return `
+        <div class="neobank-lang-item ${isSelected ? 'active' : ''}" 
+             data-code="${l.code}" 
+             data-name="${l.name.toLowerCase()}" 
+             data-flag="${(l.flag || '').toLowerCase()}"
+             role="option" 
+             tabindex="0"
+             aria-selected="${isSelected ? 'true' : 'false'}">
+          <span class="neobank-lang-item-flag" aria-hidden="true">${itemFlagSvg}</span>
+          <span class="neobank-lang-item-name">${l.name}</span>
+          <span class="neobank-lang-item-code">${l.code.toUpperCase()}</span>
+          ${isSelected ? '<span class="neobank-lang-item-check" aria-hidden="true">✓</span>' : ''}
+        </div>
+      `;
+    }).join('');
+
+    container.innerHTML = `
+      <div class="neobank-lang-custom-dropdown notranslate" translate="no" id="neobank-lang-dropdown">
+        <button type="button" class="neobank-lang-trigger" id="neobank-lang-trigger-btn" aria-haspopup="listbox" aria-expanded="false" title="Select UI Language (50+ Target Languages)">
+          <span class="neobank-lang-trigger-flag" id="neobank-lang-trigger-flag">${flagSvg}</span>
+          <span class="neobank-lang-trigger-name" id="neobank-lang-trigger-name">${displayName}</span>
+          <svg class="neobank-lang-trigger-arrow" viewBox="0 0 20 20" fill="currentColor" width="12" height="12">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        
+        <div class="neobank-lang-menu" id="neobank-lang-menu" role="listbox" style="display: none;">
+          <div class="neobank-lang-search-box">
+            <div class="neobank-lang-search-wrapper">
+              <input type="text" class="neobank-lang-search-input" id="neobank-lang-search-input" placeholder="Search language..." autocomplete="off" spellcheck="false">
+              <button type="button" class="neobank-lang-search-clear" id="neobank-lang-search-clear" style="display:none;" title="Clear search" aria-label="Clear search">✕</button>
+            </div>
+          </div>
+          
+          <div class="neobank-lang-items-container custom-scrollbar" id="neobank-lang-items-list">
+            ${itemsHtml}
+          </div>
+        </div>
+      </div>
+    `;
+
+    setupLanguageDropdownController(container);
+  }
+
+  function setupLanguageDropdownController(container) {
+    const trigger = container.querySelector('#neobank-lang-trigger-btn');
+    const menu = container.querySelector('#neobank-lang-menu');
+    const searchInput = container.querySelector('#neobank-lang-search-input');
+    const clearBtn = container.querySelector('#neobank-lang-search-clear');
+    const itemsList = container.querySelector('#neobank-lang-items-list');
+    const dropdownWrap = container.querySelector('#neobank-lang-dropdown');
+
+    if (!trigger || !menu || !searchInput || !itemsList) return;
+
+    function openMenu() {
+      menu.style.display = 'block';
+      trigger.setAttribute('aria-expanded', 'true');
+      if (dropdownWrap) dropdownWrap.classList.add('open');
+      searchInput.value = '';
+      if (clearBtn) clearBtn.style.display = 'none';
+      filterItems('');
+      setTimeout(() => searchInput.focus(), 50);
+
+      // Scroll active item into view
+      const activeEl = itemsList.querySelector('.neobank-lang-item.active');
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest' });
+      }
     }
 
-    // Protect each option and restore original label if Google Translate altered it
-    Array.from(select.options).forEach(opt => {
-      if (!opt.classList.contains('notranslate')) opt.classList.add('notranslate');
-      opt.classList.remove('skiptranslate');
-      if (opt.getAttribute('translate') !== 'no') opt.setAttribute('translate', 'no');
-      const langObj = SUPPORTED_LANGUAGES.find(l => l.code === opt.value || (l.code === 'zh-CN' && opt.value === 'zh'));
-      if (langObj) {
-        const expected = langObj.label;
-        if (opt.textContent.trim() !== expected || opt.children.length > 0) {
-          opt.textContent = expected;
+    function closeMenu() {
+      menu.style.display = 'none';
+      trigger.setAttribute('aria-expanded', 'false');
+      if (dropdownWrap) dropdownWrap.classList.remove('open');
+    }
+
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = menu.style.display !== 'none';
+      if (isOpen) {
+        closeMenu();
+      } else {
+        openMenu();
+      }
+    });
+
+    // Prevent clicks inside the menu / search input from closing the menu
+    menu.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    menu.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+    });
+
+    searchInput.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+      e.stopPropagation();
+      if (e.key === 'Escape') {
+        if (searchInput.value) {
+          searchInput.value = '';
+          if (clearBtn) clearBtn.style.display = 'none';
+          filterItems('');
+        } else {
+          closeMenu();
+          trigger.focus();
         }
       }
     });
 
-    // Dedicated observer on the select to continuously revert any mutation caused by Google Translate
-    if (!select._protectionObserver && typeof MutationObserver !== 'undefined') {
-      select._protectionObserver = new MutationObserver(() => {
-        Array.from(select.options).forEach(opt => {
-          const langObj = SUPPORTED_LANGUAGES.find(l => l.code === opt.value || (l.code === 'zh-CN' && opt.value === 'zh'));
-          if (langObj) {
-            const expected = langObj.label;
-            if (opt.textContent.trim() !== expected || opt.children.length > 0) {
-              opt.textContent = expected;
-            }
-          }
-        });
+    // Real-time search filtering across all 52 languages
+    function filterItems(query) {
+      const q = (query || '').trim().toLowerCase();
+      const items = itemsList.querySelectorAll('.neobank-lang-item');
+      let visibleCount = 0;
+
+      items.forEach(item => {
+        const name = (item.getAttribute('data-name') || '').toLowerCase();
+        const code = (item.getAttribute('data-code') || '').toLowerCase();
+        const flag = (item.getAttribute('data-flag') || '').toLowerCase();
+        const labelEl = item.querySelector('.neobank-lang-item-name');
+        const labelText = (labelEl ? labelEl.textContent : '').toLowerCase();
+        const matches = !q || name.includes(q) || code.includes(q) || flag.includes(q) || labelText.includes(q);
+        if (matches) {
+          item.classList.remove('hidden');
+          item.style.setProperty('display', 'flex', 'important');
+          visibleCount++;
+        } else {
+          item.classList.add('hidden');
+          item.style.setProperty('display', 'none', 'important');
+        }
       });
-      select._protectionObserver.observe(select, {
-        childList: true,
-        subtree: true,
-        characterData: true
-      });
-    }
-  });
-}
 
-// Suppress Google Translate Top Banner Header, Toolbar, and Overlays Silently
-function suppressGoogleBanner() {
-  protectLanguageSelects();
+      let noMatchEl = itemsList.querySelector('.neobank-lang-no-match');
+      if (visibleCount === 0) {
+        if (!noMatchEl) {
+          noMatchEl = document.createElement('div');
+          noMatchEl.className = 'neobank-lang-no-match';
+          itemsList.appendChild(noMatchEl);
+        }
+        noMatchEl.textContent = `No languages matching "${query}"`;
+        noMatchEl.style.display = 'block';
+      } else if (noMatchEl) {
+        noMatchEl.style.display = 'none';
+      }
+    }
 
-  const styleEl = document.getElementById('anti-google-banner');
-  if (styleEl && document.head && !document.head.contains(styleEl)) {
-    document.head.appendChild(styleEl);
-  }
-
-  if (document.documentElement) {
-    if (document.documentElement.style.top !== '0px') {
-      document.documentElement.style.setProperty('top', '0px', 'important');
-    }
-    if (document.documentElement.style.position === 'relative') {
-      document.documentElement.style.setProperty('position', 'static', 'important');
-    }
-    if (document.documentElement.style.marginTop !== '0px') {
-      document.documentElement.style.setProperty('margin-top', '0px', 'important');
-    }
-  }
-
-  if (document.body) {
-    if (document.body.style.top && document.body.style.top !== '0px') {
-      document.body.style.setProperty('top', '0px', 'important');
-    }
-    if (document.body.style.position === 'relative') {
-      document.body.style.setProperty('position', 'static', 'important');
-    }
-    if (document.body.style.marginTop && document.body.style.marginTop !== '0px') {
-      document.body.style.setProperty('margin-top', '0px', 'important');
-    }
-  }
-
-  // Suppress all Google translate iframes completely
-  document.querySelectorAll('iframe').forEach(frame => {
-    frame.style.setProperty('display', 'none', 'important');
-    frame.style.setProperty('visibility', 'hidden', 'important');
-    frame.style.setProperty('height', '0px', 'important');
-    frame.style.setProperty('width', '0px', 'important');
-    frame.style.setProperty('max-height', '0px', 'important');
-    frame.style.setProperty('max-width', '0px', 'important');
-    frame.style.setProperty('position', 'fixed', 'important');
-    frame.style.setProperty('top', '-99999px', 'important');
-    frame.style.setProperty('left', '-99999px', 'important');
-    frame.style.setProperty('opacity', '0', 'important');
-    frame.style.setProperty('pointer-events', 'none', 'important');
-    frame.style.setProperty('z-index', '-999999', 'important');
-  });
-
-  // Suppress Google toolbar banners and overlay classes (divs and iframes only - NEVER font tags!)
-  document.querySelectorAll('iframe.goog-te-banner-frame, iframe[class*="VIpgJd"], .goog-te-banner-frame, .goog-te-balloon-frame, #goog-gt-tt, #goog-gt-vt, .goog-tooltip, div.VIpgJd-suEOdc, div.VIpgJd-yAWNEb-L7lbkb, div[class*="VIpgJd-ZVi9od"], div[class*="VIpgJd-suEOdc"]').forEach(el => {
-    if (el.tagName === 'FONT' || (el.closest && el.closest('font')) ||
-        el.classList.contains('neobank-lang-select') || 
-        el.classList.contains('neobank-lang-wrap') || 
-        (el.closest && el.closest('.neobank-lang-select, .neobank-lang-wrap')) || 
-        (el.querySelector && el.querySelector('.neobank-lang-select'))) {
-      return;
-    }
-    if (el.id === 'google_translate_element' || (el.closest && el.closest('#google_translate_element'))) {
-      el.style.setProperty('display', 'none', 'important');
-      return;
-    }
-    el.style.setProperty('display', 'none', 'important');
-    el.style.setProperty('visibility', 'hidden', 'important');
-    el.style.setProperty('height', '0px', 'important');
-    el.style.setProperty('width', '0px', 'important');
-    el.style.setProperty('position', 'fixed', 'important');
-    el.style.setProperty('top', '-99999px', 'important');
-    el.style.setProperty('opacity', '0', 'important');
-    el.style.setProperty('pointer-events', 'none', 'important');
-    el.style.setProperty('z-index', '-999999', 'important');
-  });
-
-  // Ensure all translated fonts remain clean, visible, and inline
-  document.querySelectorAll('font').forEach(font => {
-    if (font.style.display === 'none' || font.style.visibility === 'hidden' || font.style.position === 'fixed') {
-      font.style.removeProperty('display');
-      font.style.removeProperty('visibility');
-      font.style.removeProperty('opacity');
-      font.style.removeProperty('position');
-      font.style.removeProperty('top');
-      font.style.removeProperty('left');
-      font.style.removeProperty('height');
-      font.style.removeProperty('width');
-    }
-    if (font.classList.contains('VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q')) {
-      font.classList.remove('VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q');
-    }
-  });
-}
-
-// Handle user language selection change
-function handleLanguageChange(target) {
-  const lang = (typeof target === 'string') ? target : (target ? target.value : 'en');
-  const prevLang = getCurrentLanguage();
-
-  // If user selected English:
-  if (lang === 'en') {
-    showTransitionMask('en');
-    try {
-      localStorage.setItem('neobank_lang', 'en');
-      sessionStorage.setItem('neobank_lang', 'en');
-      localStorage.removeItem('googtrans');
-      sessionStorage.removeItem('googtrans');
-    } catch (e) {}
-    clearAllTranslateCookies();
-    document.documentElement.dir = 'ltr';
-
-    document.querySelectorAll('.neobank-lang-select').forEach(sel => {
-      sel.value = 'en';
+    searchInput.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (clearBtn) {
+        clearBtn.style.display = (val && val.trim().length > 0) ? 'inline-flex' : 'none';
+      }
+      filterItems(val);
     });
-    updateLanguageFlagIcons('en');
 
-    // 1. Deep Google Translate instance restore
-    restoreGoogleTranslate();
+    if (clearBtn) {
+      clearBtn.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+      clearBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        filterItems('');
+        searchInput.focus();
+      });
+    }
 
-    // 2. Silently reset combo WITHOUT triggering change event
+    // Item selection
+    itemsList.addEventListener('click', (e) => {
+      const item = e.target.closest('.neobank-lang-item');
+      if (!item) return;
+      const code = item.getAttribute('data-code');
+      if (code) {
+        closeMenu();
+        handleUserLanguageChange(code, true);
+      }
+    });
+
+    // Keyboard navigation within the dropdown
+    dropdownWrap.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeMenu();
+        trigger.focus();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (menu.style.display === 'none') {
+          openMenu();
+        } else {
+          const visible = Array.from(itemsList.querySelectorAll('.neobank-lang-item')).filter(el => el.style.display !== 'none');
+          const focused = document.activeElement;
+          const idx = visible.indexOf(focused);
+          if (idx >= 0 && idx < visible.length - 1) {
+            visible[idx + 1].focus();
+          } else if (visible.length > 0) {
+            visible[0].focus();
+          }
+        }
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        const visible = Array.from(itemsList.querySelectorAll('.neobank-lang-item')).filter(el => el.style.display !== 'none');
+        const focused = document.activeElement;
+        const idx = visible.indexOf(focused);
+        if (idx > 0) {
+          visible[idx - 1].focus();
+        } else {
+          searchInput.focus();
+        }
+      } else if (e.key === 'Enter' && document.activeElement && document.activeElement.classList.contains('neobank-lang-item')) {
+        e.preventDefault();
+        const code = document.activeElement.getAttribute('data-code');
+        if (code) {
+          closeMenu();
+          handleUserLanguageChange(code, true);
+        }
+      }
+    });
+
+    // Close when clicking anywhere outside
+    document.addEventListener('click', (e) => {
+      if (!dropdownWrap.contains(e.target)) {
+        closeMenu();
+      }
+    });
+  }
+
+  function mountLanguageSelector() {
+    const currentLang = getActiveLanguage();
+    syncRtlDirection(currentLang);
+    if (window.NeobankTheme && typeof window.NeobankTheme.setCulture === 'function') {
+      window.NeobankTheme.setCulture(currentLang);
+    }
+
+    if (currentLang === 'en') {
+      purgeAllGoogtransCookies();
+    } else {
+      const match = document.cookie.match(/(?:^|;\s*)googtrans=\/en\/([a-zA-Z-]+)/);
+      if (!match || match[1] !== currentLang) {
+        setLanguageCookies(currentLang);
+      }
+    }
+
+    // Mount custom dropdown strictly into dedicated #neobank-lang-container
+    let mount = document.getElementById('neobank-lang-container');
+    const gEl = document.getElementById('google_translate_element');
+    if (!mount) {
+      mount = document.createElement('div');
+      mount.id = 'neobank-lang-container';
+      mount.className = 'notranslate';
+      mount.setAttribute('translate', 'no');
+      
+      if (gEl && gEl.parentElement) {
+        gEl.parentElement.insertBefore(mount, gEl);
+      } else {
+        const headerControls = document.querySelector('.header-controls') || 
+                               document.querySelector('.page-zoom-controls')?.parentElement ||
+                               document.querySelector('header');
+        if (headerControls) {
+          const zoom = headerControls.querySelector('.page-zoom-controls');
+          if (zoom && zoom.nextSibling) {
+            headerControls.insertBefore(mount, zoom.nextSibling);
+          } else {
+            headerControls.appendChild(mount);
+          }
+        }
+      }
+    }
+
+    if (mount) {
+      renderLanguageDropdown(mount, currentLang);
+    }
+
+    if (!document.getElementById('google_translate_native_holder')) {
+      const holder = document.createElement('div');
+      holder.id = 'google_translate_native_holder';
+      holder.setAttribute('aria-hidden', 'true');
+      holder.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;opacity:0;pointer-events:none;overflow:hidden;';
+      (document.body || document.documentElement).appendChild(holder);
+    }
+
+    if (currentLang && currentLang !== 'en') {
+      showTransitionMask(currentLang);
+      waitForTranslationComplete(currentLang, hideTransitionMask);
+    }
+  }
+
+  // 7. Google Translate Element Init Callback
+  window.googleTranslateElementInit = function() {
+    try {
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false
+        }, 'google_translate_element');
+      }
+    } catch (e) {
+      console.warn('Google Translate initialization note:', e);
+    }
+  };
+
+  function loadGoogleTranslateScript() {
+    if (!document.getElementById('google-translate-script')) {
+      const script = document.createElement('script');
+      script.id = 'google-translate-script';
+      script.type = 'text/javascript';
+      script.src = 'https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+      script.async = true;
+      (document.head || document.documentElement).appendChild(script);
+    }
+  }
+
+  // 8. Handling Language Changes with Instant UI Translation
+  function handleUserLanguageChange(targetLang, isUserInitiated) {
+    const isUser = (isUserInitiated !== false);
+    const cleanLang = (targetLang === 'zh') ? 'zh-CN' : (targetLang || 'en');
+    const currentLang = getActiveLanguage();
+
+    const activeItem = LANGUAGES.find(l => l.code === cleanLang) || LANGUAGES.find(l => l.code === 'en');
+    const flagSvg = getFlagSvg(cleanLang);
+
+    // Update trigger UI immediately
+    document.querySelectorAll('.neobank-lang-trigger-flag').forEach(el => el.innerHTML = flagSvg);
+    document.querySelectorAll('.neobank-lang-trigger-name').forEach(el => el.textContent = activeItem.name);
+    document.querySelectorAll('.neobank-lang-item').forEach(el => {
+      const code = el.getAttribute('data-code');
+      const isSelected = (code === cleanLang);
+      el.classList.toggle('active', isSelected);
+      el.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+      const check = el.querySelector('.neobank-lang-item-check');
+      if (isSelected && !check) {
+        const cSpan = document.createElement('span');
+        cSpan.className = 'neobank-lang-item-check';
+        cSpan.textContent = '✓';
+        el.appendChild(cSpan);
+      } else if (!isSelected && check) {
+        check.remove();
+      }
+    });
+
+    document.querySelectorAll('.neobank-lang-select').forEach(sel => sel.value = cleanLang);
+
+    // RESTORING ENGLISH:
+    if (cleanLang === 'en') {
+      if (!isUser && currentLang === 'en') {
+        return;
+      }
+
+      try {
+        localStorage.setItem('neobank_lang', 'en');
+        sessionStorage.setItem('neobank_lang', 'en');
+      } catch (e) {}
+
+      if (window.NeobankTheme && typeof window.NeobankTheme.setCulture === 'function') {
+        window.NeobankTheme.setCulture('en');
+      }
+
+      showTransitionMask('en');
+      purgeAllGoogtransCookies();
+      syncRtlDirection('en');
+
+      restoreGoogleTranslate();
+
+      const gCombo = document.querySelector('.goog-te-combo');
+      if (gCombo) {
+        gCombo.value = '';
+      }
+
+      if (typeof window.saveCustomerFormDraft === 'function') {
+        try { window.saveCustomerFormDraft(false); } catch (e) {}
+      }
+
+      setTimeout(() => {
+        purgeAllGoogtransCookies();
+        window.location.reload();
+      }, 150);
+      return;
+    }
+
+    // NON-ENGLISH LANGUAGE SELECTED:
+    if (!isUser && cleanLang === currentLang) {
+      return;
+    }
+
+    setLanguageCookies(cleanLang);
+    syncRtlDirection(cleanLang);
+    if (window.NeobankTheme && typeof window.NeobankTheme.setCulture === 'function') {
+      window.NeobankTheme.setCulture(cleanLang);
+    }
+
+    if (isUser || cleanLang !== currentLang) {
+      showTransitionMask(cleanLang);
+    }
+
+    if (typeof window.saveCustomerFormDraft === 'function') {
+      try { window.saveCustomerFormDraft(false); } catch (e) {}
+    }
+
+    // Dispatch immediately to Google Translate combo in-place
     const gCombo = document.querySelector('.goog-te-combo');
     if (gCombo) {
-      gCombo.value = '';
+      gCombo.value = cleanLang;
+      gCombo.dispatchEvent(new Event('change'));
+      waitForTranslationComplete(cleanLang, hideTransitionMask);
+    } else {
+      let attempts = 0;
+      const comboPoll = setInterval(() => {
+        attempts++;
+        const combo = document.querySelector('.goog-te-combo');
+        if (combo) {
+          clearInterval(comboPoll);
+          combo.value = cleanLang;
+          combo.dispatchEvent(new Event('change'));
+          waitForTranslationComplete(cleanLang, hideTransitionMask);
+        } else if (attempts >= 15) {
+          clearInterval(comboPoll);
+          hideTransitionMask();
+        }
+      }, 100);
     }
-
-    // 3. Check settlement after 180ms
-    setTimeout(() => {
-      clearAllTranslateCookies();
-      const canaryText = getCanaryText();
-      const fontCount = document.querySelectorAll('font').length;
-
-      // If canary is restored to English and fonts are gone:
-      if (canaryText === ORIGINAL_CANARY_TEXT && fontCount === 0) {
-        protectLanguageSelects();
-        setTimeout(hideTransitionMask, 100);
-      } else {
-        // Safe and clean reload: since cookies are wiped and neobank_lang='en', page boots in pure native English
-        clearAllTranslateCookies();
-        window.location.reload();
-      }
-    }, 180);
-
-    return;
   }
 
-  // Non-English language chosen:
-  const oldCanaryText = getCanaryText();
+  window.handleLanguageChange = handleUserLanguageChange;
+  window.getCurrentLanguage = getActiveLanguage;
+  window.showTransitionMask = showTransitionMask;
+  window.hideTransitionMask = hideTransitionMask;
+  window.restoreGoogleTranslate = restoreGoogleTranslate;
+  window.purgeAllGoogtransCookies = purgeAllGoogtransCookies;
+  window.LANGUAGES = LANGUAGES;
+  window.COUNTRY_FLAGS_SVG = COUNTRY_FLAGS_SVG;
+  window.getFlagSvg = getFlagSvg;
 
-  try {
-    localStorage.setItem('neobank_lang', lang);
-    sessionStorage.setItem('neobank_lang', lang);
-  } catch (e) {}
-  setTranslateCookie(lang);
+  // 9. Navigation and Back/Forward (bfcache) Synchronization
+  function syncAllUi() {
+    const cur = getActiveLanguage();
+    syncRtlDirection(cur);
+    const activeItem = LANGUAGES.find(l => l.code === cur || (l.code === 'zh-CN' && cur === 'zh')) || LANGUAGES.find(l => l.code === 'en');
+    const flagSvg = getFlagSvg(cur);
 
-  // Sync RTL / LTR direction for Arabic
-  document.documentElement.dir = (lang === 'ar') ? 'rtl' : 'ltr';
+    document.querySelectorAll('.neobank-lang-trigger-flag').forEach(el => el.innerHTML = flagSvg);
+    document.querySelectorAll('.neobank-lang-trigger-name').forEach(el => el.textContent = activeItem.name);
+    document.querySelectorAll('.neobank-lang-select').forEach(sel => {
+      if (sel.value !== cur) sel.value = cur;
+    });
 
-  // Sync all dropdowns on page and update flag icon
-  document.querySelectorAll('.neobank-lang-select').forEach(sel => {
-    sel.value = lang;
+    const gCombo = document.querySelector('.goog-te-combo');
+    if (gCombo && cur !== 'en' && gCombo.value !== cur) {
+      showTransitionMask(cur);
+      gCombo.value = cur;
+      gCombo.dispatchEvent(new Event('change'));
+      waitForTranslationComplete(cur, hideTransitionMask);
+    }
+  }
+
+  window.addEventListener('pageshow', function() {
+    syncAllUi();
   });
-  updateLanguageFlagIcons(lang);
 
-  // 1. Immediately activate frosted glass blur veil to completely conceal intermediate English transition
-  showTransitionMask(lang);
+  window.addEventListener('popstate', function() {
+    syncAllUi();
+  });
 
-  suppressGoogleBanner();
+  // 10. Suppress Google Banner Shifts
+  function suppressGoogleBanner() {
+    const banner = document.querySelector('.goog-te-banner-frame');
+    if (banner) banner.style.display = 'none';
+    if (document.body && document.body.style.top !== '0px') {
+      document.body.style.top = '0px';
+    }
+  }
+  setInterval(suppressGoogleBanner, 300);
 
-  let gCode = lang;
-  if (lang === 'zh') gCode = 'zh-CN';
-
-  const gCombo = document.querySelector('.goog-te-combo');
-  if (gCombo) {
-    gCombo.value = gCode;
-    gCombo.dispatchEvent(new Event('change'));
-    waitForTranslationComplete(lang, oldCanaryText, () => {
-      protectLanguageSelects();
-      hideTransitionMask();
+  // 11. Auto-Mount on Script Load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      mountLanguageSelector();
+      loadGoogleTranslateScript();
     });
   } else {
-    // If Google Translate is not yet loaded, wait and retry smoothly
-    let retryAttempts = 0;
-    const retryInterval = setInterval(() => {
-      retryAttempts++;
-      const retryCombo = document.querySelector('.goog-te-combo');
-      if (retryCombo) {
-        clearInterval(retryInterval);
-        retryCombo.value = gCode;
-        retryCombo.dispatchEvent(new Event('change'));
-        waitForTranslationComplete(lang, oldCanaryText, () => {
-          protectLanguageSelects();
-          hideTransitionMask();
-        });
-      } else if (retryAttempts >= 15) {
-        clearInterval(retryInterval);
-        protectLanguageSelects();
-        hideTransitionMask();
-      }
-    }, 100);
-  }
-}
-
-// Attach to window object for global access
-window.handleLanguageChange = handleLanguageChange;
-// Export helpers globally
-window.SUPPORTED_LANGUAGES = SUPPORTED_LANGUAGES;
-window.getFlagSvgForLang = getFlagSvgForLang;
-window.updateLanguageFlagIcons = updateLanguageFlagIcons;
-
-// Auto-run flag icon update on script load / DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => updateLanguageFlagIcons());
-} else {
-  updateLanguageFlagIcons();
-}
-window.getCurrentLanguage = getCurrentLanguage;
-window.clearAllTranslateCookies = clearAllTranslateCookies;
-window.setTranslateCookie = setTranslateCookie;
-window.protectLanguageSelects = protectLanguageSelects;
-window.showTransitionMask = showTransitionMask;
-window.hideTransitionMask = hideTransitionMask;
-window.restoreGoogleTranslate = restoreGoogleTranslate;
-
-// Dynamically inject Google Translate script and initialize UI
-function initGoogleTranslator() {
-  ensureCanaryElement();
-
-  if (!document.getElementById('google_translate_element')) {
-    const gDiv = document.createElement('div');
-    gDiv.id = 'google_translate_element';
-    gDiv.style.display = 'none';
-    const mount = document.body || document.documentElement;
-    if (mount) mount.appendChild(gDiv);
+    mountLanguageSelector();
+    loadGoogleTranslateScript();
   }
 
-  // Populate options for any .neobank-lang-select on page with strict notranslate markers
-  const currentLang = getCurrentLanguage();
-  document.querySelectorAll('.neobank-lang-select').forEach(select => {
-    select.classList.add('notranslate');
-    select.classList.remove('skiptranslate');
-    select.setAttribute('translate', 'no');
-    if (select.parentElement) {
-      select.parentElement.classList.add('neobank-lang-wrap');
-      select.parentElement.classList.add('notranslate');
-      select.parentElement.classList.remove('skiptranslate');
-      select.parentElement.setAttribute('translate', 'no');
-    }
-
-    // Only populate if options are missing or fewer than 17
-    if (select.options.length < SUPPORTED_LANGUAGES.length) {
-      select.innerHTML = SUPPORTED_LANGUAGES.map(item => `
-        <option value="${item.code}" class="notranslate" translate="no" ${item.code === currentLang || (item.code === 'zh-CN' && currentLang === 'zh') ? 'selected' : ''}>
-          ${item.label}
-        </option>
-      `).join('');
-    } else {
-      select.value = currentLang;
-    }
-  });
-
-  updateLanguageFlagIcons(currentLang);
-
-  protectLanguageSelects();
-
-  // Inject Google Translate script if not present
-  if (!document.getElementById('google-translate-script')) {
-    const script = document.createElement('script');
-    script.id = 'google-translate-script';
-    script.type = 'text/javascript';
-    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-    script.async = true;
-    document.head.appendChild(script);
-  }
-
-  // Handle page refresh with non-English language active:
-  // Shows frosted glass veil while Google Translate runs
-  if (currentLang && currentLang !== 'en') {
-    showTransitionMask(currentLang);
-    waitForTranslationComplete(currentLang, null, () => {
-      protectLanguageSelects();
-      hideTransitionMask();
-    });
-  }
-}
-
-// Observe DOM modifications to continuously eradicate Google banner and protect select
-if (typeof MutationObserver !== 'undefined') {
-  let suppressDebounce = null;
-  const bannerObserver = new MutationObserver((mutations) => {
-    let hasGoogleNodes = false;
-    for (const m of mutations) {
-      for (const node of m.addedNodes) {
-        if (node.nodeType === 1) {
-          // Never touch font elements or text content
-          if (node.tagName === 'FONT' || (node.closest && node.closest('font'))) {
-            continue;
-          }
-          if (node.classList.contains('neobank-lang-select') || 
-              node.classList.contains('neobank-lang-wrap') || 
-              (node.closest && node.closest('.neobank-lang-select, .neobank-lang-wrap')) || 
-              (node.querySelector && node.querySelector('.neobank-lang-select'))) {
-            continue;
-          }
-          const className = (typeof node.className === 'string') ? node.className : '';
-          // Only target iframes or Google overlay container divs
-          if (node.tagName === 'IFRAME' || (node.tagName === 'DIV' && (className.includes('VIpgJd') || className.includes('goog-te-banner') || className.includes('goog-te-balloon')))) {
-            if (node.id === 'google_translate_element' || (node.closest && node.closest('#google_translate_element'))) {
-              continue;
-            }
-            node.style.setProperty('display', 'none', 'important');
-            node.style.setProperty('visibility', 'hidden', 'important');
-            node.style.setProperty('height', '0px', 'important');
-            node.style.setProperty('width', '0px', 'important');
-            node.style.setProperty('position', 'fixed', 'important');
-            node.style.setProperty('top', '-99999px', 'important');
-            node.style.setProperty('opacity', '0', 'important');
-            node.style.setProperty('pointer-events', 'none', 'important');
-            hasGoogleNodes = true;
-          }
-        }
-      }
-    }
-    if (hasGoogleNodes) {
-      if (suppressDebounce) clearTimeout(suppressDebounce);
-      suppressDebounce = setTimeout(suppressGoogleBanner, 80);
-    }
-  });
-
-  bannerObserver.observe(document.documentElement, {
-    childList: true,
-    subtree: true
-  });
-}
-
-// Global safeguard: Ensure clicking or focusing on any translated text or button NEVER removes the text
-['click', 'mousedown', 'mouseover', 'focusin'].forEach(evt => {
-  document.addEventListener(evt, (e) => {
-    const font = e.target && (e.target.tagName === 'FONT' ? e.target : (e.target.closest && e.target.closest('font')));
-    if (font) {
-      if (font.classList.contains('VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q')) {
-        font.classList.remove('VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q');
-      }
-      if (font.style.display === 'none' || font.style.visibility === 'hidden' || font.style.position === 'fixed') {
-        font.style.removeProperty('display');
-        font.style.removeProperty('visibility');
-        font.style.removeProperty('opacity');
-        font.style.removeProperty('position');
-        font.style.removeProperty('top');
-        font.style.removeProperty('left');
-      }
-    }
-  }, true);
-});
-
-// Low-frequency periodic safety check (500ms)
-setInterval(suppressGoogleBanner, 500);
-
-// Auto-boot on DOM ready
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', () => {
-    initGoogleTranslator();
-    suppressGoogleBanner();
-  });
-} else {
-  initGoogleTranslator();
-  suppressGoogleBanner();
-}
-window.addEventListener('load', suppressGoogleBanner);
+})(window, document);
