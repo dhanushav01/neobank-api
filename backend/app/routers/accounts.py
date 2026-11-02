@@ -4,7 +4,8 @@ Accounts Router: Account creation, balance queries, deposits, withdrawals, and t
 import random
 from datetime import date
 from typing import Optional, Dict, Any
-from fastapi import APIRouter, Depends, Query, status
+from fastapi import APIRouter, Depends, Query, status, Request
+from backend.app.core.limiter import limiter
 
 from backend.app.core.config import FX_RATES
 from backend.app.core.database import DB, get_owned, list_owned, post_transaction, audit_log
@@ -70,8 +71,9 @@ def list_accounts(
     return paginate(items, page_num, limit_num)
 
 @router.get("/lookup/{accountNumber}")
-def lookup_account(accountNumber: str, user: Dict[str, Any] = Depends(get_current_user)):
-    """Lookup destination account holder information for internal transfers."""
+@limiter.limit("10/minute")
+def lookup_account(request: Request, accountNumber: str, user: Dict[str, Any] = Depends(get_current_user)):
+    """Lookup destination account holder information for internal transfers (rate limited to 10/min)."""
     acc = next((a for a in DB["accounts"].values() if a["accountNumber"] == accountNumber), None)
     if not acc:
         fail(404, "Destination account not found", "ACCOUNT_NOT_FOUND")
@@ -92,13 +94,34 @@ def get_account_details(accountId: str, user: Dict[str, Any] = Depends(get_curre
 
 @router.patch("/{accountId}")
 def update_account(accountId: str, request: AccountUpdateRequest, user: Dict[str, Any] = Depends(get_current_user)):
-    """Update account nickname or overdraft limits."""
+    """Update account nickname. Prevents customer modification of privileged fields."""
     acc = get_owned("accounts", accountId, user, "account")
-    if request.overdraftLimit is not None and acc["type"] != "CHECKING":
-        fail(422, "Overdraft protection can only be set on CHECKING accounts", "OVERDRAFT_NOT_ALLOWED")
-
     update_fields = request.model_dump(exclude_none=True)
     acc.update(update_fields)
+    return acc
+
+@router.post("/{accountId}/overdraft-limit")
+def set_overdraft_limit(
+    accountId: str,
+    payload: Dict[str, Any],
+    user: Dict[str, Any] = Depends(get_current_user)
+):
+    """Credit officer / staff workflow to modify overdraft limit with hard cap and audit trail."""
+    if user.get("role") not in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN"):
+        fail(403, "Only authorized credit officers may modify overdraft limits", "FORBIDDEN")
+    acc = DB["accounts"].get(accountId)
+    if not acc:
+        fail(404, "Account not found", "ACCOUNT_NOT_FOUND")
+    if acc.get("type") != "CHECKING":
+        fail(422, "Overdraft limit is only permissible on CHECKING accounts", "OVERDRAFT_NOT_ALLOWED")
+    try:
+        new_limit = float(payload.get("overdraftLimit", 0.0))
+    except (ValueError, TypeError):
+        fail(422, "Invalid overdraftLimit value", "INVALID_LIMIT")
+    if new_limit < 0 or new_limit > 10000.0:
+        fail(422, "Overdraft limit must be between 0.00 and 10,000.00", "LIMIT_EXCEEDED")
+    acc["overdraftLimit"] = new_limit
+    audit_log(user["id"], "OVERDRAFT_LIMIT_SET", f"{accountId}:{new_limit}")
     return acc
 
 @router.post("/{accountId}/freeze")
@@ -148,14 +171,24 @@ def get_account_balance(accountId: str, user: Dict[str, Any] = Depends(get_curre
 
 @router.post("/{accountId}/deposit", status_code=status.HTTP_201_CREATED)
 def deposit_funds(accountId: str, request: AmountRequest, user: Dict[str, Any] = Depends(get_current_user)):
-    """Deposit funds into account."""
-    acc = get_owned("accounts", accountId, user, "account")
+    """
+    Deposit funds into account.
+    Restricted to authorized staff (teller/admin) or verified payment gateway webhooks.
+    Customers are strictly prohibited from crediting their own balances.
+    """
+    if user.get("role") not in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN"):
+        fail(403, "Self-service customer deposits are disabled. Deposits must originate from verified payment gateways or authorized teller staff.", "DEPOSIT_FORBIDDEN")
+
+    acc = DB["accounts"].get(accountId)
+    if not acc:
+        fail(404, "Account not found", "ACCOUNT_NOT_FOUND")
+
     tx = post_transaction(
         acc,
         "DEPOSIT",
         request.amount,
-        reference=request.note or f"Deposit via {request.channel}",
-        meta={"channel": request.channel}
+        reference=request.note or f"Teller Deposit via {request.channel}",
+        meta={"channel": request.channel, "staffId": user["id"]}
     )
     audit_log(user["id"], "DEPOSIT", tx["id"])
     return tx

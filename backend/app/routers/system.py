@@ -8,6 +8,7 @@ from fastapi.responses import JSONResponse
 
 from backend.app.core.database import DB
 from backend.app.core.utils import fail, now_iso
+from backend.app.core import config
 
 router = APIRouter(tags=["System"])
 
@@ -34,14 +35,18 @@ def simulate_http_status(code: int):
 
 @router.get("/delay/{seconds}")
 def simulate_delay(seconds: int):
-    """Developer helper to simulate network latency."""
-    clamped = min(max(seconds, 0), 10)
+    """Developer helper to simulate network latency (capped at 3s, disabled in production)."""
+    if not config.ENABLE_TEST_ROUTES or config.IS_PRODUCTION:
+        fail(403, "Diagnostic routes are disabled in this environment", "FORBIDDEN")
+    clamped = min(max(seconds, 0), 3)
     time.sleep(clamped)
     return {"delayedSeconds": clamped}
 
 @router.get("/flaky")
 def simulate_flaky():
-    """Simulate an intermittent 503 service."""
+    """Simulate an intermittent 503 service (disabled in production)."""
+    if not config.ENABLE_TEST_ROUTES or config.IS_PRODUCTION:
+        fail(403, "Diagnostic routes are disabled in this environment", "FORBIDDEN")
     FLAKY_COUNTER["count"] += 1
     if FLAKY_COUNTER["count"] % 3 != 0:
         fail(503, "Service temporarily unavailable (simulated flake - retry)", "UNAVAILABLE")
@@ -49,7 +54,9 @@ def simulate_flaky():
 
 @router.post("/echo")
 async def echo_request(req: Request):
-    """Echo headers, query parameters, and payload."""
+    """Echo headers, query parameters, and payload (Disabled in production)."""
+    if config.IS_PRODUCTION:
+        fail(403, "Diagnostic echo endpoint is disabled in production environment", "FORBIDDEN")
     try:
         body = await req.json()
     except Exception:
@@ -63,7 +70,9 @@ async def echo_request(req: Request):
 
 @router.get("/rate-limit")
 def simulate_rate_limit(request: Request):
-    """Simulate rate limiting threshold."""
+    """Simulate rate limiting threshold (disabled in production)."""
+    if not config.ENABLE_TEST_ROUTES or config.IS_PRODUCTION:
+        fail(403, "Diagnostic routes are disabled in this environment", "FORBIDDEN")
     ip = request.client.host if request.client else "unknown"
     key = f"rl_{ip}"
     entry = DB["counters"].setdefault(key, {"timestamp": time.time(), "calls": 0})

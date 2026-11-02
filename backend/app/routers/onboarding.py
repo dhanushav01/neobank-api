@@ -5,17 +5,21 @@ unique application number generation, applicant status tracking,
 and bank staff application review with date-range filtering.
 """
 import os
+import hmac
 import random
+import secrets
+import re
 from datetime import datetime, date, timezone, timedelta
 from typing import Optional, Dict, Any, List
-from fastapi import APIRouter, Depends, Query, status, UploadFile, File, Form, Response
+from fastapi import APIRouter, Depends, Query, status, UploadFile, File, Form, Response, Request, Header
 
 from backend.app.core.database import (
     DB, post_transaction, audit_log, send_notification
 )
-from backend.app.core.security import require_staff_or_admin
+from backend.app.core.config import MAX_DOC_SIZE_BYTES, SEED_CUSTOMER_PASSWORD
+from backend.app.core.security import require_staff_or_admin, get_current_user
 from backend.app.core.utils import fail, generate_id, now_iso, paginate, format_money
-from backend.app.core.crypto_utils import hash_password
+from backend.app.core.crypto_utils import hash_password, hash_pin, is_password_hash
 from backend.app.core.sql_db import (
     store_sql_application, get_sql_application, list_sql_applications,
     store_encrypted_document, retrieve_and_decrypt_document,
@@ -28,8 +32,14 @@ from backend.app.models.schemas import (
 router = APIRouter(prefix="/onboarding", tags=["Account Onboarding"])
 
 # ----------------------------------------------------------------- ENCRYPTED DOCUMENT SQL UPLOAD & DOWNLOAD
+ALLOWED_MIME_TYPES = {
+    "application/pdf", "image/jpeg", "image/png", "image/webp"
+}
+ALLOWED_EXTENSIONS = {".pdf", ".jpg", ".jpeg", ".png", ".webp"}
+
 @router.post("/upload-document")
 async def upload_encrypted_document(
+    request: Request,
     file: UploadFile = File(...),
     applicationNumber: Optional[str] = Form(None),
     docCategory: str = Form("IDENTITY"),
@@ -38,37 +48,92 @@ async def upload_encrypted_document(
     userId: Optional[str] = Form(None)
 ):
     """
-    Encrypt document or scan with AES-256 and store securely as an encrypted BLOB in SQL database.
-    Supports Identity Proof, Address Proof, and Income documents.
+    Encrypt document or scan with Fernet (AES-128-CBC with HMAC-SHA256) and store securely as an encrypted BLOB in SQL database.
+    Enforces maximum 10MB file cap, strict MIME & extension whitelist, and magic byte signature verification.
     """
+    import pathlib
+    clean_filename = os.path.basename(file.filename or "document.bin").strip()
+    ext = pathlib.Path(clean_filename).suffix.lower()
+
+    if ext not in ALLOWED_EXTENSIONS:
+        fail(415, f"Unsupported file extension '{ext}'. Permitted extensions: {', '.join(sorted(ALLOWED_EXTENSIONS))}", "INVALID_FILE_EXTENSION")
+
     raw_content = await file.read()
     if not raw_content:
         fail(400, "Empty document upload", "EMPTY_FILE")
+
+    if len(raw_content) > MAX_DOC_SIZE_BYTES:
+        fail(413, "Uploaded document exceeds maximum permissible size of 10 MB", "FILE_TOO_LARGE")
+
+    file_mime = (file.content_type or "application/octet-stream").lower()
+    if file_mime not in ALLOWED_MIME_TYPES and file_mime != "application/octet-stream":
+        fail(415, f"Disallowed MIME type '{file_mime}'", "INVALID_MIME_TYPE")
+
+    # Magic byte signature verification against spoofed extensions
+    if ext == ".pdf" or file_mime == "application/pdf":
+        if not raw_content.startswith(b"%PDF"):
+            fail(400, "Corrupted or invalid document: File header does not match valid PDF specification.", "INVALID_FILE_SIGNATURE")
+    elif ext in (".jpg", ".jpeg") or file_mime in ("image/jpeg", "image/jpg"):
+        if not raw_content.startswith(b"\xff\xd8\xff"):
+            fail(400, "Corrupted or invalid image: File header does not match valid JPEG specification.", "INVALID_FILE_SIGNATURE")
+    elif ext == ".png" or file_mime == "image/png":
+        if not raw_content.startswith(b"\x89PNG\r\n\x1a\n"):
+            fail(400, "Corrupted or invalid image: File header does not match valid PNG specification.", "INVALID_FILE_SIGNATURE")
+    elif ext == ".webp" or file_mime == "image/webp":
+        if not (raw_content.startswith(b"RIFF") and b"WEBP" in raw_content[:16]):
+            fail(400, "Corrupted or invalid image: File header does not match valid WEBP specification.", "INVALID_FILE_SIGNATURE")
+
+    # Authorize userId: unauthenticated users cannot bind documents to arbitrary accounts
+    verified_user_id = None
+    if userId:
+        try:
+            caller = get_current_user(request)
+            if caller.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN") or caller.get("id") == userId:
+                verified_user_id = userId
+        except Exception:
+            verified_user_id = None
 
     doc_id = f"doc_{os.urandom(8).hex()}"
     saved = store_encrypted_document(
         doc_id=doc_id,
         application_number=applicationNumber,
-        user_id=userId,
+        user_id=verified_user_id,
         doc_category=docCategory,
         doc_type=docType,
         doc_number=docNumber,
-        file_name=file.filename or "document.bin",
-        file_mime=file.content_type or "application/octet-stream",
+        file_name=clean_filename,
+        file_mime=file_mime,
         raw_content=raw_content
     )
     return {
         "success": True,
         "document": saved,
-        "message": f"Document {file.filename} successfully encrypted with AES-256 and stored in SQL database."
+        "message": f"Document {clean_filename} successfully encrypted with Fernet (AES-128-CBC + HMAC) and stored in SQL database."
     }
 
 @router.get("/documents/{docId}/download")
-def download_decrypted_document(docId: str):
-    """Retrieve and decrypt an AES-256 encrypted document from SQL database."""
+def download_decrypted_document(docId: str, user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    Retrieve and decrypt a Fernet (AES-128-CBC + HMAC) encrypted document from SQL database.
+    Authorization: Restricts download exclusively to the document owner or authorized Bank Staff.
+    """
     doc = retrieve_and_decrypt_document(docId)
     if not doc:
         fail(404, "Document not found in database", "DOC_NOT_FOUND")
+
+    is_staff = user.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN")
+    is_owner = doc.get("userId") == user["id"]
+
+    # Also permit if authenticated user's email matches the application record
+    if not (is_staff or is_owner):
+        app_num = doc.get("applicationNumber")
+        if app_num:
+            app = DB["applications"].get(app_num) or get_sql_application(app_num)
+            if app and app.get("email", "").lower() == user.get("email", "").lower():
+                is_owner = True
+
+    if not (is_staff or is_owner):
+        fail(403, "Access denied: you do not have permission to inspect or download this document.", "FORBIDDEN")
 
     return Response(
         content=doc["contentBytes"],
@@ -77,8 +142,21 @@ def download_decrypted_document(docId: str):
     )
 
 @router.get("/documents/by-application/{applicationNumber}")
-def get_documents_by_application(applicationNumber: str):
-    """List encrypted document records associated with an application from SQL database."""
+def get_documents_by_application(applicationNumber: str, user: Dict[str, Any] = Depends(get_current_user)):
+    """
+    List encrypted document records associated with an application from SQL database.
+    Requires caller to be either an authorized staff member or the applicant.
+    """
+    app = DB["applications"].get(applicationNumber) or get_sql_application(applicationNumber)
+    if not app:
+        fail(404, "Application not found", "APPLICATION_NOT_FOUND")
+
+    is_staff = user.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN")
+    is_applicant = app.get("email", "").lower() == user.get("email", "").lower()
+
+    if not (is_staff or is_applicant):
+        fail(403, "Access restricted to application owner and authorized bank staff.", "FORBIDDEN")
+
     return list_documents_for_application(applicationNumber)
 
 # ----------------------------------------------------------------- ACCOUNT TYPES & ELIGIBILITY RULES
@@ -258,22 +336,23 @@ def get_account_catalog():
 def initiate_application_draft(payload: Optional[Dict[str, Any]] = None):
     """
     Step 1: Generates a unique Application Number (e.g. APP-2026-XXXXXX)
-    immediately when applicant selects account & branch.
-    Locks this application number to avoid reusing or polluting caches.
+    and a high-entropy 256-bit draft secret (proof-of-ownership token).
     """
     current_year = datetime.now().year
-    random_digits = random.randint(100000, 999999)
+    random_digits = secrets.randbelow(900000) + 100000
     app_number = f"APP-{current_year}-{random_digits}"
     while app_number in DB["applications"]:
-        random_digits = random.randint(100000, 999999)
+        random_digits = secrets.randbelow(900000) + 100000
         app_number = f"APP-{current_year}-{random_digits}"
 
     account_type = (payload or {}).get("accountType", "SAVINGS")
     branch_name = (payload or {}).get("branchName", "")
     branch_code = (payload or {}).get("branchCode", "")
+    draft_secret = secrets.token_urlsafe(32)
 
     app_record = {
         "applicationNumber": app_number,
+        "draftSecret": draft_secret,
         "accountType": account_type,
         "branchName": branch_name,
         "branchCode": branch_code,
@@ -295,25 +374,48 @@ def initiate_application_draft(payload: Optional[Dict[str, Any]] = None):
 
     return {
         "applicationNumber": app_number,
+        "draftSecret": draft_secret,
         "status": "DRAFT_INITIATED",
         "accountType": account_type,
         "branchName": branch_name,
         "branchCode": branch_code,
-        "message": "Unique application reference created successfully."
+        "message": "Unique application reference and capability token created successfully."
     }
 
 @router.post("/save-draft")
-def save_application_draft(payload: Dict[str, Any]):
+def save_application_draft(
+    payload: Dict[str, Any],
+    request: Request,
+    x_draft_secret: Optional[str] = Header(None, alias="X-Draft-Secret")
+):
     """
-    Persist in-progress customer form draft data keyed strictly to the Application Number.
-    Never overwrites an application that has already been submitted or is under review.
+    Persist in-progress customer form draft data keyed strictly to Application Number.
+    Requires proof of ownership (valid draftSecret or staff role).
     """
     app_number = payload.get("applicationNumber")
     if not app_number:
         fail(400, "Application number is required to save draft", "MISSING_APP_NUMBER")
 
     app_record = DB["applications"].get(app_number) or get_sql_application(app_number) or {}
-    
+    if not app_record:
+        fail(404, "Draft not found for reference number", "DRAFT_NOT_FOUND")
+
+    # Authorize caller
+    is_staff = False
+    try:
+        caller = get_current_user(request)
+        if caller.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN"):
+            is_staff = True
+    except Exception:
+        pass
+
+    stored_secret = app_record.get("draftSecret") or app_record.get("draft_secret")
+    provided_secret = x_draft_secret or payload.get("draftSecret")
+
+    if not is_staff and stored_secret:
+        if not provided_secret or not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
+            fail(403, "Access denied: Valid draft capability secret required to modify draft", "INVALID_DRAFT_SECRET")
+
     # CRITICAL GUARD: If the application has already been submitted or processed, reject reverting to draft
     current_status = app_record.get("status")
     if current_status in ("SUBMITTED", "UNDER_REVIEW", "APPROVED", "ACCOUNT_OPENED", "REJECTED"):
@@ -355,12 +457,52 @@ def save_application_draft(payload: Dict[str, Any]):
     }
 
 @router.get("/draft/{applicationNumber}")
-def get_application_draft(applicationNumber: str):
-    """Retrieve saved draft details for an application number."""
+def get_application_draft(
+    applicationNumber: str,
+    request: Request,
+    x_draft_secret: Optional[str] = Header(None, alias="X-Draft-Secret"),
+    secret: Optional[str] = Query(None, alias="draftSecret")
+):
+    """Retrieve saved draft details for an application number with capability token verification."""
     app = DB["applications"].get(applicationNumber) or get_sql_application(applicationNumber)
     if not app:
         fail(404, "Draft not found for reference number", "DRAFT_NOT_FOUND")
-    return app
+
+    # Check caller authentication
+    is_staff = False
+    try:
+        caller = get_current_user(request)
+        if caller.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN"):
+            is_staff = True
+    except Exception:
+        pass
+
+    stored_secret = app.get("draftSecret") or app.get("draft_secret")
+    provided_secret = x_draft_secret or secret
+
+    if not is_staff and stored_secret:
+        if not provided_secret or not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
+            fail(403, "Access denied: Valid draft capability secret required to inspect draft", "INVALID_DRAFT_SECRET")
+
+    safe_draft = dict(app)
+    safe_draft.pop("password", None)
+    safe_draft.pop("password_hash", None)
+    safe_draft.pop("draftSecret", None)
+    safe_draft.pop("draft_secret", None)
+
+    if not is_staff:
+        # Mask sensitive personal fields for unauthenticated draft preview
+        applicant = dict(safe_draft.get("applicant", {}))
+        applicant.pop("password", None)
+        if applicant.get("taxId"):
+            applicant["taxId"] = f"***{str(applicant['taxId'])[-4:]}"
+        if applicant.get("pan"):
+            applicant["pan"] = f"*****{str(applicant['pan'])[-4:]}"
+        if applicant.get("aadhaar"):
+            applicant["aadhaar"] = f"********{str(applicant['aadhaar'])[-4:]}"
+        safe_draft["applicant"] = applicant
+
+    return safe_draft
 
 # ----------------------------------------------------------------- APPLICATION SUBMISSION & TRACKING
 @router.post("/apply", status_code=status.HTTP_201_CREATED)
@@ -396,12 +538,18 @@ def submit_account_opening_application(application: AccountOpeningApplication):
             }
 
         # Generate Unique Random Application Number (e.g., APP-2026-681924)
-        random_digits = random.randint(100000, 999999)
+        random_digits = secrets.randbelow(900000) + 100000
         current_year = datetime.now().year
         app_number = f"APP-{current_year}-{random_digits}"
         while app_number in DB["applications"]:
-            random_digits = random.randint(100000, 999999)
+            random_digits = secrets.randbelow(900000) + 100000
             app_number = f"APP-{current_year}-{random_digits}"
+
+    # Hash applicant password immediately with Bcrypt (never store in plaintext!)
+    pwd_hash = hash_password(application.password)
+
+    safe_form_data = dict(application.formData or (DB["applications"].get(app_number, {}).get("formData")) or {})
+    safe_form_data.pop("password", None)
 
     app_record = {
         "applicationNumber": app_number,
@@ -411,7 +559,7 @@ def submit_account_opening_application(application: AccountOpeningApplication):
         "branchCode": application.branchCode or "",
         "initialDeposit": application.initialDeposit,
         "taxId": application.taxId,
-        "password": application.password,  # Stored for activation upon staff approval
+        "password_hash": pwd_hash,  # Salted Bcrypt hash (plaintext password discarded)
         "cardScheme": application.cardScheme or "RUPAY",
         "cardFormat": application.cardFormat or "BOTH",
         "applicationType": application.applicationType or "NEW",
@@ -431,7 +579,7 @@ def submit_account_opening_application(application: AccountOpeningApplication):
         "identityDocument": application.identityDocument.model_dump(mode="json"),
         "addressProof": application.addressProof.model_dump(mode="json"),
         "agreedToTerms": application.agreedToTerms,
-        "formData": application.formData or (DB["applications"].get(app_number, {}).get("formData")) or {}
+        "formData": safe_form_data
     }
 
     DB["applications"][app_number] = app_record
@@ -459,19 +607,86 @@ def submit_account_opening_application(application: AccountOpeningApplication):
     }
 
 @router.get("/track/{applicationNumber}")
-def track_application_status(applicationNumber: str):
-    """Public lookup endpoint allowing applicants to track their account opening status and view verified documents."""
+def track_application_status(applicationNumber: str, request: Request):
+    """
+    Public lookup endpoint allowing applicants to track their account opening status.
+    PII REDACTION: Strictly masks sensitive personal data (full address, tax ID, phone, email,
+    raw document numbers) and suppresses document download URLs for unauthenticated callers
+    to prevent mass data harvesting, IDOR, and identity theft.
+    """
     app = DB["applications"].get(applicationNumber) or get_sql_application(applicationNumber)
     if not app:
         fail(404, f"No application found with reference {applicationNumber}", "APPLICATION_NOT_FOUND")
+
+    # Check caller authentication
+    is_owner_or_staff = False
+    try:
+        caller = get_current_user(request)
+        if caller.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN"):
+            is_owner_or_staff = True
+        elif caller.get("email", "").lower() == app.get("applicant", {}).get("email", "").lower():
+            is_owner_or_staff = True
+    except Exception:
+        pass
 
     applicant = app.get("applicant", {})
     first_name = applicant.get("firstName") or applicant.get("first_name") or ""
     last_name = applicant.get("lastName") or applicant.get("last_name") or ""
     name_display = f"{first_name} {last_name[:1]}." if first_name else "Applicant Draft"
 
-    attached_docs = list_documents_for_application(applicationNumber)
     curr_status = app.get("status", "SUBMITTED")
+    raw_docs = list_documents_for_application(applicationNumber)
+
+    if is_owner_or_staff:
+        # Full dossier for verified account holder or bank staff
+        safe_applicant = applicant
+        safe_employment = app.get("employment", {})
+        safe_id_doc = app.get("identityDocument", {})
+        safe_addr_proof = app.get("addressProof", {})
+        safe_tax_id = app.get("taxId", "")
+        safe_docs = raw_docs
+    else:
+        # Redacted view for public status tracking
+        email_str = applicant.get("email", "")
+        masked_email = f"{email_str[:1]}***@{email_str.split('@')[-1]}" if "@" in email_str else "******"
+        phone_str = applicant.get("phone", "")
+        masked_phone = f"***-***-{phone_str[-4:]}" if len(phone_str) >= 4 else "******"
+        tax_str = app.get("taxId", "")
+        safe_tax_id = f"***{tax_str[-4:]}" if len(tax_str) >= 4 else "***"
+
+        addr = applicant.get("address", {})
+        safe_applicant = {
+            "firstName": first_name,
+            "lastName": f"{last_name[:1]}.",
+            "email": masked_email,
+            "phone": masked_phone,
+            "address": {
+                "city": addr.get("city", ""),
+                "country": addr.get("country", "")
+            }
+        }
+        safe_employment = {"status": app.get("employment", {}).get("status", "EMPLOYED")}
+        id_doc = app.get("identityDocument", {})
+        safe_id_doc = {
+            "type": id_doc.get("type", "PASSPORT"),
+            "issuingCountry": id_doc.get("issuingCountry", "GB")
+        }
+        safe_addr_proof = {
+            "type": app.get("addressProof", {}).get("type", "UTILITY_BILL")
+        }
+        # Provide document verification status WITHOUT exposing download URLs
+        safe_docs = [
+            {
+                "id": d["id"],
+                "docCategory": d.get("docCategory"),
+                "docType": d.get("docType"),
+                "fileMime": d.get("fileMime"),
+                "isEncrypted": True,
+                "verified": True,
+                "createdAt": d.get("createdAt")
+            }
+            for d in raw_docs
+        ]
 
     return {
         "applicationNumber": applicationNumber,
@@ -482,22 +697,21 @@ def track_application_status(applicationNumber: str):
         "branchName": app.get("branchName", ""),
         "branchCode": app.get("branchCode", ""),
         "applicantName": name_display,
-        "applicant": applicant,
-        "employment": app.get("employment", {}),
-        "identityDocument": app.get("identityDocument", {}),
-        "addressProof": app.get("addressProof", {}),
-        "taxId": app.get("taxId", ""),
+        "applicant": safe_applicant,
+        "employment": safe_employment,
+        "identityDocument": safe_id_doc,
+        "addressProof": safe_addr_proof,
+        "taxId": safe_tax_id,
         "initialDeposit": float(app.get("initialDeposit") or 0.0),
         "cardScheme": app.get("cardScheme", "RUPAY"),
         "cardFormat": app.get("cardFormat", "BOTH"),
-        "formData": app.get("formData", {}),
         "submittedAt": app.get("createdAt"),
         "updatedAt": app.get("updatedAt"),
         "reviewedAt": app.get("reviewedAt"),
         "reviewNotes": app.get("reviewNotes"),
         "generatedAccountNumber": app.get("generatedAccountNumber"),
         "isDraft": curr_status in ("DRAFT_INITIATED", "DRAFT_SAVED"),
-        "documents": attached_docs,
+        "documents": safe_docs,
         "officerMessages": app.get("officerMessages", []),
         "officeVerification": app.get("officeVerification"),
         "verifyingOfficerName": app.get("verifyingOfficerName"),
@@ -791,11 +1005,12 @@ def review_and_open_account(
     applicant = app.get("applicant", {})
     user_email = applicant.get("email") or f"customer_{random.randint(1000,9999)}@bank.test"
     user_id = generate_id("usr")
-    raw_pwd = app.get("password") or app.get("password_hash") or "Password123!"
-    if isinstance(raw_pwd, str) and raw_pwd.startswith("pbkdf2:"):
+    raw_pwd = app.get("password_hash") or app.get("password") or SEED_CUSTOMER_PASSWORD
+    if is_password_hash(raw_pwd):
         customer_pwd_hash = raw_pwd
     else:
         customer_pwd_hash = hash_password(str(raw_pwd))
+    app.pop("password", None)
 
     # 1. Create Active Customer User
     customer_user_record = {
@@ -879,56 +1094,30 @@ def review_and_open_account(
     chosen_format = (app.get("cardFormat") or "BOTH").upper()
     cardholder_name = f"{applicant.get('firstName', '')} {applicant.get('lastName', '')}".strip().upper() or "BANK CUSTOMER"
 
-    # Issue Debit Card based on chosen scheme and format
-    # When "BOTH" (Virtual + Metal) is selected, issue ONE single consolidated card view
-    if chosen_format == "BOTH":
-        c_card_id = generate_id("crd")
-        DB["cards"][c_card_id] = {
-            "id": c_card_id,
-            "ownerId": user_id,
-            "accountId": acc_id,
-            "type": "VIRTUAL + METAL",
-            "format": "BOTH",
-            "network": chosen_scheme,
-            "cardholderName": cardholder_name,
-            "last4": f"{random.randint(1000, 9999):04d}",
-            "status": "ACTIVE",
-            "pin": "1234",
-            "limits": {"daily": 10000.0, "monthly": 50000.0, "atm": 3000.0},
-            "createdAt": now_iso()
-        }
-    elif chosen_format == "METAL":
-        m_card_id = generate_id("crd")
-        DB["cards"][m_card_id] = {
-            "id": m_card_id,
-            "ownerId": user_id,
-            "accountId": acc_id,
-            "type": "METAL",
-            "format": "METAL",
-            "network": chosen_scheme,
-            "cardholderName": cardholder_name,
-            "last4": f"{random.randint(1000, 9999):04d}",
-            "status": "ACTIVE",
-            "pin": "1234",
-            "limits": {"daily": 10000.0, "monthly": 50000.0, "atm": 3000.0},
-            "createdAt": now_iso()
-        }
-    elif chosen_format == "VIRTUAL":
-        v_card_id = generate_id("crd")
-        DB["cards"][v_card_id] = {
-            "id": v_card_id,
-            "ownerId": user_id,
-            "accountId": acc_id,
-            "type": "VIRTUAL",
-            "format": "VIRTUAL",
-            "network": chosen_scheme,
-            "cardholderName": cardholder_name,
-            "last4": f"{random.randint(1000, 9999):04d}",
-            "status": "ACTIVE",
-            "pin": "1234",
-            "limits": {"daily": 3000.0, "monthly": 15000.0, "atm": 1000.0},
-            "createdAt": now_iso()
-        }
+    # 4. Item 18: Issue Debit Card(s) based on chosen scheme and format
+    # Issue card in INACTIVE state with a secure activation code (never a known hardcoded PIN)
+    chosen_scheme = (app.get("cardScheme") or "RUPAY").upper()
+    chosen_format = (app.get("cardFormat") or "BOTH").upper()
+    cardholder_name = f"{applicant.get('firstName', '')} {applicant.get('lastName', '')}".strip().upper() or "BANK CUSTOMER"
+    card_activation_code = f"{secrets.randbelow(1_000_000):06d}"
+    card_last4 = f"{secrets.randbelow(9000) + 1000:04d}"
+
+    c_card_id = generate_id("crd")
+    DB["cards"][c_card_id] = {
+        "id": c_card_id,
+        "ownerId": user_id,
+        "accountId": acc_id,
+        "type": chosen_format,
+        "format": chosen_format,
+        "network": chosen_scheme,
+        "cardholderName": cardholder_name,
+        "last4": card_last4,
+        "status": "INACTIVE",
+        "_activationCode": card_activation_code,
+        "pin_hash": None,
+        "limits": {"daily": 5000.0, "monthly": 25000.0, "atm": 2000.0},
+        "createdAt": now_iso()
+    }
 
     # Record allocated account and verification officer details
     app["status"] = "ACCOUNT_OPENED"
@@ -989,14 +1178,21 @@ def review_and_open_account(
 
 # ----------------------------------------------------------------- CUSTOMER PROFILE / APPLICATION UPDATE (Item 20)
 @router.post("/request-update", status_code=status.HTTP_201_CREATED)
-def request_application_update(payload: Dict[str, Any]):
+def request_application_update(payload: Dict[str, Any], user: Dict[str, Any] = Depends(get_current_user)):
     """
     Item 20: Post-account-opening customer application update request.
-    Allows existing customers to request updates with account number (Application Type* = UPDATE).
+    Strictly enforces authorization: Caller must be an active customer who owns the account,
+    or an authorized bank staff member.
     """
     account_number = payload.get("accountNumber")
     if not account_number:
         fail(400, "Account number is required for profile/application updates", "MISSING_ACCOUNT_NUMBER")
+
+    # Authorization Check
+    is_staff = user.get("role") in ("EMPLOYEE", "ADMIN", "SUPER_ADMIN")
+    user_accounts = [a["accountNumber"] for a in DB["accounts"].values() if a.get("ownerId") == user["id"]]
+    if not is_staff and account_number not in user_accounts:
+        fail(403, "Access denied: You are only authorized to submit update requests for accounts you own.", "FORBIDDEN_ACCOUNT")
 
     current_year = datetime.now().year
     random_digits = random.randint(100000, 999999)
