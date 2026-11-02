@@ -165,11 +165,19 @@ When deploying to Render, Railway, or standard Docker environments:
    - `ENVIRONMENT=production`: Enforces secure cookie policies (`COOKIE_SECURE=true`), disables interactive documentation (`/docs`, `/redoc`), and deactivates platform data reset endpoints.
    - `JWT_SECRET`: Mandatory high-entropy secret (minimum 32 bytes) for signing authentication tokens.
    - `NEOBANK_DOC_KEY`: Mandatory base64 Fernet 256-bit key for AES document encryption.
+   - `POS_GATEWAY_KEY`: Mandatory 32-byte secret key for POS payment authorization (`X-Gateway-Key` header).
+   - `ADMIN_EMAIL` & `ADMIN_PASSWORD`: Safe first-admin bootstrap credentials for fresh production deployment.
    - `NEOBANK_DB_PATH`: Absolute path to SQLite database on persistent storage (e.g. `/data/neobank.db`).
    - `SEED_DEMO_USERS=false`: Ensures demo accounts are never provisioned in production.
 
-2. **Persistent Storage Warning (Render Ephemeral Storage)**:
-   > **Note on Render Data Retention**: On container hosting platforms with ephemeral filesystems (such as Render standard web services without a persistent disk), the local SQLite database resets upon every redeployment or service restart. To persist ledger state on Render, add a **Persistent Disk** (e.g. mounted at `/data`) and specify `NEOBANK_DB_PATH=/data/neobank.db`.
+2. **Persistent Storage (Render Disks)**:
+   > **Important on Render Data Retention**: Standard web services on Render have ephemeral root filesystems that wipe upon every restart or redeploy. To persist ledger accounts, transactions, and encrypted KYC documents:
+   > - In the Render Dashboard, go to your Web Service **Disks** section and click **Add Disk**.
+   > - **Disk Name**: `neobank-storage`
+   > - **Mount Path**: `/data` (Single documented path)
+   > - **Size**: `1 GB` (or larger)
+   > - In **Environment**, configure: `NEOBANK_DB_PATH=/data/neobank.db`
+   > - **Permissions**: The container entrypoint (`docker-entrypoint.sh`) automatically configures `/data` ownership for unprivileged `appuser` (UID 1001) using `gosu` before starting the application.
 
 3. **Dependency Vulnerability Scanning**:
    Run audits with `pip-audit`:

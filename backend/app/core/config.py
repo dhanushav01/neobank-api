@@ -144,6 +144,7 @@ TRUSTED_PROXIES = [
 SEED_DEMO_USERS = os.getenv("SEED_DEMO_USERS", "false").lower() == "true"
 SEED_DEMO_DATA = SEED_DEMO_USERS
 ENABLE_TEST_ROUTES = os.getenv("ENABLE_TEST_ROUTES", "false" if IS_PRODUCTION else "true").lower() == "true"
+ENABLE_TEST_OTP = os.getenv("ENABLE_TEST_OTP", "false").lower() in ("true", "1", "yes") and not IS_PRODUCTION
 NEOBANK_DB_PATH = os.getenv("NEOBANK_DB_PATH", "")
 SEED_ADMIN_EMAIL = os.getenv("SEED_ADMIN_EMAIL", "admin@bank.test")
 SEED_ADMIN_PASSWORD = os.getenv("SEED_ADMIN_PASSWORD", "Admin@1234")

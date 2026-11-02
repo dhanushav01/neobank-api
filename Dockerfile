@@ -1,7 +1,12 @@
-# Multi-stage production-hardened Dockerfile for NeoBank API
-FROM python:3.11-slim
+# Production-hardened Dockerfile for NeoBank API
+# Pinned Python 3.11 base image (FastAPI 0.162+ & Starlette 1.10+ require Python >= 3.11)
+FROM python:3.11.11-slim-bookworm
 
-# Create unprivileged system user and group
+# Install gosu for privilege de-escalation in entrypoint
+RUN apt-get update && apt-get install -y --no-install-recommends gosu \
+    && rm -rf /var/lib/apt/lists/*
+
+# Create unprivileged system user and group (UID/GID 1001)
 RUN groupadd -r appgroup && useradd -r -g appgroup -u 1001 appuser
 
 WORKDIR /app
@@ -14,21 +19,24 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy application files with appropriate ownership
 COPY --chown=appuser:appgroup . .
 
-# Ensure data directory exists and has correct permissions
-RUN mkdir -p /app/backend/data && chown -R appuser:appgroup /app/backend/data
-
-# Switch to non-root user
-USER appuser
+# Ensure data directories exist and permissions are set for appuser
+RUN mkdir -p /data /app/backend/data \
+    && chown -R appuser:appgroup /data /app/backend/data \
+    && chmod -R 775 /data /app/backend/data \
+    && chmod +x /app/docker-entrypoint.sh
 
 ENV HOST=0.0.0.0 \
     PORT=8000 \
-    ENVIRONMENT=production
+    ENVIRONMENT=production \
+    NEOBANK_DB_PATH=/data/neobank.db
 
 EXPOSE 8000
 
 # Docker healthcheck using dynamic PORT
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
     CMD python -c "import os, urllib.request; port = os.getenv('PORT', '8000'); urllib.request.urlopen(f'http://127.0.0.1:{port}/health')" || exit 1
+
+ENTRYPOINT ["/app/docker-entrypoint.sh"]
 
 # Launch uvicorn server with environment variable fallbacks
 CMD ["sh", "-c", "uvicorn backend.app.main:app --host ${HOST:-0.0.0.0} --port ${PORT:-8000} --proxy-headers"]

@@ -197,20 +197,28 @@ def re_encrypt_document(encrypted_content: bytes) -> bytes:
 
 
 # ----------------------------------------------------------------- SALTED OTP HASHING
-def hash_otp(code: str, salt: Optional[str] = None) -> tuple:
+def hash_otp(code: str, salt: Optional[Any] = None) -> tuple:
     """
     Generate salted cryptographic hash of OTP using PBKDF2-HMAC-SHA256.
     Ensures OTPs are never stored in plaintext in the database or cache.
     """
     if not salt:
-        salt = secrets.token_hex(16)
+        salt_str = secrets.token_hex(16)
+        salt_bytes = salt_str.encode("utf-8")
+    elif isinstance(salt, bytes):
+        salt_bytes = salt
+        salt_str = salt.hex()
+    else:
+        salt_str = str(salt)
+        salt_bytes = salt_str.encode("utf-8")
+
     hashed = hashlib.pbkdf2_hmac(
         "sha256",
         code.strip().encode("utf-8"),
-        salt.encode("utf-8"),
+        salt_bytes,
         iterations=50000
     )
-    return base64.b64encode(hashed).decode("utf-8"), salt
+    return base64.b64encode(hashed).decode("utf-8"), salt_str
 
 
 def verify_salted_otp(provided_code: str, expected_hash_b64: str, salt: str) -> bool:

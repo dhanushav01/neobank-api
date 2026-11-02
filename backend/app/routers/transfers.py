@@ -19,7 +19,7 @@ from fastapi import APIRouter, Depends, Header, Query, Request, status
 from backend.app.core.database import DB, get_owned, list_owned, post_transaction, audit_log, send_notification
 from backend.app.core.security import get_current_user
 from backend.app.core.utils import fail, generate_id, now_iso, paginate
-from backend.app.core.config import OTP_THRESHOLD, TRANSFER_EXTERNAL_FEE
+from backend.app.core.config import OTP_THRESHOLD, TRANSFER_EXTERNAL_FEE, ENABLE_TEST_OTP
 from backend.app.core.crypto_utils import hash_otp, verify_salted_otp
 from backend.app.core.limiter import limiter
 from backend.app.models.schemas import TransferCreateRequest, TransferConfirmRequest
@@ -62,7 +62,10 @@ def execute_transfer(transfer: Dict[str, Any]) -> None:
 
 def sanitize_transfer_output(transfer: Dict[str, Any]) -> Dict[str, Any]:
     """Strip secret verification OTP fields before returning transfer object to client."""
-    return {k: v for k, v in transfer.items() if not k.startswith("_") and k not in ("testModeOtp", "otp")}
+    out = {k: v for k, v in transfer.items() if not k.startswith("_") and k != "otp"}
+    if not ENABLE_TEST_OTP:
+        out.pop("testModeOtp", None)
+    return out
 
 
 @router.post("", status_code=status.HTTP_201_CREATED)
@@ -122,6 +125,8 @@ def initiate_transfer(
         transfer_record["_otp_salt"] = salt_hex
         transfer_record["_otp_expiry"] = time.time() + 300  # 5 minutes
         transfer_record["_otp_attempts"] = 0
+        if ENABLE_TEST_OTP:
+            transfer_record["testModeOtp"] = otp_code
         # In production, dispatch OTP out-of-band via SMS / push notification; NEVER leak into notifications DB
         send_notification(user["id"], f"A one-time verification code has been dispatched out-of-band to authorize transfer #{transfer_id} of {transfer_record['amount']} {transfer_record['currency']}.")
     else:

@@ -168,6 +168,70 @@ class TestSecurityHardening(unittest.TestCase):
             importlib.reload(cfg_mod)
             importlib.reload(sql_db)
 
+    def test_05_enable_test_otp_flag_behavior(self):
+        """
+        Verify that ENABLE_TEST_OTP=true includes testModeOtp for testers,
+        while ENABLE_TEST_OTP=false strips it completely.
+        """
+        from backend.app.routers import transfers as transfers_mod
+        from backend.app.core.database import DB
+
+        # Ensure funding account exists for customer
+        source_acc_id = "acc-test-transfer-otp"
+        dest_acc_id = "acc-test-transfer-dest"
+        DB["accounts"][source_acc_id] = {
+            "id": source_acc_id,
+            "ownerId": "usr_seed_customer",
+            "status": "ACTIVE",
+            "currency": "USD",
+            "balance": 50000.0,
+            "accountNumber": "9999000001"
+        }
+        DB["accounts"][dest_acc_id] = {
+            "id": dest_acc_id,
+            "ownerId": "usr_seed_admin",
+            "status": "ACTIVE",
+            "currency": "USD",
+            "balance": 100.0,
+            "accountNumber": "1000000002"
+        }
+
+        transfer_payload = {
+            "fromAccountId": source_acc_id,
+            "destination": {
+                "type": "INTERNAL",
+                "name": "Alex Sterling",
+                "accountNumber": "1000000002"
+            },
+            "amount": 2500.00,
+            "currency": "USD",
+            "reference": "High value wire"
+        }
+
+        # Case A: ENABLE_TEST_OTP is False -> No testModeOtp in response
+        transfers_mod.ENABLE_TEST_OTP = False
+        res_off = self.client.post(
+            "/transfers",
+            json=transfer_payload,
+            headers={"Authorization": f"Bearer {self.cust_token}"}
+        )
+        self.assertEqual(res_off.status_code, 201)
+        self.assertNotIn("testModeOtp", res_off.json())
+
+        # Case B: ENABLE_TEST_OTP is True -> Includes testModeOtp for UI demo
+        transfers_mod.ENABLE_TEST_OTP = True
+        res_on = self.client.post(
+            "/transfers",
+            json=transfer_payload,
+            headers={"Authorization": f"Bearer {self.cust_token}"}
+        )
+        self.assertEqual(res_on.status_code, 201)
+        self.assertIn("testModeOtp", res_on.json())
+        self.assertEqual(len(res_on.json()["testModeOtp"]), 6)
+
+        # Restore default state
+        transfers_mod.ENABLE_TEST_OTP = False
+
 
 if __name__ == "__main__":
     unittest.main()
