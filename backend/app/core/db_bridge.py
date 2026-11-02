@@ -8,12 +8,26 @@ import json
 import sqlite3
 from typing import Dict, Any, Optional
 
+import re
+
 # File paths
 SQLITE_DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "data", "neobank.db"))
 ENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".env"))
 
-def test_mongo_connection(uri: str = "mongodb://127.0.0.1:27017/") -> Dict[str, Any]:
-    """Test connection to local MongoDB instance."""
+from backend.app.core.config import (
+    MONGODB_URI, MONGODB_DB_NAME,
+    MYSQL_HOST, MYSQL_PORT, MYSQL_USER, MYSQL_PASSWORD, MYSQL_DB
+)
+
+_SAFE_DB_NAME_RE = re.compile(r"^[a-zA-Z0-9_]{1,64}$")
+_SAFE_HOST_RE = re.compile(r"^[a-zA-Z0-9_.-]{1,255}$")
+
+def test_mongo_connection(uri: Optional[str] = None) -> Dict[str, Any]:
+    """Test connection to MongoDB instance with URI validation."""
+    uri = uri or MONGODB_URI
+    if not (uri.startswith("mongodb://") or uri.startswith("mongodb+srv://")):
+        return {"connected": False, "uri": uri, "error": "Invalid MongoDB protocol", "message": "URI must start with mongodb:// or mongodb+srv://"}
+
     try:
         import pymongo
         client = pymongo.MongoClient(uri, serverSelectionTimeoutMS=2000)
@@ -34,8 +48,16 @@ def test_mongo_connection(uri: str = "mongodb://127.0.0.1:27017/") -> Dict[str, 
             "message": "Failed to connect to MongoDB"
         }
 
-def sync_sqlite_to_mongodb(uri: str = "mongodb://127.0.0.1:27017/", db_name: str = "neobank") -> Dict[str, Any]:
+def sync_sqlite_to_mongodb(uri: Optional[str] = None, db_name: Optional[str] = None) -> Dict[str, Any]:
     """Sync all SQLite tables into MongoDB collections in the specified database."""
+    uri = uri or MONGODB_URI
+    db_name = db_name or MONGODB_DB_NAME
+    if not _SAFE_DB_NAME_RE.match(db_name):
+        return {"success": False, "error": "Invalid database name", "message": "Database name must be alphanumeric"}
+
+    if not (uri.startswith("mongodb://") or uri.startswith("mongodb+srv://")):
+        return {"success": False, "error": "Invalid MongoDB protocol", "message": "URI must start with mongodb:// or mongodb+srv://"}
+
     try:
         import pymongo
         client = pymongo.MongoClient(uri, serverSelectionTimeoutMS=3000)
@@ -82,8 +104,23 @@ def sync_sqlite_to_mongodb(uri: str = "mongodb://127.0.0.1:27017/", db_name: str
             "message": f"MongoDB synchronization failed: {e}"
         }
 
-def test_mysql_connection(user: str = "root", password: str = "", host: str = "127.0.0.1", port: int = 3306) -> Dict[str, Any]:
-    """Test MySQL connectivity with provided credentials."""
+def test_mysql_connection(
+    user: Optional[str] = None,
+    password: Optional[str] = None,
+    host: Optional[str] = None,
+    port: Optional[int] = None
+) -> Dict[str, Any]:
+    """Test MySQL connectivity with validated parameters."""
+    user = user if user is not None else MYSQL_USER
+    password = password if password is not None else MYSQL_PASSWORD
+    host = host or MYSQL_HOST
+    port = port if port is not None else MYSQL_PORT
+
+    if not _SAFE_HOST_RE.match(host):
+        return {"connected": False, "error": "Invalid host parameter"}
+    if not (1 <= port <= 65535):
+        return {"connected": False, "error": "Invalid port number"}
+
     try:
         import pymysql
         conn = pymysql.connect(
@@ -119,13 +156,26 @@ def test_mysql_connection(user: str = "root", password: str = "", host: str = "1
         }
 
 def sync_sqlite_to_mysql(
-    user: str = "root",
-    password: str = "",
-    host: str = "127.0.0.1",
-    port: int = 3306,
-    db_name: str = "neobank"
+    user: Optional[str] = None,
+    password: Optional[str] = None,
+    host: Optional[str] = None,
+    port: Optional[int] = None,
+    db_name: Optional[str] = None
 ) -> Dict[str, Any]:
-    """Create MySQL database 'neobank' with relational schema and sync all records from SQLite."""
+    """Create MySQL database with relational schema and sync all records from SQLite."""
+    user = user if user is not None else MYSQL_USER
+    password = password if password is not None else MYSQL_PASSWORD
+    host = host or MYSQL_HOST
+    port = port if port is not None else MYSQL_PORT
+    db_name = db_name or MYSQL_DB
+
+    if not _SAFE_DB_NAME_RE.match(db_name):
+        return {"success": False, "error": "Invalid database name; must be alphanumeric"}
+    if not _SAFE_HOST_RE.match(host):
+        return {"success": False, "error": "Invalid host parameter"}
+    if not (1 <= port <= 65535):
+        return {"success": False, "error": "Invalid port number"}
+
     try:
         import pymysql
         # Connect to MySQL server
@@ -139,7 +189,7 @@ def sync_sqlite_to_mysql(
         )
         cur = conn.cursor()
 
-        # Create database
+        # Create database with escaped identifier
         cur.execute(f"CREATE DATABASE IF NOT EXISTS `{db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;")
         cur.execute(f"USE `{db_name}`;")
 
@@ -340,12 +390,7 @@ def sync_sqlite_to_mysql(
         sqlite_conn.close()
         conn.close()
 
-        # Save connection details to .env
-        try:
-            with open(ENV_PATH, "a") as f:
-                f.write(f"\nMYSQL_HOST={host}\nMYSQL_PORT={port}\nMYSQL_USER={user}\nMYSQL_PASSWORD={password}\nMYSQL_DB={db_name}\n")
-        except Exception:
-            pass
+
 
         return {
             "success": True,

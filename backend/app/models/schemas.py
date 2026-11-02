@@ -4,7 +4,7 @@ Unified Pydantic request and response schemas for NeoBank API.
 from datetime import date
 import re
 from typing import Optional, List, Dict, Any
-from pydantic import BaseModel, Field, model_validator, field_validator
+from pydantic import BaseModel, Field, ConfigDict, model_validator, field_validator
 
 # ----------------------------------------------------------------- COMMON / PROFILE
 class Address(BaseModel):
@@ -144,8 +144,8 @@ class AccountCreateRequest(BaseModel):
         return self
 
 class AccountUpdateRequest(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     nickname: Optional[str] = Field(None, max_length=40)
-    overdraftLimit: Optional[float] = Field(None, ge=0)
 
 class AmountRequest(BaseModel):
     amount: float = Field(gt=0, le=1_000_000)
@@ -306,7 +306,6 @@ class EmployeeRegisterRequest(BaseModel):
     department: str = Field("OPERATIONS", pattern="^(OPERATIONS|UNDERWRITING|COMPLIANCE|BRANCH_MANAGEMENT|IT)$")
     role: str = Field("EMPLOYEE", pattern="^(EMPLOYEE|ADMIN)$")
     profile: Profile
-    secretAdminToken: Optional[str] = None  # Bank authorization token
     hasSqlAccess: Optional[bool] = False  # Direct SQL workbench permission
 
 # ----------------------------------------------------------------- ONBOARDING & ACCOUNT OPENING APPLICATION
