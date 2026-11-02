@@ -1,7 +1,8 @@
 # Environment files and secrets
 .env
 .env.*
-!.env.example
+.env.example
+*.env
 
 # Git repository metadata
 .git
@@ -32,3 +33,4 @@ scratch
 
 # Node modules and temporary frontend files
 node_modules
+
