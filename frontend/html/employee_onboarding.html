@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoBank • Bank Employee Onboarding</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css"></link>
+  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <link rel="stylesheet" href="/css/employee_onboarding.css?v=20261011_01">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20260928_2200"></script>
+  <script src="/js/i18n.js?v=20261011_08"></script>
+  </head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="brand-icon">
+        <svg class="eo-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+      </div>
+      <div>
+        <div class="eo-s2">
+          <span class="brand-title">NeoBank</span>
+        </div>
+        <div class="eo-s4" data-i18n="brand_sub">Digital Banking</div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Theme, Language Selector & Navigation -->
+    <div class="eo-s5">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+
+      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
+      <div class="page-zoom-controls">
+        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+          <span class="zoom-level-text">100%</span>
+        </button>
+        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+
+      <!-- Google Website Translator -->
+      <div id="google_translate_element" class="notranslate" translate="no"></div>
+
+      <a href="/" class="btn btn-outline btn-sm">
+        <span>Home</span>
+      </a>
+      <a href="/login" class="btn btn-outline btn-sm">
+        <span data-i18n="return_login">Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==================== EMPLOYEE ONBOARDING CONTAINER ==================== -->
+  <main class="eo-s9">
+    <div class="glass-card eo-s10">
+      <div class="eo-s11">
+        <h2 class="eo-s12" data-i18n="emp_onboard_title">Bank Staff Onboarding Portal</h2>
+        <p class="eo-s13" data-i18n="emp_onboard_subtitle">
+          Register a newly appointed bank employee or underwriting officer with institutional role and permissions.
+        </p>
+      </div>
+
+      <form id="form-employee-register" onsubmit="event.preventDefault(); handleEmployeeRegister(this);">
+        <div class="eo-s14">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" name="firstName" class="form-input" placeholder="e.g. Sarah" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="lastName" class="form-input" placeholder="e.g. Jenkins" required>
+          </div>
+        </div>
+
+        <div class="eo-s14">
+          <div class="form-group">
+            <label class="form-label">Official Bank Email</label>
+            <input type="email" name="email" class="form-input" placeholder="e.g. sarah.jenkins@bank.test" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-input" placeholder="Min 8 characters" required minlength="8">
+          </div>
+        </div>
+
+        <div class="eo-s15">
+          <div class="form-group">
+            <label data-i18n="emp_code_label" class="form-label">Employee Code</label>
+            <input type="text" name="employeeCode" class="form-input" placeholder="e.g. EMP-5012" required>
+          </div>
+          <div class="form-group">
+            <label data-i18n="emp_dept_label" class="form-label">Department</label>
+            <select name="department" class="form-select">
+              <option value="OPERATIONS">Operations</option>
+              <option value="UNDERWRITING">Underwriting</option>
+              <option value="COMPLIANCE">Compliance</option>
+              <option value="BRANCH_MANAGEMENT">Branch Management</option>
+              <option value="IT">IT & Security</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label data-i18n="emp_role_label" class="form-label">System Role</label>
+            <select name="role" class="form-select">
+              <option value="EMPLOYEE">Bank Staff</option>
+              <option value="ADMIN">Administrator</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="eo-s14">
+          <div class="form-group">
+            <label class="form-label">Date of Birth</label>
+            <input type="date" name="dob" class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Official Contact Phone</label>
+            <input type="tel" name="phone" class="form-input" placeholder="+447700900999" required>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Bank Branch / Office Address</label>
+          <input type="text" name="addressLine" class="form-input" placeholder="10 Fleet Street, London, EC4Y 1AA, GB" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary eo-s16">
+          <span data-i18n="emp_register_btn">Register Bank Employee Account</span>
+        </button>
+      </form>
+
+      <div class="eo-s17">
+        <a class="eo-s18" href="/login">
+          <span data-i18n="return_login">← Return to Sign In</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Core Scripts -->
+  <script src="/js/api.js?v=20261001_1300"></script>
+  <script>
+    if (typeof window.formatHumanText !== 'function') {
+      window.formatHumanText = function(val) {
+        if (!val || typeof val !== 'string') return val || '';
+        const trimmed = val.trim();
+        if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) return val;
+        if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
+          return trimmed.split('_').filter(Boolean).map(part => {
+            const upper = part.toUpperCase();
+            if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) return upper;
+            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
+          }).join(' ');
+        }
+        return val;
+      };
+    }
+    var formatHumanText = window.formatHumanText;
+
+    if (typeof window.showToast !== 'function') {
+      window.showToast = function(msg, type) {
+        console.log(`[Toast ${type || 'info'}]:`, msg);
+      };
+    }
+    var showToast = window.showToast;
+
+    async function handleEmployeeRegister(form) {
+      try {
+        const payload = {
+          email: form.email.value.trim(),
+          password: form.password.value,
+          employeeCode: form.employeeCode.value.trim(),
+          department: form.department.value,
+          role: form.role.value,
+          profile: {
+            firstName: form.firstName.value.trim(),
+            lastName: form.lastName.value.trim(),
+            dob: form.dob.value,
+            phone: form.phone.value.trim(),
+            address: (() => {
+              const parts = form.addressLine.value.trim().split(',').map(s => s.trim());
+              return {
+                line1: parts[0] || form.addressLine.value.trim(),
+                city: parts[1] || 'London',
+                postalCode: parts[2] || 'EC4Y 1AA',
+                country: parts[3] || 'GB'
+              };
+            })()
+          }
+        };
+
+        const res = await api('/auth/register-employee', {
+          method: 'POST',
+          body: payload
+        });
+
+        showToast(`Staff member ${res.email} successfully onboarded!`, 'success');
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 1200);
+      } catch (err) {
+        showToast(err.message || 'Failed to onboard employee', 'error');
+      }
+    }
+  </script>
+</body>
+</html>

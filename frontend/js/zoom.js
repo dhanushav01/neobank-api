@@ -2,19 +2,19 @@
  * NeoBank Accessibility Page Zoom Controller
  * Enables on-page Zoom In (+), Zoom Out (-), and Reset (100%) controls
  * for all users without needing keyboard shortcuts (Ctrl +/-).
- * Supports full range from 25% minimum to 500% maximum (matching Chrome DevTools zoom restrictions).
- * Persists zoom state across sessions and page navigation.
+ * Supports deep scaling from 10% minimum (ultra-wide/low zoom) to 500% maximum (accessibility).
+ * Persists zoom state across sessions and page navigation with cross-browser resilience.
  */
 
 (function() {
   const ZOOM_STORAGE_KEY = 'neobank_page_zoom';
-  const MIN_ZOOM = 0.25; // 25% minimum
-  const MAX_ZOOM = 5.00; // 500% maximum
+  const MIN_ZOOM = 0.10; // 10% minimum (deep wide view)
+  const MAX_ZOOM = 5.00; // 500% maximum (high accessibility zoom)
   const DEFAULT_ZOOM = 1.00;
 
-  // Standard Chrome / DevTools zoom ladder from 25% up to 500%
+  // Granular zoom ladder from 10% up to 500%
   const ZOOM_STEPS = [
-    0.25, 0.33, 0.50, 0.67, 0.75, 0.80, 0.90,
+    0.10, 0.15, 0.20, 0.25, 0.33, 0.50, 0.67, 0.75, 0.80, 0.90,
     1.00,
     1.10, 1.25, 1.50, 1.75, 2.00, 2.50, 3.00, 4.00, 5.00
   ];
@@ -43,7 +43,7 @@
       btn.style.opacity = atMin ? '0.35' : '1';
       btn.style.cursor = atMin ? 'not-allowed' : 'pointer';
       btn.setAttribute('aria-disabled', atMin ? 'true' : 'false');
-      btn.title = atMin ? 'Minimum zoom reached (25%)' : 'Zoom Out (Smaller -)';
+      btn.title = atMin ? 'Minimum zoom reached (10%)' : 'Zoom Out (Smaller -)';
     });
 
     document.querySelectorAll('.zoom-in-btn').forEach(btn => {
@@ -61,11 +61,14 @@
   function applyZoom(level) {
     const clampedLevel = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, Math.round(level * 100) / 100));
 
+    // Chromium, Safari, Edge, Opera, and modern Firefox (v126+) support style.zoom
     if (document.body) {
       document.body.style.zoom = clampedLevel;
     }
     if (document.documentElement) {
       document.documentElement.style.setProperty('--page-zoom', clampedLevel);
+      // Fallback attribute for CSS selectors targeting extreme zoom states
+      document.documentElement.setAttribute('data-zoom-level', clampedLevel >= 2.0 ? 'high' : (clampedLevel <= 0.5 ? 'low' : 'normal'));
     }
 
     updateZoomUI(clampedLevel);

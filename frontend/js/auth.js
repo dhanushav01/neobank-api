@@ -96,20 +96,9 @@ async function handleLogout() {
   window.location.href = '/login';
 }
 
-// Demo Account Fast-Fillers (for testing both roles effortlessly)
-function fillDemoCredentials(role) {
-  const emailInput = document.getElementById('login-email');
-  const passwordInput = document.getElementById('login-password');
-  
-  if (role === 'CUSTOMER') {
-    emailInput.value = 'customer@bank.test';
-    passwordInput.value = 'Customer@1234';
-    showToast('Customer credentials filled. Click Authenticate to enter.', 'info');
-  } else if (role === 'EMPLOYEE' || role === 'ADMIN') {
-    emailInput.value = 'admin@bank.test';
-    passwordInput.value = 'Admin@1234';
-    showToast('Bank Staff / Admin credentials filled. Click Authenticate to enter.', 'info');
-  }
+// Demo credentials completely removed from client-side bundles
+function fillDemoCredentials() {
+  // Deliberately no-op: plaintext credentials removed
 }
 
 // Switch Auth Screens (Unified Sign In, Open Bank Account Wizard, Track Application, Staff Onboarding)

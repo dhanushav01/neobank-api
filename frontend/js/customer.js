@@ -5,6 +5,8 @@
 // Centralized Utilities from utils.js & api.js
 var formatHumanText = (window.NeoBankUtils && window.NeoBankUtils.formatHumanText) || window.formatHumanText || function(val) { return val || ''; };
 var showToast = window.showToast || function(msg, type) { console.log(`[Toast ${type || 'info'}]:`, msg); };
+var escapeHtml = (window.NeoBankUtils && window.NeoBankUtils.escapeHtml) || window.escapeHtml || function(s) { return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;'); };
+var escapeAttr = (window.NeoBankUtils && window.NeoBankUtils.escapeAttr) || window.escapeAttr || function(s) { return String(s || '').replace(/\\/g, '\\\\').replace(/'/g, "\\'"); };
 
 let customerAccounts = [];
 let customerCards = [];
@@ -165,7 +167,7 @@ function renderAccountsList(accounts) {
           </h3>
           <div style="display:flex;align-items:center;gap:0.5rem;margin-top:0.35rem">
             <span style="font-family:var(--font-mono, monospace);font-size:0.82rem;color:var(--text-secondary)">Acct: <strong style="color:var(--text-main);letter-spacing:0.05em">${acc.accountNumber}</strong></span>
-            <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${acc.accountNumber}'); showToast('Account number ${acc.accountNumber} copied!', 'success');" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:0;font-size:0.85rem;transition:color 0.2s" title="Copy Account Number" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--text-muted)'">
+            <button type="button" onclick="navigator.clipboard && navigator.clipboard.writeText('${acc.accountNumber}'); showToast('Account number ${acc.accountNumber} copied!', 'success');" style="background:transparent;border:none;color:var(--text-muted);cursor:pointer;padding:0;font-size:0.85rem;transition:color 0.2s" title="Copy Account Number" onmouseover="this.style.color='var(--text-contrast)'" onmouseout="this.style.color='var(--text-muted)'">
                           </button>
           </div>
         </div>
@@ -184,7 +186,7 @@ function renderAccountsList(accounts) {
 
         <!-- Quick Action Buttons -->
         <div style="display:grid;grid-template-columns:repeat(4, 1fr);gap:0.4rem">
-          <button class="btn btn-outline btn-sm" style="padding:0.45rem 0.25rem;font-size:0.75rem;justify-content:center;background:rgba(16,185,129,0.08);border-color:rgba(16,185,129,0.25);color:var(--emerald-400)" onclick="promptDeposit('${acc.id}', '${acc.currency}')" title="Deposit funds">
+          <button class="btn btn-outline btn-sm" style="padding:0.45rem 0.25rem;font-size:0.75rem;justify-content:center;background:rgba(16,185,129,0.08);border-color:var(--status-success-bg);color:var(--emerald-400)" onclick="promptDeposit('${acc.id}', '${acc.currency}')" title="Deposit funds">
             <span>+ Deposit</span>
           </button>
           <button class="btn btn-outline btn-sm" style="padding:0.45rem 0.25rem;font-size:0.75rem;justify-content:center" onclick="promptWithdraw('${acc.id}', '${acc.currency}')" title="Withdraw funds">
@@ -338,13 +340,13 @@ async function loadAccountTransactions(accountId, accountNumber) {
                   <span>${formatHumanText(t.type)}</span>
                 </span>
               </td>
-              <td style="font-weight:600;color:var(--text-main)">${t.reference || 'Real-time Clearing Wire'}</td>
+              <td style="font-weight:600;color:var(--text-main)">${escapeHtml(t.reference || 'Real-time Clearing Wire')}</td>
               <td style="font-weight:800;font-variant-numeric:tabular-nums;font-size:0.95rem;color:${isDebit ? 'var(--rose-500)' : 'var(--emerald-400)'}">
                 ${isDebit ? '-' : '+'}$${Math.abs(Number(t.amount)).toLocaleString('en-US', { minimumFractionDigits: 2 })}
               </td>
               <td>
                 ${isDebit && !t.disputed ? `
-                  <button class="btn btn-outline btn-sm" style="padding:0.25rem 0.55rem;font-size:0.75rem" onclick="promptDispute('${t.id}', ${Math.abs(t.amount)})">Dispute</button>
+                  <button class="btn btn-outline btn-sm" style="padding:0.25rem 0.55rem;font-size:0.75rem" onclick="promptDispute('${escapeAttr(t.id)}', ${Math.abs(Number(t.amount))})">Dispute</button>
                 ` : t.disputed ? `<span class="status-pill under_review">Disputed</span>` : '<span style="color:var(--text-muted);font-size:0.75rem">Settled ✓</span>'}
               </td>
             </tr>
@@ -384,7 +386,7 @@ async function submitTransfer(form) {
       activeTransferChallenge = res;
       document.getElementById('otp-transfer-id').value = res.id;
       document.getElementById('otp-challenge-id').value = res.otpChallengeId;
-      document.getElementById('otp-test-hint').textContent = `High-value transfer (> $1,000). Test verification code: ${res.testModeOtp}`;
+      document.getElementById('otp-test-hint').textContent = 'High-value transfer (> $1,000). A 6-digit verification code has been dispatched to your Notifications.';
       openModal('modal-otp-verify');
       showToast('High-value transfer! Please enter the 6-digit verification code.', 'info');
     } else {
@@ -460,11 +462,11 @@ function renderCardsList(cards) {
       <div class="virtual-card" style="position:relative;overflow:hidden">
         <div style="display:flex;justify-content:space-between;align-items:center;position:relative;z-index:2">
           <div style="display:flex;align-items:center;gap:0.5rem">
-            <span style="font-size:0.85rem;font-weight:900;letter-spacing:0.12em;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.5)">NEOBANK</span>
-            <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;background:rgba(255,255,255,0.15);color:#fff">${cardBadgeText}</span>
+            <span style="font-size:0.85rem;font-weight:900;letter-spacing:0.12em;color:var(--text-contrast);text-shadow:0 2px 4px rgba(0,0,0,0.5)">NEOBANK</span>
+            <span style="font-size:0.6rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;background:var(--bg-subtle);color:var(--text-contrast)">${cardBadgeText}</span>
           </div>
           <div style="display:flex;align-items:center;gap:0.4rem">
-            <span class="status-pill ${c.status.toLowerCase()}" style="font-size:0.68rem;padding:0.2rem 0.55rem;background:${isBlocked ? 'rgba(239,68,68,0.25)' : 'rgba(16,185,129,0.25)'};color:${isBlocked ? '#fca5a5' : '#6ee7b7'};border:1px solid ${isBlocked ? 'rgba(239,68,68,0.4)' : 'rgba(16,185,129,0.4)'}">
+            <span class="status-pill ${c.status.toLowerCase()}" style="font-size:0.68rem;padding:0.2rem 0.55rem;background:${isBlocked ? 'var(--status-danger-bg)' : 'var(--status-success-bg)'};color:${isBlocked ? 'var(--status-danger)' : 'var(--status-success)'};border:1px solid ${isBlocked ? 'var(--status-danger-border)' : 'var(--status-success-border)'}">
               ${isBlocked ? 'Locked' : 'Active'}
             </span>
           </div>
@@ -484,30 +486,30 @@ function renderCardsList(cards) {
         <div style="display:flex;justify-content:space-between;align-items:flex-end;position:relative;z-index:2">
           <div>
             <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6)">Cardholder</div>
-            <div style="font-size:0.88rem;font-weight:700;color:#fff;letter-spacing:0.04em;text-transform:uppercase">${c.cardholderName}</div>
+            <div style="font-size:0.88rem;font-weight:700;color:var(--text-contrast);letter-spacing:0.04em;text-transform:uppercase">${c.cardholderName}</div>
           </div>
           <div>
             <div style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.08em;color:rgba(255,255,255,0.6)">Expires</div>
-            <div style="font-size:0.82rem;font-weight:700;color:#fff;font-family:var(--font-mono, monospace)">09/29</div>
+            <div style="font-size:0.82rem;font-weight:700;color:var(--text-contrast);font-family:var(--font-mono, monospace)">09/29</div>
           </div>
           <div style="text-align:right">
             ${isMastercard ? `
               <div style="display:flex;align-items:center">
-                <div style="width:20px;height:20px;border-radius:50%;background:#ef4444;opacity:0.9"></div>
-                <div style="width:20px;height:20px;border-radius:50%;background:#f59e0b;opacity:0.9;margin-left:-9px"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--status-danger);opacity:0.9"></div>
+                <div style="width:20px;height:20px;border-radius:50%;background:var(--status-warning);opacity:0.9;margin-left:-9px"></div>
               </div>
             ` : `
-              <span style="font-size:1.15rem;font-weight:900;font-style:italic;color:#fff;letter-spacing:1px">VISA</span>
+              <span style="font-size:1.15rem;font-weight:900;font-style:italic;color:var(--text-contrast);letter-spacing:1px">VISA</span>
             `}
           </div>
         </div>
 
         <!-- Quick Card Controls Row -->
         <div style="display:flex;gap:0.4rem;margin-top:1.25rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.12);position:relative;z-index:2">
-          <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:#fff" onclick="toggleBlockCard('${c.id}', ${isBlocked})">
+          <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:var(--text-contrast)" onclick="toggleBlockCard('${c.id}', ${isBlocked})">
             ${isBlocked ? 'Unlock Card' : 'Lock Card'}
           </button>
-          <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:#fff" onclick="promptChangePin('${c.id}')">
+          <button class="btn btn-outline btn-sm" style="flex:1;padding:0.35rem 0.5rem;font-size:0.72rem;background:rgba(0,0,0,0.5);border-color:rgba(255,255,255,0.2);color:var(--text-contrast)" onclick="promptChangePin('${c.id}')">
             Reset PIN
           </button>
         </div>
@@ -655,12 +657,12 @@ async function loadLoansHub() {
       } else {
         appsContainer.innerHTML = apps.map(a => `
           <tr>
-            <td style="font-family:monospace">${a.id}</td>
-            <td><span class="status-pill ${a.status.toLowerCase()}">${formatHumanText(a.status)}</span></td>
+            <td style="font-family:monospace">${escapeHtml(a.id)}</td>
+            <td><span class="status-pill ${escapeAttr((a.status || '').toLowerCase())}">${escapeHtml(formatHumanText(a.status))}</span></td>
             <td>${a.status === 'REJECTED' ? `<span style="color:var(--rose-500)">${formatHumanText(a.reason) || ''}</span>` : 'Application pending review'}</td>
             <td>
               ${a.status === 'APPROVED' && a.loanId ? `
-                <button class="btn btn-success btn-sm" onclick="disburseLoan('${a.loanId}')">Disburse Funds</button>
+                <button class="btn btn-success btn-sm" onclick="disburseLoan('${escapeAttr(a.loanId)}')">Disburse Funds</button>
               ` : ''}
             </td>
           </tr>
@@ -675,12 +677,12 @@ async function loadLoansHub() {
       } else {
         activeContainer.innerHTML = loans.map(l => `
           <tr>
-            <td style="font-family:monospace">${l.id}</td>
+            <td style="font-family:monospace">${escapeHtml(l.id)}</td>
             <td style="font-weight:700;color:var(--text-main)">$${l.principal.toLocaleString()}</td>
             <td>${l.apr}% APR</td>
             <td>$${l.monthlyPayment}/mo (${l.termMonths} mos)</td>
             <td>
-              <button class="btn btn-outline btn-sm" onclick="viewLoanSchedule('${l.id}')">Repay</button>
+              <button class="btn btn-outline btn-sm" onclick="viewLoanSchedule('${escapeAttr(l.id)}')">Repay</button>
             </td>
           </tr>
         `).join('');
@@ -711,13 +713,13 @@ async function viewLoanSchedule(loanId) {
     if (tbody) {
       tbody.innerHTML = schedule.map(s => `
         <tr>
-          <td>#${s.installmentNo}</td>
-          <td>${s.dueDate}</td>
+          <td>#${escapeHtml(s.installmentNo)}</td>
+          <td>${escapeHtml(s.dueDate)}</td>
           <td style="font-weight:700;color:var(--text-main)">$${s.amount}</td>
-          <td><span class="status-pill ${s.status.toLowerCase()}">${formatHumanText(s.status)}</span></td>
+          <td><span class="status-pill ${escapeAttr((s.status||'').toLowerCase())}">${escapeHtml(formatHumanText(s.status))}</span></td>
           <td>
             ${s.status === 'DUE' ? `
-              <button class="btn btn-primary btn-sm" onclick="promptRepayInstallment('${loanId}', ${s.installmentNo}, ${s.amount})">Pay</button>
+              <button class="btn btn-primary btn-sm" onclick="promptRepayInstallment('${escapeAttr(loanId)}', ${Number(s.installmentNo)}, ${Number(s.amount)})">Pay</button>
             ` : 'Paid'}
           </td>
         </tr>

@@ -1,0 +1,72 @@
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+    }
+    .glass {
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+    }
+    .glass-card {
+      background: linear-gradient(135deg, rgba(21, 27, 43, 0.8) 0%, rgba(14, 19, 31, 0.6) 100%);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--bg-subtle);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px -5px var(--emerald-glow);
+    }
+    .glow-indigo {
+      box-shadow: 0 0 30px -5px var(--border-glow);
+    }
+    .glow-amber {
+      box-shadow: 0 0 25px -5px var(--amber-glow);
+    }
+    /* Cross-Browser Custom Slim Scrollbars (WebKit & Firefox) */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--brand-subtle) var(--bg-secondary);
+    }
+    ::-webkit-scrollbar,
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track,
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: var(--bg-secondary);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb,
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: var(--brand-subtle);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover,
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: var(--brand-500);
+    }
+    html, body {
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100%;
+    }
+    .credit-card {
+      background: var(--brand-gradient);
+      border: 1px solid var(--border-medium);
+      box-shadow: 0 20px 40px -15px var(--modal-shadow), 0 0 25px -5px var(--brand-subtle);
+    }
+    /* Deep Zoom 10%-500% & Smartwatch Adaptations */
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 0.75rem !important;
+      }
+      .page-zoom-controls {
+        align-self: center !important;
+      }
+    }
+  

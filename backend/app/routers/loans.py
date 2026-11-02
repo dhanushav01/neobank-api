@@ -1,16 +1,20 @@
 """
 Loans Router: Loan quotes, application underwriting lifecycle, disbursement, and installment repayment.
 """
+import threading
 from datetime import datetime, date, timedelta, timezone
 from typing import Optional, Dict, Any
 from fastapi import APIRouter, Depends, status
 
+from backend.app.core.config import BASE_LOAN_APR
 from backend.app.core.database import DB, get_owned, list_owned, post_transaction, audit_log, send_notification
 from backend.app.core.security import get_current_user
 from backend.app.core.utils import fail, generate_id, now_iso, format_money, calculate_emi
 from backend.app.models.schemas import LoanQuoteRequest, LoanApplicationRequest, LoanRepayRequest
 
 router = APIRouter(prefix="/loans", tags=["Loans"])
+
+_loan_lock = threading.Lock()
 
 PURPOSE_RISK_SURCHARGE = {
     "HOME": 0.0,
@@ -23,7 +27,7 @@ PURPOSE_RISK_SURCHARGE = {
 @router.post("/quotes", status_code=status.HTTP_201_CREATED)
 def generate_loan_quote(request: LoanQuoteRequest, user: Dict[str, Any] = Depends(get_current_user)):
     """Calculate loan interest APR, monthly payment (EMI), and total repayable amount."""
-    base_apr = 6.0
+    base_apr = BASE_LOAN_APR
     surcharge = PURPOSE_RISK_SURCHARGE.get(request.purpose, 2.0)
     term_adjustment = request.termMonths / 24.0
     apr = round(base_apr + surcharge + term_adjustment, 2)
@@ -116,41 +120,54 @@ def get_loan(loanId: str, user: Dict[str, Any] = Depends(get_current_user)):
 
 @router.post("/{loanId}/disburse")
 def disburse_loan(loanId: str, user: Dict[str, Any] = Depends(get_current_user)):
-    """Disburse approved loan principal funds directly into borrower's account."""
-    loan = get_owned("loans", loanId, user, "loan")
-    if loan.get("status") != "APPROVED":
-        fail(409, f"Loan is {loan.get('status')}. Only APPROVED loans can be disbursed", "BAD_STATE")
+    """Disburse approved loan principal funds directly into borrower's account with atomic one-way transition."""
+    with _loan_lock:
+        loan = get_owned("loans", loanId, user, "loan")
+        if loan.get("status") != "APPROVED":
+            fail(409, f"Loan is {loan.get('status')}. Only APPROVED loans can be disbursed", "BAD_STATE")
+        # Atomic one-way state transition: APPROVED -> DISBURSING prevents double-disbursement under concurrency
+        loan["status"] = "DISBURSING"
 
     disbursement_acc = DB["accounts"].get(loan["accountId"])
     if not disbursement_acc:
+        with _loan_lock:
+            loan["status"] = "APPROVED"
         fail(404, "Designated disbursement account not found", "ACCOUNT_NOT_FOUND")
 
-    # Post principal credit transaction
-    tx = post_transaction(disbursement_acc, "LOAN_DISBURSEMENT", loan["principal"], reference=f"Loan #{loanId} Disbursement")
+    try:
+        # Post principal credit transaction
+        tx = post_transaction(disbursement_acc, "LOAN_DISBURSEMENT", loan["principal"], reference=f"Loan #{loanId} Disbursement")
 
-    # Build amortization schedule
-    balance = loan["principal"]
-    monthly_rate = loan["apr"] / 1200.0
-    schedule = []
-    for n in range(1, loan["termMonths"] + 1):
-        interest = format_money(balance * monthly_rate)
-        principal_part = format_money(loan["monthlyPayment"] - interest)
-        balance = format_money(max(0.0, balance - principal_part))
-        schedule.append({
-            "installmentNo": n,
-            "dueDate": str(date.today() + timedelta(days=30 * n)),
-            "amount": loan["monthlyPayment"],
-            "principal": principal_part,
-            "interest": interest,
-            "status": "DUE"
-        })
+        # Build amortization schedule
+        balance = loan["principal"]
+        monthly_rate = loan["apr"] / 1200.0
+        schedule = []
+        for n in range(1, loan["termMonths"] + 1):
+            interest = format_money(balance * monthly_rate)
+            principal_part = format_money(loan["monthlyPayment"] - interest)
+            balance = format_money(max(0.0, balance - principal_part))
+            schedule.append({
+                "installmentNo": n,
+                "dueDate": str(date.today() + timedelta(days=30 * n)),
+                "amount": loan["monthlyPayment"],
+                "principal": principal_part,
+                "interest": interest,
+                "status": "DUE"
+            })
 
-    loan["schedule"] = schedule
-    loan["status"] = "ACTIVE"
-    loan["disbursedAt"] = now_iso()
+        with _loan_lock:
+            loan["schedule"] = schedule
+            loan["status"] = "ACTIVE"
+            loan["disbursedAt"] = now_iso()
+            loan["disbursementTxId"] = tx["id"]
+    except Exception as e:
+        with _loan_lock:
+            loan["status"] = "DISBURSEMENT_FAILED"
+        raise e
 
     send_notification(user["id"], f"Funds disbursed: {loan['principal']} {loan['currency']} credited to your account.")
     audit_log(user["id"], "LOAN_DISBURSE", loanId)
+    return loan
 
     return {
         "loanId": loanId,

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Item Returned | NeoBank</title>
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20261005_01"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css"></link>
+  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <link rel="stylesheet" href="/css/404.css?v=20261011_01">
+    <script src="/js/i18n.js?v=20261011_08"></script>
+</head>
+
+<body>
+  <svg id="bgpat" aria-hidden="true"></svg>
+
+  <header>
+    <a href="/" class="brand-link">
+      <div class="logo"><svg viewBox="0 0 24 24">
+          <path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" />
+        </svg></div>
+      <div class="brand"><b>NeoBank</b><span>Digital Banking Platform</span></div>
+    </a>
+
+    <nav class="header-nav">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme"
+        title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+      <a href="/" class="nav-link">Home</a>
+      <a href="/existing_application" class="nav-link">Track Application</a>
+      <a href="/open_account_customer" class="nav-link">Open Account</a>
+      <a href="/login" class="nav-link primary">Sign In</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="intro">
+      <span class="chip"><i></i>Error 404 · Item returned</span>
+      <h1>We couldn’t find this page in our records</h1>
+      <p>The address you presented isn’t registered with NeoBank, or the item has been withdrawn. No account information
+        was accessed.</p>
+    </div>
+
+    <section class="cheque" aria-label="Returned item details">
+      <svg id="rosette" viewBox="-130 -130 260 260" aria-hidden="true"></svg>
+      <svg id="wave" aria-hidden="true" preserveAspectRatio="none" viewBox="0 0 800 300"></svg>
+
+      <div class="c-top">
+        <div class="c-brand">
+          <div class="logo"><svg viewBox="0 0 24 24">
+              <path d="M3 9l9-5 9 5M5 10v8M9.5 10v8M14.5 10v8M19 10v8M3 20h18" />
+            </svg></div>
+          <div><b>NeoBank</b><span>Records &amp; Clearing Office</span></div>
+        </div>
+        <div class="c-meta">Item no. <strong id="no">000404</strong><br>Date <strong id="date">—</strong></div>
+      </div>
+
+      <div class="c-mid">
+        <div>
+          <div class="lbl">Presented for</div>
+          <div class="payto">The page you requested</div>
+        </div>
+        <div class="amount"><small>No.</small>404</div>
+        <div class="words">Four hundred four — not on record</div>
+      </div>
+
+      <div class="memo">
+        <div>
+          <div class="lbl">Address presented</div>
+          <div class="v" id="addr">—</div>
+        </div>
+        <div class="sign">
+          <div class="sig">NeoBank Records</div>
+          <div class="lbl p404-s1">Authorised signature</div>
+        </div>
+      </div>
+
+      <div class="micr" id="micr">⑈000404⑈ ⑆0000⑆ 4040 404</div>
+
+      <div class="stamp">Returned<small>Not on record</small></div>
+    </section>
+
+    <!-- Application Context Box (Automatic Detection) -->
+    <div class="p404-s2" id="app-context-box">
+      <div class="p404-s3">
+        <span class="p404-s4">APPLICATION
+          RECOVERY</span>
+        <span class="p404-s5">Did you mean to track an application?</span>
+      </div>
+      <div class="p404-s6">
+        We detected an application inquiry in your link: <strong class="p404-s7" id="detected-app-code"></strong>.
+      </div>
+      <div class="p404-s8">
+        <a class="p404-s9" id="btn-redirect-app" href="/existing_application">
+          Lookup Application Now
+        </a>
+        <a class="p404-s10" href="/open_account_customer">
+          Start New Application
+        </a>
+      </div>
+    </div>
+
+    <div class="ledger">
+      <div class="cell">
+        <div class="k">Reference</div>
+        <div class="val mono" id="ref">—</div>
+      </div>
+      <div class="cell">
+        <div class="k">Processed</div>
+        <div class="val" id="when">—</div>
+      </div>
+      <div class="cell">
+        <div class="k">Status</div>
+        <div class="val">Not on record · No changes made</div>
+      </div>
+    </div>
+
+    <!-- Quick Action Navigation -->
+    <div class="actions-container p404-s11">
+      <a class="p404-s12" href="/">
+        Return to Home
+      </a>
+      <a class="p404-s13" href="/existing_application">
+        Track Application
+      </a>
+      <a class="p404-s13" href="/open_account_customer">
+        Open New Account
+      </a>
+      <button class="p404-s14" type="button" onclick="goBackOrHome()">
+        ↩ Return to Previous Page
+      </button>
+    </div>
+
+    <div class="assure">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.500-7-10V6l7-3z" />
+        <path d="M9 12l2.200 2.200L15.500 10" />
+      </svg>
+      <p><b>Your accounts are safe.</b> This was a routing issue only. No transaction was started, and no balances or
+        personal details were changed.</p>
+    </div>
+    <p id="note">Refresh this page to return to the last page you had open.</p>
+  </main>
+  <footer>NeoBank Core Banking System</footer>
+
+  <script>
+    (function () {
+      // ---- engraved guilloche patterns (banknote-style security lines)
+      function rosette(R, r, d, n) { var p = '', k = (R - r) / r, t; for (var i = 0; i <= n; i++) { t = i / n * Math.PI * 2 * r / gcd(R, r); p += (i ? 'L' : 'M') + ((R - r) * Math.cos(t) + d * Math.cos(k * t)).toFixed(1) + ' ' + ((R - r) * Math.sin(t) - d * Math.sin(k * t)).toFixed(1) } return p }
+      function gcd(a, b) { return b ? gcd(b, a % b) : a }
+      function paint(el, col, list, w) { if (!el) return; el.innerHTML = list.map(function (d) { return '<path d="' + rosette(84, 31, d, 1400) + '" fill="none" stroke="' + col + '" stroke-width="' + w + '"/>' }).join('') }
+      paint(document.getElementById('rosette'), (window.NeobankTheme ? window.NeobankTheme.getThemeColor('--brand-500') : 'currentColor'), [22, 30, 38, 46, 54, 62], .45);
+      var bg = document.getElementById('bgpat');
+      if (bg) {
+        bg.setAttribute('viewBox', '-130 -130 260 260');
+        bg.setAttribute('preserveAspectRatio', 'xMidYMid slice');
+        bg.style.opacity = document.documentElement.getAttribute("data-theme") === "light" ? .16 : .11;
+        paint(bg, (window.NeobankTheme ? window.NeobankTheme.getThemeColor('--brand-500') : 'currentColor'), [24, 34, 44, 54, 64, 74], .35);
+      }
+      var w = document.getElementById('wave');
+      if (w) {
+        var s = '';
+        for (var j = 0; j < 26; j++) { var y = 110 + j * 3.400, a = 26 + Math.sin(j / 4) * 10, q = 'M0 ' + y; for (var x = 0; x <= 800; x += 20)q += 'L' + x + ' ' + (y + Math.sin(x / 70 + j / 5) * a * .4).toFixed(1); s += '<path d="' + q + '" fill="none" stroke="' + (window.NeobankTheme ? window.NeobankTheme.getThemeColor('--brand-500') : 'currentColor') + '" stroke-width=".4"/>' }
+        w.innerHTML = s;
+      }
+
+      // ---- request details
+      var path = location.pathname + location.search, d = new Date(), p = function (n) { return String(n).padStart(2, '0') };
+      var stamp = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' + p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+      var $ = function (i) { return document.getElementById(i) };
+      if ($('ref')) $('ref').textContent = 'NB-404-' + stamp;
+      if ($('no')) $('no').textContent = '0' + String(Math.floor(d.getTime() / 1000)).slice(-5);
+      if ($('date')) $('date').textContent = d.toLocaleDateString([], { day: '2-digit', month: 'short', year: 'numeric' });
+      if ($('when')) $('when').textContent = d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) + ' local time';
+      if ($('addr')) $('addr').textContent = path;
+
+      // ---- check for application keywords in the URL
+      var appMatch = path.match(/APP-\d{4}-\d{6}/i) || path.match(/app=([A-Za-z0-9\-]+)/i);
+      if (appMatch) {
+        var appCode = (appMatch[1] || appMatch[0]).replace(/^app=/i, '').toUpperCase();
+        var contextBox = $('app-context-box');
+        var codeEl = $('detected-app-code');
+        var redirBtn = $('btn-redirect-app');
+        if (contextBox && codeEl && redirBtn) {
+          contextBox.style.display = 'block';
+          codeEl.textContent = appCode;
+          redirBtn.href = '/existing_application?app=' + encodeURIComponent(appCode);
+        }
+      }
+
+      // ---- refresh returns customer to the last page they had open
+      var KEY = 'nb_last_page', last = null;
+      try { last = localStorage.getItem(KEY) } catch (e) { }
+      var nav = performance.getEntriesByType && performance.getEntriesByType('navigation')[0];
+      var reload = nav ? nav.type === 'reload' : (performance.navigation && performance.navigation.type === 1);
+      if (reload && last && last !== path) { location.replace(last); return }
+      if (!last && $('note')) $('note').textContent = 'Use your browser’s back button to return to your previous page.';
+
+      window.goBackOrHome = function () {
+        try {
+          var prev = localStorage.getItem('nb_last_page');
+          if (prev && prev !== path && prev !== '/404') {
+            location.href = prev;
+            return;
+          }
+        } catch (e) { }
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          location.href = '/';
+        }
+      };
+    })();
+  </script>
+</body>
+
+</html>

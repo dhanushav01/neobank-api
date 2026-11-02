@@ -5,6 +5,7 @@ user account status oversight, dispute resolution, and security audit logs.
 from typing import Optional, Dict, Any, List
 from fastapi import APIRouter, Depends, Query, status
 
+from backend.app.core.config import ENVIRONMENT
 from backend.app.core.database import (
     DB, post_transaction, audit_log, send_notification, reset_db
 )
@@ -54,7 +55,7 @@ def list_all_users(
             continue
         if role_filter and u.get("role") != role_filter:
             continue
-        safe_user = {k: v for k, v in u.items() if k not in ("password", "mfa")}
+        safe_user = {k: v for k, v in u.items() if k not in ("password", "password_hash", "mfa", "mfa_secret", "mfaSecret")}
         # Attach account count
         user_accs = [a for a in DB["accounts"].values() if a.get("ownerId") == u["id"]]
         safe_user["accountsCount"] = len(user_accs)
@@ -70,7 +71,7 @@ def get_user_details(userId: str, staff: Dict[str, Any] = Depends(require_staff_
     if not user:
         fail(404, "User not found", "USER_NOT_FOUND")
 
-    safe_user = {k: v for k, v in user.items() if k not in ("password", "mfa")}
+    safe_user = {k: v for k, v in user.items() if k not in ("password", "password_hash", "mfa", "mfa_secret", "mfaSecret")}
     safe_user["accounts"] = [a for a in DB["accounts"].values() if a.get("ownerId") == userId]
     safe_user["cards"] = [c for c in DB["cards"].values() if c.get("ownerId") == userId]
     safe_user["kyc"] = [k for k in DB["kyc"].values() if k.get("ownerId") == userId]
@@ -282,5 +283,7 @@ def get_audit_logs(
 @router.post("/reset")
 def reset_platform_data(staff: Dict[str, Any] = Depends(require_admin)):
     """Wipe sandbox database and restore initial seed state."""
+    if ENVIRONMENT == "production":
+        fail(403, "Database reset is strictly prohibited in production environments.", "PRODUCTION_RESET_FORBIDDEN")
     reset_db()
     return {"reset": True, "message": "Platform state re-seeded with demo records."}

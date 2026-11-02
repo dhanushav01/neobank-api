@@ -1,6 +1,12 @@
-# NeoBank Digital Banking Platform Dependencies
-fastapi>=0.115.0
-uvicorn[standard]>=0.30.0
-pydantic>=2.7.0
-python-multipart>=0.0.9
-cryptography>=42.0.0
+# NeoBank Digital Banking Platform Dependencies (Pinned)
+fastapi==0.162.0
+starlette==1.10.0
+uvicorn[standard]==0.34.2
+pydantic==2.11.3
+python-multipart==0.0.33
+cryptography==50.0.1
+pyjwt==2.15.1
+bcrypt==5.0.0
+slowapi==0.1.10
+python-dotenv==1.2.4
+httpx==0.28.1

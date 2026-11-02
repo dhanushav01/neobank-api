@@ -127,7 +127,7 @@ function renderAppScreen(user) {
 
   const roleBadge = document.getElementById('header-role-badge');
   const role = (user.role || 'CUSTOMER').toUpperCase();
-  const isSuperAdmin = role === 'SUPER_ADMIN' || user.email === 'admin@bank.test';
+  const isSuperAdmin = role === 'SUPER_ADMIN';
 
   roleBadge.textContent = isSuperAdmin ? 'Super Admin' : (role === 'ADMIN' ? 'Bank Admin' : (role === 'EMPLOYEE' ? 'Bank Staff' : 'Customer'));
   roleBadge.className = `role-badge ${role.toLowerCase()}`;

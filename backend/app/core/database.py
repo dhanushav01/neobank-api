@@ -209,16 +209,25 @@ def list_owned(collection: str, user: Dict[str, Any]) -> List[Dict[str, Any]]:
 
 def reset_db() -> None:
     """Wipe database state and re-seed default demo users, accounts, and records."""
-    from backend.app.core.crypto_utils import hash_password
+    from backend.app.core.crypto_utils import hash_password, hash_pin
+    from backend.app.core.config import (
+        SEED_DEMO_DATA, SEED_ADMIN_EMAIL, SEED_ADMIN_PASSWORD,
+        SEED_EMPLOYEE_EMAIL, SEED_EMPLOYEE_PASSWORD,
+        SEED_CUSTOMER_EMAIL, SEED_CUSTOMER_PASSWORD,
+        SEED_CARD_PIN, SEED_CARD_ACTIVATION_CODE
+    )
     DB.clear()
     for col in COLLECTIONS:
         DB[col] = {}
 
+    if not SEED_DEMO_DATA:
+        return
+
     # Seed Admin / Employee User
     DB["users"]["usr_admin"] = {
         "id": "usr_admin",
-        "email": "admin@bank.test",
-        "password": hash_password("Admin@1234"),
+        "email": SEED_ADMIN_EMAIL,
+        "password": hash_password(SEED_ADMIN_PASSWORD),
         "role": "SUPER_ADMIN",
         "hasSqlAccess": True,
         "status": "ACTIVE",
@@ -242,8 +251,8 @@ def reset_db() -> None:
     # Seed Bank Staff / Employee User
     DB["users"]["usr_employee"] = {
         "id": "usr_employee",
-        "email": "employee@bank.test",
-        "password": hash_password("Employee@1234"),
+        "email": SEED_EMPLOYEE_EMAIL,
+        "password": hash_password(SEED_EMPLOYEE_PASSWORD),
         "role": "EMPLOYEE",
         "employeeCode": "EMP01",
         "hasSqlAccess": False,
@@ -268,8 +277,8 @@ def reset_db() -> None:
     customer_id = "usr_customer"
     DB["users"][customer_id] = {
         "id": customer_id,
-        "email": "customer@bank.test",
-        "password": hash_password("Customer@1234"),
+        "email": SEED_CUSTOMER_EMAIL,
+        "password": hash_password(SEED_CUSTOMER_PASSWORD),
         "role": "CUSTOMER",
         "status": "ACTIVE",
         "mfa": None,
@@ -364,8 +373,9 @@ def reset_db() -> None:
         "cardholderName": "ALEXANDER WRIGHT",
         "last4": "4242",
         "status": "ACTIVE",
-        "activationCode": "849201",
-        "pin": "1234",
+        "activationCode": SEED_CARD_ACTIVATION_CODE,
+        "pin": hash_pin(SEED_CARD_PIN),
+        "pin_hash": hash_pin(SEED_CARD_PIN),
         "limits": {"daily": 3000.0, "monthly": 15000.0, "atm": 1000.0},
         "shippingAddress": DB["users"][customer_id]["profile"]["address"],
         "createdAt": now_iso()

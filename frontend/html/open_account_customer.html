@@ -1,0 +1,2760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NeoBank • Open a Bank Account</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css"></link>
+  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
+  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
+  <link rel="stylesheet" href="/css/open_account_customer.css?v=20261011_01">
+  <script src="/js/constants.js?v=20261002_01"></script>
+  <script src="/js/utils.js?v=20261002_01"></script>
+  <script src="/js/components.js?v=20261002_01"></script>
+  <script src="/js/theme.js?v=20260928_2200"></script>
+  <script src="/js/zoom.js?v=20260928_2200"></script>
+  <script src="/js/i18n.js?v=20261011_08"></script>
+  </head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="app-header">
+    <div class="brand-badge">
+      <div class="brand-icon">
+        <svg class="oac-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+      </div>
+      <div>
+        <div class="oac-s2">
+          <span class="brand-title">NeoBank</span>
+        </div>
+        <div class="oac-s4" data-i18n="brand_sub">Digital Banking</div>
+      </div>
+    </div>
+
+    <!-- Right Controls: Theme, Language Selector & Sign In Return -->
+    <div class="oac-s5">
+      <!-- Dark / Light Theme Toggle Switch -->
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+        <span class="theme-toggle-track">
+          <span class="theme-toggle-indicator">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+            </svg>
+          </span>
+        </span>
+        <span class="theme-toggle-label">Dark</span>
+      </button>
+
+      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
+      <div class="page-zoom-controls">
+        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
+          −
+        </button>
+        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+          <span class="zoom-level-text">100%</span>
+        </button>
+        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
+          +
+        </button>
+      </div>
+
+      <!-- Google Website Translator -->
+      <div id="google_translate_element" class="notranslate" translate="no"></div>
+
+      <a href="/" class="btn btn-outline btn-sm">
+        <span>Home</span>
+      </a>
+      <a href="/login" class="btn btn-outline btn-sm">
+        <span data-i18n="return_login">Sign In</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="oac-s9">
+
+    <!-- HERO SECTION -->
+    <section class="oac-s10" id="onboarding-hero-section">
+      <div class="oac-s11">
+        NEXT-GEN CORE BANKING
+      </div>
+      <h1 class="oac-s12" data-i18n="hero_title">
+        Open Your Bank Account in Minutes
+      </h1>
+      <p class="oac-s13" data-i18n="hero_subtitle">
+        Experience next-generation financial freedom with competitive interest, instant global transfers, and multi-layered bank vault encryption.
+      </p>
+    </section>
+
+    <!-- WHY BANK WITH NEOBANK? BENEFITS CARDS WITH REAL IMAGES -->
+    <section class="oac-s14" id="onboarding-benefits-section">
+      <div class="oac-s15">
+        <h2 class="oac-s16" data-i18n="why_bank_title">Why Bank with NeoBank?</h2>
+        <p class="oac-s17" data-i18n="why_bank_sub">
+          Built for modern individuals and enterprises seeking uncompromising security and high financial yields.
+        </p>
+      </div>
+
+      <div class="oac-s18">
+        <!-- Benefit Card 1: Multi-Currency & Titanium Visa -->
+        <div class="glass-card oac-s19">
+          <div class="oac-s20">
+            <img class="oac-s21" src="/images/card_benefits.jpg" alt="NeoBank Titanium Visa Card">
+            <div class="oac-s22"></div>
+            <div class="oac-s23">
+              <span class="status-pill active oac-s24">TITANIUM VISA</span>
+            </div>
+          </div>
+          <div class="oac-s25">
+            <div>
+              <h3 class="oac-s26" data-i18n="benefit_1_title">
+                Zero-Fee Multi-Currency Freedom
+              </h3>
+              <p class="oac-s27" data-i18n="benefit_1_desc">
+                Hold and exchange balances in USD, EUR, and GBP with zero foreign transaction fees and real-time interbank rates.
+              </p>
+            </div>
+            <div class="oac-s28">
+              <div class="oac-s29">✓ Up to 4.20% APY High-Yield Daily Interest</div>
+              <div class="oac-s30">✓ Instant Contactless Digital Cards</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Benefit Card 2: Vault Security & Encrypted Documents -->
+        <div class="glass-card oac-s19">
+          <div class="oac-s20">
+            <img class="oac-s21" src="/images/vault_security.jpg" alt="NeoBank Encrypted Data Vault">
+            <div class="oac-s22"></div>
+            <div class="oac-s23">
+              <span class="status-pill submitted oac-s24">MILITARY-GRADE AES-256</span>
+            </div>
+          </div>
+          <div class="oac-s25">
+            <div>
+              <h3 class="oac-s26" data-i18n="benefit_4_title">
+                AES-256 Vault Document Encryption
+              </h3>
+              <p class="oac-s27" data-i18n="benefit_4_desc">
+                All personal data and verification documents (PDFs/Scans) are stored with military-grade AES-256 encryption in secure ledgers.
+              </p>
+            </div>
+            <div class="oac-s28">
+              <div class="oac-s29">✓ Zero Plaintext Document Storage</div>
+              <div class="oac-s30">✓ Non-Reusable Application Reference Tracking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- THE ACCOUNT OPENING JOURNEY TIMELINE -->
+    <section class="oac-s14" id="onboarding-journey-section">
+      <div class="oac-s15">
+        <h2 class="oac-s16" data-i18n="process_title">The Account Opening Journey</h2>
+      </div>
+
+      <div class="oac-s31">
+        <div class="glass-card oac-s32">
+          <div class="oac-s33">1</div>
+          <div class="oac-s34" data-i18n="step1_name">1. Choose & Eligibility</div>
+          <div class="oac-s35" data-i18n="step1_desc">Select account type and verify bank rules & demanded documents.</div>
+        </div>
+        <div class="glass-card oac-s32">
+          <div class="oac-s33">2</div>
+          <div class="oac-s34" data-i18n="step2_name">2. Customer Details</div>
+          <div class="oac-s35" data-i18n="step2_desc">Provide personal details, address, tax ID, and initial deposit.</div>
+        </div>
+        <div class="glass-card oac-s32">
+          <div class="oac-s33">3</div>
+          <div class="oac-s34" data-i18n="step3_name">3. KYC Documents</div>
+          <div class="oac-s35" data-i18n="step3_desc">Submit identity and address documents with encrypted storage.</div>
+        </div>
+        <div class="glass-card oac-s32">
+          <div class="oac-s36">4</div>
+          <div class="oac-s34" data-i18n="step4_name">4. Application Reference</div>
+          <div class="oac-s35" data-i18n="step4_desc">Receive your unique, non-reusable Application Reference Number.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== 3-STEP APPLICATION WIZARD ==================== -->
+    <section id="wizard-section" class="glass-card oac-s37">
+      
+      <!-- Wizard Progress Indicators (Streamlined 3 Steps - Item 1) -->
+      <div class="wizard-steps">
+        <div id="step-indicator-1" class="step-indicator active">
+          <span class="step-badge">1</span>
+          <span data-i18n="step1_name">Choose Account &amp; Branch</span>
+        </div>
+        <div class="oac-s38"></div>
+        <div id="step-indicator-2" class="step-indicator">
+          <span class="step-badge">2</span>
+          <span data-i18n="step2_name">Uniform Application Form</span>
+        </div>
+        <div class="oac-s38"></div>
+        <div id="step-indicator-4" class="step-indicator">
+          <span class="step-badge">3</span>
+          <span data-i18n="step4_name">Confirmation &amp; Submission</span>
+        </div>
+      </div>
+
+      <!-- STEP 1: CHOOSE ACCOUNT & CHECK ELIGIBILITY -->
+      <div id="onboarding-step-1">
+        <div class="oac-s15">
+          <h2 class="oac-s39">Step 1: Choose Your Account &amp; Select Home Branch</h2>
+          <p class="oac-s40">
+            Select your preferred account type and home branch. Your non-reusable Application Reference Number will be generated immediately to ensure a fresh, isolated session.
+          </p>
+        </div>
+
+        <!-- Quick Account Type & Home Branch Dropdown Picker (Items 2, 4, 15) -->
+        <div class="oac-s41">
+          <div class="oac-s42">
+            <label class="oac-s43" for="quick-account-type-select">1. Account Type:</label>
+            <select id="quick-account-type-select" class="form-select oac-s44" onchange="selectAccountType(this.value)">
+              <optgroup label="1. Everyday / Transactional">
+                <option value="SAVINGS" selected>Savings Account (High-Yield 4.20% APY)</option>
+                <option value="CHECKING">Current / Checking Account (0.10% APY)</option>
+                <option value="SALARY">Salary Account (Zero Min Balance 2.50% APY)</option>
+              </optgroup>
+              <optgroup label="2. Long-Term / Investment">
+                <option value="FIXED_DEPOSIT">Fixed / Term Deposit (Guaranteed 5.25% APY)</option>
+                <option value="MONEY_MARKET">Money Market / Recurring Deposit (3.80% APY)</option>
+              </optgroup>
+              <optgroup label="3. Specialized / Senior / Welfare">
+                <option value="PENSION">Pension Savings Account (Senior/Disability 4.50% APY)</option>
+                <option value="NRI_EXPAT">NRI / Foreign Expat Global Account (3.50% APY)</option>
+                <option value="STUDENT">Student / Youth Advantage (1.75% APY)</option>
+              </optgroup>
+            </select>
+          </div>
+
+          <div class="oac-s42">
+            <label class="oac-s43" for="step1-branch-select">2. Branch Name*:</label>
+            <select id="step1-branch-select" class="form-select oac-s45" onchange="syncBranchSelection(this.value)" required>
+              <option value="" selected>-- Select Home Branch --</option>
+              <option value="Downtown Main Branch" data-code="BR001">Downtown Main Branch</option>
+              <option value="Central Digital Branch" data-code="NBK-001">Central Digital Branch</option>
+              <option value="Mumbai Main Branch" data-code="BOM-001">Mumbai Main Branch</option>
+              <option value="Delhi Connaught Place Branch" data-code="DEL-002">Delhi Connaught Place Branch</option>
+              <option value="Bengaluru Tech Park Branch" data-code="BLR-003">Bengaluru Tech Park Branch</option>
+              <option value="Hyderabad Cyber City Branch" data-code="HYD-004">Hyderabad Cyber City Branch</option>
+              <option value="Chennai Central Branch" data-code="MAA-005">Chennai Central Branch</option>
+              <option value="Kolkata Park Street Branch" data-code="CCU-006">Kolkata Park Street Branch</option>
+              <option value="Pune Shivaji Nagar Branch" data-code="PNQ-007">Pune Shivaji Nagar Branch</option>
+              <option value="Ahmedabad Ashram Road Branch" data-code="AMD-008">Ahmedabad Ashram Road Branch</option>
+            </select>
+            <div class="oac-s46">
+              <label class="oac-s43" for="step1-branch-code">Code:</label>
+              <input type="text" id="step1-branch-code" class="form-input oac-s47" placeholder="Branch Code" readonly>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY 1: EVERYDAY / TRANSACTIONAL -->
+        <div class="oac-s48">
+          <div class="oac-s49">
+            <h3 class="oac-s50">Everyday / Transactional Accounts</h3>
+            <span class="oac-s51">Daily Transactions & Savings</span>
+          </div>
+
+          <div class="oac-s52">
+            <!-- 1. Savings Account -->
+            <div id="account-card-SAVINGS" class="glass-card account-select-card selected oac-s53" data-account-type="SAVINGS" onclick="selectAccountType('SAVINGS')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">SAVINGS</span>
+                    <h4 class="oac-s56">High-Yield Savings</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s58">4.20% APY</span>
+                    <div class="oac-s59">Daily Interest</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Grow your wealth with competitive daily-accrued interest and zero monthly account maintenance fees.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 1,000.00</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Must be at least 18 years old</li>
+                    <li>Initial deposit of at least ₹ 1,000.00 upon approval</li>
+                    <li>Legal resident of supported jurisdiction</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or Driver's License</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill (&lt; 3 months old)</div>
+                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or PAN card</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s70">✓</div>
+                <span class="account-radio-text oac-s71">Selected Account</span>
+              </div>
+            </div>
+
+            <!-- 2. Checking / Current Account -->
+            <div id="account-card-CHECKING" class="glass-card account-select-card oac-s72" data-account-type="CHECKING" onclick="selectAccountType('CHECKING')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill submitted oac-s55">CHECKING</span>
+                    <h4 class="oac-s56">Current / Checking</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s73">0.10% APY</span>
+                    <div class="oac-s59">High Liquidity</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Full-featured digital checking with international contactless Visa debit card and instant POS clearance.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 500.00</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Must be at least 18 years old</li>
+                    <li>Zero daily minimum balance requirement</li>
+                    <li>Overdraft protection available on credit approval</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or Driver's License</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill or Council Tax statement</div>
+                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN, PAN, or National Tax ID</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+
+            <!-- 3. Salary Account -->
+            <div id="account-card-SALARY" class="glass-card account-select-card oac-s72" data-account-type="SALARY" onclick="selectAccountType('SALARY')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">SALARY</span>
+                    <h4 class="oac-s56">Corporate Salary</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s58">2.50% APY</span>
+                    <div class="oac-s59">Payroll Growth</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Zero-minimum-balance corporate salary account with free global ATM withdrawals and payroll perks.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 0.00</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Must be actively employed or corporate professional</li>
+                    <li>Zero minimum balance requirement</li>
+                    <li>Recurring monthly payroll credit required</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID</div>
+                  <div class="oac-s68">• <strong>Employment Proof:</strong> Salary payslip, Offer letter, or Corporate ID</div>
+                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or Tax Identification</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY 2: LONG-TERM / INVESTMENT -->
+        <div class="oac-s48">
+          <div class="oac-s49">
+            <h3 class="oac-s76">Long-Term / Investment Accounts</h3>
+            <span class="oac-s51">Wealth Accumulation & High Yield</span>
+          </div>
+
+          <div class="oac-s52">
+            <!-- 4. Fixed / Term Deposit Account -->
+            <div id="account-card-FIXED_DEPOSIT" class="glass-card account-select-card oac-s72" data-account-type="FIXED_DEPOSIT" onclick="selectAccountType('FIXED_DEPOSIT')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">FIXED DEPOSIT</span>
+                    <h4 class="oac-s56">Fixed / Term Deposit</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s58">5.25% APY</span>
+                    <div class="oac-s59">Guaranteed Lock-In</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Guaranteed locked-in premium returns with flexible tenure options (6 to 60 months) and compounding yield.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 10,000.00</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Must be at least 18 years old</li>
+                    <li>Minimum initial principal lock-in of ₹ 10,000.00</li>
+                    <li>Guaranteed penalty-free interest compounding at maturity</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport, National ID, or Driver's License</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Recent Utility Bill or Tax Document</div>
+                  <div class="oac-s68">• <strong>Source of Funds:</strong> Bank statement verifying deposit origin</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+
+            <!-- 5. Money Market / Recurring Deposit -->
+            <div id="account-card-MONEY_MARKET" class="glass-card account-select-card oac-s72" data-account-type="MONEY_MARKET" onclick="selectAccountType('MONEY_MARKET')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">MONEY MARKET</span>
+                    <h4 class="oac-s56">Money Market / Recurring</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s58">3.80% APY</span>
+                    <div class="oac-s59">Tiered Growth</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Earn institutional money-market yields combined with scheduled auto-debit savings and higher liquidity.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 5,000.00</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Must be at least 18 years old</li>
+                    <li>Minimum initial deposit of ₹ 5,000.00 with recurring schedule</li>
+                    <li>Flexible liquidity with limited monthly withdrawals</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID Card</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill or bank statement</div>
+                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or Government Tax ID</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CATEGORY 3: SPECIALIZED / CROSS-BORDER -->
+        <div class="oac-s48">
+          <div class="oac-s49">
+            <h3 class="oac-s77">Specialized / Cross-Border Accounts</h3>
+            <span class="oac-s51">Joint, Expat & Student Needs</span>
+          </div>
+
+          <div class="oac-s52">
+            <!-- 6. NRI / Foreign Expat Account -->
+            <div id="account-card-NRI_EXPAT" class="glass-card account-select-card oac-s72" data-account-type="NRI_EXPAT" onclick="selectAccountType('NRI_EXPAT')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">NRI / EXPAT</span>
+                    <h4 class="oac-s56">NRI / Foreign Expat</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s78">3.50% APY</span>
+                    <div class="oac-s59">Cross-Border FX</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Borderless multi-currency accounts (USD, EUR, GBP, AED, INR) with zero foreign remittance markup.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 5,000.00 (or $100 FX)</strong></span>
+                  <span class="oac-s62">Age: <strong>18+</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Expatriate, non-resident citizen, or global remote worker</li>
+                    <li>Zero conversion fee on cross-border inward remittances</li>
+                    <li>Instant access to multi-currency sub-ledgers</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Passport &amp; Visa:</strong> Foreign work visa or resident permit</div>
+                  <div class="oac-s68">• <strong>Overseas Address:</strong> Utility bill or host country lease</div>
+                  <div class="oac-s68">• <strong>Tax Residency Declaration:</strong> W-8BEN or CRS self-certification</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+
+            <!-- 8. Student / Youth Advantage Account -->
+            <div id="account-card-STUDENT" class="glass-card account-select-card oac-s72" data-account-type="STUDENT" onclick="selectAccountType('STUDENT')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s55">STUDENT</span>
+                    <h4 class="oac-s56">Student / Youth</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s79">1.75% APY</span>
+                    <div class="oac-s59">Zero Maintenance</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Tailored for secondary and higher education students with zero maintenance fees and campus merchant perks.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹ 0.00</strong></span>
+                  <span class="oac-s62">Age: <strong>16 - 26</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Age strictly between 16 and 26 years</li>
+                    <li>Enrolled in accredited high school, college, or university</li>
+                    <li>Zero maintenance fees and complimentary student digital card</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID</div>
+                  <div class="oac-s68">• <strong>Student Proof:</strong> Student ID card or University Acceptance Letter</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Dormitory registration or guardian utility bill</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+
+            <!-- 9. Pension Savings Account (Item 13) -->
+            <div id="account-card-PENSION" class="glass-card account-select-card oac-s72" data-account-type="PENSION" onclick="selectAccountType('PENSION')">
+              <div>
+                <div class="oac-s54">
+                  <div>
+                    <span class="status-pill active oac-s80">PENSION / WELFARE</span>
+                    <h4 class="oac-s56">Pension Savings Account</h4>
+                  </div>
+                  <div class="oac-s57">
+                    <span class="oac-s58">4.50% APY</span>
+                    <div class="oac-s59">Senior &amp; Disability</div>
+                  </div>
+                </div>
+                <p class="oac-s60">Specially tailored for pensioners, senior citizens (60+), and disability pension beneficiaries with direct treasury PPO credit and zero minimum balance.</p>
+                
+                <div class="oac-s61">
+                  <span class="oac-s62">Min Deposit: <strong>₹0.00</strong></span>
+                  <span class="oac-s62">Age: <strong>60+ (or 18+ Disability)</strong></span>
+                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
+                </div>
+
+                <div class="oac-s63">
+                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
+                  <ul class="oac-s65">
+                    <li>Senior Citizens (60+ years) OR Disability Pension Beneficiaries (18+)</li>
+                    <li>Direct Treasury, Central/State Govt, EPS, or Armed Forces PPO credit</li>
+                    <li>Zero minimum balance requirement &amp; free doorstep banking for 70+ / disabled</li>
+                  </ul>
+                </div>
+
+                <div class="oac-s66">
+                  <strong class="oac-s67">Demanded Documents:</strong>
+                  <div class="oac-s68">• <strong>Proof of Identity &amp; Age:</strong> Aadhaar Card, Passport, or Voter ID</div>
+                  <div class="oac-s68">• <strong>PPO / Disability Cert:</strong> Pension Payment Order or Disability UDID Card</div>
+                  <div class="oac-s68">• <strong>Proof of Address:</strong> Aadhaar, Utility bill, or Govt allotment letter</div>
+                </div>
+              </div>
+
+              <div class="account-card-radio-container oac-s69">
+                <div class="account-radio-circle oac-s74">✓</div>
+                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Eligibility Confirmation Checkbox -->
+        <div class="oac-s81">
+          <label class="oac-s82">
+            <input class="oac-s83" type="checkbox" id="chk-eligibility-agreed">
+            <span class="oac-s84" data-i18n="eligibility_confirm">
+              <strong>I confirm my eligibility:</strong> I meet the bank's rules (age requirements, residency, and required initial deposit) and possess the demanded verification documents (Proof of Identity, Proof of Address, and Tax ID like SSN or PAN).
+            </span>
+          </label>
+        </div>
+
+        <div class="oac-s85">
+          <button type="button" class="btn btn-primary oac-s86" onclick="initiateAndProceedToStep2()">
+            <span data-i18n="btn_proceed_step2">Proceed to Step 2: Customer Details &amp; Form →</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- STEP 2: FILL OUT APPLICATION FORM & STEP 3: SUBMIT VERIFICATION DOCUMENTS -->
+      <form id="form-customer-application" novalidate onsubmit="event.preventDefault(); submitCustomerApplication(this);">
+        <input type="hidden" id="apply-selected-account-type" name="accountType" value="SAVINGS">
+
+        <!-- STEP 2: CUSTOMER DETAILS (AUTHENTIC PHYSICAL BANK PAPER FORM SHEET) -->
+        <div class="oac-s87" id="onboarding-step-2">
+          
+          <!-- Sticky Form Editor Toolbar: Part Switcher, Application Number & Account -->
+          <div class="form-editor-toolbar screen-only">
+            <div class="oac-s5">
+              <div class="part-nav-pills">
+                <button type="button" class="part-nav-btn active" id="btn-tab-part1" onclick="switchFormPart('part1')">
+                  Page 1: CIF &amp; CKYC
+                </button>
+                <button type="button" class="part-nav-btn" id="btn-tab-part1-cont" onclick="switchFormPart('part1-cont')">
+                  Page 2: KYC &amp; OVD
+                </button>
+                <button type="button" class="part-nav-btn" id="btn-tab-part2" onclick="switchFormPart('part2')">
+                  Page 3: Account Form
+                </button>
+                <button type="button" class="part-nav-btn" id="btn-tab-part3" onclick="switchFormPart('part3')">
+                  Page 4: Declarations
+                </button>
+                <button type="button" class="part-nav-btn" id="btn-tab-all" onclick="switchFormPart('all')">
+                  View All 4 Pages
+                </button>
+              </div>
+            </div>
+
+            <div class="oac-s42">
+              <!-- Application Number Badge -->
+              <div class="oac-s88">
+                <span class="oac-s89">App No:</span>
+                <span class="oac-s90" id="toolbar-app-number">APP-2026-PENDING</span>
+                <button class="oac-s91" type="button" onclick="copyCurrentAppNumber()" title="Copy Application Number">Copy</button>
+              </div>
+
+              <!-- Selected Account Badge -->
+              <div class="oac-s92">
+                <span class="oac-s93">Selected:</span>
+                <span id="step2-selected-account-badge" class="status-pill active oac-s94">SAVINGS</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Draft status banner -->
+          <div class="oac-s95" id="draft-status-indicator">
+            ✓ Draft saved locally at <span id="draft-saved-timestamp">--</span>
+          </div>
+
+          <!-- ==================== AUTHENTIC BANK PAPER SHEET ==================== -->
+          <div class="bank-paper-sheet">
+            
+            <!-- PRINT-ONLY BANK HEADER (Shown ONLY when printing or generating PDF, NEVER in form editor) -->
+            <div class="print-bank-header print-only">
+              <div class="oac-s96">
+                <div class="oac-s97">
+                  <svg class="oac-s98" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+                  </svg>
+                </div>
+                <div>
+                  <div class="bank-sheet-title-main">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
+                  <div class="bank-sheet-title-sub">UNIFORM ACCOUNT OPENING FORM FOR RESIDENT INDIVIDUALS</div>
+                </div>
+              </div>
+              <div class="bank-sheet-form-tag">
+                <strong>PART I: CIF &amp; CKYC FORM</strong><br>
+                <span class="oac-s99">(Customer Information Sheet)</span>
+              </div>
+            </div>
+
+            <!-- =================================================================
+                 PART I: CIF & CKYC FORM (Customer Information Sheet) - PAGE 1 OF 4
+                 ================================================================= -->
+            <div id="form-container-part1" class="form-part-section bank-page-1">
+              
+              <!-- Instructions Banner (Item 10) -->
+              <div class="bank-sheet-instructions">
+                <strong>Instructions:</strong> Fields marked with (*) are mandatory. Please leave a blank space between words.
+              </div>
+
+              <!-- Metadata & Control Table (Items 1, 2, 3, 4) -->
+              <div class="bank-section-bar oac-s100" id="header-sec-0">
+                <span>Form Header &amp; Branch Information</span>
+                <span class="oac-s101">Choose Application Type &amp; Branch</span>
+              </div>
+              <table class="bank-table-grid">
+                <tr>
+                  <td class="oac-s102">
+                    <strong>Application Type*:</strong><br>
+                    <label class="bank-option-pill oac-s103"><input type="radio" name="appTypeRadio" value="NEW" checked> <span>New</span></label>
+                  </td>
+                  <td class="oac-s104">
+                    <strong>Account Category*:</strong><br>
+                    <label class="bank-option-pill oac-s103"><input type="radio" name="accCategoryRadio" value="NORMAL" checked> <span>Normal</span></label>
+                    <label class="bank-option-pill oac-s103"><input type="radio" name="accCategoryRadio" value="SMALL"> <span>Small</span></label>
+                    <label class="bank-option-pill oac-s103"><input type="radio" name="accCategoryRadio" value="MINOR"> <span>Minor</span></label>
+                    <label class="bank-option-pill oac-s103"><input type="radio" name="accCategoryRadio" value="STAFF"> <span>Staff</span></label>
+                  </td>
+                  <td class="oac-s105">
+                    <div class="oac-s106">
+                      <strong>Date (DD/MM/YYYY)*:</strong>
+                      <button type="button" class="btn btn-outline btn-sm no-print oac-s107" onclick="document.getElementById('picker-header-date').showPicker ? document.getElementById('picker-header-date').showPicker() : document.getElementById('picker-header-date').focus()" title="Pick from Calendar"><svg class="oac-s108" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+                      <input class="oac-s109" type="date" id="picker-header-date" tabindex="-1" onchange="setDateFromPicker(this.value, 'raw-header-date', 'wrap-header-date')">
+                    </div>
+                    <div class="bank-box-wrap notranslate" translate="no" id="wrap-header-date" data-box-count="8" data-target="applicationDate">
+                      <input type="text" id="raw-header-date" name="applicationDate" class="bank-box-input notranslate" translate="no" maxlength="8" autocomplete="off" spellcheck="false" required>
+                      <div class="bank-box-cells notranslate oac-s110" translate="no">
+                        <span class="char-cell" data-idx="0">&nbsp;</span>
+                        <span class="char-cell" data-idx="1">&nbsp;</span>
+                        <span class="date-separator">/</span>
+                        <span class="char-cell" data-idx="2">&nbsp;</span>
+                        <span class="char-cell" data-idx="3">&nbsp;</span>
+                        <span class="date-separator">/</span>
+                        <span class="char-cell" data-idx="4">&nbsp;</span>
+                        <span class="char-cell" data-idx="5">&nbsp;</span>
+                        <span class="char-cell" data-idx="6">&nbsp;</span>
+                        <span class="char-cell" data-idx="7">&nbsp;</span>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="2">
+                    <div class="oac-s111">
+                      <div class="oac-s112">
+                        <strong>Branch Name*:</strong><br>
+                        <select id="step2-branch-select" name="branchName" class="bank-field-input oac-s113" onchange="syncBranchSelection(this.value)" required>
+                          <option value="">-- Select Branch --</option>
+                          <option value="Downtown Main Branch" data-code="BR001">Downtown Main Branch</option>
+                          <option value="Central Digital Branch" data-code="NBK-001">Central Digital Branch</option>
+                          <option value="Mumbai Main Branch" data-code="BOM-001">Mumbai Main Branch</option>
+                          <option value="Delhi Connaught Place Branch" data-code="DEL-002">Delhi Connaught Place Branch</option>
+                          <option value="Bengaluru Tech Park Branch" data-code="BLR-003">Bengaluru Tech Park Branch</option>
+                          <option value="Hyderabad Cyber City Branch" data-code="HYD-004">Hyderabad Cyber City Branch</option>
+                          <option value="Chennai Central Branch" data-code="MAA-005">Chennai Central Branch</option>
+                          <option value="Kolkata Park Street Branch" data-code="CCU-006">Kolkata Park Street Branch</option>
+                          <option value="Pune Shivaji Nagar Branch" data-code="PNQ-007">Pune Shivaji Nagar Branch</option>
+                          <option value="Ahmedabad Ashram Road Branch" data-code="AMD-008">Ahmedabad Ashram Road Branch</option>
+                        </select>
+                      </div>
+                      <div class="oac-s114">
+                        <strong>Branch Code*:</strong><br>
+                        <input type="text" id="step2-branch-code" name="branchCode" class="bank-field-input oac-s115" placeholder="Autofilled" readonly>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <strong>Application Number:</strong><br>
+                    <div class="oac-s116" id="header-app-number-display">
+                      APP-2026-PENDING
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <div class="oac-s117">
+                      <div class="oac-s118">
+                        <div class="char-input-label-row">
+                          <span class="oac-s119">CKYC Number (14 Digits - Optional if Existing):</span>
+                        </div>
+                        <div class="bank-box-wrap notranslate oac-s120" translate="no" data-box-count="14" data-target="ckycNumber">
+                          <input type="text" id="raw-ckyc-number" name="ckycNumber" class="bank-box-input notranslate" translate="no" maxlength="14" autocomplete="off" spellcheck="false" placeholder="CKYC">
+                          <div class="bank-box-cells notranslate" translate="no"></div>
+                        </div>
+                      </div>
+                      <div class="oac-s121">
+                        <div class="char-input-label-row">
+                          <span class="oac-s119">Customer ID / CIF (10 Chars - Optional):</span>
+                        </div>
+                        <div class="bank-box-wrap notranslate oac-s120" translate="no" data-box-count="10" data-target="cifNumber">
+                          <input type="text" id="raw-cif-number" name="cifNumber" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" placeholder="CIF">
+                          <div class="bank-box-cells notranslate" translate="no"></div>
+                        </div>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+                </tr>
+              </table>
+
+              <!-- 1. PERSONAL DETAILS (SAME AS ID PROOF) -->
+              <div class="bank-section-bar" id="header-sec-1">
+                <span>1. Personal Details (Same as ID Proof)</span>
+                <span class="oac-s122">Direct Box Input • Block Letters</span>
+              </div>
+
+              <!-- Full Name Prefix (Item 4) -->
+              <div class="oac-s123">
+                <span class="oac-s124" id="label-name-prefix">Full Name* (Prefix):</span>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Mr." onchange="handlePrefixChange(this.value)"> <span>Mr.</span></label>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Mrs." onchange="handlePrefixChange(this.value)"> <span>Mrs.</span></label>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Ms." onchange="handlePrefixChange(this.value)"> <span>Ms.</span></label>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Dr." onchange="handlePrefixChange(this.value)"> <span>Dr.</span></label>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Prof." onchange="handlePrefixChange(this.value)"> <span>Prof.</span></label>
+                <label class="bank-option-pill"><input type="radio" name="namePrefix" value="Other" onchange="handlePrefixChange(this.value)"> <span>Other</span></label>
+                <input type="text" id="prefix-other-input" name="namePrefixOther" class="bank-field-input oac-s125" placeholder="Specify Prefix">
+              </div>
+
+              <!-- First Name Direct Box Input -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span id="label-first-name">First Name*:</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-first-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" id="wrap-first-name" data-box-count="24" data-target="firstName">
+                  <input type="text" id="raw-first-name" name="firstName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Middle Name Direct Box Input (Optional) -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>Middle Name:</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-middle-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div id="middle-name-input-wrap" class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="middleName">
+                  <input type="text" id="raw-middle-name" name="middleName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Last Name Direct Box Input -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span id="label-last-name">Last Name*:</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-last-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" id="wrap-last-name" data-box-count="24" data-target="lastName">
+                  <input type="text" id="raw-last-name" name="lastName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Layman Term: Name before marriage / Previous name (if any) -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>Previous Name / Name Before Marriage (if any):</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-previous-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="previousName">
+                  <input type="text" id="raw-previous-name" name="previousName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Date of Birth, Gender, Marital Status & Nationality Grid -->
+              <div class="oac-s128">
+                <div>
+                  <div class="oac-s106">
+                    <label class="oac-s129" id="label-dob">Date of Birth* (DD/MM/YYYY):</label>
+                    <button type="button" class="btn btn-outline btn-sm no-print oac-s107" onclick="document.getElementById('picker-dob-date').showPicker ? document.getElementById('picker-dob-date').showPicker() : document.getElementById('picker-dob-date').focus()" title="Choose Date of Birth"><svg class="oac-s108" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></button>
+                    <input class="oac-s109" type="date" id="picker-dob-date" tabindex="-1" onchange="setDateFromPicker(this.value, 'raw-dob-date', 'wrap-dob-date')">
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" id="wrap-dob-date" data-box-count="8" data-target="dob">
+                    <input type="text" id="raw-dob-date" name="dob" class="bank-box-input notranslate" translate="no" maxlength="8" autocomplete="off" spellcheck="false" required>
+                    <div class="bank-box-cells notranslate oac-s110" translate="no">
+                      <span class="char-cell" data-idx="0">&nbsp;</span>
+                      <span class="char-cell" data-idx="1">&nbsp;</span>
+                      <span class="date-separator">/</span>
+                      <span class="char-cell" data-idx="2">&nbsp;</span>
+                      <span class="char-cell" data-idx="3">&nbsp;</span>
+                      <span class="date-separator">/</span>
+                      <span class="char-cell" data-idx="4">&nbsp;</span>
+                      <span class="char-cell" data-idx="5">&nbsp;</span>
+                      <span class="char-cell" data-idx="6">&nbsp;</span>
+                      <span class="char-cell" data-idx="7">&nbsp;</span>
+                    </div>
+                  </div>
+                  <div class="oac-s130" id="student-age-hint">ℹStudent accounts: age 16 to 26.</div>
+                </div>
+
+                <div>
+                  <label class="oac-s131" id="label-gender">Gender*:</label>
+                  <div class="oac-s132">
+                    <label class="bank-option-pill"><input type="radio" name="genderRadio" value="MALE"> <span>Male</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="genderRadio" value="FEMALE"> <span>Female</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="genderRadio" value="TRANSGENDER"> <span>Transgender</span></label>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="oac-s131" id="label-marital">Marital Status*:</label>
+                  <div class="oac-s132">
+                    <label class="bank-option-pill"><input type="radio" name="maritalRadio" value="MARRIED" onchange="handleOtherToggle('marital', false)"> <span>Married</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="maritalRadio" value="UNMARRIED" onchange="handleOtherToggle('marital', false)"> <span>Unmarried</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="maritalRadio" value="OTHERS" onchange="handleOtherToggle('marital', true)"> <span>Others</span></label>
+                    <input type="text" id="marital-other-input" name="maritalOther" class="bank-field-input oac-s133" placeholder="Specify Marital Status">
+                  </div>
+                </div>
+
+                <div>
+                  <label class="oac-s131" id="label-nationality">Nationality*:</label>
+                  <div class="oac-s132">
+                    <label class="bank-option-pill"><input type="radio" name="nationalityRadio" value="IN" checked onchange="handleOtherToggle('nationality', false)"> <span>IN - Indian</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="nationalityRadio" value="OTHERS" onchange="handleOtherToggle('nationality', true)"> <span>Others</span></label>
+                    <input type="text" id="nationality-other-input" name="nationalityOther" class="bank-field-input oac-s133" placeholder="Specify Country of Nationality">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Father's Name Direct Box Input -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span id="label-father-name">Father's Name*:</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-father-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" id="wrap-father-name" data-box-count="24" data-target="fatherName">
+                  <input type="text" id="raw-father-name" name="fatherName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Layman Term: Mother's Name -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span id="label-mother-name">Mother's Name*:</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-mother-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" id="wrap-mother-name" data-box-count="24" data-target="motherName">
+                  <input type="text" id="raw-mother-name" name="motherName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false" required>
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Spouse Name (if married) -->
+              <div class="char-input-group">
+                <div class="char-input-label-row">
+                  <span>Spouse Name (if married):</span>
+                  <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-spouse-name">
+                    <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                    <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                  </span>
+                </div>
+                <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="spouseName">
+                  <input type="text" id="raw-spouse-name" name="spouseName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                  <div class="bank-box-cells notranslate" translate="no"></div>
+                </div>
+              </div>
+
+              <!-- Guardian Name (for Minor) & Relationship -->
+              <div class="oac-s134">
+                <div class="char-input-group">
+                  <div class="char-input-label-row">
+                    <span>Guardian Name (for Minor):</span>
+                    <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-guardian-name">
+                      <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                      <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                    </span>
+                  </div>
+                  <div class="oac-s135">
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Mr." onchange="handlePrefixChange(this.value, 'guardian')"> <span>Mr.</span></label>
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Mrs." onchange="handlePrefixChange(this.value, 'guardian')"> <span>Mrs.</span></label>
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Ms." onchange="handlePrefixChange(this.value, 'guardian')"> <span>Ms.</span></label>
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Dr." onchange="handlePrefixChange(this.value, 'guardian')"> <span>Dr.</span></label>
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Prof." onchange="handlePrefixChange(this.value, 'guardian')"> <span>Prof.</span></label>
+                    <label class="bank-option-pill oac-s136"><input type="radio" name="guardianPrefix" value="Other" onchange="handlePrefixChange(this.value, 'guardian')"> <span>Other</span></label>
+                    <input type="text" id="prefix-guardian-other-input" name="guardianPrefixOther" class="bank-field-input oac-s137" placeholder="Specify Prefix">
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="guardianName">
+                    <input type="text" id="raw-guardian-name" name="guardianName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
+                </div>
+                <div>
+                  <span class="oac-s138">Relationship:</span>
+                  <div class="oac-s139">
+                    <label class="bank-option-pill"><input type="radio" name="guardianRelRadio" value="Father"> <span>Father</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="guardianRelRadio" value="Mother"> <span>Mother</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="guardianRelRadio" value="Legal Guardian"> <span>Legal Guardian</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Religion, Category & Disability -->
+              <div class="oac-s140">
+                <div>
+                  <span class="oac-s131">Religion:</span>
+                  <div class="oac-s141">
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Hindu" onchange="handleOtherToggle('religion', false)"> <span>Hindu</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Muslim" onchange="handleOtherToggle('religion', false)"> <span>Muslim</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Christian" onchange="handleOtherToggle('religion', false)"> <span>Christian</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Sikh" onchange="handleOtherToggle('religion', false)"> <span>Sikh</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Buddhist" onchange="handleOtherToggle('religion', false)"> <span>Buddhist</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Jain" onchange="handleOtherToggle('religion', false)"> <span>Jain</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="religionRadio" value="Others" onchange="handleOtherToggle('religion', true)"> <span>Others</span></label>
+                    <input type="text" id="religion-other-input" name="religionOther" class="bank-field-input oac-s142" placeholder="Specify Religion">
+                  </div>
+                </div>
+
+                <div>
+                  <span class="oac-s131">Category:</span>
+                  <div class="oac-s143">
+                    <label class="bank-option-pill"><input type="radio" name="categoryRadio" value="General"> <span>General</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="categoryRadio" value="OBC"> <span>OBC</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="categoryRadio" value="SC"> <span>SC</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="categoryRadio" value="ST"> <span>ST</span></label>
+                  </div>
+                </div>
+
+                <div>
+                  <span class="oac-s131">Person with Disability:</span>
+                  <div class="oac-s144">
+                    <label class="bank-option-pill"><input type="radio" name="disabilityRadio" value="YES" onchange="handleDisabilityToggle(this.value)"> <span>Yes</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="disabilityRadio" value="NO" checked onchange="handleDisabilityToggle(this.value)"> <span>No</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Disability Questionnaire (Requirement 6 - 5 Major Questions + UDID) -->
+              <div class="oac-s145" id="disability-details-section">
+                <div class="oac-s146">
+                  Person with Disability Details (Statutory Record)
+                </div>
+                
+                <div class="oac-s147">
+                  <div>
+                    <label class="oac-s148">1. Disability Category / Type*:</label>
+                    <select name="disabilityCategory" class="bank-field-input oac-s149">
+                      <option value="Locomotor / Orthopedic">Locomotor / Orthopedic Disability</option>
+                      <option value="Visual Impairment / Blindness">Visual Impairment / Low Vision</option>
+                      <option value="Hearing Impairment">Hearing Impairment (Deaf / Hard of Hearing)</option>
+                      <option value="Speech and Language">Speech &amp; Language Disability</option>
+                      <option value="Intellectual / Multiple">Intellectual / Multiple Disability</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="oac-s148">2. Percentage of Disability (%)*:</label>
+                    <input type="number" name="disabilityPercentage" min="40" max="100" class="bank-field-input" placeholder="Percentage of Disability (40 - 100)">
+                  </div>
+                </div>
+
+                <div class="oac-s150">
+                  <div>
+                    <label class="oac-s148">3. UDID / Disability Card Number*:</label>
+                    <input type="text" name="disabilityUdid" class="bank-field-input" placeholder="UDID Registration / Card Number">
+                  </div>
+                  <div>
+                    <label class="oac-s148">4. Issuing Medical Authority &amp; Issue Date*:</label>
+                    <div class="oac-s144">
+                      <input type="text" name="disabilityAuthority" class="bank-field-input oac-s151" placeholder="Issuing Hospital / Medical Board">
+                      <input type="date" name="disabilityDate" class="bank-field-input oac-s152">
+                    </div>
+                  </div>
+                </div>
+
+                <div class="oac-s153">
+                  <label class="oac-s148">5. Special Banking Assistance Needed:</label>
+                  <div class="oac-s154">
+                    <label class="bank-option-pill oac-s155"><input type="checkbox" name="disabilityAssistance" value="Braille Passbook"> <span>Braille Passbook / Statements</span></label>
+                    <label class="bank-option-pill oac-s155"><input type="checkbox" name="disabilityAssistance" value="Talking ATM"> <span>Audio / Talking ATM Facility</span></label>
+                    <label class="bank-option-pill oac-s155"><input type="checkbox" name="disabilityAssistance" value="Wheelchair Access"> <span>Wheelchair / Ramp Access</span></label>
+                    <label class="bank-option-pill oac-s155"><input type="checkbox" name="disabilityAssistance" value="Doorstep Banking"> <span>Doorstep Branch Banking</span></label>
+                    <label class="bank-option-pill oac-s155"><input type="checkbox" name="disabilityAssistance" value="Large Print"> <span>Large Print Documentation</span></label>
+                  </div>
+                </div>
+
+                <!-- Disability Certificate Upload -->
+                <div class="oac-s156">
+                  <span class="oac-s157">Upload Disability Certificate / UDID*:</span>
+                  <button type="button" class="btn btn-outline btn-sm no-print oac-s158" onclick="document.getElementById('file-disability-cert').click()">Upload File</button>
+                  <input class="oac-s159" type="file" id="file-disability-cert" accept=".pdf,image/*" onchange="handleGenericFileUpload(this, 'disability-file-status')">
+                  <span class="oac-s93" id="disability-file-status">No file uploaded</span>
+                </div>
+              </div>
+
+              <!-- Joint Applicants Personal Details Container (Req 16: Scalable for N applicants) -->
+              <div class="oac-s160" id="joint-applicants-part1-container"></div>
+
+
+              <!-- Educational Qualification -->
+              <div class="oac-s161">
+                <span class="oac-s131">Educational Qualification:</span>
+                <div class="oac-s139">
+                  <label class="bank-option-pill"><input type="radio" name="eduRadio" value="Below SSC"> <span>Below SSC</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="eduRadio" value="SSC/HSC"> <span>SSC/HSC</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="eduRadio" value="Graduate"> <span>Graduate</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="eduRadio" value="Post Graduate"> <span>Post Graduate</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="eduRadio" value="Professional"> <span>Professional</span></label>
+                </div>
+              </div>
+
+              <!-- 2. OCCUPATION & FINANCIAL PROFILE -->
+              <div class="bank-section-bar" id="header-sec-2">
+                <span>2. Occupation &amp; Financial Profile</span>
+              </div>
+
+              <div class="oac-s162">
+                <label class="oac-s138" id="label-emp-status">Occupation Type*:</label>
+                <div class="oac-s163">
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="EMPLOYED" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value); handleOtherToggle('emp', false)"> <span>S-Service (Public / Govt / Defence)</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="PRIVATE_SECTOR" onchange="document.getElementById('input-emp-status').value='EMPLOYED'; handleEmploymentChange('EMPLOYED'); handleOtherToggle('emp', false)"> <span>Private Sector</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="BUSINESS" onchange="document.getElementById('input-emp-status').value='SELF_EMPLOYED'; handleEmploymentChange('SELF_EMPLOYED'); handleOtherToggle('emp', false)"> <span>B-Business</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="SELF_EMPLOYED" onchange="document.getElementById('input-emp-status').value='SELF_EMPLOYED'; handleEmploymentChange('SELF_EMPLOYED'); handleOtherToggle('emp', false)"> <span>Self Employed / Professional</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="RETIRED" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value); handleOtherToggle('emp', false)"> <span>Retired</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="HOUSEWIFE" onchange="document.getElementById('input-emp-status').value='UNEMPLOYED'; handleEmploymentChange('UNEMPLOYED'); handleOtherToggle('emp', false)"> <span>Housewife</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="STUDENT" onchange="document.getElementById('input-emp-status').value=this.value; handleEmploymentChange(this.value); handleOtherToggle('emp', false)"> <span>Student</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="empStatusRadio" value="OTHERS" onchange="document.getElementById('input-emp-status').value='UNEMPLOYED'; handleEmploymentChange('UNEMPLOYED'); handleOtherToggle('emp', true)"> <span>Others</span></label>
+                  <input type="text" id="emp-other-input" name="empStatusOther" class="bank-field-input oac-s164" placeholder="Specify Occupation">
+                </div>
+                <select class="oac-s159" name="empStatus" id="input-emp-status">
+                  <option value="EMPLOYED">Employed</option>
+                  <option value="SELF_EMPLOYED">Self-Employed / Business Owner</option>
+                  <option value="STUDENT">Student</option>
+                  <option value="RETIRED">Retired</option>
+                  <option value="UNEMPLOYED">Unemployed</option>
+                </select>
+              </div>
+
+              <div class="oac-s165">
+                <div id="emp-field-group">
+                  <label class="form-label oac-s166" id="emp-field-label">Organisation / Employer Name</label>
+                  <input type="text" name="employer" id="input-employer" class="bank-field-input" placeholder="Enter Organisation / Employer Name">
+                </div>
+                <div class="oac-s159" id="student-field-group">
+                  <label class="form-label oac-s166">College / University Name*</label>
+                  <input type="text" name="universityName" id="input-university" class="bank-field-input" placeholder="Enter College / University Name">
+                </div>
+                <div>
+                  <label class="form-label oac-s166" id="label-annual-income">Gross Annual Income (₹ / INR)*</label>
+                  <input type="number" name="annualIncome" id="input-annual-income" class="bank-field-input" placeholder="Enter Gross Annual Income in ₹" required>
+                </div>
+              </div>
+
+              <!-- Gross Annual Income Slabs (From PDF) -->
+              <div class="oac-s162">
+                <span class="oac-s131" id="label-income-bracket">Gross Annual Income Bracket*:</span>
+                <div class="oac-s143">
+                  <label class="bank-option-pill"><input type="radio" name="incomeBracketRadio" value="Below 1 Lakh"> <span>Below ₹ 1 Lakh</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="incomeBracketRadio" value="1-5 Lakh"> <span>₹ 1 Lakh - ₹ 5 Lakh</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="incomeBracketRadio" value="5-10 Lakh"> <span>&gt; ₹ 5 Lakh - ₹ 10 Lakh</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="incomeBracketRadio" value="10-25 Lakh"> <span>&gt; ₹ 10 Lakh - ₹ 25 Lakh</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="incomeBracketRadio" value="Above 25 Lakh"> <span>&gt; ₹ 25 Lakh</span></label>
+                </div>
+              </div>
+
+              <!-- Source of Funds -->
+              <div class="oac-s161">
+                <span class="oac-s131" id="label-source-funds">Source of Funds*:</span>
+                <div class="oac-s154">
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Salary"> <span>Salary</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Business Income"> <span>Business Income</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Agriculture"> <span>Agriculture</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Investments"> <span>Investments</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Inheritance / Family"> <span>Inheritance / Family</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="sourceFundsRadio" value="Professional Fees"> <span>Professional Fees</span></label>
+                </div>
+              </div>
+
+              <!-- 3. IDENTIFICATION & TAX INFORMATION -->
+              <div class="bank-section-bar" id="header-sec-3">
+                <span>3. Identification &amp; Tax Information</span>
+              </div>
+
+              <div class="oac-s167">
+                <!-- PAN Direct Box Input (10 boxes) -->
+                <div>
+                  <div class="char-input-label-row">
+                    <span id="label-pan-number">PAN Number* (10 Characters):</span>
+                    <span class="oac-s168">Form 60 if unavailable</span>
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" id="wrap-pan-number" data-box-count="10" data-target="taxId">
+                    <input type="text" id="raw-pan-number" name="taxId" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" required>
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
+                  <div class="oac-s169">
+                    <span>Form 60 Submitted:</span>
+                    <label class="bank-option-pill oac-s170"><input type="radio" name="form60Radio" value="YES" onchange="handleForm60Toggle(this.value)"> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s171"><input type="radio" name="form60Radio" value="NO" checked onchange="handleForm60Toggle(this.value)"> <span>No</span></label>
+                  </div>
+                  <!-- Form 60 Document Upload Card (Req 8) -->
+                  <div class="oac-s172" id="form60-upload-card">
+                    <span class="oac-s173">Upload Signed Form 60*:</span>
+                    <button type="button" class="btn btn-outline btn-sm no-print oac-s174" onclick="document.getElementById('file-form60-doc').click()">Upload File</button>
+                    <input class="oac-s159" type="file" id="file-form60-doc" accept=".pdf,image/*" onchange="handleGenericFileUpload(this, 'form60-file-status')">
+                    <span class="oac-s168" id="form60-file-status">No file uploaded</span>
+                  </div>
+                </div>
+
+                <!-- Aadhaar Direct Box Input (12 boxes: 4-4-4) -->
+                <div>
+                  <div class="char-input-label-row">
+                    <span id="label-aadhaar-number">Aadhaar / UID Number* (12 Digits):</span>
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" id="wrap-aadhaar-number" data-box-count="12" data-target="aadhaarNumber">
+                    <input type="text" id="raw-aadhaar-number" name="aadhaarNumber" class="bank-box-input notranslate" translate="no" maxlength="12" autocomplete="off" spellcheck="false" required>
+                    <div class="bank-box-cells notranslate oac-s175" translate="no">
+                      <!-- Cells populated dynamically in 4-4-4 segments -->
+                    </div>
+                  </div>
+                  <div class="oac-s176">
+                    (I hereby authorize bank to use my Aadhaar for authentic eKYC verification)
+                  </div>
+                </div>
+              </div>
+
+              <!-- Politically Exposed Person (Req 9) -->
+              <div class="oac-s161">
+                <span class="oac-s131">Politically Exposed Person (PEP) Status:</span>
+                <div class="oac-s177">
+                  <label class="bank-option-pill"><input type="radio" name="pepRadio" value="NA" checked onchange="handlePepToggle(this.value)"> <span>Not Applicable</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="pepRadio" value="PEP" onchange="handlePepToggle(this.value)"> <span>PEP (Politically Exposed Person)</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="pepRadio" value="RELATED" onchange="handlePepToggle(this.value)"> <span>Related to PEP</span></label>
+                </div>
+                
+                <!-- PEP Questions Card (Req 9) -->
+                <div class="oac-s178" id="pep-details-section">
+                  <div class="oac-s179">
+                    PEP Statutory Due Diligence Questionnaire
+                  </div>
+                  <div class="oac-s180">
+                    <div>
+                      <label class="oac-s148">1. Nature of Political Exposure*:</label>
+                      <select name="pepCategory" class="bank-field-input oac-s149">
+                        <option value="Senior Politician / Government Head">Head of State / Government / Senior Politician</option>
+                        <option value="Senior Govt / Judicial / Military Official">Senior Government, Judicial, or Military Official</option>
+                        <option value="Senior Executive of State Enterprise">Senior Executive of State-Owned Corporation</option>
+                        <option value="Political Party Official">Senior Political Party Functionary</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="oac-s148">2. Designation / Public Position*:</label>
+                      <input type="text" name="pepDesignation" class="bank-field-input" placeholder="Official Designation Held">
+                    </div>
+                  </div>
+                  <div class="oac-s181">
+                    <div>
+                      <label class="oac-s148">3. Country / Jurisdiction*:</label>
+                      <input type="text" name="pepCountry" class="bank-field-input" placeholder="Country / State">
+                    </div>
+                    <div>
+                      <label class="oac-s148">4. Relationship (If Related)*:</label>
+                      <input type="text" name="pepRelationship" class="bank-field-input" placeholder="Self / Spouse / Parent / Sibling">
+                    </div>
+                    <div>
+                      <label class="oac-s148">5. Name of PEP (If Related):</label>
+                      <input type="text" name="pepName" class="bank-field-input" placeholder="Name of Person in Public Office">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. CONTACT DETAILS -->
+              <div class="bank-section-bar" id="header-sec-4">
+                <span>4. Contact Details</span>
+              </div>
+
+              <div class="oac-s182">
+                <!-- Mobile Number (Req 10) -->
+                <div>
+                  <div class="char-input-label-row">
+                    <span id="label-mobile">Mobile Number*:</span>
+                  </div>
+                  <div class="phone-input-row oac-s183">
+                    <div class="custom-flag-dropdown notranslate" translate="no" data-dropdown="mobile">
+                      <input type="hidden" id="mobile-country-code" name="mobileCountryCode" value="+91">
+                      <button type="button" class="flag-dropdown-trigger notranslate" translate="no" aria-haspopup="listbox" aria-expanded="false" onclick="toggleFlagDropdown('mobile', event)">
+                        <span class="flag-icon"></span>
+                        <span class="flag-code">+91</span>
+                        <span class="flag-arrow">▼</span>
+                      </button>
+                      <ul class="flag-options-overlay notranslate" translate="no" role="listbox" style="display: none;"></ul>
+                    </div>
+                    <div class="bank-box-wrap notranslate oac-s185" translate="no" id="wrap-mobile-number" data-box-count="10" data-target="mobile">
+                      <input type="tel" id="raw-mobile-number" name="mobile" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false" required>
+                      <input type="hidden" name="phone" id="hidden-phone">
+                      <div class="bank-box-cells notranslate oac-s186" translate="no"></div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Alternative Mobile Number (Req 10) -->
+                <div>
+                  <div class="char-input-label-row">
+                    <span>Alternative Mobile Number:</span>
+                  </div>
+                  <div class="phone-input-row oac-s183">
+                    <div class="custom-flag-dropdown notranslate" translate="no" data-dropdown="altMobile">
+                      <input type="hidden" id="alt-mobile-country-code" name="altMobileCountryCode" value="+91">
+                      <button type="button" class="flag-dropdown-trigger notranslate" translate="no" aria-haspopup="listbox" aria-expanded="false" onclick="toggleFlagDropdown('altMobile', event)">
+                        <span class="flag-icon"></span>
+                        <span class="flag-code">+91</span>
+                        <span class="flag-arrow">▼</span>
+                      </button>
+                      <ul class="flag-options-overlay notranslate" translate="no" role="listbox" style="display: none;"></ul>
+                    </div>
+                    <div class="bank-box-wrap notranslate oac-s185" translate="no" data-box-count="10" data-target="altMobile">
+                      <input type="tel" id="raw-alt-mobile" name="altMobile" class="bank-box-input notranslate" translate="no" maxlength="10" autocomplete="off" spellcheck="false">
+                      <div class="bank-box-cells notranslate oac-s186" translate="no"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="oac-s187">
+                <!-- Email ID with Domain Dropdown (Req 11) -->
+                <div>
+                  <label class="oac-s131" id="label-email">Email ID*:</label>
+                  <div class="email-input-row oac-s188">
+                    <input type="text" id="email-username" class="bank-field-input oac-s189 notranslate" translate="no" placeholder="Enter username" required oninput="syncCombinedEmail()">
+                    <select id="email-domain-select" class="bank-field-input oac-s190 notranslate" translate="no" onchange="handleEmailDomainChange(this.value)">
+                      <option value="@gmail.com" selected>@gmail.com</option>
+                      <option value="@outlook.com">@outlook.com</option>
+                      <option value="@yahoo.com">@yahoo.com</option>
+                      <option value="@icloud.com">@icloud.com</option>
+                      <option value="@hotmail.com">@hotmail.com</option>
+                      <option value="OTHER">Other / Custom Domain</option>
+                    </select>
+                    <div id="email-domain-custom-inline" class="email-domain-inline-wrap notranslate" translate="no" style="display: none;">
+                      <span class="email-domain-at">@</span>
+                      <input type="text" id="inline-custom-domain-input" class="bank-field-input email-domain-inline-input notranslate" translate="no" placeholder="company.com" autocomplete="off" spellcheck="false">
+                      <button type="button" class="email-domain-btn domain-save-btn" onclick="saveInlineCustomDomain()" title="Confirm domain (Enter)">✓</button>
+                      <button type="button" class="email-domain-btn domain-cancel-btn" onclick="cancelInlineCustomDomain()" title="Cancel (Esc)">✕</button>
+                    </div>
+                  </div>
+                  <div id="inline-custom-domain-error" class="inline-domain-error" style="display: none;"></div>
+                  <input type="hidden" name="email" id="hidden-combined-email">
+                </div>
+
+                <!-- Telephone (Res / Off) -->
+                <div>
+                  <label class="oac-s131">Telephone (Res / Off):</label>
+                  <div class="tel-input-row oac-s188">
+                    <input type="text" name="telStd" class="bank-field-input oac-s191" placeholder="STD">
+                    <input type="text" name="telNumber" class="bank-field-input oac-s192" placeholder="Number">
+                  </div>
+                </div>
+              </div>
+
+              
+
+              <!-- Page 1 Footer -->
+              <div class="bank-print-footer oac-s201">
+                <span>Form 101-A: Customer Information Form (Part-I)</span>
+                <span>Page 1 of 4</span>
+              </div>
+            </div>
+            <!-- ==================== END PAGE 1 ==================== -->
+
+
+            <!-- =================================================================
+                 PART I (CONTINUED): PROOF OF IDENTITY / ADDRESS & KYC DOCUMENTS - PAGE 2 OF 4
+                 ================================================================= -->
+            <div id="form-container-part1-cont" class="form-part-section bank-page-2 oac-s159">
+              
+              <!-- PRINT-ONLY PAGE 2 HEADER -->
+              <div class="print-bank-header print-only">
+                <div class="oac-s96">
+                  <div class="oac-s97">
+                    <svg class="oac-s98" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="bank-sheet-title-main">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
+                    <div class="bank-sheet-title-sub">PART I (CONTINUED): PROOF OF IDENTITY / ADDRESS &amp; KYC DOCUMENTS</div>
+                  </div>
+                </div>
+                <div class="bank-sheet-form-tag">
+                  <strong>DOCUMENTATION SHEET</strong><br>
+                  <span class="oac-s99">(KYC Verification)</span>
+                </div>
+              </div>
+
+              <!-- Account-Specific Demanded KYC Documents Banner (Req 12) -->
+              <div class="oac-s202" id="demanded-docs-banner">
+                <div class="oac-s203">
+                  <div class="oac-s204">
+                    Demanded KYC Documents for Selected Account: <span class="oac-s205" id="demanded-account-title">Savings Bank Account</span>
+                  </div>
+                  <span class="oac-s206">All Listed Documents Required</span>
+                </div>
+                <div class="oac-s207" id="demanded-docs-checklist">
+                  <!-- Populated dynamically via JS -->
+                </div>
+              </div>
+
+              <!-- 5. PROOF OF IDENTITY / ADDRESS (OFFICIALLY VALID DOCUMENTS - OVD) -->
+              <div class="bank-section-bar" id="header-sec-ovd">
+                <span>5. Proof of Identity / Address (Officially Valid Documents - OVD)</span>
+              </div>
+              <div class="oac-s208">
+                Please provide details and upload certified copies for all officially valid documents required for your account.
+              </div>
+
+              <table class="bank-table-grid oac-s209">
+                <thead>
+                  <tr class="oac-s210">
+                    <th class="oac-s211">Select</th>
+                    <th>Officially Valid Document Type</th>
+                    <th>Document / ID Number</th>
+                    <th class="oac-s212">Expiry Date</th>
+                    <th class="oac-s213">Upload Certified Copy</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="PASSPORT" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>A - Passport</strong></td>
+                    <td><input type="text" name="ovdPassportNum" class="bank-field-input" placeholder="Passport Number" oninput="syncOvdInput('PASSPORT', this.value)"></td>
+                    <td><input type="text" name="ovdPassportExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-passport').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-passport" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-passport', 'PASSPORT')">
+                        <span class="oac-s217" id="ovd-status-passport">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="VOTER_ID" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>B - Voter Identity Card</strong></td>
+                    <td><input type="text" name="ovdVoterNum" class="bank-field-input" placeholder="Voter ID Card Number" oninput="syncOvdInput('VOTER_ID', this.value)"></td>
+                    <td class="oac-s218">N / A</td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-voter').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-voter" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-voter', 'VOTER_ID')">
+                        <span class="oac-s217" id="ovd-status-voter">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="DRIVING_LICENSE" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>C - Driving License</strong></td>
+                    <td><input type="text" name="ovdLicenseNum" class="bank-field-input" placeholder="DL Number" oninput="syncOvdInput('DRIVING_LICENSE', this.value)"></td>
+                    <td><input type="text" name="ovdLicenseExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-license').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-license" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-license', 'DRIVING_LICENSE')">
+                        <span class="oac-s217" id="ovd-status-license">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="AADHAAR" checked onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>D - Proof of Possession of Aadhaar</strong></td>
+                    <td><input type="text" name="ovdAadhaarNum" class="bank-field-input" placeholder="XXXX-XXXX-Last 4 Digits" oninput="syncOvdInput('AADHAAR', this.value)"></td>
+                    <td class="oac-s218">N / A</td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-aadhaar').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-aadhaar" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-aadhaar', 'AADHAAR')">
+                        <span class="oac-s217" id="ovd-status-aadhaar">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="NREGA" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>E - NREGA Job Card</strong></td>
+                    <td><input type="text" name="ovdNregaNum" class="bank-field-input" placeholder="Job Card Number" oninput="syncOvdInput('NREGA', this.value)"></td>
+                    <td class="oac-s218">N / A</td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-nrega').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-nrega" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-nrega', 'NREGA')">
+                        <span class="oac-s217" id="ovd-status-nrega">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="NPR" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td><strong>F - Letter Issued by NPR</strong></td>
+                    <td><input type="text" name="ovdNprNum" class="bank-field-input" placeholder="Letter Reference Number" oninput="syncOvdInput('NPR', this.value)"></td>
+                    <td class="oac-s218">N / A</td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-npr').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-npr" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-npr', 'NPR')">
+                        <span class="oac-s217" id="ovd-status-npr">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="OTHER" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>G - Other Valid Document</strong><br>
+                      <input type="text" name="ovdOtherName" id="ovd-other-name" class="bank-field-input oac-s219" placeholder="Specify Document Type">
+                    </td>
+                    <td><input type="text" name="ovdOtherNum" class="bank-field-input" placeholder="Document Reference Number" oninput="syncOvdInput('OTHER', this.value)"></td>
+                    <td><input type="text" name="ovdOtherExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-other').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-other" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-other', 'OTHER')">
+                        <span class="oac-s217" id="ovd-status-other">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <!-- Account-Specific Demanded Document Rows (Req 12) -->
+                  <tr id="ovd-row-salary" class="account-specific-ovd-row">
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="SALARY_PROOF" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>H - Corporate Salary Proof / Pay Slip</strong><br>
+                      <span class="oac-s59">Recent payslip / Employment letter (Corporate Salary Account)</span>
+                    </td>
+                    <td><input type="text" name="ovdSalaryDocNum" class="bank-field-input" placeholder="Employee / Ref ID" oninput="syncOvdInput('SALARY_PROOF', this.value)"></td>
+                    <td><input type="text" name="ovdSalaryDocDate" class="bank-field-input" placeholder="Month / Year"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-salary').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-salary" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-salary', 'SALARY_PROOF')">
+                        <span class="oac-s217" id="ovd-status-salary">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="ovd-row-student" class="account-specific-ovd-row">
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="STUDENT_PROOF" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>I - Student ID / University Acceptance</strong><br>
+                      <span class="oac-s59">Valid College ID / Admission letter (Student Advantage)</span>
+                    </td>
+                    <td><input type="text" name="ovdStudentDocNum" class="bank-field-input" placeholder="Student Roll / Enrollment #" oninput="syncOvdInput('STUDENT_PROOF', this.value)"></td>
+                    <td><input type="text" name="ovdStudentExpiry" class="bank-field-input" placeholder="Valid Upto"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-student').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-student" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-student', 'STUDENT_PROOF')">
+                        <span class="oac-s217" id="ovd-status-student">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="ovd-row-pension" class="account-specific-ovd-row">
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="PENSION_PROOF" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>J - Pension Sanction Order / Disability UDID</strong><br>
+                      <span class="oac-s59">PPO Letter / Disability Certificate (Pension Savings Account)</span>
+                    </td>
+                    <td><input type="text" name="ovdPensionDocNum" class="bank-field-input" placeholder="PPO / UDID Card #" oninput="syncOvdInput('PENSION_PROOF', this.value)"></td>
+                    <td><input type="text" name="ovdPensionExpiry" class="bank-field-input" placeholder="Issuing Authority"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-pension').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-pension" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-pension', 'PENSION_PROOF')">
+                        <span class="oac-s217" id="ovd-status-pension">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="ovd-row-nri" class="account-specific-ovd-row">
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="NRI_PROOF" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>K - Valid Visa / Work / Expat Permit</strong><br>
+                      <span class="oac-s59">Foreign resident permit / Valid work visa (NRI Account)</span>
+                    </td>
+                    <td><input type="text" name="ovdNriDocNum" class="bank-field-input" placeholder="Visa / Permit #" oninput="syncOvdInput('NRI_PROOF', this.value)"></td>
+                    <td><input type="text" name="ovdNriExpiry" class="bank-field-input" placeholder="DD/MM/YYYY"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-nri').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-nri" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-nri', 'NRI_PROOF')">
+                        <span class="oac-s217" id="ovd-status-nri">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr id="ovd-row-funds" class="account-specific-ovd-row">
+                    <td class="oac-s214"><input type="checkbox" name="ovdSelectChk" value="FUNDS_PROOF" onchange="syncOvdSelection(this.value, this.checked)"></td>
+                    <td>
+                      <strong>L - Source of Funds / Bank Statement</strong><br>
+                      <span class="oac-s59">Deposit origin statement (Fixed Deposit / Term Account)</span>
+                    </td>
+                    <td><input type="text" name="ovdFundsDocNum" class="bank-field-input" placeholder="Origin Bank / Ref #" oninput="syncOvdInput('FUNDS_PROOF', this.value)"></td>
+                    <td><input type="text" name="ovdFundsDate" class="bank-field-input" placeholder="Statement Date"></td>
+                    <td class="oac-s214">
+                      <div class="oac-s215">
+                        <button type="button" class="btn btn-outline btn-sm no-print oac-s216" onclick="document.getElementById('file-ovd-funds').click()">Upload</button>
+                        <input class="oac-s159" type="file" id="file-ovd-funds" accept="image/*,application/pdf" onchange="handleOvdFileUpload(this, 'ovd-status-funds', 'FUNDS_PROOF')">
+                        <span class="oac-s217" id="ovd-status-funds">No file</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <!-- 6. ADDRESS DETAILS -->
+              <div class="bank-section-bar" id="header-sec-addr">
+                <span>6. Address Details</span>
+              </div>
+
+              <!-- 6.1 Current / Permanent Address -->
+              <div class="oac-s220">
+                6.1 Current / Permanent / Overseas Address (Specify types below)
+              </div>
+              <div class="oac-s153">
+                <span class="oac-s221">Address Type*:</span>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio" value="RESIDENTIAL_BUSINESS" checked> <span>Residential &amp; Business</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio" value="RESIDENTIAL"> <span>Residential</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio" value="BUSINESS"> <span>Business</span></label>
+                <label class="bank-option-pill"><input type="radio" name="addrTypeRadio" value="REGISTERED_OFFICE"> <span>Registered Office</span></label>
+              </div>
+
+              <div class="oac-s153">
+                <label class="oac-s222" id="label-addr-house">Flat / House No. &amp; Name*:</label>
+                <input type="text" name="addressLine1" id="input-addr-house" class="bank-field-input" placeholder="Enter Flat / House No. &amp; Name" required>
+              </div>
+
+              <div class="oac-s223">
+                <div>
+                  <label class="oac-s222">Street / Road / Lane:</label>
+                  <input type="text" name="addressStreet" id="input-addr-street" class="bank-field-input" placeholder="Enter Street / Road / Lane">
+                </div>
+                <div>
+                  <label class="oac-s222">Landmark / Area:</label>
+                  <input type="text" name="addressLandmark" id="input-addr-landmark" class="bank-field-input" placeholder="Enter Landmark / Area">
+                </div>
+              </div>
+
+              <!-- Combined hidden addressLine for backend API compatibility -->
+              <input type="hidden" name="addressLine" id="hidden-address-line">
+
+              <!-- City, District, State, PIN with Bidirectional Autofill (Req 13) -->
+              <div class="oac-s224">
+                <div>
+                  <label class="oac-s222" id="label-city">City / Village / Town*:</label>
+                  <input type="text" name="city" id="input-city" class="bank-field-input" placeholder="Enter City / Town" required oninput="handleCityInput(this.value)">
+                </div>
+                <div>
+                  <label class="oac-s222">District:</label>
+                  <input type="text" name="district" id="input-district" class="bank-field-input" placeholder="Enter District" oninput="handleDistrictInput(this.value)">
+                </div>
+                <div>
+                  <label class="oac-s222" id="label-state">State*:</label>
+                  <input type="text" name="state" id="input-state" class="bank-field-input" placeholder="Enter State" required oninput="handleStateInput(this.value)">
+                </div>
+                <div>
+                  <div class="char-input-label-row">
+                    <span id="label-pincode">PIN Code*:</span>
+                  </div>
+                  <div class="bank-box-wrap notranslate oac-s225" translate="no" id="wrap-pincode" data-box-count="6" data-target="postalCode">
+                    <input type="text" id="raw-pincode" name="postalCode" class="bank-box-input notranslate" translate="no" maxlength="6" autocomplete="off" spellcheck="false" required oninput="handlePincodeInput(this.value)">
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="oac-s159">
+                <input type="text" name="country" value="IN">
+              </div>
+
+              <!-- 6.2 Correspondence / Local Address Details -->
+              <div class="oac-s220">
+                6.2 Correspondence / Local Address Details
+              </div>
+              <div class="oac-s153">
+                <span class="oac-s221">Same as Current?</span>
+                <label class="bank-option-pill"><input type="radio" name="corrSameRadio" value="YES" checked onchange="toggleCorrAddress(this.value)"> <span>Yes (Skip below section if same)</span></label>
+                <label class="bank-option-pill"><input type="radio" name="corrSameRadio" value="NO" onchange="toggleCorrAddress(this.value)"> <span>No (Provide details below)</span></label>
+              </div>
+
+              <div class="oac-s226" id="corr-address-fields">
+                <div class="oac-s227">
+                  <label class="oac-s222">Address Lines:</label>
+                  <input type="text" name="corrAddressLine" class="bank-field-input" placeholder="Enter Correspondence Address">
+                </div>
+                <div class="oac-s228">
+                  <div>
+                    <label class="oac-s222">City &amp; State:</label>
+                    <input type="text" name="corrCityState" class="bank-field-input" placeholder="Enter City &amp; State">
+                  </div>
+                  <div>
+                    <div class="char-input-label-row">
+                      <span>PIN Code:</span>
+                    </div>
+                    <div class="bank-box-wrap notranslate oac-s225" translate="no" data-box-count="6" data-target="corrPostalCode">
+                      <input type="text" id="raw-corr-pincode" name="corrPostalCode" class="bank-box-input notranslate" translate="no" maxlength="6" autocomplete="off" spellcheck="false">
+                      <div class="bank-box-cells notranslate" translate="no"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 6.3 If OVD Does Not Contain Current Address (Deemed Proof - Not more than 2 months old) (Req 14) -->
+              <div class="oac-s220">
+                6.3 If OVD Does Not Contain Current Address (Deemed Proof - Not more than 2 months old)
+              </div>
+              <div class="oac-s229">
+                <label class="bank-option-pill"><input type="checkbox" name="deemedProofChk" value="UTILITY" onchange="handleDeemedProofChange()"> <span>Electricity / Gas / Water Bill</span></label>
+                <label class="bank-option-pill"><input type="checkbox" name="deemedProofChk" value="PROPERTY_TAX" onchange="handleDeemedProofChange()"> <span>Property / Municipal Tax Receipt</span></label>
+                <label class="bank-option-pill"><input type="checkbox" name="deemedProofChk" value="PENSION_ORDER" onchange="handleDeemedProofChange()"> <span>PPO / Pension Order</span></label>
+                <label class="bank-option-pill"><input type="checkbox" name="deemedProofChk" value="GOVT_ACCOMMODATION" onchange="handleDeemedProofChange()"> <span>Government Accommodation Allotment Letter</span></label>
+                <label class="bank-option-pill"><input type="checkbox" name="deemedProofChk" value="LEAVE_LICENSE" onchange="handleDeemedProofChange()"> <span>Employer Leave &amp; License Agreement</span></label>
+              </div>
+
+              <!-- Deemed Proof Dynamic Upload Dropzones (Req 14) -->
+              <div class="oac-s230" id="deemed-proof-uploads-container">
+                <div class="oac-s231">Upload Certified Copies for Selected Deemed Proofs:</div>
+                <div class="oac-s232" id="deemed-proof-uploads-list"></div>
+              </div>
+
+              <!-- 7. APPLICANT PHOTOGRAPH & VERIFICATION SIGNATURE (Req 15, 16) -->
+              <div class="bank-section-bar" id="header-sec-photo-sig">
+                <span>7. Applicant Photograph &amp; Verification Signature</span>
+              </div>
+
+              <div class="oac-s233">
+                <!-- Left Column: Official Declaration -->
+                <div class="oac-s234">
+                  <strong class="oac-s235">Applicant Declaration:</strong>
+                  <ol class="oac-s236">
+                    <li class="oac-s237">
+                      I hereby declare that the details furnished above are true and correct to the best of my knowledge and belief and I undertake to inform you of any changes therein, immediately.
+                    </li>
+                    <li class="oac-s237">
+                      I hereby give my consent to receive information / alerts / telephonic calls from the Bank regarding my account operations.
+                    </li>
+                    <li>
+                      I submit my Aadhaar number voluntarily and give full consent for verifying the same with UIDAI for KYC verification.
+                    </li>
+                  </ol>
+
+                  <div class="oac-s238">
+                    <div><strong>Date:</strong> <span class="oac-s239" id="paper-declaration-date">-- / -- / ----</span></div>
+                    <div><strong>Place:</strong> <span class="oac-s239" id="paper-declaration-place">--</span></div>
+                  </div>
+                </div>
+
+                <!-- Right Column: Auto-Resized Photo & Specimen Signature / Thumb Slots (Scalable for Joint Applicants) -->
+                <div class="oac-s240" id="applicant-photos-signatures-container">
+                  
+                  <!-- Primary Applicant Slot -->
+                  <div class="applicant-photo-sig-pair oac-s241" id="photo-sig-pair-applicant-1">
+                    <!-- PASSPORT PHOTO UPLOAD (Auto-Resized to 3.5cm x 4.5cm) -->
+                    <div class="oac-s214">
+                      <div class="oac-s242">
+                        1st Applicant Photo
+                      </div>
+                      
+                      <div class="passport-photo-box" onclick="document.getElementById('applicant-photo-file-input').click()" title="Click to upload photograph (auto-resized)">
+                        <div id="passport-photo-placeholder">
+                          <div class="oac-s243"></div>
+                          <div class="oac-s244">Upload Photo</div>
+                          <div class="oac-s245">
+                            3.5cm × 4.5cm
+                          </div>
+                        </div>
+                        <img id="passport-photo-img" class="passport-photo-img" alt="Passport Photograph">
+                        <span id="passport-stamp-badge" class="passport-stamp-badge">PHOTO ✓</span>
+                      </div>
+
+                      <input class="oac-s159" type="file" id="applicant-photo-file-input" accept="image/*" onchange="handlePassportPhotoUpload(this, 1)">
+                      <input type="hidden" name="applicantPhoto" id="input-applicant-photo-data">
+
+                      <div class="oac-s246">
+                        (Paste cleanly. Do not staple)
+                      </div>
+                    </div>
+
+                    <!-- SIGNATURE / THUMB IMPRESSION VERIFICATION SLOT -->
+                    <div class="oac-s247">
+                      <div class="oac-s242">
+                        Signature / Thumb (1st Applicant)
+                      </div>
+
+                      <div id="slot-applicant-signature" class="verification-slot-box" onclick="openVerificationChoiceModal(1)" title="Click to choose Digital Signature Pad or Upload Thumb Impression">
+                        <div id="form-signature-placeholder">
+                          <div class="oac-s248">
+                            <svg class="oac-s249" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                            <svg class="oac-s250" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                          </div>
+                          <div class="oac-s251">Tap to Sign &amp; Verify</div>
+                          <div class="oac-s252">Digital pad &nbsp;|&nbsp; Thumb impression</div>
+                        </div>
+                        <img id="form-signature-preview" class="verification-preview-img" alt="Applicant Specimen Verification">
+                        <div class="oac-s253" id="form-signature-meta"></div>
+                      </div>
+
+                      <input type="hidden" name="applicantSignature" id="input-applicant-signature-data">
+                      <input type="hidden" name="applicantThumb" id="input-applicant-thumb-data">
+
+                      <div class="oac-s254">
+                        Sign / Verify: <strong class="oac-s255" id="form-signature-name-display">1st Applicant</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Container for Dynamically Added Joint Applicants Photos & Signatures (Req 15) -->
+                  <div id="joint-photos-signatures-dynamic"></div>
+
+                </div>
+              </div>
+
+              <!-- Page 2 Footer -->
+              <div class="bank-print-footer oac-s201">
+                <span>Form 101-A: Customer Information Form (Part-I Continued)</span>
+                <span>Page 2 of 4</span>
+              </div>
+            </div>
+            <!-- ==================== END PAGE 2 ==================== -->
+
+
+            <!-- =================================================================
+                 PART II: ACCOUNT FORM (Savings / Current / Deposits) - PAGE 3 OF 4
+                 ================================================================= -->
+            <div id="form-container-part2" class="form-part-section bank-page-3 oac-s159">
+              
+              <!-- PRINT-ONLY PART II HEADER -->
+              <div class="print-bank-header print-only">
+                <div class="oac-s96">
+                  <div class="oac-s97">
+                    <svg class="oac-s98" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="bank-sheet-title-main">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
+                    <div class="bank-sheet-title-sub">ACCOUNT OPENING FORM FOR INDIVIDUALS (SAVINGS / CURRENT / DEPOSITS)</div>
+                  </div>
+                </div>
+                <div class="bank-sheet-form-tag">
+                  <strong>PART II: ACCOUNT FORM</strong><br>
+                  <span class="oac-s99">(Core Ledger Provisioning)</span>
+                </div>
+              </div>
+
+              <!-- 1. TYPE OF ACCOUNT REQUESTED -->
+              <div class="bank-section-bar" id="header-sec-part2-acc">
+                <span>1. Type of Account Requested</span>
+              </div>
+
+              <div class="oac-s256">
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="SAVINGS" checked onclick="preventPart2AccountChange(event, this)"> <span>Savings Bank Account</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="CHECKING" onclick="preventPart2AccountChange(event, this)"> <span>Current / Checking Account</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="SALARY" onclick="preventPart2AccountChange(event, this)"> <span>Corporate Salary Account</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="FIXED_DEPOSIT" onclick="preventPart2AccountChange(event, this)"> <span>Fixed Deposit / MOD</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="MONEY_MARKET" onclick="preventPart2AccountChange(event, this)"> <span>Recurring Deposit (RD)</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="PENSION" onclick="preventPart2AccountChange(event, this)"> <span>Pension Savings Account</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="NRI_EXPAT" onclick="preventPart2AccountChange(event, this)"> <span>NRI / Foreign Expat Global Account</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="STUDENT" onclick="preventPart2AccountChange(event, this)"> <span>Student / Youth Advantage</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="BSBDA" onclick="preventPart2AccountChange(event, this)"> <span>BSBDA (Basic Savings Account)</span></label>
+                <label class="bank-option-pill"><input type="radio" name="part2AccountTypeRadio" value="BSBDA_SMALL" onclick="preventPart2AccountChange(event, this)"> <span>BSBDA Small Account</span></label>
+              </div>
+
+              <!-- 2. MODE OF OPERATION -->
+              <div class="bank-section-bar" id="header-sec-part2-mode">
+                <span>2. Mode of Operation</span>
+              </div>
+
+              <div class="oac-s257">
+                <label class="bank-option-pill"><input type="radio" name="modeOperationRadio" value="SELF_SINGLE" checked onchange="handleModeOperationChange(this.value)"> <span>Self / Single</span></label>
+                <label class="bank-option-pill"><input type="radio" name="modeOperationRadio" value="EITHER_SURVIVOR" onchange="handleModeOperationChange(this.value)"> <span>Either or Survivor</span></label>
+                <label class="bank-option-pill"><input type="radio" name="modeOperationRadio" value="FORMER_SURVIVOR" onchange="handleModeOperationChange(this.value)"> <span>Former or Survivor</span></label>
+                <label class="bank-option-pill"><input type="radio" name="modeOperationRadio" value="JOINTLY" onchange="handleModeOperationChange(this.value)"> <span>Jointly Operated</span></label>
+                <label class="bank-option-pill"><input type="radio" name="modeOperationRadio" value="MINOR_GUARDIAN" onchange="handleModeOperationChange(this.value)"> <span>Minor Operated under Guardian</span></label>
+              </div>
+
+              <!-- Joint Members Counter (Req 15) -->
+              <div class="oac-s258" id="joint-members-count-row">
+                <div>
+                  <strong class="oac-s259">Number of Joint Members (including Primary Applicant):</strong>
+                  <div class="oac-s168">Specify 2 or more joint account holders (Scales customer info, photos, and signatures)</div>
+                </div>
+                <div class="oac-s2">
+                  <button type="button" class="btn btn-outline btn-sm no-print oac-s260" onclick="changeJointMembersCount(-1)">-</button>
+                  <input type="number" id="input-joint-members-count" name="jointMembersCount" value="2" min="2" max="10" class="bank-field-input oac-s261" onchange="setJointMembersCount(this.value)">
+                  <button type="button" class="btn btn-outline btn-sm no-print oac-s260" onclick="changeJointMembersCount(1)">+</button>
+                </div>
+              </div>
+
+              <!-- 3. SERVICES & CHANNELS REQUIRED -->
+              <div class="bank-section-bar" id="header-sec-part2-svc">
+                <span>3. Services &amp; Channels Required</span>
+              </div>
+
+              <div class="oac-s165">
+                <div class="oac-s262">
+                  <span class="oac-s129">Cheque Book Required:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcChequeRadio" value="YES" checked> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcChequeRadio" value="NO"> <span>No</span></label>
+                  </div>
+                </div>
+                <div class="oac-s262">
+                  <span class="oac-s129">ATM / Debit Card Required:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcDebitRadio" value="YES" checked onchange="handleDebitCardRequiredToggle(this.value)"> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcDebitRadio" value="NO" onchange="handleDebitCardRequiredToggle(this.value)"> <span>No</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Dependent Debit Card Section (Conditionally shown if Debit Card is YES) -->
+              <div id="debit-card-dependent-fields">
+                <!-- Item 18: Debit Card Scheme (RuPay / Visa / Mastercard) & Format (Virtual / Metal / Both) -->
+                <div class="oac-s264">
+                  <div class="oac-s265">
+                    <div>
+                      <span class="oac-s138">Debit Card Network / Scheme*:</span>
+                      <div class="oac-s139">
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="RUPAY" checked> <span>RuPay</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="VISA"> <span>Visa</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardSchemeRadio" value="MASTERCARD"> <span>Mastercard</span></label>
+                      </div>
+                    </div>
+                    <div>
+                      <span class="oac-s138">Debit Card Type / Format*:</span>
+                      <div class="oac-s139">
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="BOTH" checked> <span>Both (Virtual + Metal)</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="VIRTUAL"> <span>Virtual Card</span></label>
+                        <label class="bank-option-pill"><input type="radio" name="cardFormatRadio" value="METAL"> <span>Physical Metal Card</span></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="oac-s266">
+                    Auto-issued immediately upon account approval and accessible directly in your online banking dashboard.
+                  </div>
+                </div>
+
+                <!-- Name on Debit Card -->
+                <div class="char-input-group oac-s162">
+                  <div class="char-input-label-row">
+                    <div class="char-label-with-hint">
+                      <span>Name on Debit Card:</span>
+                      <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-card-name">
+                        <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                        <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                      </span>
+                    </div>
+                    <span class="oac-s168">Embossed on Card</span>
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" data-box-count="24" data-target="nameOnCard">
+                    <input type="text" id="raw-card-name" name="nameOnCard" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="oac-s267">
+                <div class="oac-s262">
+                  <span class="oac-s129">Internet Banking:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcNetBankRadio" value="YES" checked> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcNetBankRadio" value="NO"> <span>No</span></label>
+                  </div>
+                </div>
+                <div class="oac-s262">
+                  <span class="oac-s129">Mobile Banking:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcMobBankRadio" value="YES" checked> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcMobBankRadio" value="NO"> <span>No</span></label>
+                  </div>
+                </div>
+                <div class="oac-s262">
+                  <span class="oac-s129">SMS Alert Facility:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcSmsRadio" value="YES" checked> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcSmsRadio" value="NO"> <span>No</span></label>
+                  </div>
+                </div>
+                <div class="oac-s262">
+                  <span class="oac-s129">e-Statement / Passbook:</span>
+                  <div>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcStatementRadio" value="YES" checked> <span>Yes</span></label>
+                    <label class="bank-option-pill oac-s263"><input type="radio" name="svcStatementRadio" value="NO"> <span>No</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 4. FIXED / RECURRING DEPOSIT INSTRUCTIONS (ONLY IF APPLICABLE) -->
+              <div class="bank-section-bar">
+                <span>4. Fixed / Recurring Deposit Instructions (Only if applicable)</span>
+              </div>
+
+              <div class="oac-s165">
+                <div>
+                  <label class="oac-s222">Deposit Amount (₹ / INR):</label>
+                  <input type="number" step="0.01" name="fdDepositAmount" class="bank-field-input" placeholder="Enter Deposit Amount in ₹">
+                </div>
+                <div>
+                  <label class="oac-s222">Tenure:</label>
+                  <div class="oac-s268">
+                    <input type="number" name="fdTenureYears" class="bank-field-input oac-s269" placeholder="Years"> <span class="oac-s24">Yrs</span>
+                    <input type="number" name="fdTenureMonths" class="bank-field-input oac-s269" placeholder="Months"> <span class="oac-s24">Mos</span>
+                    <input type="number" name="fdTenureDays" class="bank-field-input oac-s269" placeholder="Days"> <span class="oac-s24">Days</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="oac-s267">
+                <div>
+                  <span class="oac-s131">Interest Payout:</span>
+                  <div class="oac-s270">
+                    <label class="bank-option-pill"><input type="radio" name="fdPayoutRadio" value="Monthly"> <span>Monthly</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="fdPayoutRadio" value="Quarterly"> <span>Quarterly</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="fdPayoutRadio" value="On Maturity" checked> <span>On Maturity</span></label>
+                  </div>
+                </div>
+                <div>
+                  <span class="oac-s131">Maturity Instructions:</span>
+                  <div class="oac-s270">
+                    <label class="bank-option-pill"><input type="radio" name="fdMaturityRadio" value="Auto Renew" checked> <span>Auto Renew</span></label>
+                    <label class="bank-option-pill"><input type="radio" name="fdMaturityRadio" value="Credit to A/C"> <span>Credit to A/C</span></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 5. INITIAL DEPOSIT / PAYMENT DETAILS -->
+              <div class="bank-section-bar" id="header-sec-part2-deposit">
+                <span>5. Initial Deposit / Payment Details</span>
+              </div>
+
+              <div class="oac-s271">
+                <span class="oac-s272">Payment Mode:</span>
+                <label class="bank-option-pill"><input type="radio" name="payModeRadio" value="Cash" onchange="handlePaymentModeChange(this.value)"> <span>Cash</span></label>
+                <label class="bank-option-pill"><input type="radio" name="payModeRadio" value="Cheque / DD" checked onchange="handlePaymentModeChange(this.value)"> <span>Cheque / DD</span></label>
+                <label class="bank-option-pill"><input type="radio" name="payModeRadio" value="Transfer from Existing Account" onchange="handlePaymentModeChange(this.value)"> <span>Transfer from Existing Account</span></label>
+              </div>
+
+              <!-- Common Deposit Amount Figures & Words -->
+              <div class="oac-s273">
+                <div>
+                  <label class="oac-s222">Initial Deposit Amount (₹ / INR)*:</label>
+                  <input type="number" step="0.01" name="initialDeposit" id="input-initial-deposit" class="bank-field-input" placeholder="Amount in ₹" required oninput="handleDepositAmountInput(this.value)">
+                </div>
+                <div>
+                  <label class="oac-s222">Amount (in words)*:</label>
+                  <input type="text" name="initialDepositWords" id="input-deposit-words" class="bank-field-input" placeholder="Amount in words" required>
+                </div>
+              </div>
+
+              <!-- Dynamic Sub-Fields for Payment Mode (Req 18) -->
+              <!-- 1. Cheque / DD Fields (Default) -->
+              <div class="oac-s274" id="paymode-fields-cheque">
+                <div>
+                  <label class="oac-s222">Cheque / DD Number*:</label>
+                  <input type="text" name="chequeNumber" class="bank-field-input" placeholder="6-Digit Cheque / DD Number">
+                </div>
+                <div>
+                  <label class="oac-s222">Dated* (DD/MM/YYYY):</label>
+                  <input type="date" name="chequeDate" class="bank-field-input">
+                </div>
+                <div>
+                  <label class="oac-s222">Drawn Bank &amp; Branch*:</label>
+                  <input type="text" name="drawnBank" class="bank-field-input" placeholder="Drawn Bank Name and Branch">
+                </div>
+              </div>
+
+              <!-- 2. Cash Mode Fields -->
+              <div class="oac-s275" id="paymode-fields-cash">
+                <div>
+                  <label class="oac-s222">Branch Cash Counter Receipt / Slip Ref #:</label>
+                  <input type="text" name="cashReceiptNumber" class="bank-field-input" placeholder="Enter Cashier Slip / Remittance Ref">
+                </div>
+                <div>
+                  <label class="oac-s222">Denomination Summary (Notes):</label>
+                  <input type="text" name="cashDenominations" class="bank-field-input" placeholder="Currency note denominations breakdown">
+                </div>
+              </div>
+
+              <!-- 3. Transfer Mode Fields -->
+              <div class="oac-s276" id="paymode-fields-transfer">
+                <div>
+                  <label class="oac-s222">Transfer Channel / Mode:</label>
+                  <select name="transferChannel" class="bank-field-input">
+                    <option value="NEFT">NEFT (National Electronic Funds Transfer)</option>
+                    <option value="RTGS">RTGS (Real Time Gross Settlement)</option>
+                    <option value="IMPS">IMPS (Immediate Payment Service)</option>
+                    <option value="INTERNAL">Internal Bank Account Transfer</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="oac-s222">Remitting Source Account #:</label>
+                  <input type="text" name="transferSourceAccount" class="bank-field-input" placeholder="Source Account Number">
+                </div>
+                <div>
+                  <label class="oac-s222">UTR / Transaction Reference #:</label>
+                  <input type="text" name="transferUtr" class="bank-field-input" placeholder="Transaction Reference / UTR">
+                </div>
+              </div>
+
+              <!-- Online Banking Login Password (Page 3 Only) -->
+              <div class="oac-s277">
+                <div class="oac-s193">
+                  <label class="oac-s278" for="input-password" id="label-onboarding-password">
+                    Online Banking Login Password*:
+                  </label>
+                  <span class="oac-s279">Use Email or Mobile + this Password to sign in</span>
+                </div>
+                <div class="oac-s280">
+                  <input type="password" id="input-password" name="password" class="bank-field-input oac-s281" placeholder="Create a secure password (minimum 8 characters)" required minlength="8" autocomplete="new-password">
+                  <button class="oac-s282" type="button" id="btn-toggle-onboarding-pwd" onclick="togglePasswordVisibility('input-password', this)" title="Show/Hide Password">
+                    <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <div class="oac-s283">
+                  Note: Once your application is approved by bank staff, you will use your registered Email or Mobile Number along with this password to log in at <a class="oac-s284" href="/login">Online Banking Login</a>.
+                </div>
+              </div>
+
+              <!-- 6. JOINT APPLICANT DETAILS (IF JOINT ACCOUNT) (Req 15 & 16) -->
+              <div class="oac-s285" id="section-joint-applicant-details">
+                <div class="bank-section-bar oac-s286" id="header-sec-joint">
+                  <span>6. Joint Applicant Details (If Joint Account)</span>
+                  <span class="oac-s287">Applicable for Joint Mode of Operation</span>
+                </div>
+
+                <table class="bank-table-grid oac-s209" id="table-joint-applicants-part2">
+                  <thead>
+                    <tr class="oac-s210">
+                      <th class="oac-s288">Applicant</th>
+                      <th>Full Name</th>
+                      <th>Customer ID (CIF) / PAN</th>
+                      <th class="oac-s213">Specimen Signature</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-joint-applicants-part2">
+                    <tr>
+                      <td><strong>1st Applicant</strong></td>
+                      <td><span class="oac-s289" id="joint-primary-name">(Primary Applicant as filled in Part-I)</span></td>
+                      <td><span class="oac-s290">AS PER PART-I</span></td>
+                      <td class="oac-s214" id="joint-primary-signature-slot">
+                        <div class="oac-s291" id="joint-primary-sig-preview">
+                          (Primary Specimen)
+                        </div>
+                      </td>
+                    </tr>
+                    <!-- Joint rows dynamically populated by JS -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Page 3 Footer -->
+              <div class="bank-print-footer oac-s201">
+                <span>Form 101-B: Account Opening Form (Part-II)</span>
+                <span>Page 3 of 4</span>
+              </div>
+            </div>
+            <!-- ==================== END PAGE 3 ==================== -->
+
+
+            <!-- =================================================================
+                 PART III: DECLARATIONS & STATUTORY SIGNATURES - PAGE 4 OF 4
+                 ================================================================= -->
+            <div id="form-container-part3" class="form-part-section bank-page-4 oac-s159">
+              
+              <!-- PRINT-ONLY PART III HEADER -->
+              <div class="print-bank-header print-only">
+                <div class="oac-s96">
+                  <div class="oac-s97">
+                    <svg class="oac-s98" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+                    </svg>
+                  </div>
+                  <div>
+                    <div class="bank-sheet-title-main">PUBLIC / PRIVATE SECTOR BANK OF INDIA</div>
+                    <div class="bank-sheet-title-sub">NOMINATION FORM (DA 1), FATCA DECLARATION &amp; APPLICANT SIGNATURES</div>
+                  </div>
+                </div>
+                <div class="bank-sheet-form-tag">
+                  <strong>PART III: DECLARATIONS</strong><br>
+                  <span class="oac-s99">(Statutory Compliance Sheet)</span>
+                </div>
+              </div>
+
+              <!-- 1. NOMINATION DETAILS -->
+              <div class="bank-section-bar" id="header-sec-nomination">
+                <span>1. Nomination Details (Form DA 1 under Section 45ZA of Banking Regulation Act)</span>
+              </div>
+
+              <div class="oac-s208">
+                Nomination is strongly recommended by RBI. If you do not wish to nominate, please tick non-nomination box.
+              </div>
+
+              <div class="oac-s162">
+                <label class="bank-option-pill"><input type="radio" name="nominationChoiceRadio" value="REGISTER" checked onchange="toggleNominationFields(this.value)"> <span>I/We register nomination as given below</span></label>
+                <label class="bank-option-pill"><input type="radio" name="nominationChoiceRadio" value="DECLINE" onchange="toggleNominationFields(this.value)"> <span>I/We DO NOT wish to nominate anyone for this account</span></label>
+              </div>
+
+              <div class="oac-s292" id="nomination-fields-container">
+                <!-- Nominee Prefix -->
+                <div class="oac-s293">
+                  <span class="oac-s294">Prefix:</span>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Mr." onchange="handlePrefixChange(this.value, 'nominee')"> <span>Mr.</span></label>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Mrs." onchange="handlePrefixChange(this.value, 'nominee')"> <span>Mrs.</span></label>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Ms." onchange="handlePrefixChange(this.value, 'nominee')"> <span>Ms.</span></label>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Dr." onchange="handlePrefixChange(this.value, 'nominee')"> <span>Dr.</span></label>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Prof." onchange="handlePrefixChange(this.value, 'nominee')"> <span>Prof.</span></label>
+                  <label class="bank-option-pill oac-s136"><input type="radio" name="nomineePrefix" value="Other" onchange="handlePrefixChange(this.value, 'nominee')"> <span>Other</span></label>
+                  <input type="text" id="prefix-nominee-other-input" name="nomineePrefixOther" class="bank-field-input oac-s295" placeholder="Specify Prefix">
+                </div>
+                <!-- Nominee Name Direct Box Input -->
+                <div class="char-input-group oac-s153">
+                  <div class="char-input-label-row">
+                    <span id="label-nominee-name">Nominee Name*:</span>
+                    <span class="char-box-limit-hint notranslate" translate="no" data-target-input="raw-nominee-name">
+                      <span class="char-limit-text">Max 50 chars • Boxes expand as you type</span>
+                      <span class="char-limit-counter"><span class="char-count-current">0</span>/50</span>
+                    </span>
+                  </div>
+                  <div class="bank-box-wrap notranslate" translate="no" id="wrap-nominee-name" data-box-count="24" data-target="nomineeName">
+                    <input type="text" id="raw-nominee-name" name="nomineeName" class="bank-box-input notranslate" translate="no" maxlength="50" autocomplete="off" spellcheck="false">
+                    <div class="bank-box-cells notranslate" translate="no"></div>
+                  </div>
+                </div>
+
+                <div class="oac-s296">
+                  <div>
+                    <label class="oac-s222">Relationship with Depositor:</label>
+                    <input type="text" name="nomineeRelationship" class="bank-field-input" placeholder="Enter Relationship (Spouse / Child / Parent)">
+                  </div>
+                  <div>
+                    <label class="oac-s222">Age (Years):</label>
+                    <input type="number" name="nomineeAge" class="bank-field-input" placeholder="Enter Age">
+                  </div>
+                  <div>
+                    <label class="oac-s222">DOB (if Minor):</label>
+                    <input type="date" name="nomineeDob" class="bank-field-input">
+                  </div>
+                </div>
+
+                <div class="oac-s153">
+                  <label class="oac-s222">Nominee Address:</label>
+                  <input type="text" name="nomineeAddress" class="bank-field-input" placeholder="Enter Permanent Residential Address of Nominee">
+                </div>
+
+                <div class="oac-s153">
+                  <span class="oac-s221">Print Nominee Name on Passbook:</span>
+                  <label class="bank-option-pill"><input type="radio" name="printNomineePassbookRadio" value="YES" checked> <span>Yes</span></label>
+                  <label class="bank-option-pill"><input type="radio" name="printNomineePassbookRadio" value="NO"> <span>No</span></label>
+                </div>
+
+                <div class="oac-s297">
+                  <strong class="oac-s298">* Details of Guardian (If Nominee is Minor):</strong>
+                  <div class="oac-s299">
+                    <input type="text" name="nomineeGuardianName" class="bank-field-input" placeholder="Guardian Full Name">
+                    <input type="text" name="nomineeGuardianDetails" class="bank-field-input" placeholder="Address &amp; Relationship">
+                  </div>
+                </div>
+              </div>
+
+              <!-- 2. FATCA / CRS DECLARATION -->
+              <div class="bank-section-bar" id="header-sec-fatca">
+                <span>2. FATCA / CRS Declaration (Foreign Tax Compliance)</span>
+              </div>
+
+              <div class="oac-s162">
+                <label class="bank-option-pill oac-s300"><input type="radio" name="fatcaRadio" value="INDIA_ONLY" checked onchange="toggleFatcaFields(this.value)"> <span>I am a tax resident of India ONLY and not of any other country/territory outside India.</span></label>
+                <label class="bank-option-pill oac-s301"><input type="radio" name="fatcaRadio" value="OUTSIDE_INDIA" onchange="toggleFatcaFields(this.value)"> <span>I am a tax resident of a country outside India. (Please specify details below)</span></label>
+              </div>
+
+              <div class="oac-s302" id="fatca-foreign-details">
+                <div>
+                  <label class="oac-s222">Country of Tax Residence:</label>
+                  <input type="text" name="fatcaCountry" class="bank-field-input" placeholder="Enter Country of Tax Residence">
+                </div>
+                <div>
+                  <label class="oac-s222">Tax Identification Number (TIN):</label>
+                  <input type="text" name="fatcaTin" class="bank-field-input" placeholder="TIN / SSN / Tax Reference">
+                </div>
+              </div>
+
+              <!-- 3. FINAL DECLARATION & SIGNATURES -->
+              <div class="bank-section-bar" id="header-sec-part3-decl">
+                <span>3. Final Declaration &amp; Signatures</span>
+              </div>
+
+              <div class="oac-s303">
+                I/We have read, understood, and agree to abide by the Bank's rules and regulations, terms and conditions governing account operations, service charges, and maintenance of minimum balance. I/We confirm that all information provided in this application pack is complete, correct, and verified.
+              </div>
+
+              <div class="oac-s304" id="part3-signatures-container">
+                <div class="bank-sig-slot-box oac-s305">
+                  <div class="oac-s306">Signature / LTI of 1st Applicant</div>
+                  <div class="oac-s307" id="part3-sig1-preview" onclick="openSignatureModal()" title="Click to Sign as 1st Applicant">
+                    <span class="oac-s308">Click to Sign</span>
+                    <span class="oac-s309">(1st Applicant Specimen)</span>
+                  </div>
+                </div>
+
+                <div class="bank-sig-slot-box oac-s305" id="part3-sig2-wrap">
+                  <div class="oac-s306">Signature of 2nd Applicant</div>
+                  <div class="oac-s307" id="part3-sig2-preview" onclick="openCoSignModal('joint2')" title="Click to Sign as 2nd Applicant">
+                    <span class="oac-s308">Co-Sign Slot</span>
+                    <span class="oac-s309">(Required for Joint Accounts)</span>
+                  </div>
+                </div>
+
+                <div class="bank-sig-slot-box oac-s305">
+                  <div class="oac-s306">Signature of Guardian / Witness</div>
+                  <div class="oac-s307" id="part3-sig3-preview" onclick="openCoSignModal('joint3')" title="Click to Sign as Guardian / Witness">
+                    <span class="oac-s308">Guardian / Witness</span>
+                    <span class="oac-s309">(For Minors / Special Assist)</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Page 4 Footer -->
+              <div class="bank-print-footer oac-s201">
+                <span>Form 101-C: Customer Declarations &amp; Signatures (Part-III)</span>
+                <span>Page 4 of 4</span>
+              </div>
+            </div>
+            <!-- ==================== END PAGE 4 ==================== -->
+
+          </div>
+          <!-- ==================== END BANK PAPER SHEET ==================== -->
+
+          <!-- UNIFIED PERSISTENT FLOATING ACTION BAR -->
+          <div id="floating-form-action-bar" class="floating-action-bar screen-only no-print oac-s310">
+            <div class="oac-s311">
+              <button type="button" id="btn-floating-prev" class="btn btn-outline btn-sm oac-s312" onclick="handleFormPrevStep()">
+                ← Back to Account Selection
+              </button>
+              <div class="oac-s313" id="floating-draft-status">
+                <span id="floating-draft-saved-text">Draft auto-saved locally</span>
+              </div>
+            </div>
+
+            <div class="oac-s314">
+              <!-- Pre-Submission Validation Summary Indicator & Frosted Glass Tooltip -->
+              <div id="validation-summary-indicator" class="validation-summary-indicator" style="display:none;" tabindex="0" aria-haspopup="true" title="Hover to view missing mandatory fields">
+                <div class="validation-summary-badge">
+                  <span class="val-summary-icon">⚠️</span>
+                  <span id="val-summary-text" class="val-summary-text">Cannot Submit: Missing Fields</span>
+                  <span id="val-summary-count-badge" class="val-summary-count">0</span>
+                </div>
+                <div id="val-glass-tooltip" class="val-glass-tooltip" role="tooltip">
+                  <div class="val-glass-tooltip-header">
+                    <div class="val-glass-tooltip-title">
+                      <span class="val-glass-dot"></span>
+                      <span>Missing Mandatory Fields</span>
+                    </div>
+                    <span class="val-glass-sub" id="val-glass-total-count">Complete all required fields below before application submission</span>
+                  </div>
+                  <div id="val-glass-sections-list" class="val-glass-sections-list">
+                    <!-- Populated dynamically with categorized sections & field chips -->
+                  </div>
+                  <div class="val-glass-tooltip-footer">
+                    <span>💡 Click any missing field to jump directly to it in the form.</span>
+                  </div>
+                </div>
+              </div>
+
+              <button type="button" class="btn btn-outline btn-sm oac-s315" onclick="confirmClearAllForm()" title="Clear all entered data">
+                Clear All
+              </button>
+              <button type="button" class="btn btn-outline btn-sm oac-s312" id="btn-floating-save-draft" onclick="saveCustomerFormDraft(true)" title="Save draft locally and to ledger">
+                Save Draft
+              </button>
+              <button type="button" class="btn btn-outline btn-sm oac-s312" onclick="prepareAndPrintBankForm()" title="Download PDF &amp; Print Official 4-Page Uniform Form">
+                Download &amp; Print Form
+              </button>
+              <button type="button" class="btn btn-primary oac-s316" id="btn-primary-flow-action" onclick="handlePrimaryFlowAction()">
+                Save &amp; Next →
+              </button>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+      <!-- STEP 4: CONFIRMATION & APPLICATION NUMBER (SOVEREIGN DIGITAL PROVISIONING CERTIFICATE) -->
+      <div class="oac-s317" id="onboarding-step-4">
+        <!-- Glowing Emerald Seal -->
+        <div class="oac-s318">
+          ✓
+        </div>
+        <div class="oac-s319">
+          PROVISIONED IN CORE LEDGER
+        </div>
+        <h2 class="oac-s320">
+          Application Submitted Successfully!
+        </h2>
+        <p class="oac-s321">
+          Your official uniform bank account opening application has been validated, encrypted with AES-256, and permanently registered in the institutional core banking registry.
+        </p>
+
+        <!-- Official Application Certificate Box -->
+        <div class="glass-card oac-s322">
+          <div class="oac-s323">
+            <span class="oac-s324">Permanent Non-Reusable Reference</span>
+            <span class="status-pill active oac-s55">ACTIVE SESSION</span>
+          </div>
+
+          <div class="oac-s325">
+            <div class="oac-s326" id="confirmation-app-number">
+              APP-2026-XXXXXX
+            </div>
+            <button class="oac-s327" type="button" onclick="const num = document.getElementById('confirmation-app-number').textContent.trim(); navigator.clipboard && navigator.clipboard.writeText(num); showToast('Application reference ' + num + ' copied!', 'success');" title="Copy Application Reference">
+                          </button>
+          </div>
+
+          <p class="oac-s328">
+            Save or bookmark this reference number. You can track underwriting progress or resume at any time.
+          </p>
+
+          <!-- Applicant Metadata Summary Grid -->
+          <div class="oac-s329">
+            <div><span class="oac-s330">Applicant Name</span> <strong class="oac-s331" id="confirmation-applicant-name"></strong></div>
+            <div><span class="oac-s330">Account Product</span> <strong class="oac-s331" id="confirmation-account-type"></strong></div>
+            <div><span class="oac-s330">Initial Deposit</span> <strong class="oac-s332" id="confirmation-deposit"></strong></div>
+            <div><span class="oac-s330">Ledger Status</span> <span id="confirmation-app-status" class="status-pill submitted oac-s333">SUBMITTED</span></div>
+          </div>
+
+          <div class="oac-s334">
+            <span>Uniform Form 101-C Verified</span>
+          </div>
+        </div>
+
+        <!-- ==================== OFFICIAL APPLICATION SUMMARY / REVIEW DOSSIER ==================== -->
+        <div id="confirmation-application-summary-dossier" class="app-summary-card">
+          <div class="app-summary-header">
+            <div>
+              <h3 class="app-summary-title">
+                <span>📋</span>
+                <span>Application Summary &amp; Review Record</span>
+              </h3>
+              <p class="app-summary-subtitle">
+                Official verified record of all submitted applicant data, identity proofs, and account options.
+              </p>
+            </div>
+            <button type="button" class="btn btn-outline btn-sm no-print" onclick="prepareAndPrintBankForm()" style="font-size:0.75rem">
+              🖨️ Download &amp; Print Full Form (PDF)
+            </button>
+          </div>
+
+          <div id="confirmation-summary-sections-container">
+            <!-- Populated dynamically by renderApplicationSummaryDossier() -->
+          </div>
+        </div>
+
+        <div class="oac-s335">
+          <a href="/existing_application" class="btn btn-outline oac-s336">
+            <span data-i18n="track_app_btn">Track Application Status</span>
+          </a>
+          <a href="/login" class="btn btn-primary oac-s337">
+            <span data-i18n="return_login">Proceed to Sign In →</span>
+          </a>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- ==================== VERIFICATION CHOICE MODAL (Signature vs Thumb Impression - Item 10) ==================== -->
+  <div id="modal-verification-choice" class="signature-modal-backdrop oac-s159" onclick="if(event.target === this) closeVerificationChoiceModal()">
+    <div class="signature-modal-card oac-s338" onclick="event.stopPropagation()">
+      <div class="signature-modal-header">
+        <div class="oac-s339">
+          <div>
+            <h3 class="oac-s340">Verification Method</h3>
+            <div class="oac-s4">Choose how you would like to provide your verification</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm oac-s341" onclick="closeVerificationChoiceModal()" title="Close">✕</button>
+      </div>
+
+      <div class="oac-s342">
+        <div class="oac-s265">
+          <!-- Choice 1: Signature Pad -->
+          <div class="verification-choice-card" onclick="selectVerificationMethod('SIGNATURE')">
+            <div class="oac-s343"></div>
+            <h4 class="oac-s344">Digital Signature Pad</h4>
+            <p class="oac-s345">
+              Draw your specimen signature using your mouse, touchscreen, stylus, or generate cursive script.
+            </p>
+            <div class="oac-s346">
+              Interactive Drawing
+            </div>
+          </div>
+
+          <!-- Choice 2: Thumb Impression Upload -->
+          <div class="verification-choice-card" onclick="selectVerificationMethod('THUMB')">
+            <div class="oac-s343"></div>
+            <h4 class="oac-s344">Thumb Impression</h4>
+            <p class="oac-s345">
+              Upload a clear photograph or scanned image of your thumb impression (left or right thumb).
+            </p>
+            <div class="oac-s347">
+              Biometric Photo Upload
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="signature-modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeVerificationChoiceModal()">
+          Cancel
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== THUMB IMPRESSION UPLOAD MODAL ==================== -->
+  <div id="modal-thumb-upload" class="signature-modal-backdrop oac-s159" onclick="if(event.target === this) closeThumbUploadModal()">
+    <div class="signature-modal-card oac-s348" onclick="event.stopPropagation()">
+      <div class="signature-modal-header">
+        <div class="oac-s339">
+          <div>
+            <h3 class="oac-s340">Upload Thumb Impression Photo</h3>
+            <div class="oac-s4">Official Biometric Impression for Bank Form</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm oac-s341" onclick="closeThumbUploadModal()" title="Close">✕</button>
+      </div>
+
+      <div class="oac-s342">
+        <div class="oac-s349" id="thumb-upload-dropzone" onclick="document.getElementById('input-thumb-file').click()">
+          <div id="thumb-dropzone-empty">
+            <div class="oac-s350"></div>
+            <div class="oac-s351">Click or Drag &amp; Drop Thumb Photo</div>
+            <div class="oac-s352">Supports JPG, PNG, WEBP (Clear ink impression recommended)</div>
+          </div>
+          <div class="oac-s353" id="thumb-dropzone-preview">
+            <img class="oac-s354" id="thumb-preview-img" alt="Thumb Preview">
+            <div class="oac-s355">✓ Thumb Impression Loaded Cleanly</div>
+          </div>
+        </div>
+        <input class="oac-s159" type="file" id="input-thumb-file" accept="image/*" onchange="handleThumbPhotoSelected(this)">
+        <div class="oac-s356">
+          Note: In accordance with uniform banking rules, thumb impression must be clearly legible and unstained.
+        </div>
+      </div>
+
+      <div class="signature-modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeThumbUploadModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary oac-s357" onclick="saveThumbImpression()">
+          <span>✓ Save &amp; Place on Form</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SIGNATURE PAD MODAL ==================== -->
+  <div id="modal-signature-pad" class="signature-modal-backdrop oac-s159" onclick="if(event.target === this) closeSignatureModal()">
+    <div class="signature-modal-card" onclick="event.stopPropagation()">
+      <div class="signature-modal-header">
+        <div class="oac-s339">
+          <div>
+            <h3 class="oac-s340">Digital Specimen Signature Pad</h3>
+            <div class="oac-s4">Official Signature for Account Opening Form</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm oac-s341" onclick="closeSignatureModal()" title="Close">✕</button>
+      </div>
+
+      <div class="oac-s358">
+        <div class="oac-s359">
+          <div class="oac-s360" id="signature-modal-sign-as">
+            Sign as: <strong class="oac-s255">APPLICANT</strong>
+          </div>
+          <div class="oac-s361" id="signature-modal-timestamp">
+            Date &amp; Time: --
+          </div>
+        </div>
+
+        <!-- Signature Drawing Canvas Area -->
+        <div class="signature-canvas-wrap">
+          <canvas id="signature-pad-canvas"></canvas>
+          <div class="signature-baseline-guide"></div>
+          <div class="signature-baseline-label">Applicant Signature Baseline Guide</div>
+        </div>
+
+        <!-- Canvas Tools Row -->
+        <div class="oac-s362">
+          <div class="oac-s363">
+            <span class="oac-s364">Ink Color:</span>
+            <button class="oac-s365" type="button" onclick="setSignaturePenColor('var(--brand-700)')" title="Deep Bank Blue Ink"></button>
+            <button class="oac-s366" type="button" onclick="setSignaturePenColor('var(--text-main)')" title="Classic Black Ink"></button>
+          </div>
+
+          <div class="oac-s2">
+            <button type="button" class="btn btn-outline btn-sm oac-s367" onclick="clearSignaturePad()">
+              Clear Pad
+            </button>
+            <button type="button" class="btn btn-outline btn-sm oac-s367" onclick="generateCursiveSignature()" title="Auto generate cursive handwriting signature">
+              Auto Cursive
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="signature-modal-footer">
+        <button type="button" class="btn btn-outline" onclick="closeSignatureModal()">
+          Cancel
+        </button>
+        <button type="button" class="btn btn-primary oac-s357" onclick="saveSignatureFromPad()">
+          <span>✓ Save &amp; Place on Form</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: Application Submission Guidance & Credentials Popup (Item 6) -->
+  <div id="modal-submission-guidance" class="modal-overlay oac-s159">
+    <div class="modal-box oac-s368">
+      <div class="modal-header oac-s369">
+        <div class="oac-s311">
+          <div class="oac-s370">
+                      </div>
+          <div>
+            <h3 class="oac-s371">Application Successfully Submitted!</h3>
+            <span class="oac-s372">Official bank record created &amp; queued for review</span>
+          </div>
+        </div>
+        <button type="button" class="btn btn-outline btn-sm oac-s373" onclick="closeSubmissionGuidanceModal()">✕</button>
+      </div>
+
+      <div class="modal-body oac-s374">
+        <!-- Application Number Card -->
+        <div class="oac-s375">
+          <div>
+            <div class="oac-s376">Application Reference Number</div>
+            <div class="oac-s377" id="popup-app-number">APP-2026-PENDING</div>
+          </div>
+          <button type="button" class="btn btn-outline btn-sm oac-s378" onclick="copyPopupTrackingLink()" title="Copy tracking URL">
+            Copy Link
+          </button>
+        </div>
+
+        <!-- Warning / Action Guidance -->
+        <div class="oac-s379">
+          <div class="oac-s380">
+            <strong class="oac-s381">How to Track Your Application Status:</strong>
+          </div>
+          <p class="oac-s382">
+            Your documents are being verified by our compliance team. You can check live status, review notes, and message bank officers at:
+          </p>
+          <div class="oac-s383">
+            <a class="oac-s384" id="popup-track-link" href="/existing_application" target="_blank">
+              Track Application Status
+            </a>
+          </div>
+        </div>
+
+        <!-- Post-Acceptance Login Credentials Notice -->
+        <div class="oac-s385">
+          <div class="oac-s380">
+            <strong class="oac-s386">Once Accepted: How to Log Into Online Banking:</strong>
+          </div>
+          <p class="oac-s387">
+            As soon as bank staff accepts your application, your active bank account will be provisioned. You can then immediately sign in at <a class="oac-s388" href="/login" target="_blank">Online Banking Login (/login)</a> using:
+          </p>
+          <ul class="oac-s389">
+            <li><strong>Username:</strong> Your Email (<code class="oac-s390" id="popup-user-email">email</code>) OR Mobile (<code class="oac-s390" id="popup-user-phone">phone</code>)</li>
+            <li><strong>Password:</strong> The Online Banking Password you provided in this application form</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="modal-footer oac-s391">
+        <button type="button" class="btn btn-outline" onclick="closeSubmissionGuidanceModal()">
+          Close &amp; View Summary
+        </button>
+        <a id="popup-btn-track-now" href="#" class="btn btn-outline oac-s392">
+          Track Status
+        </a>
+        <a href="/login" class="btn btn-primary oac-s393">
+          Go to Login Portal →
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+
+  <script>
+    // formatHumanText imported from utils.js
+    var formatHumanText = window.formatHumanText;
+  </script>
+  <script src="/js/api.js?v=20261001_1300"></script>
+  <script src="/js/box-input.js?v=20261011_01"></script>
+  <script src="/js/draft.js?v=20261023_02"></script>
+  <script src="/js/onboarding.js?v=20261023_02"></script>
+  <script src="/js/dropdown.js?v=20261011_01"></script>
+  <script src="/js/validation.js?v=20261011_01"></script>
+  <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+</body>
+</html>

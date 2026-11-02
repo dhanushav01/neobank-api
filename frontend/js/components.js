@@ -54,33 +54,7 @@
    * Generates the Language Selector with SVG Country Flag HTML.
    */
   function createLanguageSelectorHtml() {
-    const langs = (window.NeoBankConstants && window.NeoBankConstants.SUPPORTED_LANGUAGES) || [
-      { code: 'en', native: 'English (EN)' },
-      { code: 'es', native: 'Español (ES)' },
-      { code: 'fr', native: 'Français (FR)' },
-      { code: 'de', native: 'Deutsch (DE)' },
-      { code: 'hi', native: 'हिन्दी (HI)' },
-      { code: 'ar', native: 'العربية (AR)' },
-      { code: 'zh-CN', native: '中文 (ZH)' },
-      { code: 'ja', native: '日本語 (JA)' },
-      { code: 'ru', native: 'Русский (RU)' },
-      { code: 'pt', native: 'Português (PT)' }
-    ];
-
-    const optionsHtml = langs.map(l => 
-      `<option value="${l.code}" ${l.code === 'en' ? 'selected' : ''} class="notranslate" translate="no">${l.native}</option>`
-    ).join('');
-
-    const usFlagSvg = `<svg viewBox="0 0 640 480" width="20" height="15"><path fill="#bd3d44" d="M0 0h640v480H0z"/><path stroke="#fff" stroke-width="37" d="M0 55.4h640M0 129.2h640M0 203h640M0 277h640M0 350.8h640M0 424.6h640"/><path fill="#192f5d" d="M0 0h256v258.5H0z"/><g fill="#fff"><circle cx="28" cy="24" r="6"/><circle cx="70" cy="24" r="6"/><circle cx="112" cy="24" r="6"/><circle cx="154" cy="24" r="6"/><circle cx="196" cy="24" r="6"/><circle cx="238" cy="24" r="6"/><circle cx="49" cy="48" r="6"/><circle cx="91" cy="48" r="6"/><circle cx="133" cy="48" r="6"/><circle cx="175" cy="48" r="6"/><circle cx="217" cy="48" r="6"/><circle cx="28" cy="72" r="6"/><circle cx="70" cy="72" r="6"/><circle cx="112" cy="72" r="6"/><circle cx="154" cy="72" r="6"/><circle cx="196" cy="72" r="6"/><circle cx="238" cy="72" r="6"/></g></svg>`;
-
-    return `
-      <div class="neobank-lang-wrap notranslate" translate="no" style="display:flex;align-items:center;gap:0.45rem;background:rgba(255,255,255,0.05);padding:0.35rem 0.65rem;border-radius:10px;border:1px solid var(--border-subtle)">
-        <span class="neobank-lang-flag-icon" aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:20px;height:15px;border-radius:2px;overflow:hidden;box-shadow:0 0 1px rgba(0,0,0,0.6);flex-shrink:0">${usFlagSvg}</span>
-        <select class="neobank-lang-select notranslate form-select" translate="no" style="background:transparent;border:none;color:inherit;font-size:0.8rem;padding:0;cursor:pointer;outline:none" onchange="typeof handleLanguageChange === 'function' && handleLanguageChange(this)">
-          ${optionsHtml}
-        </select>
-      </div>
-    `.trim();
+    return `<div id="google_translate_element" class="notranslate" translate="no"></div>`.trim();
   }
 
   /**
@@ -111,14 +85,14 @@
     return `
       <div class="brand-badge">
         <div class="brand-icon">
-          <svg style="width:24px;height:24px;color:#fff" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <svg style="width:24px;height:24px;color:var(--text-contrast)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
           </svg>
         </div>
         <div>
           <div style="display:flex;align-items:center;gap:0.5rem">
             <span class="brand-title">NeoBank</span>
-            <span style="font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:9999px;background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3)">2026</span>
+            <span style="font-size:0.65rem;font-weight:700;padding:0.15rem 0.5rem;border-radius:9999px;background:var(--brand-subtle);color:var(--brand-300);border:1px solid var(--border-glow)">Quantum</span>
           </div>
           <div data-i18n="brand_sub" style="font-size:0.75rem;color:var(--text-muted)">${subtitle}</div>
         </div>
@@ -141,14 +115,14 @@
    */
   function createFloatingActionBarHtml() {
     return `
-      <div id="neobank-floating-dock" class="neobank-floating-dock screen-only no-print" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;align-items:center;gap:0.5rem;background:rgba(15,23,42,0.92);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.15);border-radius:9999px;padding:0.4rem 0.75rem;box-shadow:0 12px 35px rgba(0,0,0,0.6)">
-        <a href="/open_account_customer" class="dock-link" style="font-size:0.78rem;font-weight:700;color:#c7d2fe;text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Open Account</a>
+      <div id="neobank-floating-dock" class="neobank-floating-dock screen-only no-print" style="position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;align-items:center;gap:0.5rem;background:rgba(15,23,42,0.92);backdrop-filter:blur(16px);border:1px solid var(--bg-subtle);border-radius:9999px;padding:0.4rem 0.75rem;box-shadow:0 12px 35px rgba(0,0,0,0.6)">
+        <a href="/open_account_customer" class="dock-link" style="font-size:0.78rem;font-weight:700;color:var(--brand-200);text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Open Account</a>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <a href="/existing_application" class="dock-link" style="font-size:0.78rem;font-weight:700;color:#c7d2fe;text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Track Status</a>
+        <a href="/existing_application" class="dock-link" style="font-size:0.78rem;font-weight:700;color:var(--brand-200);text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Track Status</a>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <a href="/employee_onboarding" class="dock-link" style="font-size:0.78rem;font-weight:700;color:#c7d2fe;text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Staff Portal</a>
+        <a href="/employee_onboarding" class="dock-link" style="font-size:0.78rem;font-weight:700;color:var(--brand-200);text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Staff Portal</a>
         <span style="color:rgba(255,255,255,0.2)">|</span>
-        <a href="/login" class="dock-link" style="font-size:0.78rem;font-weight:700;color:#38bdf8;text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Login</a>
+        <a href="/login" class="dock-link" style="font-size:0.78rem;font-weight:700;color:var(--sky-400);text-decoration:none;padding:0.35rem 0.65rem;border-radius:9999px;transition:all 0.2s">Login</a>
       </div>
     `.trim();
   }
@@ -163,7 +137,7 @@
           <div>
             <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem">
               <span style="font-size:1.1rem;font-weight:800;color:var(--text-main)">NeoBank</span>
-              <span style="font-size:0.65rem;color:var(--brand-500);border:1px solid rgba(99,102,241,0.3);padding:0.1rem 0.4rem;border-radius:9999px">FINTECH 2026</span>
+              <span style="font-size:0.65rem;color:var(--brand-500);border:1px solid var(--border-glow);padding:0.1rem 0.4rem;border-radius:9999px">FINTECH QUANTUM</span>
             </div>
             <p style="max-width:320px;line-height:1.5;color:var(--text-secondary)">
               Licensed and regulated financial technology institution. Deposits held at FDIC-insured partner banks. Documents stored under AES-256 vault encryption.
@@ -189,7 +163,7 @@
           </div>
         </div>
         <div style="max-width:1200px;margin:2rem auto 0;padding-top:1.5rem;border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;color:var(--text-muted)">
-          <div>&copy; 2026 NeoBank Core Banking Technologies. All rights reserved.</div>
+          <div>&copy; NeoBank Core Banking Technologies. All rights reserved.</div>
         </div>
       </footer>
     `.trim();

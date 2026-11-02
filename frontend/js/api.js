@@ -57,9 +57,9 @@ const isSeparateDevServer =
   ['5500', '3000', '5173', '8080'].includes(window.location.port) || 
   window.location.protocol === 'file:';
 
-const API_BASE = isSeparateDevServer 
-  ? 'http://127.0.0.1:8000' 
-  : window.location.origin;
+const API_BASE = window.__API_BASE__ || (isSeparateDevServer 
+  ? `${window.location.protocol === 'https:' ? 'https:' : 'http:'}//${window.location.hostname || '127.0.0.1'}:8000`
+  : window.location.origin);
 
 window.API_BASE = API_BASE;
 
@@ -100,6 +100,9 @@ window.setCurrentUserSession = setCurrentUserSession;
 // Unified API Caller
 async function api(path, options = {}) {
   options.headers = options.headers || {};
+  options.headers['X-Requested-With'] = 'XMLHttpRequest';
+  // Automatically include session cookies (HttpOnly, Secure, SameSite)
+  options.credentials = options.credentials || 'include';
   
   const token = getToken();
   if (token) {
@@ -144,7 +147,7 @@ async function api(path, options = {}) {
 }
 window.api = api;
 
-// Toast Alert System
+// Toast Alert System (DOM XSS-Hardened)
 function showToast(message, type = 'info') {
   let container = document.getElementById('toast-container');
   if (!container) {
@@ -165,7 +168,11 @@ function showToast(message, type = 'info') {
     iconSvg = `<svg style="width:20px;height:20px;color:var(--brand-500);flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
   }
 
-  toast.innerHTML = `${iconSvg}<span>${message}</span>`;
+  // Safe innerHTML with icon, message inserted via textContent to prevent DOM XSS
+  toast.innerHTML = iconSvg;
+  const msgSpan = document.createElement('span');
+  msgSpan.textContent = String(message || '');
+  toast.appendChild(msgSpan);
   container.appendChild(toast);
 
   setTimeout(() => {

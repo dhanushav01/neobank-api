@@ -1,31 +1,51 @@
 """
-Database Admin & SQL GUI Router:
-Provides endpoints to inspect SQLite relational tables, schemas, indexes,
-and execute analytical SQL queries in the integrated SQL GUI Workbench.
+Database Admin & SQL GUI Router (Production-Hardened)
+──────────────────────────────────────────────────────
+Security fixes applied:
+  ✓ [CRITICAL] Authentication and Authorization: Every endpoint strictly enforces require_sql_access.
+  ✓ [CRITICAL] SQL Injection & Execution Guard: Strict read-only query policy with SQLite PRAGMA query_only=ON.
+  ✓ [CRITICAL] Disallows multi-statement execution and destructive DDL/DML operations.
+  ✓ [HIGH] Sensitive column masking: password_hash and encrypted_blob fields are automatically masked.
 """
 import os
+import re
 import time
 import sqlite3
 from typing import Dict, Any, List, Optional
-from pydantic import BaseModel
-from fastapi import APIRouter, Query, HTTPException, status
+from pydantic import BaseModel, Field
+from fastapi import APIRouter, Query, HTTPException, Depends, status
+
 from backend.app.core.sql_db import get_db_connection, DB_PATH
+from backend.app.core.security import require_sql_access
+from backend.app.core.utils import fail
 
 router = APIRouter(prefix="/api/db", tags=["Database GUI"])
 
-class QueryRequest(BaseModel):
-    query: str
-    limit: Optional[int] = 100
 
-def _safe_serialize_cell(val: Any) -> Any:
-    """Safely format binary BLOBs and complex data for JSON responses."""
+class QueryRequest(BaseModel):
+    query: str = Field(..., max_length=2000, description="Read-only SQL query statement (SELECT / PRAGMA / EXPLAIN)")
+    limit: Optional[int] = Field(100, ge=1, le=500, description="Maximum rows to return (capped at 500)")
+
+
+def _safe_serialize_cell(key: str, val: Any) -> Any:
+    """Safely format and mask sensitive attributes, passwords, and binary BLOBs."""
+    if key.lower() in ("password_hash", "password", "pin", "pin_hash"):
+        return "******** [PROTECTED HASH]"
     if isinstance(val, (bytes, bytearray)):
         return f"<BLOB {len(val):,} bytes (AES-256 Encrypted)>"
     return val
 
+
+# Blocklist of destructive or state-altering SQL commands
+_DISALLOWED_KEYWORDS = re.compile(
+    r"\b(INSERT|UPDATE|DELETE|DROP|ALTER|CREATE|REPLACE|ATTACH|DETACH|VACUUM|REINDEX|TRUNCATE)\b",
+    re.IGNORECASE
+)
+
+
 @router.get("/overview")
-def get_database_overview() -> Dict[str, Any]:
-    """Get high-level SQLite database file stats, version, and table breakdown."""
+def get_database_overview(admin: Dict[str, Any] = Depends(require_sql_access)) -> Dict[str, Any]:
+    """Get high-level SQLite database file stats, version, and table breakdown (Requires SQL Access)."""
     if not os.path.exists(DB_PATH):
         raise HTTPException(status_code=404, detail="Database file not found")
 
@@ -74,7 +94,7 @@ def get_database_overview() -> Dict[str, Any]:
 
         return {
             "databaseFile": os.path.basename(DB_PATH),
-            "databasePath": DB_PATH,
+            "databasePath": f"data/{os.path.basename(DB_PATH)}",
             "sqliteVersion": sqlite_ver,
             "sizeBytes": size_bytes,
             "sizeFormatted": size_str,
@@ -85,9 +105,10 @@ def get_database_overview() -> Dict[str, Any]:
     finally:
         conn.close()
 
+
 @router.get("/tables")
-def list_tables() -> List[Dict[str, Any]]:
-    """List all user tables in the SQLite database with row and column counts."""
+def list_tables(admin: Dict[str, Any] = Depends(require_sql_access)) -> List[Dict[str, Any]]:
+    """List all user tables in the SQLite database with row and column counts (Requires SQL Access)."""
     conn = get_db_connection()
     try:
         cur = conn.cursor()
@@ -98,52 +119,51 @@ def list_tables() -> List[Dict[str, Any]]:
         """)
         results = []
         for row in cur.fetchall():
-            name = row["name"]
+            t_name = row["name"]
             try:
-                cur.execute(f'SELECT COUNT(*) as cnt FROM "{name}";')
-                count = cur.fetchone()["cnt"]
+                cur.execute(f'SELECT COUNT(*) as cnt FROM "{t_name}";')
+                row_count = cur.fetchone()["cnt"]
             except Exception:
-                count = 0
+                row_count = 0
+
+            try:
+                cur.execute(f'PRAGMA table_info("{t_name}");')
+                col_count = len(cur.fetchall())
+            except Exception:
+                col_count = 0
+
             results.append({
-                "name": name,
-                "rowCount": count
+                "name": t_name,
+                "rowCount": row_count,
+                "columnCount": col_count,
+                "schemaSql": row["sql"]
             })
         return results
     finally:
         conn.close()
 
+
 @router.get("/table/{table_name}")
-def get_table_data(
+@router.get("/table/{table_name}/rows")
+def get_table_rows(
     table_name: str,
-    limit: int = Query(50, ge=1, le=200),
+    limit: int = Query(50, ge=1, le=500),
     offset: int = Query(0, ge=0),
-    search: Optional[str] = Query(None)
+    search: Optional[str] = Query(None),
+    admin: Dict[str, Any] = Depends(require_sql_access)
 ) -> Dict[str, Any]:
-    """Retrieve paginated rows, columns, and total row count for a specific table."""
+    """Paginated data browser for a specific table with search and sensitive masking (Requires SQL Access)."""
     conn = get_db_connection()
     try:
         cur = conn.cursor()
-        # Verify table exists to prevent SQL injection
+        # Verify table exists in schema to prevent SQL injection in table name
         cur.execute("SELECT name FROM sqlite_master WHERE type='table' AND name = ?;", (table_name,))
         if not cur.fetchone():
             raise HTTPException(status_code=404, detail=f"Table '{table_name}' does not exist")
 
-        # Column schema
         cur.execute(f'PRAGMA table_info("{table_name}");')
-        columns_raw = cur.fetchall()
-        columns = [
-            {
-                "cid": col["cid"],
-                "name": col["name"],
-                "type": col["type"],
-                "notnull": bool(col["notnull"]),
-                "dflt_value": col["dflt_value"],
-                "pk": bool(col["pk"])
-            }
-            for col in columns_raw
-        ]
+        columns = [dict(c) for c in cur.fetchall()]
 
-        # Total rows query
         where_clause = ""
         params: List[Any] = []
         if search and search.strip():
@@ -157,7 +177,6 @@ def get_table_data(
         cur.execute(f'SELECT COUNT(*) as total FROM "{table_name}"{where_clause};', params)
         total_rows = cur.fetchone()["total"]
 
-        # Fetch rows
         query_sql = f'SELECT * FROM "{table_name}"{where_clause} LIMIT ? OFFSET ?;'
         cur.execute(query_sql, params + [limit, offset])
         rows_raw = cur.fetchall()
@@ -166,7 +185,7 @@ def get_table_data(
         for r in rows_raw:
             row_dict = {}
             for k in r.keys():
-                row_dict[k] = _safe_serialize_cell(r[k])
+                row_dict[k] = _safe_serialize_cell(k, r[k])
             formatted_rows.append(row_dict)
 
         return {
@@ -181,9 +200,10 @@ def get_table_data(
     finally:
         conn.close()
 
+
 @router.get("/table/{table_name}/schema")
-def get_table_schema(table_name: str) -> Dict[str, Any]:
-    """Retrieve detailed schema, DDL SQL statement, indexes, and foreign keys."""
+def get_table_schema(table_name: str, admin: Dict[str, Any] = Depends(require_sql_access)) -> Dict[str, Any]:
+    """Retrieve table schema, indexes, and constraints (Requires SQL Access)."""
     conn = get_db_connection()
     try:
         cur = conn.cursor()
@@ -193,15 +213,12 @@ def get_table_schema(table_name: str) -> Dict[str, Any]:
             raise HTTPException(status_code=404, detail=f"Table '{table_name}' does not exist")
         ddl_sql = row["sql"] or ""
 
-        # Columns
         cur.execute(f'PRAGMA table_info("{table_name}");')
         columns = [dict(c) for c in cur.fetchall()]
 
-        # Indexes
         cur.execute(f'PRAGMA index_list("{table_name}");')
         indexes = [dict(i) for i in cur.fetchall()]
 
-        # Foreign keys
         cur.execute(f'PRAGMA foreign_key_list("{table_name}");')
         foreign_keys = [dict(fk) for fk in cur.fetchall()]
 
@@ -215,116 +232,72 @@ def get_table_schema(table_name: str) -> Dict[str, Any]:
     finally:
         conn.close()
 
-@router.post("/query")
-def execute_sql_query(req: QueryRequest) -> Dict[str, Any]:
-    """Execute custom read/analytical SQL queries and return tabular results."""
-    raw_query = req.query.strip()
-    if not raw_query:
-        raise HTTPException(status_code=400, detail="SQL query statement cannot be empty")
 
-    # Safety constraint: prevent destructive operations in demo environment unless intended
-    upper = raw_query.upper()
-    is_read_only = any(upper.startswith(prefix) for prefix in ("SELECT", "PRAGMA", "EXPLAIN", "WITH"))
+ALLOWED_PARAMETERIZED_QUERIES = {
+    "recent_transactions": ("SELECT id, account_id, type, amount, currency, balance_after, created_at FROM transactions ORDER BY created_at DESC LIMIT ?", True),
+    "active_accounts_summary": ("SELECT type, currency, count(*) as count, sum(balance) as total_balance FROM accounts GROUP BY type, currency", False),
+    "application_status_counts": ("SELECT status, count(*) as count FROM applications GROUP BY status", False),
+    "audit_log_tail": ("SELECT id, actor_id, action, timestamp FROM audit_logs ORDER BY id DESC LIMIT ?", True),
+    "card_inventory": ("SELECT type, network, status, count(*) as count FROM cards GROUP BY type, network, status", False),
+}
+
+
+@router.post("/query")
+def execute_sql_query(req: QueryRequest, admin: Dict[str, Any] = Depends(require_sql_access)) -> Dict[str, Any]:
+    """
+    Execute pre-approved parameterized analytical queries.
+    Arbitrary SQL execution is strictly disabled.
+    """
+    query_key = req.query.strip().lower()
+    if query_key not in ALLOWED_PARAMETERIZED_QUERIES:
+        raise HTTPException(
+            status_code=403,
+            detail="Arbitrary SQL execution is strictly disabled for security. Select an allow-listed query: " + ", ".join(ALLOWED_PARAMETERIZED_QUERIES.keys())
+        )
+
+    sql_template, takes_limit = ALLOWED_PARAMETERIZED_QUERIES[query_key]
+    max_limit = min(req.limit or 100, 500)
+    params = (max_limit,) if takes_limit else ()
 
     conn = get_db_connection()
     start_time = time.perf_counter()
     try:
+        conn.execute("PRAGMA query_only = ON;")
         cur = conn.cursor()
-        cur.execute(raw_query)
+        cur.execute(sql_template, params)
 
-        if cur.description:
-            # Query returned result rows
-            col_names = [d[0] for d in cur.description]
-            max_limit = req.limit or 100
-            raw_rows = cur.fetchmany(max_limit)
+        col_names = [d[0] for d in cur.description] if cur.description else []
+        raw_rows = cur.fetchall()
 
-            formatted_rows = []
-            for r in raw_rows:
-                row_dict = {}
-                for idx, col in enumerate(col_names):
-                    row_dict[col] = _safe_serialize_cell(r[idx])
-                formatted_rows.append(row_dict)
+        formatted_rows = []
+        for r in raw_rows:
+            row_dict = {}
+            for idx, col in enumerate(col_names):
+                row_dict[col] = _safe_serialize_cell(col, r[idx])
+            formatted_rows.append(row_dict)
 
             elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
             return {
                 "success": True,
-                "query": raw_query,
+                "readOnly": True,
+                "rowCount": len(formatted_rows),
                 "columns": col_names,
                 "rows": formatted_rows,
-                "rowCount": len(formatted_rows),
-                "executionTimeMs": elapsed_ms,
-                "isSelect": True
+                "elapsedMs": elapsed_ms,
+                "truncated": len(raw_rows) == max_limit
             }
         else:
-            # Mutation query (INSERT, UPDATE, DELETE)
-            conn.commit()
-            elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
             return {
                 "success": True,
-                "query": raw_query,
-                "columns": ["Rows Affected"],
-                "rows": [{"Rows Affected": cur.rowcount}],
-                "rowCount": cur.rowcount,
-                "executionTimeMs": elapsed_ms,
-                "isSelect": False
+                "readOnly": True,
+                "rowCount": 0,
+                "columns": [],
+                "rows": [],
+                "elapsedMs": round((time.perf_counter() - start_time) * 1000, 2)
             }
-    except Exception as err:
-        elapsed_ms = round((time.perf_counter() - start_time) * 1000, 2)
-        return {
-            "success": False,
-            "query": raw_query,
-            "error": str(err),
-            "executionTimeMs": elapsed_ms
-        }
+    except sqlite3.OperationalError as e:
+        raise HTTPException(status_code=400, detail=f"Database execution error: {str(e)}")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Internal database query error: {str(e)}")
     finally:
         conn.close()
-
-# ----------------------------------------------------------------- EXTERNAL DATABASE BRIDGES (MySQL & MongoDB)
-from backend.app.core.db_bridge import (
-    test_mongo_connection, sync_sqlite_to_mongodb,
-    test_mysql_connection, sync_sqlite_to_mysql
-)
-
-class MySqlConnectRequest(BaseModel):
-    user: str = "root"
-    password: str = ""
-    host: str = "127.0.0.1"
-    port: int = 3306
-    database: str = "neobank"
-
-class MongoConnectRequest(BaseModel):
-    uri: str = "mongodb://127.0.0.1:27017/"
-    database: str = "neobank"
-
-@router.get("/bridges/status")
-def get_external_bridges_status() -> Dict[str, Any]:
-    """Check connectivity to local MongoDB and MySQL database services."""
-    mongo_res = test_mongo_connection()
-    return {
-        "mongodb": mongo_res,
-        "mysqlServiceRunning": True, # verified running on port 3306
-        "mysqlDefaultPort": 3306,
-        "mysqlDefaultHost": "127.0.0.1"
-    }
-
-@router.post("/mongo/sync")
-def sync_mongodb_endpoint(req: MongoConnectRequest = MongoConnectRequest()) -> Dict[str, Any]:
-    """Synchronize all NeoBank tables into MongoDB database collections."""
-    return sync_sqlite_to_mongodb(uri=req.uri, db_name=req.database)
-
-@router.post("/mysql/test")
-def test_mysql_endpoint(req: MySqlConnectRequest) -> Dict[str, Any]:
-    """Test connection to local MySQL server with user credentials."""
-    return test_mysql_connection(user=req.user, password=req.password, host=req.host, port=req.port)
-
-@router.post("/mysql/sync")
-def sync_mysql_endpoint(req: MySqlConnectRequest) -> Dict[str, Any]:
-    """Create MySQL database 'neobank' and sync all relational tables and rows."""
-    return sync_sqlite_to_mysql(
-        user=req.user,
-        password=req.password,
-        host=req.host,
-        port=req.port,
-        db_name=req.database
-    )
-

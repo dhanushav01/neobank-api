@@ -14,7 +14,7 @@ router = APIRouter(prefix="/users", tags=["Users"])
 @router.get("/me")
 def get_profile(user: Dict[str, Any] = Depends(get_current_user)):
     """Retrieve full details of the authenticated user without sensitive credentials."""
-    return {k: v for k, v in user.items() if k not in ("password", "mfa")}
+    return {k: v for k, v in user.items() if k not in ("password", "password_hash", "mfa", "mfa_secret", "mfaSecret")}
 
 @router.patch("/me/profile")
 def update_profile(request: ProfileUpdateRequest, user: Dict[str, Any] = Depends(get_current_user)):
