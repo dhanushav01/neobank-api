@@ -132,15 +132,19 @@ POS_GATEWAY_KEY = load_strict_secret(
     default_test_generator=lambda: secrets.token_urlsafe(32)
 )
 
-# Trusted Reverse Proxy IPs (for secure X-Forwarded-For parsing)
+# Forwarded Proxy and IP Configuration (Render, Cloudflare, Load Balancers)
+FORWARDED_ALLOW_IPS = os.getenv("FORWARDED_ALLOW_IPS", "*")
 TRUSTED_PROXIES = [
-    p.strip() for p in os.getenv("TRUSTED_PROXIES", "127.0.0.1,::1,testclient" if not IS_PRODUCTION else "127.0.0.1,::1").split(",") if p.strip()
+    p.strip() for p in os.getenv("TRUSTED_PROXIES", "127.0.0.1,::1,testclient,*" if not IS_PRODUCTION else "*").split(",") if p.strip()
 ]
 
 # ----------------------------------------------------------------- SEED & DEMO ACCOUNT CONFIGURATION
 SEED_DEMO_USERS = os.getenv("SEED_DEMO_USERS", "false").lower() == "true"
 SEED_DEMO_DATA = SEED_DEMO_USERS
 ENABLE_TEST_ROUTES = os.getenv("ENABLE_TEST_ROUTES", "false" if IS_PRODUCTION else "true").lower() == "true"
+# OTP Delivery Mechanism ("notification", "console", "none")
+# NOTE: "notification" is strictly for demo/sandbox convenience and not a real out-of-band second factor.
+OTP_DELIVERY = os.getenv("OTP_DELIVERY", "notification").lower()
 ENABLE_TEST_OTP = os.getenv("ENABLE_TEST_OTP", "false").lower() in ("true", "1", "yes") and not IS_PRODUCTION
 NEOBANK_DB_PATH = os.getenv("NEOBANK_DB_PATH", "")
 SEED_ADMIN_EMAIL = os.getenv("SEED_ADMIN_EMAIL", "admin@bank.test")

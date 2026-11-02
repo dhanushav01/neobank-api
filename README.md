@@ -41,14 +41,38 @@ neobank-api/
 pip install -r requirements.txt
 ```
 
-### 2. Run the Platform Server
-Run via the root launcher:
+### 2. Configure Local Environment
+Copy the example environment configuration:
 ```bash
-uvicorn app:app --reload --port 8000
+# Linux / macOS
+cp .env.example .env
+
+# Windows PowerShell
+copy .env.example .env
+```
+Ensure `ENVIRONMENT=development` is set in `.env` (this is the default in `.env.example`).
+In development mode:
+- Interactive Swagger docs (`/`) and Redoc (`/redoc`) are available.
+- Relaxed cookie policies allow standard `http://localhost:8000` session testing.
+- Test endpoints (`/delay`, `/flaky`, `/rate-limit`) are accessible.
+- Set `SEED_DEMO_USERS=true` in `.env` if you want automatic test accounts pre-seeded with sample balances and cards.
+
+### 3. Run the Platform Server Locally
+Run with Uvicorn in development mode:
+```bash
+# macOS / Linux
+ENVIRONMENT=development uvicorn backend.app.main:app --reload --port 8000
+
+# Windows PowerShell
+$env:ENVIRONMENT="development"; uvicorn backend.app.main:app --reload --port 8000
 ```
 Or directly from the backend module:
 ```bash
 python backend/run.py
+```
+Or via the legacy root launcher:
+```bash
+uvicorn app:app --reload --port 8000
 ```
 
 ---
@@ -122,7 +146,11 @@ The platform provides a 4-tier role hierarchy:
 
 ### 2. High-Value Transfer with OTP Protection
 1. `POST /transfers` with amount > `1000` USD (triggers OTP verification challenge)
-2. `POST /transfers/{transferId}/confirm` with out-of-band verification code (completes wire and debits ledger)
+2. Retrieve OTP verification code (delivered via `OTP_DELIVERY`, default `notification` in user notification feed)
+3. `POST /transfers/{transferId}/confirm` (or `/transfers/{transferId}/confirm-otp`) with 6-digit verification code to complete transfer and debit ledger
+
+> [!WARNING]
+> **Demo-Only 2FA Notice**: In demo/sandbox mode, the 6-digit transfer OTP is dispatched to the user's in-app notification feed (`OTP_DELIVERY=notification`) so evaluators can complete end-to-end flows. In a production banking environment, delivering an OTP to the same authenticated browser session is **not** a secure second factor; genuine 2FA requires an out-of-band delivery channel (e.g., SMS, push notification to an enrolled hardware device, or TOTP authenticator). Supported flags: `OTP_DELIVERY=notification|console|none`.
 
 ### 3. Card Dispute & Automated Ledger Settlement
 1. `POST /cards/{cardId}/authorize` (Simulate merchant POS transaction)
@@ -154,6 +182,7 @@ docker run -p 8000:8000 neobank-api
 - Document attachments are encrypted using **Fernet (AES-128-CBC with HMAC-SHA256 authenticated encryption)** in SQLite BLOBs and decrypted on-demand with inline previews (images, PDFs, text) and secure file download.
 - Uniform Account Opening Applications support authentic 4-page bank paper sheet visualization with CIF & CKYC, KYC & OVD, Account Specification, and Declarations, complete with print-to-PDF export.
 - Passwords are securely hashed using **Bcrypt** (work factor 12) with per-user cryptographic salts. Card PINs are securely hashed using **PBKDF2-HMAC-SHA256** (100,000 iterations).
+- High-value transfer verification uses **HMAC-PBKDF2-SHA256** salted hashes. In sandbox/demo environments, verification codes are delivered in-app via `OTP_DELIVERY=notification`. This is intended strictly for test harness verification and does not replace true out-of-band second factor authentication (SMS, hardware tokens, TOTP).
 
 ---
 
@@ -179,7 +208,18 @@ When deploying to Render, Railway, or standard Docker environments:
    > - In **Environment**, configure: `NEOBANK_DB_PATH=/data/neobank.db`
    > - **Permissions**: The container entrypoint (`docker-entrypoint.sh`) automatically configures `/data` ownership for unprivileged `appuser` (UID 1001) using `gosu` before starting the application.
 
-3. **Dependency Vulnerability Scanning**:
+3. **First-Admin Bootstrap Steps on Render**:
+   When launching a fresh deployment on Render with a new persistent disk:
+   1. Open your Web Service in the **Render Dashboard** -> **Environment**.
+   2. Configure the two bootstrap variables:
+      - `ADMIN_EMAIL`: The designated superadmin email (e.g. `admin@yourdomain.com`).
+      - `ADMIN_PASSWORD`: A strong initial password (at least 16 characters with letters, numbers, and symbols).
+   3. Trigger a manual deploy or restart the service.
+   4. On startup, the backend verifies if an admin exists; if absent, it safely hashes the credentials with Bcrypt and provisions the superadmin account with `role: "ADMIN"`.
+   5. Log into the web portal at `/app` or `/login.html` using the configured credentials.
+   6. *(Recommended Security Practice)* Clear or remove `ADMIN_PASSWORD` from the Render Environment settings after initial setup so that plaintext bootstrap secrets do not linger in the dashboard.
+
+4. **Dependency Vulnerability Scanning**:
    Run audits with `pip-audit`:
    ```bash
    pip install pip-audit

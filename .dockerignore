@@ -1,0 +1,36 @@
+# Environment files and secrets
+.env
+.env.*
+.env.example
+*.env
+
+# Git repository metadata
+.git
+.gitignore
+.gitattributes
+
+# SQLite databases and persistent ledger files
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+*.sqlite
+*.sqlite3
+data/*.db
+backend/data/*.db
+
+# Python caches and bytecode
+__pycache__
+*.py[cod]
+*$py.class
+.pytest_cache
+.coverage
+htmlcov
+
+# Tests and temporary scratch folders
+tests
+scratch
+
+# Node modules and temporary frontend files
+node_modules
+

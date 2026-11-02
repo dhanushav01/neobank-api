@@ -19,7 +19,7 @@ from fastapi import APIRouter, Depends, Header, Query, Request, status
 from backend.app.core.database import DB, get_owned, list_owned, post_transaction, audit_log, send_notification
 from backend.app.core.security import get_current_user
 from backend.app.core.utils import fail, generate_id, now_iso, paginate
-from backend.app.core.config import OTP_THRESHOLD, TRANSFER_EXTERNAL_FEE, ENABLE_TEST_OTP
+from backend.app.core.config import OTP_THRESHOLD, TRANSFER_EXTERNAL_FEE, ENABLE_TEST_OTP, OTP_DELIVERY
 from backend.app.core.crypto_utils import hash_otp, verify_salted_otp
 from backend.app.core.limiter import limiter
 from backend.app.models.schemas import TransferCreateRequest, TransferConfirmRequest
@@ -122,11 +122,18 @@ def initiate_transfer(
         transfer_record["_otp_salt"] = salt_hex
         transfer_record["_otp_expiry"] = time.time() + 300  # 5 minutes
         transfer_record["_otp_attempts"] = 0
-        # Deliver verification OTP as an in-app notification so testers can complete transfers in production/demo
-        send_notification(
-            user["id"],
-            f"Security verification code for transfer #{transfer_id} (${payload.amount:.2f} {payload.currency}): {otp_code} (Valid for 5 minutes)"
-        )
+        # Deliver verification OTP based on OTP_DELIVERY configuration
+        # NOTE: "notification" is strictly for demo/sandbox testing and NOT a true out-of-band 2FA factor.
+        if OTP_DELIVERY == "notification":
+            send_notification(
+                user["id"],
+                f"Security verification code for transfer #{transfer_id} (${payload.amount:.2f} {payload.currency}): {otp_code} (Valid for 5 minutes)"
+            )
+        elif OTP_DELIVERY in ("console", "log"):
+            import logging
+            logging.getLogger("neobank.transfers").info(
+                f"[TRANSFER-OTP] Transfer #{transfer_id} verification code: {otp_code}"
+            )
     else:
         execute_transfer(transfer_record)
         send_notification(user["id"], f"Transfer of {transfer_record['amount']} {transfer_record['currency']} completed.")
@@ -139,6 +146,7 @@ def initiate_transfer(
 
 
 @router.post("/{transferId}/confirm")
+@router.post("/{transferId}/confirm-otp")
 def confirm_transfer_otp(
     transferId: str,
     request: TransferConfirmRequest,
