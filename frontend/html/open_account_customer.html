@@ -3,14 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoBank • Open a Bank Account</title>
+  <title>Open your bank account in minutes | NeoBank</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💳%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/themes.css"></link>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css">
   <link rel="stylesheet" href="/css/common.css?v=20261011_07">
   <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
-  <link rel="stylesheet" href="/css/open_account_customer.css?v=20261011_01">
+  <link rel="stylesheet" href="/css/open_account_customer.css?v=20261103_01">
   <script src="/js/constants.js?v=20261002_01"></script>
   <script src="/js/utils.js?v=20261002_01"></script>
   <script src="/js/components.js?v=20261002_01"></script>
@@ -20,654 +21,565 @@
   </head>
 <body>
 
-  <!-- ==================== HEADER ==================== -->
-  <header class="app-header">
-    <div class="brand-badge">
-      <div class="brand-icon">
-        <svg class="oac-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
-        </svg>
-      </div>
-      <div>
-        <div class="oac-s2">
-          <span class="brand-title">NeoBank</span>
-        </div>
-        <div class="oac-s4" data-i18n="brand_sub">Digital Banking</div>
-      </div>
-    </div>
+  <!-- Ambient Flowing Particle Currents Canvas -->
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-    <!-- Right Controls: Theme, Language Selector & Sign In Return -->
-    <div class="oac-s5">
-      <!-- Dark / Light Theme Toggle Switch -->
-      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
-        <span class="theme-toggle-track">
-          <span class="theme-toggle-indicator">
-            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
-            </svg>
-            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-            </svg>
+  <!-- Global Header with Regulatory Notice & Accessibility Navigation -->
+  <header class="start-header">
+    <div class="demo" data-testid="openstart-demo-notice">
+      Demo app, not a real bank. Please don’t enter real personal or financial details.
+    </div>
+    <nav class="start-nav" aria-label="Main Navigation">
+      <a class="brand" href="/home" data-testid="openstart-nav-brand-link">
+        NeoBank
+      </a>
+
+      <!-- Right Navigation & Accessibility Suite -->
+      <div class="nav-controls" data-testid="openstart-nav-controls">
+        <!-- Theme Toggle Button (Dark / Light) -->
+        <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme" data-testid="openstart-nav-theme-button">
+          <span class="theme-toggle-track">
+            <span class="theme-toggle-indicator">
+              <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4"></circle>
+                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+              </svg>
+              <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+              </svg>
+            </span>
           </span>
-        </span>
-        <span class="theme-toggle-label">Dark</span>
-      </button>
+          <span class="theme-toggle-label">Dark</span>
+        </button>
 
-      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
-      <div class="page-zoom-controls">
-        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
-          −
-        </button>
-        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
-          <span class="zoom-level-text">100%</span>
-        </button>
-        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
-          +
-        </button>
+        <!-- Accessibility Page Zoom Controls -->
+        <div class="page-zoom-controls" data-testid="openstart-nav-zoom-controls">
+          <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">−</button>
+          <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
+            <span class="zoom-level-text">100%</span>
+          </button>
+          <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">+</button>
+        </div>
+
+        <!-- Custom Searchable Language Dropdown Mount Target -->
+        <div id="neobank-lang-container" class="notranslate" translate="no" data-testid="openstart-nav-lang-container"></div>
+        <div id="google_translate_element" class="notranslate" translate="no" style="display:none!important;" data-testid="openstart-nav-translate-element"></div>
+
+        <!-- Links to track or sign in -->
+        <a class="ghost" href="/existing_application" style="padding:6px 14px;font-size:0.8rem;min-height:34px" data-testid="openstart-nav-track-link">Track</a>
+        <a class="btn" href="/login" style="padding:6px 14px;font-size:0.8rem;min-height:34px" data-testid="openstart-nav-signin-link">Sign in</a>
       </div>
-
-      <!-- Google Website Translator -->
-      <div id="google_translate_element" class="notranslate" translate="no"></div>
-
-      <a href="/" class="btn btn-outline btn-sm">
-        <span>Home</span>
-      </a>
-      <a href="/login" class="btn btn-outline btn-sm">
-        <span data-i18n="return_login">Sign In</span>
-      </a>
-    </div>
+    </nav>
   </header>
 
-  <!-- ==================== MAIN CONTENT ==================== -->
-  <main class="oac-s9">
-
-    <!-- HERO SECTION -->
-    <section class="oac-s10" id="onboarding-hero-section">
-      <div class="oac-s11">
-        NEXT-GEN CORE BANKING
-      </div>
-      <h1 class="oac-s12" data-i18n="hero_title">
-        Open Your Bank Account in Minutes
+  <!-- START PAGE CONTAINER (#onboarding-step-1) -->
+  <div id="onboarding-step-1">
+    <!-- ==================== HERO MONOLITH ==================== -->
+    <section class="hero" id="onboarding-hero-section" data-testid="openstart-hero-section">
+      <h1 data-testid="openstart-hero-title" aria-label="Open your bank account in minutes.">
+        <span class="w" style="--i:0"><span>Open</span></span> <span class="w" style="--i:1"><span>your</span></span> <span class="w" style="--i:2"><span>bank</span></span> <span class="w" style="--i:3"><span>account</span></span> <span class="w" style="--i:4"><span>in</span></span> <span class="w" style="--i:5"><span>minutes.</span></span>
       </h1>
-      <p class="oac-s13" data-i18n="hero_subtitle">
-        Experience next-generation financial freedom with competitive interest, instant global transfers, and multi-layered bank vault encryption.
+      <p class="lede">
+        Answer a few questions, add your ID, pick a card, and sign on screen. Your draft saves as you go, so you can stop and pick it up later.
       </p>
-    </section>
-
-    <!-- WHY BANK WITH NEOBANK? BENEFITS CARDS WITH REAL IMAGES -->
-    <section class="oac-s14" id="onboarding-benefits-section">
-      <div class="oac-s15">
-        <h2 class="oac-s16" data-i18n="why_bank_title">Why Bank with NeoBank?</h2>
-        <p class="oac-s17" data-i18n="why_bank_sub">
-          Built for modern individuals and enterprises seeking uncompromising security and high financial yields.
-        </p>
-      </div>
-
-      <div class="oac-s18">
-        <!-- Benefit Card 1: Multi-Currency & Titanium Visa -->
-        <div class="glass-card oac-s19">
-          <div class="oac-s20">
-            <img class="oac-s21" src="/images/card_benefits.jpg" alt="NeoBank Titanium Visa Card">
-            <div class="oac-s22"></div>
-            <div class="oac-s23">
-              <span class="status-pill active oac-s24">TITANIUM VISA</span>
-            </div>
-          </div>
-          <div class="oac-s25">
-            <div>
-              <h3 class="oac-s26" data-i18n="benefit_1_title">
-                Zero-Fee Multi-Currency Freedom
-              </h3>
-              <p class="oac-s27" data-i18n="benefit_1_desc">
-                Hold and exchange balances in USD, EUR, and GBP with zero foreign transaction fees and real-time interbank rates.
-              </p>
-            </div>
-            <div class="oac-s28">
-              <div class="oac-s29">✓ Up to 4.20% APY High-Yield Daily Interest</div>
-              <div class="oac-s30">✓ Instant Contactless Digital Cards</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Benefit Card 2: Vault Security & Encrypted Documents -->
-        <div class="glass-card oac-s19">
-          <div class="oac-s20">
-            <img class="oac-s21" src="/images/vault_security.jpg" alt="NeoBank Encrypted Data Vault">
-            <div class="oac-s22"></div>
-            <div class="oac-s23">
-              <span class="status-pill submitted oac-s24">MILITARY-GRADE AES-256</span>
-            </div>
-          </div>
-          <div class="oac-s25">
-            <div>
-              <h3 class="oac-s26" data-i18n="benefit_4_title">
-                AES-256 Vault Document Encryption
-              </h3>
-              <p class="oac-s27" data-i18n="benefit_4_desc">
-                All personal data and verification documents (PDFs/Scans) are stored with military-grade AES-256 encryption in secure ledgers.
-              </p>
-            </div>
-            <div class="oac-s28">
-              <div class="oac-s29">✓ Zero Plaintext Document Storage</div>
-              <div class="oac-s30">✓ Non-Reusable Application Reference Tracking</div>
-            </div>
-          </div>
-        </div>
+      <div class="acts">
+        <a class="btn" href="#start" data-testid="openstart-hero-start-button">Start your application</a>
+        <a class="ghost" href="/existing_application" data-testid="openstart-hero-resume-button">Resume with a reference number</a>
       </div>
     </section>
 
-    <!-- THE ACCOUNT OPENING JOURNEY TIMELINE -->
-    <section class="oac-s14" id="onboarding-journey-section">
-      <div class="oac-s15">
-        <h2 class="oac-s16" data-i18n="process_title">The Account Opening Journey</h2>
-      </div>
-
-      <div class="oac-s31">
-        <div class="glass-card oac-s32">
-          <div class="oac-s33">1</div>
-          <div class="oac-s34" data-i18n="step1_name">1. Choose & Eligibility</div>
-          <div class="oac-s35" data-i18n="step1_desc">Select account type and verify bank rules & demanded documents.</div>
+    <!-- ==================== PINNED SCROLL STORYTELLING STAGE ==================== -->
+    <section class="stage" id="stage" data-testid="openstart-stage-section">
+      <div class="pin">
+        <div class="rail" aria-hidden="true"><i></i></div>
+        <div class="chaps">
+          <div class="chap on" data-testid="openstart-stage-details-chapter">
+            <h2>Tell us who you are.</h2>
+            <p>Your name, contact details, and home address, one short section at a time.</p>
+          </div>
+          <div class="chap" data-testid="openstart-stage-id-chapter">
+            <h2>Show us your ID.</h2>
+            <p>Upload a passport, driving licence, or utility bill. Files are encrypted when you upload them.</p>
+          </div>
+          <div class="chap" data-testid="openstart-stage-card-chapter">
+            <h2>Pick your card.</h2>
+            <p>Choose the debit card that comes with your account.</p>
+          </div>
+          <div class="chap" data-testid="openstart-stage-sign-chapter">
+            <h2>Sign on screen.</h2>
+            <p>Draw your signature with a finger or a mouse. No printing, no post.</p>
+          </div>
+          <div class="chap" data-testid="openstart-stage-review-chapter">
+            <h2>We review, you’re in.</h2>
+            <p>An officer checks your application. Follow it with your reference number, and your account is opened once it’s approved.</p>
+          </div>
         </div>
-        <div class="glass-card oac-s32">
-          <div class="oac-s33">2</div>
-          <div class="oac-s34" data-i18n="step2_name">2. Customer Details</div>
-          <div class="oac-s35" data-i18n="step2_desc">Provide personal details, address, tax ID, and initial deposit.</div>
-        </div>
-        <div class="glass-card oac-s32">
-          <div class="oac-s33">3</div>
-          <div class="oac-s34" data-i18n="step3_name">3. KYC Documents</div>
-          <div class="oac-s35" data-i18n="step3_desc">Submit identity and address documents with encrypted storage.</div>
-        </div>
-        <div class="glass-card oac-s32">
-          <div class="oac-s36">4</div>
-          <div class="oac-s34" data-i18n="step4_name">4. Application Reference</div>
-          <div class="oac-s35" data-i18n="step4_desc">Receive your unique, non-reusable Application Reference Number.</div>
+        <div class="sheet" role="img" aria-label="An application filling in as you scroll">
+          <div class="pane on" data-testid="openstart-pane-details">
+            <div class="f" style="--d:0"><small>Full name</small><b></b><i style="--d:0"></i></div>
+            <div class="f"><small>Email</small><b></b><i style="--d:.9"></i></div>
+            <div class="f"><small>Phone</small><b></b><i style="--d:1.8"></i></div>
+            <div class="f"><small>Home address</small><b></b><i style="--d:2.7"></i></div>
+          </div>
+          <div class="pane" data-testid="openstart-pane-id">
+            <div class="doc"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/></svg></div>
+            <div class="ok"><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></div>
+            <p class="cap" style="text-align:center">Encrypted on upload</p>
+          </div>
+          <div class="pane" data-testid="openstart-pane-card">
+            <div class="mini">NeoBank</div>
+            <p class="cap" style="text-align:center">Visa debit card</p>
+          </div>
+          <div class="pane" data-testid="openstart-pane-sign">
+            <svg class="sig" viewBox="0 0 300 110"><line x1="10" y1="92" x2="290" y2="92"/><path d="M20 70 C45 20 60 20 55 62 C52 85 70 40 90 38 C108 36 96 76 118 62 C136 50 140 30 156 44 C170 58 176 76 198 50 C212 34 236 40 262 56"/></svg>
+            <p class="cap" style="text-align:center">Your signature</p>
+          </div>
+          <div class="pane" data-testid="openstart-pane-review">
+            <div class="steps">
+              <div data-t=".12"><i></i>Submitted</div>
+              <div data-t=".45"><i></i>Under review</div>
+              <div data-t=".8"><i></i>Approved</div>
+            </div>
+            <p class="cap" style="text-align:center;margin-top:10px">Sample status, shown for demonstration.</p>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- ==================== 3-STEP APPLICATION WIZARD ==================== -->
-    <section id="wizard-section" class="glass-card oac-s37">
+    <!-- ==================== ACCOUNT & BRANCH PICKER SECTION ==================== -->
+    <section class="pick" id="start" data-testid="start-pick-section">
+      <h2>Pick the account that fits.</h2>
       
-      <!-- Wizard Progress Indicators (Streamlined 3 Steps - Item 1) -->
-      <div class="wizard-steps">
-        <div id="step-indicator-1" class="step-indicator active">
-          <span class="step-badge">1</span>
-          <span data-i18n="step1_name">Choose Account &amp; Branch</span>
-        </div>
-        <div class="oac-s38"></div>
-        <div id="step-indicator-2" class="step-indicator">
-          <span class="step-badge">2</span>
-          <span data-i18n="step2_name">Uniform Application Form</span>
-        </div>
-        <div class="oac-s38"></div>
-        <div id="step-indicator-4" class="step-indicator">
-          <span class="step-badge">3</span>
-          <span data-i18n="step4_name">Confirmation &amp; Submission</span>
-        </div>
-      </div>
-
-      <!-- STEP 1: CHOOSE ACCOUNT & CHECK ELIGIBILITY -->
-      <div id="onboarding-step-1">
-        <div class="oac-s15">
-          <h2 class="oac-s39">Step 1: Choose Your Account &amp; Select Home Branch</h2>
-          <p class="oac-s40">
-            Select your preferred account type and home branch. Your non-reusable Application Reference Number will be generated immediately to ensure a fresh, isolated session.
-          </p>
-        </div>
-
-        <!-- Quick Account Type & Home Branch Dropdown Picker (Items 2, 4, 15) -->
-        <div class="oac-s41">
-          <div class="oac-s42">
-            <label class="oac-s43" for="quick-account-type-select">1. Account Type:</label>
-            <select id="quick-account-type-select" class="form-select oac-s44" onchange="selectAccountType(this.value)">
-              <optgroup label="1. Everyday / Transactional">
-                <option value="SAVINGS" selected>Savings Account (High-Yield 4.20% APY)</option>
-                <option value="CHECKING">Current / Checking Account (0.10% APY)</option>
-                <option value="SALARY">Salary Account (Zero Min Balance 2.50% APY)</option>
-              </optgroup>
-              <optgroup label="2. Long-Term / Investment">
-                <option value="FIXED_DEPOSIT">Fixed / Term Deposit (Guaranteed 5.25% APY)</option>
-                <option value="MONEY_MARKET">Money Market / Recurring Deposit (3.80% APY)</option>
-              </optgroup>
-              <optgroup label="3. Specialized / Senior / Welfare">
-                <option value="PENSION">Pension Savings Account (Senior/Disability 4.50% APY)</option>
-                <option value="NRI_EXPAT">NRI / Foreign Expat Global Account (3.50% APY)</option>
-                <option value="STUDENT">Student / Youth Advantage (1.75% APY)</option>
-              </optgroup>
-            </select>
-          </div>
-
-          <div class="oac-s42">
-            <label class="oac-s43" for="step1-branch-select">2. Branch Name*:</label>
-            <select id="step1-branch-select" class="form-select oac-s45" onchange="syncBranchSelection(this.value)" required>
-              <option value="" selected>-- Select Home Branch --</option>
-              <option value="Downtown Main Branch" data-code="BR001">Downtown Main Branch</option>
-              <option value="Central Digital Branch" data-code="NBK-001">Central Digital Branch</option>
-              <option value="Mumbai Main Branch" data-code="BOM-001">Mumbai Main Branch</option>
-              <option value="Delhi Connaught Place Branch" data-code="DEL-002">Delhi Connaught Place Branch</option>
-              <option value="Bengaluru Tech Park Branch" data-code="BLR-003">Bengaluru Tech Park Branch</option>
-              <option value="Hyderabad Cyber City Branch" data-code="HYD-004">Hyderabad Cyber City Branch</option>
-              <option value="Chennai Central Branch" data-code="MAA-005">Chennai Central Branch</option>
-              <option value="Kolkata Park Street Branch" data-code="CCU-006">Kolkata Park Street Branch</option>
-              <option value="Pune Shivaji Nagar Branch" data-code="PNQ-007">Pune Shivaji Nagar Branch</option>
-              <option value="Ahmedabad Ashram Road Branch" data-code="AMD-008">Ahmedabad Ashram Road Branch</option>
-            </select>
-            <div class="oac-s46">
-              <label class="oac-s43" for="step1-branch-code">Code:</label>
-              <input type="text" id="step1-branch-code" class="form-input oac-s47" placeholder="Branch Code" readonly>
-            </div>
-          </div>
-        </div>
-
+      <div class="cats">
         <!-- CATEGORY 1: EVERYDAY / TRANSACTIONAL -->
-        <div class="oac-s48">
-          <div class="oac-s49">
-            <h3 class="oac-s50">Everyday / Transactional Accounts</h3>
-            <span class="oac-s51">Daily Transactions & Savings</span>
-          </div>
-
-          <div class="oac-s52">
-            <!-- 1. Savings Account -->
-            <div id="account-card-SAVINGS" class="glass-card account-select-card selected oac-s53" data-account-type="SAVINGS" onclick="selectAccountType('SAVINGS')">
-              <div>
-                <div class="oac-s54">
+        <div class="cat open" data-testid="start-category-everyday">
+          <button type="button" class="cat-h" aria-expanded="true" aria-controls="cat-everyday" data-testid="start-category-everyday-button">
+            <b>Everyday / Transactional</b>
+            <span>3 account types</span>
+          </button>
+          <div class="cat-b" id="cat-everyday">
+            <div class="in">
+              <div class="grid">
+                <!-- 1. High-Yield Savings -->
+                <button type="button" class="acct" aria-pressed="false" data-type="SAVINGS" data-label="High-yield savings" data-testid="start-account-savings-button">
                   <div>
-                    <span class="status-pill active oac-s55">SAVINGS</span>
-                    <h4 class="oac-s56">High-Yield Savings</h4>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Everyday</span>
+                        <b>High-yield savings</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Interest builds up daily with zero monthly maintenance fee and instant online transfers.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 1,000.00</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Identity:</strong> Passport, Driver's License, or Aadhaar</li>
+                        <li><strong>Proof of Address:</strong> Utility bill (&lt; 3 months) or Bank statement</li>
+                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div class="oac-s57">
-                    <span class="oac-s58">4.20% APY</span>
-                    <div class="oac-s59">Daily Interest</div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
                   </div>
-                </div>
-                <p class="oac-s60">Grow your wealth with competitive daily-accrued interest and zero monthly account maintenance fees.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 1,000.00</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
+                </button>
 
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Must be at least 18 years old</li>
-                    <li>Initial deposit of at least ₹ 1,000.00 upon approval</li>
-                    <li>Legal resident of supported jurisdiction</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or Driver's License</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill (&lt; 3 months old)</div>
-                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or PAN card</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s70">✓</div>
-                <span class="account-radio-text oac-s71">Selected Account</span>
-              </div>
-            </div>
-
-            <!-- 2. Checking / Current Account -->
-            <div id="account-card-CHECKING" class="glass-card account-select-card oac-s72" data-account-type="CHECKING" onclick="selectAccountType('CHECKING')">
-              <div>
-                <div class="oac-s54">
+                <!-- 2. Current / Checking -->
+                <button type="button" class="acct" aria-pressed="false" data-type="CHECKING" data-label="Current / checking" data-testid="start-account-checking-button">
                   <div>
-                    <span class="status-pill submitted oac-s55">CHECKING</span>
-                    <h4 class="oac-s56">Current / Checking</h4>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Transactional</span>
+                        <b>Current / checking</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">A full digital checking account with an international contactless Visa debit card.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 500.00</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Identity:</strong> Government-issued photo ID / Passport</li>
+                        <li><strong>Proof of Address:</strong> Utility bill or Council tax notice</li>
+                        <li><strong>Tax Identification:</strong> PAN, SSN, or National ID</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div class="oac-s57">
-                    <span class="oac-s73">0.10% APY</span>
-                    <div class="oac-s59">High Liquidity</div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
                   </div>
-                </div>
-                <p class="oac-s60">Full-featured digital checking with international contactless Visa debit card and instant POS clearance.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 500.00</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
+                </button>
 
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Must be at least 18 years old</li>
-                    <li>Zero daily minimum balance requirement</li>
-                    <li>Overdraft protection available on credit approval</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or Driver's License</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill or Council Tax statement</div>
-                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN, PAN, or National Tax ID</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
-              </div>
-            </div>
-
-            <!-- 3. Salary Account -->
-            <div id="account-card-SALARY" class="glass-card account-select-card oac-s72" data-account-type="SALARY" onclick="selectAccountType('SALARY')">
-              <div>
-                <div class="oac-s54">
+                <!-- 3. Corporate Salary -->
+                <button type="button" class="acct" aria-pressed="false" data-type="SALARY" data-label="Corporate salary" data-testid="start-account-salary-button">
                   <div>
-                    <span class="status-pill active oac-s55">SALARY</span>
-                    <h4 class="oac-s56">Corporate Salary</h4>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Payroll</span>
+                        <b>Corporate salary</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">For employees paid through direct payroll. Zero minimum balance with premium salary perks.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Identity:</strong> Passport, Aadhaar, or Voter ID</li>
+                        <li><strong>Employment Proof:</strong> Recent payslip, Company ID, or Offer letter</li>
+                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div class="oac-s57">
-                    <span class="oac-s58">2.50% APY</span>
-                    <div class="oac-s59">Payroll Growth</div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
                   </div>
-                </div>
-                <p class="oac-s60">Zero-minimum-balance corporate salary account with free global ATM withdrawals and payroll perks.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 0.00</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
-
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Must be actively employed or corporate professional</li>
-                    <li>Zero minimum balance requirement</li>
-                    <li>Recurring monthly payroll credit required</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID</div>
-                  <div class="oac-s68">• <strong>Employment Proof:</strong> Salary payslip, Offer letter, or Corporate ID</div>
-                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or Tax Identification</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <!-- CATEGORY 2: LONG-TERM / INVESTMENT -->
-        <div class="oac-s48">
-          <div class="oac-s49">
-            <h3 class="oac-s76">Long-Term / Investment Accounts</h3>
-            <span class="oac-s51">Wealth Accumulation & High Yield</span>
-          </div>
-
-          <div class="oac-s52">
-            <!-- 4. Fixed / Term Deposit Account -->
-            <div id="account-card-FIXED_DEPOSIT" class="glass-card account-select-card oac-s72" data-account-type="FIXED_DEPOSIT" onclick="selectAccountType('FIXED_DEPOSIT')">
-              <div>
-                <div class="oac-s54">
+        <div class="cat" data-testid="start-category-longterm">
+          <button type="button" class="cat-h" aria-expanded="false" aria-controls="cat-longterm" data-testid="start-category-longterm-button">
+            <b>Long-Term / Investment</b>
+            <span>2 account types</span>
+          </button>
+          <div class="cat-b" id="cat-longterm">
+            <div class="in">
+              <div class="grid">
+                <!-- 4. Fixed Deposit -->
+                <button type="button" class="acct" aria-pressed="false" data-type="FIXED_DEPOSIT" data-label="Fixed / term deposit" data-testid="start-account-fixed-deposit-button">
                   <div>
-                    <span class="status-pill active oac-s55">FIXED DEPOSIT</span>
-                    <h4 class="oac-s56">Fixed / Term Deposit</h4>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Term Deposit</span>
+                        <b>Fixed / term deposit</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Lock in a high guaranteed rate for 6 to 60 months with quarterly compounded payouts.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 5,000.00</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Identity:</strong> Passport or Driver's License</li>
+                        <li><strong>Proof of Address:</strong> Registered utility or bank statement</li>
+                        <li><strong>Tax Identification:</strong> PAN card with Form 15G/15H (if applicable)</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div class="oac-s57">
-                    <span class="oac-s58">5.25% APY</span>
-                    <div class="oac-s59">Guaranteed Lock-In</div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
                   </div>
-                </div>
-                <p class="oac-s60">Guaranteed locked-in premium returns with flexible tenure options (6 to 60 months) and compounding yield.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 10,000.00</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
+                </button>
 
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Must be at least 18 years old</li>
-                    <li>Minimum initial principal lock-in of ₹ 10,000.00</li>
-                    <li>Guaranteed penalty-free interest compounding at maturity</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport, National ID, or Driver's License</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Recent Utility Bill or Tax Document</div>
-                  <div class="oac-s68">• <strong>Source of Funds:</strong> Bank statement verifying deposit origin</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
-              </div>
-            </div>
-
-            <!-- 5. Money Market / Recurring Deposit -->
-            <div id="account-card-MONEY_MARKET" class="glass-card account-select-card oac-s72" data-account-type="MONEY_MARKET" onclick="selectAccountType('MONEY_MARKET')">
-              <div>
-                <div class="oac-s54">
+                <!-- 5. Money Market / Recurring Deposit -->
+                <button type="button" class="acct" aria-pressed="false" data-type="MONEY_MARKET" data-label="Money market / recurring" data-testid="start-account-money-market-button">
                   <div>
-                    <span class="status-pill active oac-s55">MONEY MARKET</span>
-                    <h4 class="oac-s56">Money Market / Recurring</h4>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Recurring</span>
+                        <b>Money market / recurring</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Money-market yields with scheduled monthly auto-saving and flexible penalty-free liquidity.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 1,000.00</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Identity:</strong> Government-issued Photo ID</li>
+                        <li><strong>Proof of Address:</strong> Residential verification document</li>
+                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
+                      </ul>
+                    </div>
                   </div>
-                  <div class="oac-s57">
-                    <span class="oac-s58">3.80% APY</span>
-                    <div class="oac-s59">Tiered Growth</div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
                   </div>
-                </div>
-                <p class="oac-s60">Earn institutional money-market yields combined with scheduled auto-debit savings and higher liquidity.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 5,000.00</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
-
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Must be at least 18 years old</li>
-                    <li>Minimum initial deposit of ₹ 5,000.00 with recurring schedule</li>
-                    <li>Flexible liquidity with limited monthly withdrawals</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID Card</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Utility bill or bank statement</div>
-                  <div class="oac-s68">• <strong>Tax ID:</strong> SSN or Government Tax ID</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
+                </button>
               </div>
             </div>
           </div>
         </div>
 
         <!-- CATEGORY 3: SPECIALIZED / CROSS-BORDER -->
-        <div class="oac-s48">
-          <div class="oac-s49">
-            <h3 class="oac-s77">Specialized / Cross-Border Accounts</h3>
-            <span class="oac-s51">Joint, Expat & Student Needs</span>
-          </div>
-
-          <div class="oac-s52">
-            <!-- 6. NRI / Foreign Expat Account -->
-            <div id="account-card-NRI_EXPAT" class="glass-card account-select-card oac-s72" data-account-type="NRI_EXPAT" onclick="selectAccountType('NRI_EXPAT')">
-              <div>
-                <div class="oac-s54">
-                  <div>
-                    <span class="status-pill active oac-s55">NRI / EXPAT</span>
-                    <h4 class="oac-s56">NRI / Foreign Expat</h4>
-                  </div>
-                  <div class="oac-s57">
-                    <span class="oac-s78">3.50% APY</span>
-                    <div class="oac-s59">Cross-Border FX</div>
-                  </div>
-                </div>
-                <p class="oac-s60">Borderless multi-currency accounts (USD, EUR, GBP, AED, INR) with zero foreign remittance markup.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 5,000.00 (or $100 FX)</strong></span>
-                  <span class="oac-s62">Age: <strong>18+</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
-
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Expatriate, non-resident citizen, or global remote worker</li>
-                    <li>Zero conversion fee on cross-border inward remittances</li>
-                    <li>Instant access to multi-currency sub-ledgers</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Passport &amp; Visa:</strong> Foreign work visa or resident permit</div>
-                  <div class="oac-s68">• <strong>Overseas Address:</strong> Utility bill or host country lease</div>
-                  <div class="oac-s68">• <strong>Tax Residency Declaration:</strong> W-8BEN or CRS self-certification</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
-              </div>
-            </div>
-
-            <!-- 8. Student / Youth Advantage Account -->
-            <div id="account-card-STUDENT" class="glass-card account-select-card oac-s72" data-account-type="STUDENT" onclick="selectAccountType('STUDENT')">
-              <div>
-                <div class="oac-s54">
-                  <div>
-                    <span class="status-pill active oac-s55">STUDENT</span>
-                    <h4 class="oac-s56">Student / Youth</h4>
-                  </div>
-                  <div class="oac-s57">
-                    <span class="oac-s79">1.75% APY</span>
-                    <div class="oac-s59">Zero Maintenance</div>
-                  </div>
-                </div>
-                <p class="oac-s60">Tailored for secondary and higher education students with zero maintenance fees and campus merchant perks.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹ 0.00</strong></span>
-                  <span class="oac-s62">Age: <strong>16 - 26</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
-
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Age strictly between 16 and 26 years</li>
-                    <li>Enrolled in accredited high school, college, or university</li>
-                    <li>Zero maintenance fees and complimentary student digital card</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity:</strong> Passport or National ID</div>
-                  <div class="oac-s68">• <strong>Student Proof:</strong> Student ID card or University Acceptance Letter</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Dormitory registration or guardian utility bill</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
-              </div>
-            </div>
-
-            <!-- 9. Pension Savings Account (Item 13) -->
-            <div id="account-card-PENSION" class="glass-card account-select-card oac-s72" data-account-type="PENSION" onclick="selectAccountType('PENSION')">
-              <div>
-                <div class="oac-s54">
-                  <div>
-                    <span class="status-pill active oac-s80">PENSION / WELFARE</span>
-                    <h4 class="oac-s56">Pension Savings Account</h4>
-                  </div>
-                  <div class="oac-s57">
-                    <span class="oac-s58">4.50% APY</span>
-                    <div class="oac-s59">Senior &amp; Disability</div>
-                  </div>
-                </div>
-                <p class="oac-s60">Specially tailored for pensioners, senior citizens (60+), and disability pension beneficiaries with direct treasury PPO credit and zero minimum balance.</p>
-                
-                <div class="oac-s61">
-                  <span class="oac-s62">Min Deposit: <strong>₹0.00</strong></span>
-                  <span class="oac-s62">Age: <strong>60+ (or 18+ Disability)</strong></span>
-                  <span class="oac-s62">Fee: <strong>₹0/mo</strong></span>
-                </div>
-
-                <div class="oac-s63">
-                  <strong class="oac-s64">Bank Eligibility Requirements:</strong>
-                  <ul class="oac-s65">
-                    <li>Senior Citizens (60+ years) OR Disability Pension Beneficiaries (18+)</li>
-                    <li>Direct Treasury, Central/State Govt, EPS, or Armed Forces PPO credit</li>
-                    <li>Zero minimum balance requirement &amp; free doorstep banking for 70+ / disabled</li>
-                  </ul>
-                </div>
-
-                <div class="oac-s66">
-                  <strong class="oac-s67">Demanded Documents:</strong>
-                  <div class="oac-s68">• <strong>Proof of Identity &amp; Age:</strong> Aadhaar Card, Passport, or Voter ID</div>
-                  <div class="oac-s68">• <strong>PPO / Disability Cert:</strong> Pension Payment Order or Disability UDID Card</div>
-                  <div class="oac-s68">• <strong>Proof of Address:</strong> Aadhaar, Utility bill, or Govt allotment letter</div>
-                </div>
-              </div>
-
-              <div class="account-card-radio-container oac-s69">
-                <div class="account-radio-circle oac-s74">✓</div>
-                <span class="account-radio-text oac-s75">Click to Select This Account</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Eligibility Confirmation Checkbox -->
-        <div class="oac-s81">
-          <label class="oac-s82">
-            <input class="oac-s83" type="checkbox" id="chk-eligibility-agreed">
-            <span class="oac-s84" data-i18n="eligibility_confirm">
-              <strong>I confirm my eligibility:</strong> I meet the bank's rules (age requirements, residency, and required initial deposit) and possess the demanded verification documents (Proof of Identity, Proof of Address, and Tax ID like SSN or PAN).
-            </span>
-          </label>
-        </div>
-
-        <div class="oac-s85">
-          <button type="button" class="btn btn-primary oac-s86" onclick="initiateAndProceedToStep2()">
-            <span data-i18n="btn_proceed_step2">Proceed to Step 2: Customer Details &amp; Form →</span>
+        <div class="cat" data-testid="start-category-specialized">
+          <button type="button" class="cat-h" aria-expanded="false" aria-controls="cat-specialized" data-testid="start-category-specialized-button">
+            <b>Specialized / Cross-Border</b>
+            <span>3 account types</span>
           </button>
+          <div class="cat-b" id="cat-specialized">
+            <div class="in">
+              <div class="grid">
+                <!-- 6. NRI / Foreign Expat -->
+                <button type="button" class="acct" aria-pressed="false" data-type="NRI_EXPAT" data-label="NRI / foreign expat" data-testid="start-account-nri-expat-button">
+                  <div>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Global</span>
+                        <b>NRI / foreign expat</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Multi-currency accounts for non-residents and expats: hold USD, EUR, GBP, AED, and INR freely.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>$100 / ₹ 5,000</strong></span>
+                      <span>Min Age: <strong>18+</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Passport & Visa:</strong> Valid passport with work permit / foreign residence visa</li>
+                        <li><strong>Overseas Address:</strong> Utility bill or foreign bank statement</li>
+                        <li><strong>Tax Identification:</strong> Foreign TIN or Indian PAN</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
+                  </div>
+                </button>
+
+                <!-- 7. Student / Youth Advantage -->
+                <button type="button" class="acct" aria-pressed="false" data-type="STUDENT" data-label="Student / youth" data-testid="start-account-student-button">
+                  <div>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Youth</span>
+                        <b>Student / youth</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Tailored for school and university students under 25 with no fees and student cashback discounts.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
+                      <span>Age: <strong>15 - 24</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Student Proof:</strong> College/University ID card or Admission letter</li>
+                        <li><strong>Proof of Identity:</strong> Aadhaar, Passport, or Birth Certificate</li>
+                        <li><strong>Parent/Guardian ID:</strong> (Required if under 18 years old)</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
+                  </div>
+                </button>
+
+                <!-- 8. Pension Savings Account -->
+                <button type="button" class="acct" aria-pressed="false" data-type="PENSION" data-label="Pension savings" data-testid="start-account-pension-button">
+                  <div>
+                    <div class="acct-top">
+                      <div class="acct-title-wrap">
+                        <span class="acct-type-tag">Welfare</span>
+                        <b>Pension savings</b>
+                      </div>
+                    </div>
+                    <p class="acct-desc">Specially tailored for pensioners, seniors (60+), and disability beneficiaries with direct treasury PPO credit.</p>
+                    
+                    <div class="acct-specs">
+                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
+                      <span>Age: <strong>60+ (or 18+ Disability)</strong></span>
+                      <span>Fee: <strong>₹0/mo</strong></span>
+                    </div>
+
+                    <div class="acct-handy-box">
+                      <div class="acct-handy-title">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                        Keep in handy before applying:
+                      </div>
+                      <ul class="acct-handy-list">
+                        <li><strong>Proof of Age & ID:</strong> Aadhaar, Passport, or Voter ID</li>
+                        <li><strong>PPO Order / Disability Card:</strong> Pension Payment Order or UDID Certificate</li>
+                        <li><strong>Proof of Address:</strong> Resident address proof</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div class="acct-radio-row">
+                    <span class="acct-radio-circle">✓</span>
+                    <span>Click to Select This Account</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
-      <!-- STEP 2: FILL OUT APPLICATION FORM & STEP 3: SUBMIT VERIFICATION DOCUMENTS -->
+      <!-- ==================== SEARCHABLE AUTOTYPE BRANCH DROPDOWN ==================== -->
+      <div class="step locked" id="branchStep" inert data-testid="start-branch-step">
+        <h3>Choose your home branch</h3>
+        <p style="color:var(--ti);margin:0 0 1rem;font-size:0.9rem">Type to search and select your servicing branch:</p>
+
+        <div class="branch-autotype-wrap">
+          <div class="branch-search-box">
+            <svg class="branch-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input type="text" id="branch-search-input" class="branch-search-input" placeholder="Type city or branch name (e.g. Downtown, Mumbai, Bengaluru, Delhi)..." autocomplete="off" spellcheck="false" data-testid="start-branch-input">
+          </div>
+
+          <!-- Floating Search Dropdown List -->
+          <div id="branch-dropdown-list" class="branch-dropdown-list" role="listbox"></div>
+
+          <!-- Selected Branch Tag Display -->
+          <div id="branch-selected-tag" class="branch-selected-tag" role="status"></div>
+        </div>
+
+        <!-- Hidden inputs syncing with form backend -->
+        <select id="step1-branch-select" style="display:none;" required>
+          <option value="">-- Select Branch --</option>
+          <option value="Downtown Main Branch" data-code="BR001">Downtown Main Branch</option>
+          <option value="Central Digital Branch" data-code="NBK-001">Central Digital Branch</option>
+          <option value="Mumbai Main Branch" data-code="BOM-001">Mumbai Main Branch</option>
+          <option value="Delhi Connaught Place Branch" data-code="DEL-002">Delhi Connaught Place Branch</option>
+          <option value="Bengaluru Tech Park Branch" data-code="BLR-003">Bengaluru Tech Park Branch</option>
+          <option value="Hyderabad Cyber City Branch" data-code="HYD-004">Hyderabad Cyber City Branch</option>
+          <option value="Chennai Central Branch" data-code="MAA-005">Chennai Central Branch</option>
+          <option value="Kolkata Park Street Branch" data-code="CCU-006">Kolkata Park Street Branch</option>
+          <option value="Pune Shivaji Nagar Branch" data-code="PNQ-007">Pune Shivaji Nagar Branch</option>
+          <option value="Ahmedabad Ashram Road Branch" data-code="AMD-008">Ahmedabad Ashram Road Branch</option>
+        </select>
+        <input type="hidden" id="step1-branch-code" value="">
+      </div>
+
+      <!-- ==================== ELIGIBILITY CONFIRMATION ==================== -->
+      <div class="step locked" id="eligStep" inert data-testid="start-eligibility-step">
+        <label class="elig">
+          <input type="checkbox" id="elig" data-testid="start-eligibility-checkbox">
+          <span class="box">
+            <svg viewBox="0 0 24 24" width="18" height="18">
+              <path d="M5 12l5 5 9-10"/>
+            </svg>
+          </span>
+          <span>
+            <strong>I confirm my eligibility:</strong> I meet the bank’s rules (age requirements, residency, and required initial deposit) and possess the demanded verification documents (Proof of Identity, Proof of Address, and Tax ID like SSN or PAN).
+          </span>
+        </label>
+        <input type="checkbox" id="chk-eligibility-agreed" style="display:none;">
+      </div>
+
+      <!-- ==================== STICKY ACTION BAR ==================== -->
+      <div class="bar">
+        <p id="sum" aria-live="polite" data-testid="start-summary-text">Choose an account to begin.</p>
+        <button type="button" class="btn" id="go" disabled data-testid="start-continue-button">Continue to your application</button>
+      </div>
+    </section>
+
+    <!-- ==================== CINEMATIC TYPEWRITER APPLICATION LOADER ==================== -->
+    <div id="app-creation-loader" role="dialog" aria-modal="true" aria-label="Creating your application">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <span class="term-dot red"></span>
+          <span class="term-dot yellow"></span>
+          <span class="term-dot green"></span>
+          <span class="term-title">[SECURE LEDGER DISPATCH • ENCRYPTED SESSION]</span>
+        </div>
+        <div class="terminal-body">
+          <div id="terminal-output"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Iris Wipe Transition Element -->
+    <div id="wipe" aria-hidden="true"></div>
+  </div>
+
+  <!-- ==================== 3-STEP APPLICATION WIZARD ==================== -->
+  <section id="wizard-section" class="glass-card oac-s37" style="display:none;">
+    
+    <!-- Wizard Progress Indicators (Streamlined 3 Steps - Item 1) -->
+    <div class="wizard-steps">
+      <div id="step-indicator-1" class="step-indicator">
+        <span class="step-badge">1</span>
+        <span data-i18n="step1_name">Choose Account &amp; Branch</span>
+      </div>
+      <div class="oac-s38"></div>
+      <div id="step-indicator-2" class="step-indicator active">
+        <span class="step-badge">2</span>
+        <span data-i18n="step2_name">Uniform Application Form</span>
+      </div>
+      <div class="oac-s38"></div>
+      <div id="step-indicator-4" class="step-indicator">
+        <span class="step-badge">3</span>
+        <span data-i18n="step4_name">Confirmation &amp; Submission</span>
+      </div>
+    </div>
+<!-- STEP 2: FILL OUT APPLICATION FORM & STEP 3: SUBMIT VERIFICATION DOCUMENTS -->
       <form id="form-customer-application" novalidate onsubmit="event.preventDefault(); submitCustomerApplication(this);">
         <input type="hidden" id="apply-selected-account-type" name="accountType" value="SAVINGS">
 
@@ -2756,5 +2668,10 @@
   <script src="/js/dropdown.js?v=20261011_01"></script>
   <script src="/js/validation.js?v=20261011_01"></script>
   <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+  <footer data-testid="openstart-footer-notice" style="padding:2rem clamp(16px,4vw,48px) 3rem;max-width:1500px;margin:auto;color:var(--ti);font-size:0.85rem;border-top:1px solid var(--line);">
+    <p style="max-width:70ch;margin:0">NeoBank is a demo and developer sandbox. It is not a bank, holds no real money, and is not insured. Everything shown here is sample data.</p>
+  </footer>
+
+  <script src="/js/open_account_customer.js"></script>
 </body>
 </html>

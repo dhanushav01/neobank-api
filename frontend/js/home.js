@@ -226,14 +226,16 @@
     size();
   });
 
-  // Smooth Scroll to Explore Handler
+  // Direct Scroll to Explore Handler (Bypasses intermediate stage card tilt/spin delay)
   var exploreBtn = $('[data-testid="home-hero-explore-button"]');
   if (exploreBtn) {
     exploreBtn.addEventListener('click', function (e) {
       var target = document.getElementById('start');
       if (target) {
         e.preventDefault();
-        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        var navHeight = document.querySelector('header') ? document.querySelector('header').offsetHeight : 64;
+        var targetY = Math.max(0, Math.round(target.getBoundingClientRect().top + window.pageYOffset - navHeight - 12));
+        window.scrollTo({ top: targetY, behavior: 'instant' });
         if (history.pushState) {
           history.pushState(null, '', '#start');
         }
