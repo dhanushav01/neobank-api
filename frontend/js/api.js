@@ -125,7 +125,9 @@ async function api(path, options = {}) {
 
     if (!response.ok) {
       const errMsg = data.message || `API Error (${response.status})`;
-      showToast(errMsg, 'error');
+      if (!options || (!options.silent && !options.skipToast)) {
+        showToast(errMsg, 'error');
+      }
       
       // Auto logout if 401 unauthenticated
       if (response.status === 401 && !path.includes('/auth/login') && !path.includes('/auth/register') && !path.includes('/auth/forgot-password')) {

@@ -648,13 +648,13 @@
 
       try {
         var payload = {
-          account_type: st.type || 'SAVINGS',
-          branch: st.name,
-          branch_code: st.code,
-          eligibility_confirmed: true
+          accountType: st.type || 'SAVINGS',
+          branchName: st.name || 'Mumbai Main Branch',
+          branchCode: st.code || 'BOM-001',
+          eligibilityConfirmed: true
         };
 
-        var res = await fetch('/api/onboarding/initiate', {
+        var res = await fetch('/api/v1/onboarding/initiate-draft', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -665,9 +665,9 @@
           data = await res.json();
         }
 
-        var appNum = (data && data.application_number) ? data.application_number :
-                     'APP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
-        var secret = (data && data.draft_secret) ? data.draft_secret : 'sec_' + Math.random().toString(36).substring(2, 10);
+        var appNum = (data && (data.applicationNumber || data.application_number)) ? (data.applicationNumber || data.application_number) :
+                     'APP-' + new Date().getFullYear() + '-' + Math.floor(100000 + Math.random() * 900000);
+        var secret = (data && (data.draftSecret || data.draft_secret)) ? (data.draftSecret || data.draft_secret) : 'sec_' + Math.random().toString(36).substring(2, 10);
 
         window.currentApplicationNumber = appNum;
         window.currentDraftSecret = secret;
@@ -702,6 +702,13 @@
 // STEP 2: UNIFORM APPLICATION FORM ENGINE & 3D INTERACTIVE WORKBENCH
 // =================================================================
 window.initUniformApplicationForm = function (appNum, accType, accLabel, branchName, branchCode) {
+  var wiz = document.getElementById('wizard-section');
+  if (wiz) wiz.style.display = 'block';
+  var step1 = document.getElementById('onboarding-step-1');
+  if (step1) step1.style.display = 'none';
+  var sampleBtn = document.getElementById('sample');
+  if (sampleBtn) sampleBtn.style.display = 'inline-block';
+
   if (window._uniformFormInitialized && window._currentUniformNum === appNum) {
     return;
   }
@@ -833,6 +840,10 @@ function update(){
   if(view==='form')$('#left').textContent=left?left+' required '+(left===1?'item':'items')+' left on this page':'This page is complete';
 
   $('#acn').textContent=NAMES[S.acctType]||'';$('#acm').textContent='Minimum deposit ₹ '+(MINS[S.acctType]||0).toLocaleString('en-IN')+'.00';
+  if (branchName) {
+    var acbEl = $('#acb');
+    if (acbEl) acbEl.textContent = branchName + (branchCode ? ' (' + branchCode + ')' : '');
+  }
 
 }
 
@@ -1250,8 +1261,14 @@ document.addEventListener('DOMContentLoaded', function () {
   var path = window.location.pathname;
   if ((wiz && wiz.style.display !== 'none') || params.get('step') === '2' || path.indexOf('/open_account_customer/APP') !== -1) {
     var appMatch = path.match(/APP-[0-9A-Za-z-]+/) || [params.get('app') || ''];
+    var appNum = (appMatch && appMatch[0]) ? appMatch[0] : '';
+    if (wiz) wiz.style.display = 'block';
+    var step1 = document.getElementById('onboarding-step-1');
+    if (step1) step1.style.display = 'none';
+    var sampleBtn = document.getElementById('sample');
+    if (sampleBtn) sampleBtn.style.display = 'inline-block';
     if (typeof window.initUniformApplicationForm === 'function') {
-      window.initUniformApplicationForm(appMatch[0] || '', params.get('type') || 'SAVINGS', '', '', '');
+      window.initUniformApplicationForm(appNum, params.get('type') || 'SAVINGS', '', '', '');
     }
   }
 });

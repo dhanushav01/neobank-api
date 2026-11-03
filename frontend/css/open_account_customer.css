@@ -3313,7 +3313,9 @@ body.light-theme header.start-header .theme-toggle-btn {
   }
 }
 
-.rail {
+/* Pinned stage scroll storytelling rail only */
+.stage .rail,
+.pin .rail {
   position: absolute;
   left: clamp(10px, 2.2vw, 32px);
   top: 22%;
@@ -3322,7 +3324,8 @@ body.light-theme header.start-header .theme-toggle-btn {
   background: var(--line);
 }
 
-.rail i {
+.stage .rail i,
+.pin .rail i {
   display: block;
   width: 100%;
   height: calc(var(--p, 0) * 100%);
@@ -4362,19 +4365,38 @@ h1#title {
 }
 
 .cols {
-  display: grid;
-  gap: 1.6rem;
+  display: grid !important;
+  gap: 1.6rem !important;
+}
+
+.wrap .rail,
+aside.app-rail,
+.cols > .rail,
+.cols > aside {
+  position: static;
+  width: 100% !important;
+  max-width: 290px !important;
+  height: auto !important;
+  background: transparent !important;
+  top: auto;
+  left: auto;
+  bottom: auto;
 }
 
 @media (min-width: 1000px) {
   .cols {
-    grid-template-columns: 290px 1fr;
-    gap: 2.4rem;
+    grid-template-columns: 290px 1fr !important;
+    gap: 2.4rem !important;
   }
-  .rail {
-    position: sticky;
-    top: 100px;
-    align-self: start;
+  .wrap .rail,
+  aside.app-rail,
+  .cols > .rail,
+  .cols > aside {
+    position: sticky !important;
+    top: 110px !important;
+    align-self: start !important;
+    width: 290px !important;
+    max-width: 290px !important;
   }
 }
 
@@ -4505,58 +4527,63 @@ h1#title {
   transform: rotate(45deg) translate(-1px, -1px);
 }
 
+/* 3D page turn */
 .pgs {
-  position: relative;
-  perspective: 1400px;
+  display: grid !important;
+  perspective: 2200px !important;
+  width: 100% !important;
 }
 
 .pg {
-  display: none;
-  transform-origin: left center;
+  display: none !important;
+  grid-area: 1/1 !important;
+  gap: 1.2rem !important;
+  align-content: start !important;
+  transform-origin: left center !important;
 }
 
 .pg.on {
-  display: block;
+  display: grid !important;
 }
 
 .pg.in {
-  display: block;
-  animation: pIn 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  display: grid !important;
+  animation: tIn 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .pg.out {
-  display: block;
-  animation: pOut 0.45s cubic-bezier(0.4, 0, 1, 1) both;
+  display: grid !important;
+  animation: tOut 0.8s cubic-bezier(0.6, 0, 0.4, 1) both;
   pointer-events: none;
 }
 
 .pg.inb {
-  display: block;
-  animation: pInB 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+  display: grid !important;
+  animation: tInB 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .pg.outb {
-  display: block;
-  animation: pOutB 0.45s cubic-bezier(0.4, 0, 1, 1) both;
+  display: grid !important;
+  animation: tOutB 0.7s cubic-bezier(0.6, 0, 0.4, 1) both;
   pointer-events: none;
 }
 
-@keyframes pIn {
-  from { opacity: 0; transform: rotateY(-36deg) translateX(40px); }
+@keyframes tIn {
+  from { opacity: 0; transform: rotateY(14deg) translateZ(-180px) translateX(50px); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes pOut {
-  to { opacity: 0; transform: rotateY(36deg) translateX(-40px); }
+@keyframes tOut {
+  to { opacity: 0; transform: rotateY(-96deg); }
 }
 
-@keyframes pInB {
-  from { opacity: 0; transform: rotateY(36deg) translateX(-40px); }
+@keyframes tInB {
+  from { opacity: 0; transform: rotateY(-96deg); }
   to { opacity: 1; transform: none; }
 }
 
-@keyframes pOutB {
-  to { opacity: 0; transform: rotateY(-36deg) translateX(40px); }
+@keyframes tOutB {
+  to { opacity: 0; transform: rotateY(12deg) translateZ(-180px) translateX(50px); }
 }
 
 .sec {
