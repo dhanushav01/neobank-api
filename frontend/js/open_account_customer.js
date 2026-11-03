@@ -706,8 +706,6 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
   if (wiz) wiz.style.display = 'block';
   var step1 = document.getElementById('onboarding-step-1');
   if (step1) step1.style.display = 'none';
-  var sampleBtn = document.getElementById('sample');
-  if (sampleBtn) sampleBtn.style.display = 'inline-block';
 
   if (window._uniformFormInitialized && window._currentUniformNum === appNum) {
     return;
@@ -1106,57 +1104,44 @@ cv.onpointerup=function(){dr=false;if(has){S.signature='Signed';saved();update()
 
 $('#sigclr').onclick=function(){has=false;cx.clearRect(0,0,cv.width,cv.height);S.signature='';$('#sigp').style.opacity=1;update()};
 
-/* sample data */
-
-$('#sample').onclick=function(){
-
-  for(var pass=0;pass<4;pass++){cond();$$('[data-k]').filter(act).forEach(function(e){if(val(e))return;
-
-    if(e.classList.contains('bxs')){var k=e.dataset.kind,L=+e.dataset.len;setBoxes(e,k==='N'?(e.dataset.k==='dob'||e.dataset.k==='jDob'?'12051994':'9876501234567890'.slice(0,L)):e.dataset.k==='pan'?'ABCDE1234F':'SAMPLE')}
-
-    else if(e.classList.contains('pills')){var p=$('.pill',e);pick(e,p.dataset.v)}
-
-    else if(e.matches('select')){e.selectedIndex=1;S[e.dataset.k]=e.value}
-
-    else if (e.matches('input.inp') && e.type !== 'file') {
-      if (e.dataset.k === 'firstName') e.value = 'Alexander';
-      else if (e.dataset.k === 'lastName') e.value = 'Vance';
-      else if (e.dataset.k === 'middleName') e.value = 'Victor';
-      else if (e.dataset.k === 'father') e.value = 'Arthur Vance';
-      else if (e.dataset.k === 'mother') e.value = 'Eleanor Vance';
-      else if (e.dataset.k === 'emailUser') e.value = 'alexander.vance';
-      else if (e.dataset.k === 'house') e.value = '42A Skyline Tower';
-      else if (e.dataset.k === 'street') e.value = 'Marine Drive';
-      else if (e.dataset.k === 'city') e.value = 'Mumbai';
-      else if (e.dataset.k === 'district') e.value = 'Mumbai City';
-      else if (e.dataset.k === 'state') e.value = 'Maharashtra';
-      else if (e.dataset.k === 'corrAddr') e.value = 'Same as permanent residence';
-      else if (e.dataset.k === 'cardName') e.value = 'ALEXANDER VANCE';
-      else if (e.dataset.k === 'jName') e.value = 'Victoria Vance';
-      else if (e.dataset.k === 'nomName') e.value = 'Sarah Vance';
-      else if (e.dataset.k === 'nomAddr') e.value = '42A Skyline Tower, Marine Drive, Mumbai';
-      else e.value = e.type === 'number' ? '2' : 'Sample Data';
-      S[e.dataset.k] = e.value;
-    }
-
-    else if(e.matches('.slot'))attach(e,'sample.pdf')
-
-    else if(e.classList.contains('sigw')){fit();has=true;cx.beginPath();cx.moveTo(30,110);cx.bezierCurveTo(60,20,90,20,100,90);cx.bezierCurveTo(110,130,150,40,190,70);cx.bezierCurveTo(215,90,240,60,270,80);cx.stroke();S.signature='Signed'}
-
-    else if(e.id==='declc'||e.dataset.k==='decl'){$('#declc').checked=true;S.decl=true}});
-
-    var dep=$('#dep');dep.value=Math.max(MINS[S.acctType]||0,1000);dep.dispatchEvent(new Event('input',{bubbles:true}));var pw=$('#pw');pw.value='Sample@1234';pw.dispatchEvent(new Event('input',{bubbles:true}));update()}
-
-  update();toast('Sample data filled. Press Continue.')};
-
 /* reference + copy */
+var num = (appNum && String(appNum).startsWith('APP-')) ? appNum :
+          (window.currentApplicationNumber && String(window.currentApplicationNumber).startsWith('APP-')) ? window.currentApplicationNumber :
+          ('APP-2026-' + (100000 + Math.floor(Math.random() * 899999)));
+window.currentApplicationNumber = num;
 
-// Application reference number
-num = num || ('APP-2026-' + (100000 + Math.floor(Math.random() * 899999)));
+var appNoEl = $('#appno');
+if (appNoEl) {
+  appNoEl.textContent = num;
+  if (!reduce) {
+    var n = 0, c = '0123456789';
+    var iv = setInterval(function () {
+      n++;
+      appNoEl.textContent = num.split('').map(function (ch, i) {
+        return i >= 9 && i >= n / 2 + 3 ? c[Math.floor(Math.random() * 10)] : ch;
+      }).join('');
+      if (n > 26) {
+        clearInterval(iv);
+        appNoEl.textContent = num;
+      }
+    }, 45);
+  }
+}
 
-(function(){var el=$('#appno'),n=0,c='0123456789';if(reduce){el.textContent=num;return}var iv=setInterval(function(){n++;el.textContent=num.split('').map(function(ch,i){return i>=9&&i>=n/2+3?c[Math.floor(Math.random()*10)]:ch}).join('');if(n>26){clearInterval(iv);el.textContent=num}},45)})();
-
-$('#copy').onclick=function(){try{navigator.clipboard.writeText(num).then(function(){toast('Reference copied')},function(){toast(num)})}catch(e){toast(num)}};
+var copyBtn = $('#copy');
+if (copyBtn) {
+  copyBtn.onclick = function () {
+    try {
+      navigator.clipboard.writeText(num).then(function () {
+        toast('Reference copied');
+      }, function () {
+        toast(num);
+      });
+    } catch (e) {
+      toast(num);
+    }
+  };
+}
 
 /* tilt on the account card */
 
@@ -1265,8 +1250,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (wiz) wiz.style.display = 'block';
     var step1 = document.getElementById('onboarding-step-1');
     if (step1) step1.style.display = 'none';
-    var sampleBtn = document.getElementById('sample');
-    if (sampleBtn) sampleBtn.style.display = 'inline-block';
+    
     if (typeof window.initUniformApplicationForm === 'function') {
       window.initUniformApplicationForm(appNum, params.get('type') || 'SAVINGS', '', '', '');
     }

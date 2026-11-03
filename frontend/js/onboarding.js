@@ -3741,20 +3741,17 @@ function goToOnboardingStep(stepNumber) {
   // Support uniform 3D workbench and wizard section
   const wizSection = document.getElementById('wizard-section');
   const step1Section = document.getElementById('onboarding-step-1');
-  const sampleBtn = document.getElementById('sample');
-  if (stepNumber >= 2) {
+    if (stepNumber >= 2) {
     if (step1Section) step1Section.style.display = 'none';
     if (wizSection) wizSection.style.display = 'block';
-    if (sampleBtn) sampleBtn.style.display = 'inline-block';
-    if (typeof window.initUniformApplicationForm === 'function') {
+        if (typeof window.initUniformApplicationForm === 'function') {
       const appNum = currentApplicationNumber || (window.location.pathname.match(/APP-[0-9A-Za-z-]+/) || [])[0] || '';
       window.initUniformApplicationForm(appNum, selectedAccountType || 'SAVINGS', '', '', '');
     }
   } else if (stepNumber === 1) {
     if (step1Section) step1Section.style.display = 'block';
     if (wizSection) wizSection.style.display = 'none';
-    if (sampleBtn) sampleBtn.style.display = 'none';
-  }
+      }
 
   // Toggle Floating Action Bar visibility (Requirement 8)
   const floatingBar = document.getElementById('floating-form-action-bar');
