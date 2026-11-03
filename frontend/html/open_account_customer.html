@@ -147,13 +147,14 @@
     </section>
 
     <!-- ==================== ACCOUNT & BRANCH PICKER SECTION ==================== -->
+        <!-- ==================== ACCOUNT & BRANCH PICKER SECTION ==================== -->
     <section class="pick" id="start" data-testid="start-pick-section">
       <h2>Pick the account that fits.</h2>
       
       <div class="cats">
         <!-- CATEGORY 1: EVERYDAY / TRANSACTIONAL -->
-        <div class="cat open" data-testid="start-category-everyday">
-          <button type="button" class="cat-h" aria-expanded="true" aria-controls="cat-everyday" data-testid="start-category-everyday-button">
+        <div class="cat" data-testid="start-category-everyday">
+          <button type="button" class="cat-h" aria-expanded="false" aria-controls="cat-everyday" data-testid="start-category-everyday-button">
             <b>Everyday / Transactional</b>
             <span>3 account types</span>
           </button>
@@ -162,110 +163,20 @@
               <div class="grid">
                 <!-- 1. High-Yield Savings -->
                 <button type="button" class="acct" aria-pressed="false" data-type="SAVINGS" data-label="High-yield savings" data-testid="start-account-savings-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Everyday</span>
-                        <b>High-yield savings</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Interest builds up daily with zero monthly maintenance fee and instant online transfers.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 1,000.00</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Identity:</strong> Passport, Driver's License, or Aadhaar</li>
-                        <li><strong>Proof of Address:</strong> Utility bill (&lt; 3 months) or Bank statement</li>
-                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>High-yield savings</b>
+                  <span>Interest builds up daily, with no monthly maintenance fee.</span>
                 </button>
 
                 <!-- 2. Current / Checking -->
                 <button type="button" class="acct" aria-pressed="false" data-type="CHECKING" data-label="Current / checking" data-testid="start-account-checking-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Transactional</span>
-                        <b>Current / checking</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">A full digital checking account with an international contactless Visa debit card.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 500.00</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Identity:</strong> Government-issued photo ID / Passport</li>
-                        <li><strong>Proof of Address:</strong> Utility bill or Council tax notice</li>
-                        <li><strong>Tax Identification:</strong> PAN, SSN, or National ID</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Current / checking</b>
+                  <span>A full digital checking account with a Visa debit card.</span>
                 </button>
 
                 <!-- 3. Corporate Salary -->
                 <button type="button" class="acct" aria-pressed="false" data-type="SALARY" data-label="Corporate salary" data-testid="start-account-salary-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Payroll</span>
-                        <b>Corporate salary</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">For employees paid through direct payroll. Zero minimum balance with premium salary perks.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Identity:</strong> Passport, Aadhaar, or Voter ID</li>
-                        <li><strong>Employment Proof:</strong> Recent payslip, Company ID, or Offer letter</li>
-                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Corporate salary</b>
+                  <span>For people paid through payroll. No minimum balance.</span>
                 </button>
               </div>
             </div>
@@ -283,74 +194,14 @@
               <div class="grid">
                 <!-- 4. Fixed Deposit -->
                 <button type="button" class="acct" aria-pressed="false" data-type="FIXED_DEPOSIT" data-label="Fixed / term deposit" data-testid="start-account-fixed-deposit-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Term Deposit</span>
-                        <b>Fixed / term deposit</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Lock in a high guaranteed rate for 6 to 60 months with quarterly compounded payouts.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 5,000.00</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Identity:</strong> Passport or Driver's License</li>
-                        <li><strong>Proof of Address:</strong> Registered utility or bank statement</li>
-                        <li><strong>Tax Identification:</strong> PAN card with Form 15G/15H (if applicable)</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Fixed / term deposit</b>
+                  <span>Lock in a rate for 6 to 60 months.</span>
                 </button>
 
-                <!-- 5. Money Market / Recurring Deposit -->
+                <!-- 5. Money Market -->
                 <button type="button" class="acct" aria-pressed="false" data-type="MONEY_MARKET" data-label="Money market / recurring" data-testid="start-account-money-market-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Recurring</span>
-                        <b>Money market / recurring</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Money-market yields with scheduled monthly auto-saving and flexible penalty-free liquidity.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 1,000.00</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Identity:</strong> Government-issued Photo ID</li>
-                        <li><strong>Proof of Address:</strong> Residential verification document</li>
-                        <li><strong>Tax Identification:</strong> PAN card or SSN</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Money market / recurring</b>
+                  <span>Money-market returns with scheduled monthly saving.</span>
                 </button>
               </div>
             </div>
@@ -366,112 +217,22 @@
           <div class="cat-b" id="cat-specialized">
             <div class="in">
               <div class="grid">
-                <!-- 6. NRI / Foreign Expat -->
+                <!-- 6. NRI Expat -->
                 <button type="button" class="acct" aria-pressed="false" data-type="NRI_EXPAT" data-label="NRI / foreign expat" data-testid="start-account-nri-expat-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Global</span>
-                        <b>NRI / foreign expat</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Multi-currency accounts for non-residents and expats: hold USD, EUR, GBP, AED, and INR freely.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>$100 / ₹ 5,000</strong></span>
-                      <span>Min Age: <strong>18+</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Passport & Visa:</strong> Valid passport with work permit / foreign residence visa</li>
-                        <li><strong>Overseas Address:</strong> Utility bill or foreign bank statement</li>
-                        <li><strong>Tax Identification:</strong> Foreign TIN or Indian PAN</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>NRI / foreign expat</b>
+                  <span>Multi-currency accounts for people living abroad: USD, EUR, GBP, AED, INR.</span>
                 </button>
 
-                <!-- 7. Student / Youth Advantage -->
+                <!-- 7. Student -->
                 <button type="button" class="acct" aria-pressed="false" data-type="STUDENT" data-label="Student / youth" data-testid="start-account-student-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Youth</span>
-                        <b>Student / youth</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Tailored for school and university students under 25 with no fees and student cashback discounts.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
-                      <span>Age: <strong>15 - 24</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Student Proof:</strong> College/University ID card or Admission letter</li>
-                        <li><strong>Proof of Identity:</strong> Aadhaar, Passport, or Birth Certificate</li>
-                        <li><strong>Parent/Guardian ID:</strong> (Required if under 18 years old)</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Student / youth</b>
+                  <span>For school and college students, with no maintenance fee.</span>
                 </button>
 
-                <!-- 8. Pension Savings Account -->
+                <!-- 8. Pension -->
                 <button type="button" class="acct" aria-pressed="false" data-type="PENSION" data-label="Pension savings" data-testid="start-account-pension-button">
-                  <div>
-                    <div class="acct-top">
-                      <div class="acct-title-wrap">
-                        <span class="acct-type-tag">Welfare</span>
-                        <b>Pension savings</b>
-                      </div>
-                    </div>
-                    <p class="acct-desc">Specially tailored for pensioners, seniors (60+), and disability beneficiaries with direct treasury PPO credit.</p>
-                    
-                    <div class="acct-specs">
-                      <span>Min Deposit: <strong>₹ 0.00</strong></span>
-                      <span>Age: <strong>60+ (or 18+ Disability)</strong></span>
-                      <span>Fee: <strong>₹0/mo</strong></span>
-                    </div>
-
-                    <div class="acct-handy-box">
-                      <div class="acct-handy-title">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                        Keep in handy before applying:
-                      </div>
-                      <ul class="acct-handy-list">
-                        <li><strong>Proof of Age & ID:</strong> Aadhaar, Passport, or Voter ID</li>
-                        <li><strong>PPO Order / Disability Card:</strong> Pension Payment Order or UDID Certificate</li>
-                        <li><strong>Proof of Address:</strong> Resident address proof</li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="acct-radio-row">
-                    <span class="acct-radio-circle">✓</span>
-                    <span>Click to Select This Account</span>
-                  </div>
+                  <b>Pension savings</b>
+                  <span>For pensioners, seniors (60+), and people with disabilities.</span>
                 </button>
               </div>
             </div>
@@ -479,25 +240,51 @@
         </div>
       </div>
 
-      <!-- ==================== SEARCHABLE AUTOTYPE BRANCH DROPDOWN ==================== -->
+      <!-- ==================== DYNAMIC ACCOUNT REQUIREMENTS & DOCUMENTS PANEL ==================== -->
+      <div class="need" id="needStep" hidden data-testid="start-requirements-panel" aria-live="polite">
+        <h3 id="needTitle"></h3>
+        <div class="facts" id="needFacts"></div>
+        <div class="two">
+          <div>
+            <h4>Eligibility requirements</h4>
+            <ul id="needReqs"></ul>
+          </div>
+          <div>
+            <h4>Have these documents ready</h4>
+            <ul id="needDocs"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ==================== HOME BRANCH SELECTION WITH SEARCH & WORDS PAGINATION ==================== -->
       <div class="step locked" id="branchStep" inert data-testid="start-branch-step">
         <h3>Choose your home branch</h3>
-        <p style="color:var(--ti);margin:0 0 1rem;font-size:0.9rem">Type to search and select your servicing branch:</p>
+        <p style="color:var(--ti);margin:0 0 1rem;font-size:0.9rem">Search or choose your servicing branch:</p>
 
-        <div class="branch-autotype-wrap">
-          <div class="branch-search-box">
-            <svg class="branch-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-            <input type="text" id="branch-search-input" class="branch-search-input" placeholder="Type city or branch name (e.g. Downtown, Mumbai, Bengaluru, Delhi)..." autocomplete="off" spellcheck="false" data-testid="start-branch-input">
-          </div>
+        <div class="branch-search-box">
+          <svg class="branch-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="branch-search-input" class="branch-search-input" placeholder="Search branches by city, name, or code..." autocomplete="off" spellcheck="false" data-testid="start-branch-input">
+        </div>
 
-          <!-- Floating Search Dropdown List -->
-          <div id="branch-dropdown-list" class="branch-dropdown-list" role="listbox"></div>
+        <div id="branch-selected-tag" class="branch-selected-tag" role="status"></div>
 
-          <!-- Selected Branch Tag Display -->
-          <div id="branch-selected-tag" class="branch-selected-tag" role="status"></div>
+        <div class="branches" id="branchGrid">
+          <!-- Dynamic branch cards rendered via JS -->
+        </div>
+
+        <!-- Words Pagination Bar: One -> Six with -> navigation -->
+        <div class="branch-pagination" id="branchPagination" data-testid="start-branch-pagination">
+          <button type="button" class="page-arrow prev-page-btn" id="prevBranchPage" aria-label="Previous branch page" title="Previous page">
+            ←
+          </button>
+          <div class="page-words" id="branchPageWords"></div>
+          <div class="page-word-indicator" id="branchPageWordIndicator"></div>
+          <button type="button" class="page-arrow next-page-btn" id="nextBranchPage" aria-label="Next branch page" title="Next page">
+            →
+          </button>
         </div>
 
         <!-- Hidden inputs syncing with form backend -->
@@ -513,6 +300,20 @@
           <option value="Kolkata Park Street Branch" data-code="CCU-006">Kolkata Park Street Branch</option>
           <option value="Pune Shivaji Nagar Branch" data-code="PNQ-007">Pune Shivaji Nagar Branch</option>
           <option value="Ahmedabad Ashram Road Branch" data-code="AMD-008">Ahmedabad Ashram Road Branch</option>
+          <option value="Jaipur Pink City Branch" data-code="JAI-009">Jaipur Pink City Branch</option>
+          <option value="Kochi Marine Drive Branch" data-code="COK-010">Kochi Marine Drive Branch</option>
+          <option value="Chandigarh Sector 17 Branch" data-code="IXC-011">Chandigarh Sector 17 Branch</option>
+          <option value="Lucknow Hazratganj Branch" data-code="LKO-012">Lucknow Hazratganj Branch</option>
+          <option value="Surat Diamond Bourse Branch" data-code="STV-013">Surat Diamond Bourse Branch</option>
+          <option value="Indore Vijay Nagar Branch" data-code="IDR-014">Indore Vijay Nagar Branch</option>
+          <option value="Goa Panaji Coastal Branch" data-code="GOI-015">Goa Panaji Coastal Branch</option>
+          <option value="Nagpur Zero Mile Branch" data-code="NAG-016">Nagpur Zero Mile Branch</option>
+          <option value="Bhubaneswar Temple City Branch" data-code="BBI-017">Bhubaneswar Temple City Branch</option>
+          <option value="Coimbatore Avinashi Road Branch" data-code="CJB-018">Coimbatore Avinashi Road Branch</option>
+          <option value="Visakhapatnam Beach Road Branch" data-code="VTZ-019">Visakhapatnam Beach Road Branch</option>
+          <option value="Bhopal MP Nagar Branch" data-code="BHO-020">Bhopal MP Nagar Branch</option>
+          <option value="Patna Fraser Road Branch" data-code="PAT-021">Patna Fraser Road Branch</option>
+          <option value="London International Desk" data-code="LON-022">London International Desk</option>
         </select>
         <input type="hidden" id="step1-branch-code" value="">
       </div>

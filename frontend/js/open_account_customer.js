@@ -1,8 +1,9 @@
 /**
  * NeoBank Open Account Start Page & Kinetic Onboarding Engine
- * Handles hero scroll storytelling, account selection with prerequisite documents,
- * autotype branch dropdown, eligibility confirmation, and cinematic typewriter
- * application reference generation.
+ * Handles hero scroll storytelling, category accordion with clean account cards,
+ * dynamic requirements & documents panel (#needStep), autotype branch search
+ * with words pagination (One -> Six), eligibility confirmation, and cinematic
+ * typewriter application reference generation.
  */
 
 (function () {
@@ -20,7 +21,7 @@
     code: ''
   };
 
-  // Branch Master Directory
+  // 24 Available Servicing Branches
   var BRANCHES = [
     { name: 'Downtown Main Branch', code: 'BR001', city: 'Metropolitan Core' },
     { name: 'Central Digital Branch', code: 'NBK-001', city: 'Online / Global Virtual' },
@@ -31,8 +32,71 @@
     { name: 'Chennai Central Branch', code: 'MAA-005', city: 'Chennai, Tamil Nadu' },
     { name: 'Kolkata Park Street Branch', code: 'CCU-006', city: 'Kolkata, West Bengal' },
     { name: 'Pune Shivaji Nagar Branch', code: 'PNQ-007', city: 'Pune, Maharashtra' },
-    { name: 'Ahmedabad Ashram Road Branch', code: 'AMD-008', city: 'Ahmedabad, Gujarat' }
+    { name: 'Ahmedabad Ashram Road Branch', code: 'AMD-008', city: 'Ahmedabad, Gujarat' },
+    { name: 'Jaipur Pink City Branch', code: 'JAI-009', city: 'Jaipur, Rajasthan' },
+    { name: 'Kochi Marine Drive Branch', code: 'COK-010', city: 'Kochi, Kerala' },
+    { name: 'Chandigarh Sector 17 Branch', code: 'IXC-011', city: 'Chandigarh' },
+    { name: 'Lucknow Hazratganj Branch', code: 'LKO-012', city: 'Lucknow, Uttar Pradesh' },
+    { name: 'Surat Diamond Bourse Branch', code: 'STV-013', city: 'Surat, Gujarat' },
+    { name: 'Indore Vijay Nagar Branch', code: 'IDR-014', city: 'Indore, Madhya Pradesh' },
+    { name: 'Goa Panaji Coastal Branch', code: 'GOI-015', city: 'Panaji, Goa' },
+    { name: 'Nagpur Zero Mile Branch', code: 'NAG-016', city: 'Nagpur, Maharashtra' },
+    { name: 'Bhubaneswar Temple City Branch', code: 'BBI-017', city: 'Bhubaneswar, Odisha' },
+    { name: 'Coimbatore Avinashi Road Branch', code: 'CJB-018', city: 'Coimbatore, Tamil Nadu' },
+    { name: 'Visakhapatnam Beach Road Branch', code: 'VTZ-019', city: 'Visakhapatnam, Andhra Pradesh' },
+    { name: 'Bhopal MP Nagar Branch', code: 'BHO-020', city: 'Bhopal, Madhya Pradesh' },
+    { name: 'Patna Fraser Road Branch', code: 'PAT-021', city: 'Patna, Bihar' },
+    { name: 'London International Desk', code: 'LON-022', city: 'London, United Kingdom' }
   ];
+
+  var NUMBER_WORDS = ['One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
+  var PAGE_SIZE = 4; // 4 branches per page for 2x2 grid -> 24 branches = 6 pages (One -> Six)
+  var currentBranchPage = 0;
+  var branchSearchFilter = '';
+
+  // Prerequisites & Demanded Documents Dictionary (No APY displayed)
+  var D = {
+    "SAVINGS": {
+      "chips": [["Min Deposit", "₹ 1,000.00"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Everyday Digital"]],
+      "reqs": ["Must be at least 18 years of age", "Initial deposit of at least ₹ 1,000.00 upon approval", "Resident or citizen of supported jurisdiction"],
+      "docs": [["Proof of Identity", "Passport, Driver's License, or Aadhaar Card"], ["Proof of Address", "Recent utility bill (< 3 months old) or Bank statement"], ["Tax Identification", "PAN card, SSN, or National Tax ID"]]
+    },
+    "CHECKING": {
+      "chips": [["Min Deposit", "₹ 500.00"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Transactional Checking"]],
+      "reqs": ["Must be at least 18 years of age", "Zero daily minimum balance penalty", "Contactless Visa debit card issued upon account opening"],
+      "docs": [["Proof of Identity", "Government-issued photo ID or Passport"], ["Proof of Address", "Utility bill, Rental agreement, or Council Tax notice"], ["Tax Identification", "PAN, SSN, or National ID"]]
+    },
+    "SALARY": {
+      "chips": [["Min Deposit", "₹ 0.00"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Corporate Payroll"]],
+      "reqs": ["Active corporate employee or salaried professional", "Zero minimum balance requirement across all tiers", "Direct recurring corporate payroll transfer credit required"],
+      "docs": [["Proof of Identity", "Passport, Aadhaar, or Voter ID"], ["Employment Proof", "Latest 3 months salary payslips or Official Corporate Offer Letter"], ["Tax Identification", "PAN card or SSN"]]
+    },
+    "FIXED_DEPOSIT": {
+      "chips": [["Min Deposit", "₹ 10,000.00"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Term Investment"]],
+      "reqs": ["Must be at least 18 years of age", "Minimum initial principal lock-in of ₹ 10,000.00", "Tenure flexibility from 6 months to 60 months with compound return"],
+      "docs": [["Proof of Identity", "Passport, National ID, or Driver's License"], ["Proof of Address", "Recent utility bill or municipal statement"], ["Source of Funds", "Origin bank statement verifying funding source"]]
+    },
+    "MONEY_MARKET": {
+      "chips": [["Min Deposit", "₹ 5,000.00"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "High-Yield Tier"]],
+      "reqs": ["Must be at least 18 years of age", "Initial deposit of at least ₹ 5,000.00 with disciplined monthly additions", "Flexible partial withdrawal options with zero lock-in fee"],
+      "docs": [["Proof of Identity", "Passport or National Photo ID"], ["Proof of Address", "Bank statement or utility bill (< 3 months)"], ["Tax Identification", "PAN, SSN, or Tax Certificate"]]
+    },
+    "NRI_EXPAT": {
+      "chips": [["Min Deposit", "₹ 5,000.00 (or $100 FX)"], ["Min Age", "18+"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Cross-Border FX"]],
+      "reqs": ["Non-Resident Indian (NRI), Person of Indian Origin (PIO), or overseas expat", "Zero FX conversion surcharge on incoming wire remittances", "Instant access to multi-currency sub-ledgers (USD, EUR, GBP, AED, INR)"],
+      "docs": [["Passport & Visa", "Valid passport with foreign employment/resident visa or permit"], ["Overseas Address", "Overseas utility bill, overseas bank statement, or tenancy contract"], ["Tax Declaration", "FATCA/CRS declaration and Form W-8BEN (if applicable)"]]
+    },
+    "STUDENT": {
+      "chips": [["Min Deposit", "₹ 0.00"], ["Age Bracket", "16 - 26"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Youth Advantage"]],
+      "reqs": ["Age strictly between 16 and 26 years", "Enrolled in accredited high school, college, or university program", "Zero maintenance charges and complimentary digital Visa card"],
+      "docs": [["Proof of Identity", "Passport, Student National ID, or Aadhaar"], ["Student Proof", "Valid student college ID card, bonafide letter, or admission slip"], ["Address Verification", "Dormitory registration certificate or parent/guardian address proof"]]
+    },
+    "PENSION": {
+      "chips": [["Min Deposit", "₹ 0.00"], ["Age Requirement", "60+ (or 18+ Disability)"], ["Monthly Fee", "₹0/mo"], ["Account Class", "Senior Priority"]],
+      "reqs": ["Senior Citizens (60+ years) OR Disability Pension Beneficiaries (18+)", "Eligible for direct Central/State Treasury, EPS, or Defense PPO credit", "Zero balance requirement with priority door-step banking assistance"],
+      "docs": [["Proof of Identity & Age", "Aadhaar Card, Passport, or Senior Citizen Card"], ["PPO / Disability Cert", "Pension Payment Order (PPO) copy or UDID Disability Certificate"], ["Proof of Address", "Aadhaar, utility bill, or Government allotment letter"]]
+    }
+  };
 
   /* ==========================================================================
      1. FLOWING AMBIENT PARTICLES CANVAS (#fx)
@@ -168,7 +232,7 @@
   }
 
   /* ==========================================================================
-     3. ACCOUNT CATEGORIES, SUBTYPES & PREREQUISITES
+     3. INTERACTIVE CATEGORY ACCORDION & ACCOUNT CARDS
      ========================================================================== */
   var bs = $('#branchStep');
   var es = $('#eligStep');
@@ -189,43 +253,103 @@
   }
 
   function update() {
-    var hasElig = el && el.checked;
-    if (go) go.disabled = !(st.type && st.code && hasElig);
+    if (!go || !sum) return;
+    var ready = !!(st.type && st.code && el && el.checked);
+    go.disabled = !ready;
 
-    if (sum) {
-      if (!st.type) {
-        sum.textContent = 'Choose an account to begin.';
-      } else if (!st.code) {
-        sum.textContent = st.label + '. Now choose your home branch.';
-      } else if (!hasElig) {
-        sum.textContent = st.label + ' at ' + st.name + '. Confirm your eligibility to continue.';
-      } else {
-        sum.textContent = st.label + ' at ' + st.name + '. Ready when you are.';
-      }
+    if (!st.type) {
+      sum.textContent = 'Choose an account to begin.';
+    } else if (!st.code) {
+      sum.textContent = st.label + '. Now choose your home branch.';
+    } else if (!el || !el.checked) {
+      sum.textContent = st.label + ' at ' + st.name + '. Confirm your eligibility to continue.';
+    } else {
+      sum.textContent = st.label + ' at ' + st.name + '. Ready when you are.';
     }
   }
 
-  // Accordion Toggle
+  // Render Dynamic Requirements Panel (#needStep)
+  function need(type) {
+    var d = D[type];
+    var p = $('#needStep');
+    if (!d || !p) return;
+
+    var title = $('#needTitle');
+    if (title) title.textContent = 'What you’ll need for ' + st.label;
+
+    var f = $('#needFacts');
+    if (f) {
+      f.innerHTML = '';
+      d.chips.forEach(function (c) {
+        var x = document.createElement('div');
+        var sm = document.createElement('small');
+        sm.textContent = c[0];
+        var b = document.createElement('b');
+        b.textContent = c[1];
+        x.appendChild(sm);
+        x.appendChild(b);
+        x.setAttribute('data-testid', 'start-fact-' + c[0].toLowerCase().replace(/\s+/g, '-'));
+        f.appendChild(x);
+      });
+    }
+
+    var u = $('#needReqs');
+    if (u) {
+      u.innerHTML = '';
+      d.reqs.forEach(function (t, i) {
+        var l = document.createElement('li');
+        l.textContent = t;
+        l.style.setProperty('--n', i);
+        l.setAttribute('data-testid', 'start-requirement-' + (i + 1));
+        u.appendChild(l);
+      });
+    }
+
+    var o = $('#needDocs');
+    if (o) {
+      o.innerHTML = '';
+      d.docs.forEach(function (t, i) {
+        var l = document.createElement('li');
+        l.style.setProperty('--n', i + 3);
+        if (t[0]) {
+          var b = document.createElement('b');
+          b.textContent = t[0] + ': ';
+          l.appendChild(b);
+        }
+        l.appendChild(document.createTextNode(t[1]));
+        l.setAttribute('data-testid', 'start-document-' + (i + 1));
+        o.appendChild(l);
+      });
+    }
+
+    p.hidden = false;
+    p.style.animation = 'none';
+    void p.offsetWidth;
+    p.style.animation = '';
+  }
+
+  // Category Accordion Toggling
   $$('.cat-h').forEach(function (btn) {
     btn.addEventListener('click', function () {
-      var cat = btn.closest('.cat');
-      var isOpen = cat.classList.contains('open');
+      var cat = btn.parentNode;
+      var isOpen = !cat.classList.contains('open');
+
       $$('.cat').forEach(function (x) {
         x.classList.remove('open');
         var h = x.querySelector('.cat-h');
         if (h) h.setAttribute('aria-expanded', 'false');
       });
-      if (!isOpen) {
+
+      if (isOpen) {
         cat.classList.add('open');
         btn.setAttribute('aria-expanded', 'true');
       }
     });
   });
 
-  // Account Subtype Selection
+  // Account Card Selection
   $$('.acct').forEach(function (card) {
-    card.addEventListener('click', function (e) {
-      // Toggle card active state
+    card.addEventListener('click', function () {
       $$('.acct').forEach(function (x) {
         x.setAttribute('aria-pressed', 'false');
         x.classList.remove('selected');
@@ -233,79 +357,37 @@
       card.setAttribute('aria-pressed', 'true');
       card.classList.add('selected');
 
-      // Mark parent category as having a selection
       $$('.cat').forEach(function (c) {
         c.classList.toggle('has', c.contains(card));
       });
 
-      var first = !st.type || !st.code;
-      st.type = card.dataset.type || 'SAVINGS';
-      st.label = card.dataset.label || 'Savings Account';
+      var first = !st.type;
+      st.type = card.dataset.type || '';
+      st.label = card.dataset.label || '';
 
-      // Sync with underlying form hidden fields if available
-      var hiddenType = document.getElementById('apply-selected-account-type');
-      if (hiddenType) hiddenType.value = st.type;
-      if (typeof window.selectAccountType === 'function') {
-        window.selectAccountType(st.type);
-      }
-
+      need(st.type);
       lock(bs, false);
       update();
 
-      if (first) {
-        setTimeout(function () {
-          look(bs);
-          var branchInput = $('#branch-search-input');
-          if (branchInput) branchInput.focus();
-        }, 220);
-      }
+      var hiddenType = document.getElementById('apply-selected-account-type');
+      if (hiddenType) hiddenType.value = st.type;
+
+      setTimeout(function () {
+        look($('#needStep'));
+      }, 250);
     });
   });
 
   /* ==========================================================================
-     4. AUTOTYPE SEARCHABLE BRANCH DROPDOWN
+     4. BRANCH SELECTION WITH SEARCH & WORDS PAGINATION (One -> Six)
      ========================================================================== */
-  var branchInput = $('#branch-search-input');
-  var branchList = $('#branch-dropdown-list');
-  var branchSelectedTag = $('#branch-selected-tag');
-
-  function renderBranchOptions(filterText) {
-    if (!branchList) return;
-    var query = (filterText || '').trim().toLowerCase();
-    var matches = BRANCHES.filter(function (b) {
-      if (!query) return true;
+  function getFilteredBranches() {
+    var query = (branchSearchFilter || '').trim().toLowerCase();
+    if (!query) return BRANCHES;
+    return BRANCHES.filter(function (b) {
       return b.name.toLowerCase().indexOf(query) !== -1 ||
              b.code.toLowerCase().indexOf(query) !== -1 ||
              b.city.toLowerCase().indexOf(query) !== -1;
-    });
-
-    if (matches.length === 0) {
-      branchList.innerHTML = '<div class="branch-no-results">No branches match "' + filterText + '"</div>';
-      branchList.classList.add('open');
-      return;
-    }
-
-    var html = matches.map(function (b) {
-      var isSel = (b.code === st.code);
-      return (
-        '<div class="branch-item' + (isSel ? ' active' : '') + '" data-name="' + b.name + '" data-code="' + b.code + '">' +
-          '<div class="branch-item-left">' +
-            '<span class="branch-name">' + b.name + '</span>' +
-            '<span class="branch-city">' + b.city + '</span>' +
-          '</div>' +
-          '<span class="branch-code-badge">' + b.code + '</span>' +
-        '</div>'
-      );
-    }).join('');
-
-    branchList.innerHTML = html;
-    branchList.classList.add('open');
-
-    // Attach click events
-    $$('.branch-item').forEach(function (item) {
-      item.addEventListener('click', function () {
-        selectBranch(item.dataset.name, item.dataset.code);
-      });
     });
   }
 
@@ -313,27 +395,21 @@
     st.name = name;
     st.code = code;
 
-    if (branchInput) {
-      branchInput.value = name;
-    }
-    if (branchList) {
-      branchList.classList.remove('open');
+    $$('.br').forEach(function (x) {
+      var matched = (x.dataset.code === code);
+      x.setAttribute('aria-pressed', matched ? 'true' : 'false');
+      x.classList.toggle('selected', matched);
+    });
+
+    var selectedTag = $('#branch-selected-tag');
+    if (selectedTag) {
+      selectedTag.innerHTML = '<strong>' + name + '</strong> <span class="tag-code">' + code + '</span>';
+      selectedTag.style.display = 'inline-flex';
     }
 
-    if (branchSelectedTag) {
-      branchSelectedTag.innerHTML = '<strong>' + name + '</strong> <span class="tag-code">' + code + '</span>';
-      branchSelectedTag.style.display = 'inline-flex';
-    }
-
-    // Sync with existing form select and code inputs
     var s1Select = document.getElementById('step1-branch-select');
     var s1Code = document.getElementById('step1-branch-code');
-    if (s1Select) {
-      s1Select.value = name;
-      if (typeof window.syncBranchSelection === 'function') {
-        window.syncBranchSelection(name);
-      }
-    }
+    if (s1Select) s1Select.value = name;
     if (s1Code) s1Code.value = code;
 
     lock(es, false);
@@ -341,188 +417,261 @@
 
     setTimeout(function () {
       look(es);
-    }, 200);
+    }, 250);
   }
 
+  function renderBranchPage() {
+    var filtered = getFilteredBranches();
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentBranchPage >= totalPages) currentBranchPage = totalPages - 1;
+    if (currentBranchPage < 0) currentBranchPage = 0;
+
+    var startIdx = currentBranchPage * PAGE_SIZE;
+    var pageBranches = filtered.slice(startIdx, startIdx + PAGE_SIZE);
+
+    var container = $('#branchGrid');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (pageBranches.length === 0) {
+      container.innerHTML = '<div class="branch-no-results">No branches match "' + branchSearchFilter + '"</div>';
+    } else {
+      pageBranches.forEach(function (b) {
+        var isSel = (b.code === st.code);
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'br' + (isSel ? ' selected' : '');
+        btn.setAttribute('aria-pressed', isSel ? 'true' : 'false');
+        btn.setAttribute('data-name', b.name);
+        btn.setAttribute('data-code', b.code);
+        btn.setAttribute('data-testid', 'start-branch-' + b.code.toLowerCase() + '-button');
+
+        var bold = document.createElement('b');
+        bold.textContent = b.name;
+        var sp = document.createElement('span');
+        sp.textContent = b.code + ' • ' + b.city;
+
+        btn.appendChild(bold);
+        btn.appendChild(sp);
+
+        btn.addEventListener('click', function () {
+          selectBranch(b.name, b.code);
+        });
+
+        container.appendChild(btn);
+      });
+    }
+
+    renderPagination(totalPages);
+  }
+
+  function renderPagination(totalPages) {
+    var paginationWrap = $('#branchPagination');
+    var wordsWrap = $('#branchPageWords');
+    var indicator = $('#branchPageWordIndicator');
+    var prevBtn = $('#prevBranchPage');
+    var nextBtn = $('#nextBranchPage');
+
+    if (!paginationWrap || !wordsWrap) return;
+
+    if (totalPages <= 1) {
+      paginationWrap.style.display = 'none';
+      return;
+    }
+    paginationWrap.style.display = 'flex';
+
+    if (prevBtn) prevBtn.disabled = (currentBranchPage === 0);
+    if (nextBtn) nextBtn.disabled = (currentBranchPage >= totalPages - 1);
+
+    wordsWrap.innerHTML = '';
+    for (var i = 0; i < totalPages; i++) {
+      var word = NUMBER_WORDS[i] || ('Page ' + (i + 1));
+      var wordBtn = document.createElement('button');
+      wordBtn.type = 'button';
+      wordBtn.className = 'page-word-btn' + (i === currentBranchPage ? ' active' : '');
+      wordBtn.textContent = word;
+      wordBtn.setAttribute('data-testid', 'start-branch-page-' + word.toLowerCase() + '-button');
+      wordBtn.setAttribute('aria-label', 'Go to branch page ' + word);
+
+      (function (pageIdx) {
+        wordBtn.addEventListener('click', function () {
+          currentBranchPage = pageIdx;
+          renderBranchPage();
+        });
+      })(i);
+
+      wordsWrap.appendChild(wordBtn);
+    }
+
+    if (indicator) {
+      var currWord = NUMBER_WORDS[currentBranchPage] || ('Page ' + (currentBranchPage + 1));
+      var totalWord = NUMBER_WORDS[totalPages - 1] || ('Page ' + totalPages);
+      indicator.innerHTML = '<span class="curr-word">' + currWord + '</span> <span class="arrow-sep">→</span> <span class="total-word">' + totalWord + '</span>';
+    }
+  }
+
+  // Branch Search Input Listener
+  var branchInput = $('#branch-search-input');
   if (branchInput) {
-    branchInput.addEventListener('focus', function () {
-      renderBranchOptions(branchInput.value);
-    });
-
     branchInput.addEventListener('input', function () {
-      renderBranchOptions(branchInput.value);
+      branchSearchFilter = branchInput.value;
+      currentBranchPage = 0;
+      renderBranchPage();
     });
+  }
 
-    // Close branch dropdown on outside click
-    document.addEventListener('click', function (e) {
-      var wrap = branchInput.closest('.branch-autotype-wrap');
-      if (wrap && !wrap.contains(e.target) && branchList) {
-        branchList.classList.remove('open');
+  // Pagination Prev / Next Click Handlers
+  var prevBtn = $('#prevBranchPage');
+  if (prevBtn) {
+    prevBtn.addEventListener('click', function () {
+      var filtered = getFilteredBranches();
+      var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (currentBranchPage > 0) {
+        currentBranchPage--;
+        renderBranchPage();
       }
     });
   }
 
+  var nextBtn = $('#nextBranchPage');
+  if (nextBtn) {
+    nextBtn.addEventListener('click', function () {
+      var filtered = getFilteredBranches();
+      var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+      if (currentBranchPage < totalPages - 1) {
+        currentBranchPage++;
+        renderBranchPage();
+      }
+    });
+  }
+
+  // Initial Branch Grid Render
+  renderBranchPage();
+
   /* ==========================================================================
-     5. ELIGIBILITY CONFIRMATION CHECKBOX
+     5. ELIGIBILITY CONFIRMATION & TYPEWRITER APPLICATION CREATION
      ========================================================================== */
   if (el) {
     el.addEventListener('change', function () {
-      // Sync with existing hidden checkbox if present
-      var originalChk = document.getElementById('chk-eligibility-agreed');
-      if (originalChk) originalChk.checked = el.checked;
+      var chkHidden = document.getElementById('chk-eligibility-agreed');
+      if (chkHidden) chkHidden.checked = el.checked;
       update();
     });
   }
 
-  /* ==========================================================================
-     6. CINEMATIC TYPEWRITER APPLICATION CREATION LOADER
-     ========================================================================== */
-  var loaderOverlay = $('#app-creation-loader');
-  var terminalOutput = $('#terminal-output');
+  // Typewriter Terminal Animation Generator
+  async function startTypewriterLoader(appNumber) {
+    var loader = $('#app-creation-loader');
+    var output = $('#terminal-output');
+    if (!loader || !output) return;
 
-  function typeText(targetEl, text, speed) {
+    loader.classList.add('active');
+    output.innerHTML = '';
+
+    var logs = [
+      { text: "> Initializing zero-knowledge handshake with Core Ledger...", delay: 280 },
+      { text: "> Authenticating branch routing: " + st.name + " (" + st.code + ")", delay: 350 },
+      { text: "> Generating unforgeable 256-bit application state hash...", delay: 420 },
+      { text: "> Minting secure application reference...", delay: 300 },
+      { text: "> Application number is: " + appNumber, delay: 500, highlight: true },
+      { text: "> Synchronizing onboarding vault. Directing to uniform form...", delay: 400 }
+    ];
+
+    for (var i = 0; i < logs.length; i++) {
+      var item = logs[i];
+      var lineEl = document.createElement('div');
+      lineEl.className = 'term-line' + (item.highlight ? ' highlight-app-line' : '');
+      output.appendChild(lineEl);
+
+      await typeLine(lineEl, item.text, item.highlight, appNumber);
+      await sleep(item.delay);
+    }
+
+    await sleep(650);
+
+    // Transition to Step 2 form
+    loader.classList.remove('active');
+    var startSection = $('#onboarding-step-1');
+    var wiz = $('#wizard-section');
+    if (startSection) startSection.style.display = 'none';
+    if (wiz) {
+      wiz.style.display = 'block';
+      wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  function typeLine(el, text, isHighlight, appNum) {
     return new Promise(function (resolve) {
       var idx = 0;
-      var span = document.createElement('span');
-      targetEl.appendChild(span);
-      if (reduce) {
-        span.textContent = text;
-        resolve();
-        return;
-      }
-      var t = setInterval(function () {
+      var interval = setInterval(function () {
         if (idx < text.length) {
-          span.textContent += text.charAt(idx);
           idx++;
+          var curText = text.substring(0, idx);
+          if (isHighlight && curText.indexOf(appNum) !== -1) {
+            var prefix = curText.substring(0, curText.indexOf(appNum));
+            var matched = curText.substring(curText.indexOf(appNum));
+            el.innerHTML = prefix + '<span class="neon-app-number">' + matched + '</span>';
+          } else {
+            el.textContent = curText;
+          }
         } else {
-          clearInterval(t);
+          clearInterval(interval);
           resolve();
         }
-      }, speed || 24);
+      }, reduce ? 4 : 18);
     });
   }
 
-  async function startTypewriterLoader(appNumber) {
-    if (!loaderOverlay || !terminalOutput) return;
-
-    loaderOverlay.classList.add('active');
-    terminalOutput.innerHTML = '';
-
-    var line1 = document.createElement('div');
-    line1.className = 'term-line';
-    terminalOutput.appendChild(line1);
-    await typeText(line1, '> Initializing encrypted applicant enclave...', 10);
-
-    await new Promise(function (r) { setTimeout(r, 80); });
-
-    var line2 = document.createElement('div');
-    line2.className = 'term-line';
-    terminalOutput.appendChild(line2);
-    await typeText(line2, '> Connecting to ledger node: ' + st.name + ' [' + st.code + ']...', 9);
-
-    await new Promise(function (r) { setTimeout(r, 90); });
-
-    var line3 = document.createElement('div');
-    line3.className = 'term-line';
-    terminalOutput.appendChild(line3);
-    await typeText(line3, '> Creating your isolated banking application...', 10);
-
-    await new Promise(function (r) { setTimeout(r, 110); });
-
-    var line4 = document.createElement('div');
-    line4.className = 'term-line highlight-app-line';
-    terminalOutput.appendChild(line4);
-    await typeText(line4, '> Application number is: ', 10);
-
-    // Glowing Neon Application Reference Typed Letter-by-Letter
-    var appSpan = document.createElement('span');
-    appSpan.className = 'neon-app-number';
-    line4.appendChild(appSpan);
-    await typeText(appSpan, appNumber, 18);
-
-    await new Promise(function (r) { setTimeout(r, 200); });
-
-    var line5 = document.createElement('div');
-    line5.className = 'term-line';
-    terminalOutput.appendChild(line5);
-    await typeText(line5, '> Provisioning uniform digital form... Success.', 10);
-
-    await new Promise(function (r) { setTimeout(r, 250); });
-
-    // Iris wipe transition into Step 2 Form
-    var wipe = $('#wipe');
-    if (wipe && !reduce) {
-      var r = (go || document.body).getBoundingClientRect();
-      wipe.style.setProperty('--x', (r.left + r.width / 2) + 'px');
-      wipe.style.setProperty('--y', (r.top + r.height / 2) + 'px');
-      wipe.classList.add('on');
-    }
-
-    setTimeout(function () {
-      // Hide start hero & pinned stage
-      var heroSec = $('#onboarding-hero-section');
-      if (heroSec) heroSec.style.display = 'none';
-      if (stage) stage.style.display = 'none';
-      var pickSec = $('#start');
-      if (pickSec) pickSec.style.display = 'none';
-      var step1 = $('#onboarding-step-1');
-      if (step1) step1.style.display = 'none';
-
-      // Show Step 2 and unhide wizard section
-      var wiz = $('#wizard-section');
-      if (wiz) wiz.style.display = 'block';
-
-      if (typeof window.goToOnboardingStep === 'function') {
-        window.goToOnboardingStep(2);
-      }
-      var step2 = $('#onboarding-step-2');
-      if (step2) step2.style.display = 'block';
-
-      // Hide Loader & Wipe
-      if (loaderOverlay) loaderOverlay.classList.remove('active');
-      if (wipe) wipe.classList.remove('on');
-
-      // Scroll to step 2 form smoothly
-      var targetForm = $('#onboarding-step-2') || $('#wizard-section');
-      if (targetForm) {
-        targetForm.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }, reduce ? 50 : 500);
+  function sleep(ms) {
+    return new Promise(function (resolve) { setTimeout(resolve, reduce ? 10 : ms); });
   }
 
+  // Continue Button Listener
   if (go) {
     go.addEventListener('click', async function () {
       if (go.disabled) return;
 
-      var branchName = st.name;
-      var branchCode = st.code;
+      var w = $('#wipe');
+      if (w && !reduce) {
+        var r = go.getBoundingClientRect();
+        w.style.setProperty('--x', (r.left + r.width / 2) + 'px');
+        w.style.setProperty('--y', (r.top + r.height / 2) + 'px');
+        w.classList.add('on');
+        await sleep(350);
+        w.classList.remove('on');
+      }
 
       try {
-        var res = null;
-        if (typeof window.api === 'function') {
-          res = await window.api('/onboarding/initiate-draft', {
-            method: 'POST',
-            body: {
-              accountType: st.type,
-              branchName: branchName,
-              branchCode: branchCode
-            }
-          });
+        var payload = {
+          account_type: st.type || 'SAVINGS',
+          branch: st.name,
+          branch_code: st.code,
+          eligibility_confirmed: true
+        };
+
+        var res = await fetch('/api/onboarding/initiate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        var data = {};
+        if (res.ok) {
+          data = await res.json();
         }
 
-        var appNum = (res && res.applicationNumber) ? res.applicationNumber : ('APP-2026-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000));
-        var secret = (res && res.draftSecret) ? res.draftSecret : '';
+        var appNum = (data && data.application_number) ? data.application_number :
+                     'APP-' + new Date().getFullYear() + '-' + Math.floor(1000 + Math.random() * 9000) + '-' + Math.floor(1000 + Math.random() * 9000);
+        var secret = (data && data.draft_secret) ? data.draft_secret : 'sec_' + Math.random().toString(36).substring(2, 10);
 
         window.currentApplicationNumber = appNum;
         window.currentDraftSecret = secret;
         try { sessionStorage.setItem('draft_secret_' + appNum, secret); } catch (_) {}
 
-        // Update URL
         if (window.history && window.history.pushState) {
           window.history.pushState(null, '', '/open_account_customer/' + appNum);
         }
 
-        // Sync header displays
         var toolbarApp = document.getElementById('toolbar-app-number');
         if (toolbarApp) toolbarApp.textContent = appNum;
         var headerApp = document.getElementById('header-app-number-display');
@@ -530,7 +679,6 @@
         var badge = document.getElementById('step2-selected-account-badge');
         if (badge) badge.textContent = st.type;
 
-        // Trigger typewriter sequence
         await startTypewriterLoader(appNum);
 
       } catch (err) {

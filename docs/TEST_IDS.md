@@ -105,8 +105,10 @@ All test IDs strictly adhere to the kebab-case `area-element-type` specification
 | `start-account-nri-expat-button` | `<button>` | Subtype 6: NRI / foreign expat global account |
 | `start-account-student-button` | `<button>` | Subtype 7: Student / youth advantage |
 | `start-account-pension-button` | `<button>` | Subtype 8: Pension savings account |
+| `start-requirements-panel` | `<div>` | Dynamic panel revealing eligibility facts, requirements, and required documents |
 | `start-branch-step` | `<div>` | Home branch selection container |
-| `start-branch-input` | `<input>` | Autotype searchable branch autocomplete input |
+| `start-branch-input` | `<input>` | Real-time searchable branch filter input |
+| `start-branch-pagination` | `<div>` | Word-based pagination bar (One -> Six) with previous/next controls |
 | `start-eligibility-step` | `<div>` | Eligibility confirmation container |
 | `start-eligibility-checkbox` | `<input>` | Custom confirmation checkbox for bank rules & documents |
 | `start-summary-text` | `<p>` | Live contextual status update summary bar |
