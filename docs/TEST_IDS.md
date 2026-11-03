@@ -118,3 +118,67 @@ All test IDs strictly adhere to the kebab-case `area-element-type` specification
 | Test ID | HTML Element | Description / Purpose |
 | :--- | :--- | :--- |
 | `openstart-footer-notice` | `<footer>` | Regulatory demo sandbox and insurance notice |
+
+## Open Account Customer - Step 2: Uniform Application Form (Area: `app`)
+
+Interactive, 3D animated 4-page uniform application form matching the modern banking workstation aesthetic.
+
+### Application Header & Navigation Bar
+| Test ID | HTML Element | Description / Purpose |
+| :--- | :--- | :--- |
+| `app-wizard-section` | `<div>` | Container for the entire Step 2 application form workstation |
+| `app-reference-row` | `<div>` | Application reference number and autosave status bar |
+| `app-reference-number` | `<b>` | Generated unique reference code (`APP-YYYY-XXXXXX`) |
+| `app-copy-reference-button` | `<button>` | One-click clipboard copy for application reference |
+| `app-save-status` | `<span>` | Real-time autosave draft pulse indicator |
+| `app-fill-sample-button` | `<button>` | Automated demo data populator across all 4 pages |
+| `app-page-title` | `<h1>` | Contextual page heading title |
+| `app-stepper` | `<ol>` | 4-step global onboarding progress tracker |
+| `app-step-1-item` | `<li>` | Step 1 tracker: Account & branch |
+| `app-step-2-item` | `<li>` | Step 2 tracker: Uniform application form |
+| `app-step-3-item` | `<li>` | Step 3 tracker: Review & submit |
+| `app-step-4-item` | `<li>` | Step 4 tracker: Done |
+| `app-page-tabs` | `<div>` | Tab group for navigating pages 1 to 4 and 3D overview |
+| `app-tab-page-1-button` | `<button>` | Tab link to Page 1: CIF & CKYC |
+| `app-tab-page-2-button` | `<button>` | Tab link to Page 2: KYC & OVD |
+| `app-tab-page-3-button` | `<button>` | Tab link to Page 3: Account Form |
+| `app-tab-page-4-button` | `<button>` | Tab link to Page 4: Declarations |
+| `app-view-all-pages-button` | `<button>` | Launches the 3D interactive fan card overlay |
+
+### Sticky Rail (Account Summary & Progress)
+| Test ID | HTML Element | Description / Purpose |
+| :--- | :--- | :--- |
+| `app-selection-card` | `<div>` | 3D tiltable account summary card with branch details and min deposit |
+| `app-change-selection-link` | `<a>` | Link to smoothly return to Step 1 without losing state |
+| `app-progress-ring` | `<div>` | Circular SVG progress ring (64px) with animated stroke-dashoffset |
+| `app-nav-[section]-link` | `<a>` | Live section checklist navigation links reflecting completed status |
+
+### Form Content & Interactive Fields
+| Test ID | HTML Element | Description / Purpose |
+| :--- | :--- | :--- |
+| `app-pages-container` | `<div>` | 3D perspective wrapper hosting animated form pages |
+| `app-section-[slug]` | `<section>` | Structured card section with animated completion stamp |
+| `app-[key]-boxes` | `<div>` | Character box grid for regulatory fixed-length codes (CKYC, CIF, DOB, PAN, Aadhaar, PIN, Mobile) |
+| `app-[key]-input` | `<input>` | Standard text input supporting up to 50 characters for names, addresses, and details |
+| `app-[key]-options` | `<div>` | Pill button selector container |
+| `app-[key]-[value]-option` | `<button>` | Individual selection pill |
+| `app-[key]-select` | `<select>` | Native styled selection dropdown |
+| `app-[key]-slot` | `<div>` | File upload drop slot with animated progress bar indicator |
+| `app-signature-pad` | `<canvas>` | HTML5 touch/pointer signature drawing canvas |
+| `app-signature-clear-button` | `<button>` | Button to clear current digital signature |
+| `app-declaration-checkbox` | `<input>` | Regulatory terms & conditions consent checkbox |
+
+### Review & Submission Views
+| Test ID | HTML Element | Description / Purpose |
+| :--- | :--- | :--- |
+| `app-review-container` | `<div>` | Accordion summary of all user-entered details across 4 pages |
+| `app-edit-page-[N]-button` | `<button>` | Direct shortcut button jumping back to edit specific page |
+| `app-success-view` | `<div>` | Animated completion confirmation view with checkmark |
+| `app-success-number` | `<div>` | Prominently displayed reference code for tracking |
+| `app-track-button` | `<a>` | Direct CTA link to `/existing_application` |
+| `app-all-pages-view` | `<div>` | 3D fan overlay rendering all 4 pages as perspective cards |
+| `app-all-pages-close-button`| `<button>` | Closes the 3D fan overlay |
+| `app-action-bar` | `<div>` | Sticky bottom action bar with Back, item counter, and Continue |
+| `app-back-button` | `<button>` | Previous page navigation button |
+| `app-remaining-text` | `<p>` | Live polite screen reader status for remaining required items |
+| `app-continue-button` | `<button>` | Primary CTA: Continue / Review application / Submit application |

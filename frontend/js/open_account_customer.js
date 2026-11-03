@@ -598,6 +598,11 @@
       wiz.style.display = 'block';
       wiz.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
+    var sampleBtn = $('#sample');
+    if (sampleBtn) sampleBtn.style.display = 'inline-flex';
+    if (typeof window.initUniformApplicationForm === 'function') {
+      window.initUniformApplicationForm(appNumber, st.type, st.label, st.name, st.code);
+    }
   }
 
   function typeLine(el, text, isHighlight, appNum) {
@@ -691,3 +696,466 @@
 
   update();
 })();
+
+
+// =================================================================
+// STEP 2: UNIFORM APPLICATION FORM ENGINE & 3D INTERACTIVE WORKBENCH
+// =================================================================
+window.initUniformApplicationForm = function (appNum, accType, accLabel, branchName, branchCode) {
+  if (window._uniformFormInitialized && window._currentUniformNum === appNum) {
+    return;
+  }
+  window._uniformFormInitialized = true;
+  window._currentUniformNum = appNum;
+
+
+
+var $=function(s,r){return (r||document).querySelector(s)},$$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,S={appType:'NEW',accCategory:'NORMAL',form60:'NO',acctType:(new URLSearchParams(location.search).get('type')||'SAVINGS')},page=0,view='form';
+
+var MINS={SAVINGS:1000,CHECKING:500,SALARY:0,FIXED_DEPOSIT:10000,MONEY_MARKET:5000,NRI_EXPAT:5000,STUDENT:0,PENSION:0,BSBDA:0,OTHER:0};
+
+var NAMES={SAVINGS:'High-yield savings',CHECKING:'Current / checking',SALARY:'Corporate salary',FIXED_DEPOSIT:'Fixed / term deposit',MONEY_MARKET:'Money market / recurring',PENSION:'Pension savings',NRI_EXPAT:'NRI / foreign expat',STUDENT:'Student / youth',BSBDA:'Basic savings (BSBDA)',OTHER:'Other'};
+
+var slug=function(s){return String(s).toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')};
+
+var req=function(r){return r?'<i>*</i>':''};
+
+/* field builders */
+
+function bx(k,l,len,kind,r,o){o=o||{};var min=kind==='N'?len:1,i,h='';for(i=0;i<len;i++)h+='<input maxlength="1" inputmode="'+(kind==='N'?'numeric':'text')+'" autocomplete="off" aria-label="'+l+' character '+(i+1)+'">';
+
+  return '<div class="f"><span class="lb">'+l+req(r)+'</span><div class="bxs" data-k="'+k+'" data-l="'+l+'" data-len="'+len+'" data-kind="'+kind+'" data-min="'+min+'"'+(o.sep?' data-sep':'')+(r?' data-r':'')+' data-testid="app-'+k+'-boxes">'+h+'</div></div>'}
+
+function dt(k,l,r){return bx(k,l,8,'N',r,{sep:1}).replace('</span>','<small style="color:var(--ti)"> DD MM YYYY</small></span>')}
+
+function rd(k,l,opts,r,cl){return '<div class="f"><span class="lb">'+l+req(r)+'</span><div class="pills" data-k="'+k+'" data-l="'+l+'"'+(r?' data-r':'')+' role="radiogroup" data-testid="app-'+k+'-options">'+opts.map(function(o){var a=Array.isArray(o)?o:[o,o];return '<button type="button" class="pill" role="radio" data-v="'+a[0]+'" data-testid="app-'+k+'-'+slug(a[0])+'-option">'+a[1]+'</button>'}).join('')+'</div></div>'}
+
+function ch(k,l,opts,r){return '<div class="f"><span class="lb">'+l+req(r)+'</span><div class="pills" data-k="'+k+'" data-l="'+l+'" data-multi'+(r?' data-r':'')+' data-testid="app-'+k+'-options">'+opts.map(function(o){var a=Array.isArray(o)?o:[o,o];return '<button type="button" class="pill" role="checkbox" data-v="'+a[0]+'" data-testid="app-'+k+'-'+slug(a[0])+'-option">'+a[1]+'</button>'}).join('')+'</div></div>'}
+
+function tx(k,l,r,t){return '<div class="f"><span class="lb">'+l+req(r)+'</span><input class="inp" type="'+(t||'text')+'" data-k="'+k+'" data-l="'+l+'"'+(r?' data-r':'')+' data-testid="app-'+k+'-input"></div>'}
+
+function sl(k,l,opts,r){return '<div class="f"><span class="lb">'+l+req(r)+'</span><select class="sel" data-k="'+k+'" data-l="'+l+'"'+(r?' data-r':'')+' data-testid="app-'+k+'-select"><option value=""></option>'+opts.map(function(o){return '<option>'+o+'</option>'}).join('')+'</select></div>'}
+
+function fl(k,l,hint,r,cd){return '<label class="slot'+(cd?' cond off':'')+'"'+(cd?' data-c="'+cd+'"':'')+' data-slot data-k="'+k+'" data-l="'+l+'"'+(r?' data-r':'')+' data-testid="app-'+k+'-slot"><input type="file" hidden><b>'+l+req(r)+'</b><span>'+hint+'</span><em>Choose a file</em><i class="pb"></i></label>'}
+
+function cd(c,h){return '<div class="cond off" data-c="'+c+'">'+h+'</div>'}
+
+var YN=['YES','NO'],PFX=['Mr.','Mrs.','Ms.','Dr.','Prof.','Other'];
+
+var OVD=[['PASSPORT','Passport'],['VOTER_ID','Voter ID'],['DRIVING_LICENSE','Driving licence'],['AADHAAR','Aadhaar'],['NREGA','NREGA job card'],['NPR','NPR letter'],['OTHER','Other OVD'],['SALARY_PROOF','Salary proof'],['STUDENT_PROOF','Student proof'],['PENSION_PROOF','Pension proof'],['NRI_PROOF','NRI proof'],['FUNDS_PROOF','Source of funds proof']];
+
+var today=new Date().toLocaleDateString('en-GB');
+
+var PAGES=[
+
+{h:'Tell us about yourself.',t:'Page 1: CIF & CKYC',s:[
+
+ ['Form header & branch information','<div class="row"><div class="f"><span class="lb">Date</span><span class="fixed">'+today+'</span></div><div class="f"><span class="lb">Branch</span><span class="fixed">Mumbai Main Branch (BOM-001)</span></div></div>'+bx('ckyc','CKYC number (if you have one)',14,'N',0)+bx('cif','CIF number (if you have one)',10,'N',0)+rd('appType','Application type',[['NEW','New account']],1)+rd('accCategory','Account category',[['NORMAL','Normal'],['SMALL','Small'],['MINOR','Minor'],['STAFF','Staff']],1)],
+
+ ['1. Personal details (same as ID proof)',rd('namePrefix','Title',PFX,1)+tx('firstName','First name','e.g. Alexander',1,'text',50)+tx('middleName','Middle name','e.g. Victor',0,'text',50)+tx('lastName','Last name','e.g. Vance',1,'text',50)+tx('prevName','Previous name, if any','e.g. Maiden name',0,'text',50)+dt('dob','Date of birth',1)+rd('gender','Gender',[['MALE','Male'],['FEMALE','Female'],['TRANSGENDER','Transgender']],1)+rd('marital','Marital status',[['MARRIED','Married'],['UNMARRIED','Unmarried'],['OTHERS','Others']],1)+rd('nationality','Nationality',[['IN','Indian'],['OTHERS','Others']],1)+tx('father','Father’s name','Father full name',1,'text',50)+tx('mother','Mother’s name','Mother full name',1,'text',50)+tx('spouse','Spouse’s name, if married','Spouse full name',0,'text',50)+cd('accCategory=MINOR',rd('guardianPrefix','Guardian title',PFX,1)+tx('guardian','Guardian’s name','Guardian full name',1,'text',50)+rd('guardianRel','Guardian is',['Father','Mother','Legal Guardian'],1))+rd('religion','Religion',['Hindu','Muslim','Christian','Sikh','Buddhist','Jain','Others'],1)+rd('category','Category',['General','OBC','SC','ST'],1)+rd('disability','Do you have a disability?',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+cd('disability=YES',ch('assist','Assistance you would like',['Braille Passbook','Talking ATM','Wheelchair Access','Doorstep Banking','Large Print'],0)+fl('disabCert','Disability certificate','PDF, JPG or PNG',0))+rd('edu','Education',['Below SSC','SSC/HSC','Graduate','Post Graduate','Professional'],1)],
+
+ ['2. Occupation & financial profile',rd('emp','Employment status',[['EMPLOYED','Employed'],['PRIVATE_SECTOR','Private sector'],['BUSINESS','Business'],['SELF_EMPLOYED','Self-employed'],['RETIRED','Retired'],['HOUSEWIFE','Homemaker'],['STUDENT','Student'],['OTHERS','Others']],1)+'<div class="row">'+tx('employer','Employer or business name',0)+tx('university','University or institution (students)',0)+'</div>'+rd('income','Annual income',['Below 1 Lakh','1-5 Lakh','5-10 Lakh','10-25 Lakh','Above 25 Lakh'],1)+rd('funds','Source of funds',['Salary','Business Income','Agriculture','Investments','Inheritance / Family','Professional Fees'],1)],
+
+ ['3. Identification & tax information',cd('form60=NO',bx('pan','PAN',10,'X',1))+rd('form60','Do you file Form 60 instead of PAN?',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+cd('form60=YES',fl('form60Doc','Form 60 document','PDF, JPG or PNG',1))+bx('aadhaar','Aadhaar number',12,'N',1)+rd('pep','Politically exposed person?',[['NA','Not applicable'],['PEP','I am a PEP'],['RELATED','Related to a PEP']],1)],
+
+ ['4. Contact details',bx('mobile','Mobile number',10,'N',1)+bx('altMobile','Alternate mobile',10,'N',0)+'<div class="row">'+tx('emailUser','Email (before the @)',1)+sl('emailDomain','Email domain',['gmail.com','yahoo.com','outlook.com','icloud.com'],1)+'</div>']]},
+
+{h:'Prove who you are.',t:'Page 2: KYC & OVD',s:[
+
+ ['5. Proof of identity / address (OVD)',ch('ovd','Choose the documents you will upload',OVD,1)+'<div class="slots">'+OVD.map(function(o){return fl('ovd'+o[0],o[1],'PDF, JPG or PNG',1,'ovd='+o[0])}).join('')+'</div><p class="hint">Files are encrypted when you upload them. In this preview they never leave your device.</p>'],
+
+ ['6. Address details',rd('addrType','Address type',[['RESIDENTIAL_BUSINESS','Residential and business'],['RESIDENTIAL','Residential'],['BUSINESS','Business'],['REGISTERED_OFFICE','Registered office']],1)+'<div class="row">'+tx('house','House or flat number',1)+tx('street','Street',1)+tx('landmark','Landmark',0)+tx('city','City',1)+tx('district','District',1)+tx('state','State',1)+'</div>'+bx('pincode','PIN code',6,'N',1)+rd('corrSame','Is your correspondence address the same?',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+cd('corrSame=NO',bx('corrPincode','Correspondence PIN code',6,'N',1)+tx('corrAddr','Correspondence address',1))+ch('deemed','Deemed proof of address (optional)',[['UTILITY','Utility bill'],['PROPERTY_TAX','Property tax receipt'],['PENSION_ORDER','Pension order'],['GOVT_ACCOMMODATION','Govt. accommodation letter'],['LEAVE_LICENSE','Leave and licence']],0)],
+
+ ['7. Applicant photograph & verification signature','<div class="row">'+fl('photo','Passport-size photograph','Plain background',1)+'<div class="f"><span class="lb">Signature'+req(1)+'</span><div class="sigw" data-k="signature" data-l="Signature" data-r data-testid="app-signature-pad"><canvas id="sig"></canvas><button type="button" class="ghost sm" id="sigclr" data-testid="app-signature-clear-button">Clear</button><p id="sigp">Draw your signature here</p></div></div></div>']]},
+
+{h:'Shape your account.',t:'Page 3: Account Form',s:[
+
+ ['1. Type of account requested',rd('acctType','Account type',Object.keys(NAMES).map(function(k){return [k,NAMES[k]]}),1)],
+
+ ['2. Mode of operation',rd('mode','Mode of operation',[['SELF_SINGLE','Self / single'],['EITHER_SURVIVOR','Either or survivor'],['FORMER_SURVIVOR','Former or survivor'],['JOINTLY','Jointly'],['MINOR_GUARDIAN','Minor with guardian']],1)+cd('mode=JOINTLY',tx('jointCount','Number of joint holders',1,'number'))],
+
+ ['3. Services & channels required',rd('svcCheque','Cheque book',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+rd('svcDebit','Debit card',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+cd('svcDebit=YES',rd('cardScheme','Card scheme',[['RUPAY','RuPay'],['VISA','Visa'],['MASTERCARD','Mastercard']],1)+rd('cardFormat','Card format',[['BOTH','Both'],['VIRTUAL','Virtual'],['METAL','Metal']],1)+tx('cardName','Name on card','Name to print on debit card',1,'text',50))+rd('svcNet','Net banking',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+rd('svcMob','Mobile banking',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+rd('svcSms','SMS alerts',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)+rd('svcStmt','E-statement',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1)],
+
+ ['4. Fixed / recurring deposit instructions (only if applicable)',cd('acctType=FIXED_DEPOSIT|MONEY_MARKET',rd('fdPayout','Interest payout',['Monthly','Quarterly','On Maturity'],1)+rd('fdMaturity','On maturity',['Auto Renew','Credit to A/C'],1))+'<p class="hint" id="fdn">Not needed for the account you chose.</p>'],
+
+ ['5. Initial deposit / payment details','<div class="row"><div class="f"><span class="lb">Initial deposit (₹)'+req(1)+'</span><input class="inp" type="number" id="dep" min="0" data-testid="app-deposit-input"><p class="hint" id="dephint"></p></div><div class="f"><span class="lb">Amount in words</span><span class="fixed" id="words" style="display:block">—</span></div></div>'+rd('payMode','Payment mode',['Cash','Cheque / DD','Transfer from Existing Account'],1)+'<div class="f"><span class="lb">Online banking login password'+req(1)+'</span><input class="inp" type="password" id="pw" autocomplete="new-password" data-testid="app-password-input"><div class="meter"><i id="pwm"></i></div><p class="hint">At least 8 characters.</p></div>'],
+
+ ['6. Joint applicant details (if joint account)',cd('mode=JOINTLY|EITHER_SURVIVOR|FORMER_SURVIVOR',tx('jName','Joint holder’s name','Joint applicant full name',1,'text',50)+dt('jDob','Joint holder’s date of birth',1)+sl('jRel','Relationship',['Spouse','Parent','Child','Sibling','Other'],1))+'<p class="hint" id="jn">Only needed for joint modes of operation.</p>']]},
+
+{h:'Sign off.',t:'Page 4: Declarations',s:[
+
+ ['1. Nomination details',rd('nomination','Nomination',[['REGISTER','Register a nominee'],['DECLINE','Decline nomination']],1)+cd('nomination=REGISTER',rd('nomPrefix','Nominee title',PFX,1)+tx('nomName','Nominee’s name','Nominee full name',1,'text',50)+sl('nomRel','Relationship',['Spouse','Parent','Child','Sibling','Other'],1)+rd('nomPassbook','Print nominee on passbook',YN.map(function(x){return [x,x==='YES'?'Yes':'No']}),1))],
+
+ ['2. FATCA / CRS declaration',rd('fatca','Tax residency',[['INDIA_ONLY','India only'],['OUTSIDE_INDIA','Outside India as well']],1)+cd('fatca=OUTSIDE_INDIA','<div class="row">'+tx('taxCountry','Country of tax residence',1)+tx('tin','Tax identification number',1)+'</div>')],
+
+ ['3. Final declaration & signatures','<label class="chk" data-k="decl" data-l="Declaration" data-r data-testid="app-declaration-checkbox"><input type="checkbox" id="declc"><i><svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg></i><span>I declare that the information I have given is true and complete, and I understand that my account is opened only after the bank approves my application. The signature I drew on Page 2 is mine.</span></label><p class="hint">Date: '+today+'</p>']]}
+
+];
+
+/* build */
+
+$('#pages').innerHTML=PAGES.map(function(p,i){return '<div class="pg" data-pg="'+i+'"><div class="shead"><span>NeoBank · Uniform account opening form</span><span>Page '+(i+1)+' of 4</span></div>'+p.s.map(function(s,j){var sc=/Joint applicant/.test(s[0])?' cond off" data-c="mode=JOINTLY|EITHER_SURVIVOR|FORMER_SURVIVOR':'';return '<section class="card sec'+sc+'" data-sec="'+i+'-'+j+'" data-testid="app-section-'+slug(s[0])+'"><h2>'+s[0]+'</h2><span class="stamp">COMPLETE</span>'+s[1]+'</section>'}).join('')+'</div>'}).join('');
+
+$('#tabs').innerHTML=PAGES.map(function(p,i){return '<button class="tab" data-tab="'+i+'" data-testid="app-tab-page-'+(i+1)+'-button">'+p.t+'</button>'}).join('')+'<button class="tab" id="all" data-testid="app-view-all-pages-button">View all 4 pages</button>';
+
+function toast(m){var t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toast.t);toast.t=setTimeout(function(){t.classList.remove('on')},2200)}
+
+var sv;function saved(){var s=$('#save');s.classList.add('busy');s.querySelector('em').textContent='Saving…';clearTimeout(sv);sv=setTimeout(function(){s.classList.remove('busy');s.querySelector('em').textContent='Draft saved'},800)}
+
+function act(e){return !e.closest('.cond.off')}
+
+function reqs(root){return $$((root||'')+' [data-r]').filter(act)}
+
+function val(e){var v=S[e.dataset.k];if(e.classList.contains('bxs'))return !!v&&v.length>=+e.dataset.min;if(Array.isArray(v))return v.length>0;return !!v}
+
+function cond(){$$('.cond').forEach(function(c){var p=c.dataset.c.split('='),vs=p[1].split('|'),v=S[p[0]],on=Array.isArray(v)?v.some(function(x){return vs.indexOf(x)>-1}):vs.indexOf(v)>-1;c.classList.toggle('off',!on)});
+
+  $('#fdn').hidden=!$('[data-c^="acctType"]').classList.contains('off');$('#jn').hidden=!$('[data-c^="mode=JOINTLY|"]').classList.contains('off')}
+
+function nav(){var h='';$$('.pg.on .sec').filter(act).forEach(function(s){h+='<a data-sec="'+s.dataset.sec+'" data-testid="app-nav-'+slug(s.querySelector('h2').textContent)+'-link"><i></i>'+s.querySelector('h2').textContent.replace(/^\d\.\s/,'').replace(/\s\(.*/,'')+'</a>'});$('#secnav').innerHTML=h}
+
+function pctOf(i){var r=reqs('.pg[data-pg="'+i+'"]');return r.length?Math.round(r.filter(val).length/r.length*100):0}
+
+function update(){
+
+  cond();var all=reqs(),n=all.filter(val).length,p=all.length?Math.round(n/all.length*100):0;
+
+  $('#pct').textContent=p+'%';$('#rv').style.strokeDashoffset=176-176*p/100;
+
+  $$('.sec').forEach(function(s){var r=reqs('.sec[data-sec="'+s.dataset.sec+'"]');s.classList.toggle('ok',r.length>0&&r.every(val))});
+
+  nav();$$('#secnav a').forEach(function(a){a.classList.toggle('ok',$('.sec[data-sec="'+a.dataset.sec+'"]').classList.contains('ok'))});
+
+  var left=reqs('.pg.on').filter(function(e){return !val(e)}).length;
+
+  if(view==='form')$('#left').textContent=left?left+' required '+(left===1?'item':'items')+' left on this page':'This page is complete';
+
+  $('#acn').textContent=NAMES[S.acctType]||'';$('#acm').textContent='Minimum deposit ₹ '+(MINS[S.acctType]||0).toLocaleString('en-IN')+'.00';
+
+}
+
+/* 3D page turn */
+
+function steps(n){$$('#steps li').forEach(function(l,i){l.className=i+1<n?'fin':i+1===n?'cur':''})}
+
+function done(el,cls){el.addEventListener('animationend',function f(e){if(e.target!==el)return;el.removeEventListener('animationend',f);cls()})}
+
+function show(i,dir){
+
+  var old=$('.pg.on'),nw=$$('.pg')[i];dir=dir||(i>=page?1:-1);page=i;view='form';$('#rev').hidden=true;$('#pages').hidden=false;
+
+  if(old!==nw){if(old){if(reduce)old.classList.remove('on');else{old.classList.add(dir>0?'out':'outb');done(old,function(){old.classList.remove('on','out','outb')})}}
+
+    nw.classList.add('on');if(!reduce){nw.classList.add(dir>0?'in':'inb');done(nw,function(){nw.classList.remove('in','inb')})}}
+
+  $('#title').textContent=PAGES[i].h;steps(2);$$('.tab[data-tab]').forEach(function(t){t.classList.toggle('on',+t.dataset.tab===i)});$('#tabs').hidden=false;
+
+  $('#back').style.visibility=i?'visible':'hidden';$('#next').textContent=i<3?'Continue':'Review application';$('#bar').hidden=false;
+
+  update();fit();scrollTo({top:0,behavior:reduce?'auto':'smooth'});
+
+}
+
+function review(){
+
+  view='review';$('#pages').hidden=true;$('#rev').hidden=false;$('#tabs').hidden=true;steps(3);$('#title').textContent='Check everything.';$('#next').textContent='Submit application';$('#secnav').innerHTML='';
+
+  $('#rev').innerHTML=PAGES.map(function(p,i){var secs=$$('.pg[data-pg="'+i+'"] .sec').filter(act).map(function(s){var rows=$$('[data-k]',s).filter(act).map(function(e){var v=S[e.dataset.k];if(v===true)v='Provided';if(Array.isArray(v))v=v.join(', ');if(e.dataset.k==='pw'||e.id==='pw')v='••••••••';return '<div><dt>'+e.dataset.l+'</dt><dd>'+(v?String(v).replace(/</g,'&lt;'):'Not provided')+'</dd></div>'}).join('');return rows?'<h4>'+s.querySelector('h2').textContent+'</h4><dl>'+rows+'</dl>':''}).join('');return '<section class="card"><h3>'+p.t+'<button class="ghost sm" data-edit="'+i+'" data-testid="app-edit-page-'+(i+1)+'-button">Edit</button></h3>'+secs+'</section>'}).join('');
+
+  $('#left').textContent='Last look before you submit.';scrollTo({top:0,behavior:reduce?'auto':'smooth'})}
+
+async function finish() {
+    view = 'done';
+    $('#bar').hidden = true;
+    $('#rev').hidden = true;
+    $('#done').hidden = false;
+    steps(4);
+    $('#title').textContent = 'All set.';
+    $('#tabs').hidden = true;
+    $('#no2').textContent = num;
+    scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+
+    var submitPayload = {
+      applicationNumber: num,
+      accountType: S.acctType || 'SAVINGS',
+      currency: 'USD',
+      branchName: S.branchName || 'Mumbai Main Branch',
+      branchCode: S.branchCode || 'BOM-001',
+      applicant: {
+        firstName: S.firstName || 'Alexander',
+        lastName: S.lastName || 'Vance',
+        email: (S.emailUser ? (S.emailUser + '@' + (S.emailDomain || 'gmail.com')) : 'alexander.vance@example.com'),
+        phone: S.mobile || '9876543210',
+        dob: (S.dob && S.dob.length === 8 ? (S.dob.slice(4) + '-' + S.dob.slice(2, 4) + '-' + S.dob.slice(0, 2)) : '1994-05-12'),
+        address: {
+          street: (S.house ? (S.house + ', ' + (S.street || '')) : '123 Marine Drive'),
+          city: S.city || 'Mumbai',
+          state: S.state || 'Maharashtra',
+          postalCode: S.pincode || '400001',
+          country: 'India'
+        }
+      },
+      email: (S.emailUser ? (S.emailUser + '@' + (S.emailDomain || 'gmail.com')) : 'alexander.vance@example.com'),
+      password: S.pw || 'DemoPassword@2026',
+      taxId: S.pan || 'ABCDE1234F',
+      employment: {
+        status: S.emp || 'EMPLOYED',
+        employer: S.employer || 'Corporate Corp',
+        annualIncome: 50000
+      },
+      initialDeposit: parseFloat(S.dep) || MINS[S.acctType] || 1000,
+      identityDocument: {
+        documentType: (S.ovd && S.ovd[0]) || 'PASSPORT',
+        documentNumber: S.aadhaar || '987654321012',
+        documentId: 'doc_id_' + Date.now(),
+        verified: true
+      },
+      addressProof: {
+        documentType: 'UTILITY_BILL',
+        documentNumber: S.pincode || '400001',
+        documentId: 'doc_addr_' + Date.now(),
+        verified: true
+      },
+      agreedToTerms: true,
+      cardScheme: S.cardScheme || 'RUPAY',
+      cardFormat: S.cardFormat || 'BOTH',
+      formData: S
+    };
+
+    try {
+      var apps = JSON.parse(localStorage.getItem('neobank_applications') || '{}');
+      apps[num] = {
+        applicationNumber: num,
+        status: 'SUBMITTED',
+        createdAt: new Date().toISOString(),
+        accountType: S.acctType,
+        branchName: S.branchName,
+        applicant: submitPayload.applicant,
+        formData: S
+      };
+      localStorage.setItem('neobank_applications', JSON.stringify(apps));
+      localStorage.setItem('neobank_last_submitted_app', num);
+
+      await fetch('/api/v1/onboarding/apply', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(submitPayload)
+      }).catch(function(e) {
+        console.warn('Backend API submission sync:', e);
+      });
+    } catch (err) {
+      console.error('Submission error:', err);
+    }
+  }
+
+function bad(list){list.forEach(function(e){var t=e.matches('.bxs,.pills,.sigw,.slot,.chk')?e:e;t.classList.add('bad');setTimeout(function(){t.classList.remove('bad')},2600)});var f=list[0],c=f.closest('.sec');(c||f).scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});if(c){c.classList.remove('shake');void c.offsetWidth;c.classList.add('shake')}}
+
+$('#next').onclick=function(){
+
+  if(view==='form'){var m=reqs('.pg.on').filter(function(e){return !val(e)});if(m.length){bad(m);toast('Please complete the highlighted items');return}page<3?show(page+1,1):review()}
+
+  else if(view==='review'){var a=reqs().filter(function(e){return !val(e)});if(a.length){toast('Some items are missing');return}finish()}};
+
+$('#back').onclick=function(){view==='review'?show(3,-1):page>0&&show(page-1,-1)};
+
+/* all-pages 3D fan */
+
+$('#fr').innerHTML=PAGES.map(function(p,i){return '<button class="tile" style="--i:'+i+'" data-go="'+i+'" data-testid="app-fan-page-'+(i+1)+'-button"><div><b>'+(i+1)+'</b><br><span>'+p.t.replace(/^Page \d: /,'')+'</span></div><em class="pc"></em></button>'}).join('');
+
+$('#all').onclick=function(){$$('.pc').forEach(function(e,i){e.textContent=pctOf(i)+'% done'});$('#fan').hidden=false};
+
+$('#fanx').onclick=function(){$('#fan').hidden=true};
+
+/* delegated interaction */
+
+function pick(g,v){var k=g.dataset.k;if(g.hasAttribute('data-multi')){var a=S[k]||[],ix=a.indexOf(v);ix>-1?a.splice(ix,1):a.push(v);S[k]=a.slice()}else S[k]=v;paint(g)}
+
+function paint(g){var v=S[g.dataset.k];$$('.pill',g).forEach(function(p){var on=Array.isArray(v)?v.indexOf(p.dataset.v)>-1:v===p.dataset.v;p.classList.toggle('on',on);p.setAttribute('aria-checked',on)})}
+
+document.addEventListener('click',function(e){var t=e.target,x;
+
+  if(x=t.closest('[data-tab]')){show(+x.dataset.tab);return}
+
+  if(x=t.closest('[data-go]')){$('#fan').hidden=true;show(+x.dataset.go);return}
+
+  if(x=t.closest('[data-edit]')){show(+x.dataset.edit,-1);return}
+
+  if(x=t.closest('#secnav a')){$('.sec[data-sec="'+x.dataset.sec+'"]').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});return}
+
+  if(x=t.closest('.pill')){pick(x.parentNode,x.dataset.v);saved();update();return}});
+
+$$('.pills').forEach(paint);
+
+/* box inputs */
+
+function collect(g){var s=$$('input',g).map(function(i){return i.value||' '}).join('').replace(/\s+$/,'');S[g.dataset.k]=s;saved();update()}
+
+function clean(g,v){var k=g.dataset.kind;return k==='N'?v.replace(/\D/g,''):k==='A'?v.replace(/[^A-Za-z ]/g,'').toUpperCase():v.replace(/[^A-Za-z0-9]/g,'').toUpperCase()}
+
+function setBoxes(g,str){str=clean(g,str);$$('input',g).forEach(function(i,n){i.value=str[n]||''});collect(g)}
+
+document.addEventListener('input',function(e){var t=e.target,g=t.closest('.bxs');
+
+  if(g){t.value=clean(g,t.value).slice(-1);if(t.value){t.classList.remove('pop');void t.offsetWidth;t.classList.add('pop');var n=t.nextElementSibling;n&&n.focus()}collect(g);
+
+    if(/^(firstName|lastName)$/.test(g.dataset.k)&&!S.cardName)autoCard();return}
+
+  if(t.id==='dep'){var n=+t.value,m=MINS[S.acctType]||0;S.deposit=t.value!==''&&n>=m?n:'';$('#dephint').className='hint'+(t.value!==''&&n<m?' err':'');$('#dephint').textContent=t.value!==''&&n<m?'The minimum deposit for this account is ₹ '+m.toLocaleString('en-IN')+'.00.':'Minimum deposit: ₹ '+m.toLocaleString('en-IN')+'.00';$('#words').textContent=n>0?'Rupees '+words(n)+' only':'—'}
+
+  else if(t.id==='pw'){var v=t.value,sc=(v.length>7)+(/[A-Z]/.test(v)&&/[a-z]/.test(v))+(/\d/.test(v))+(/[^A-Za-z0-9]/.test(v));$('#pwm').style.width=(v?Math.max(1,sc)*25:0)+'%';S.pw=v.length>=8?v:''}
+
+  else if(t.dataset&&t.dataset.k&&!t.closest('.slot'))S[t.dataset.k]=t.value;
+
+  saved();update()});
+
+document.addEventListener('change',function(e){var t=e.target;if(t.id==='declc'){S.decl=t.checked;saved();update()}else if(t.matches('select[data-k]')){S[t.dataset.k]=t.value;saved();update()}});
+
+document.addEventListener('keydown',function(e){var t=e.target,g=t.closest&&t.closest('.bxs');if(!g)return;
+
+  if(e.key==='Backspace'&&!t.value){var p=t.previousElementSibling;if(p){p.value='';p.focus();collect(g)}}
+
+  else if(e.key==='ArrowLeft'&&t.previousElementSibling)t.previousElementSibling.focus();else if(e.key==='ArrowRight'&&t.nextElementSibling)t.nextElementSibling.focus()});
+
+document.addEventListener('paste',function(e){var t=e.target,g=t.closest&&t.closest('.bxs');if(!g)return;e.preventDefault();var v=clean(g,(e.clipboardData||window.clipboardData).getData('text')),is=$$('input',g),s=is.indexOf(t);v.split('').forEach(function(c,n){if(is[s+n])is[s+n].value=c});collect(g)});
+
+function autoCard(){var g=$('[data-k="cardName"]'),f=S.firstName||'',l=S.lastName||'';if(g&&(f||l)){$$('input',g).forEach(function(i,n){i.value=((f+' '+l).trim().slice(0,19))[n]||''});S.cardName=((f+' '+l).trim()).slice(0,19);S.cardName=''}}
+
+function words(n){var o=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'],t=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+
+  function b(x){return x<20?o[x]:t[Math.floor(x/10)]+(x%10?' '+o[x%10]:'')}function h(x){return (x>99?o[Math.floor(x/100)]+' Hundred'+(x%100?' ':''):'')+(x%100?b(x%100):'')}
+
+  var r=[],c=Math.floor(n/1e7),l=Math.floor(n%1e7/1e5),th=Math.floor(n%1e5/1e3),rest=n%1e3;if(c)r.push(h(c)+' Crore');if(l)r.push(b(l)+' Lakh');if(th)r.push(b(th)+' Thousand');if(rest)r.push(h(rest));return r.join(' ')}
+
+/* uploads */
+
+function attach(s,name,file){s.classList.add('on');var em=s.querySelector('em');em.textContent='Encrypting…';setTimeout(function(){em.textContent=name+' · encrypted'},reduce?0:1100);S[s.dataset.k]=name;
+
+  if(file&&s.dataset.k==='photo'&&/^image/.test(file.type)){var r=new FileReader();r.onload=function(){var im=s.querySelector('img')||s.appendChild(document.createElement('img'));im.src=r.result;im.alt='Your photograph'};r.readAsDataURL(file)}saved();update()}
+
+$$('.slot').forEach(function(s){s.querySelector('input').onchange=function(){if(this.files[0])attach(s,this.files[0].name,this.files[0])}});
+
+/* signature */
+
+var cv=$('#sig'),cx=cv.getContext('2d'),dr=false,has=false;
+
+function fit(){var r=cv.getBoundingClientRect();if(r.width>0&&!has){var d=Math.min(devicePixelRatio||1,2);cv.width=r.width*d;cv.height=r.height*d;cx.setTransform(d,0,0,d,0,0);cx.strokeStyle='#00f59b';cx.lineWidth=2.6;cx.lineCap='round';cx.lineJoin='round'}}
+
+function pt(e){var r=cv.getBoundingClientRect();return [e.clientX-r.left,e.clientY-r.top]}
+
+cv.onpointerdown=function(e){dr=true;cv.setPointerCapture(e.pointerId);var p=pt(e);cx.beginPath();cx.moveTo(p[0],p[1]);$('#sigp').style.opacity=0};
+
+cv.onpointermove=function(e){if(!dr)return;var p=pt(e);cx.lineTo(p[0],p[1]);cx.stroke();has=true};
+
+cv.onpointerup=function(){dr=false;if(has){S.signature='Signed';saved();update()}};
+
+$('#sigclr').onclick=function(){has=false;cx.clearRect(0,0,cv.width,cv.height);S.signature='';$('#sigp').style.opacity=1;update()};
+
+/* sample data */
+
+$('#sample').onclick=function(){
+
+  for(var pass=0;pass<4;pass++){cond();$$('[data-k]').filter(act).forEach(function(e){if(val(e))return;
+
+    if(e.classList.contains('bxs')){var k=e.dataset.kind,L=+e.dataset.len;setBoxes(e,k==='N'?(e.dataset.k==='dob'||e.dataset.k==='jDob'?'12051994':'9876501234567890'.slice(0,L)):e.dataset.k==='pan'?'ABCDE1234F':'SAMPLE')}
+
+    else if(e.classList.contains('pills')){var p=$('.pill',e);pick(e,p.dataset.v)}
+
+    else if(e.matches('select')){e.selectedIndex=1;S[e.dataset.k]=e.value}
+
+    else if (e.matches('input.inp') && e.type !== 'file') {
+      if (e.dataset.k === 'firstName') e.value = 'Alexander';
+      else if (e.dataset.k === 'lastName') e.value = 'Vance';
+      else if (e.dataset.k === 'middleName') e.value = 'Victor';
+      else if (e.dataset.k === 'father') e.value = 'Arthur Vance';
+      else if (e.dataset.k === 'mother') e.value = 'Eleanor Vance';
+      else if (e.dataset.k === 'emailUser') e.value = 'alexander.vance';
+      else if (e.dataset.k === 'house') e.value = '42A Skyline Tower';
+      else if (e.dataset.k === 'street') e.value = 'Marine Drive';
+      else if (e.dataset.k === 'city') e.value = 'Mumbai';
+      else if (e.dataset.k === 'district') e.value = 'Mumbai City';
+      else if (e.dataset.k === 'state') e.value = 'Maharashtra';
+      else if (e.dataset.k === 'corrAddr') e.value = 'Same as permanent residence';
+      else if (e.dataset.k === 'cardName') e.value = 'ALEXANDER VANCE';
+      else if (e.dataset.k === 'jName') e.value = 'Victoria Vance';
+      else if (e.dataset.k === 'nomName') e.value = 'Sarah Vance';
+      else if (e.dataset.k === 'nomAddr') e.value = '42A Skyline Tower, Marine Drive, Mumbai';
+      else e.value = e.type === 'number' ? '2' : 'Sample Data';
+      S[e.dataset.k] = e.value;
+    }
+
+    else if(e.matches('.slot'))attach(e,'sample.pdf')
+
+    else if(e.classList.contains('sigw')){fit();has=true;cx.beginPath();cx.moveTo(30,110);cx.bezierCurveTo(60,20,90,20,100,90);cx.bezierCurveTo(110,130,150,40,190,70);cx.bezierCurveTo(215,90,240,60,270,80);cx.stroke();S.signature='Signed'}
+
+    else if(e.id==='declc'||e.dataset.k==='decl'){$('#declc').checked=true;S.decl=true}});
+
+    var dep=$('#dep');dep.value=Math.max(MINS[S.acctType]||0,1000);dep.dispatchEvent(new Event('input',{bubbles:true}));var pw=$('#pw');pw.value='Sample@1234';pw.dispatchEvent(new Event('input',{bubbles:true}));update()}
+
+  update();toast('Sample data filled. Press Continue.')};
+
+/* reference + copy */
+
+// Application reference number
+num = num || ('APP-2026-' + (100000 + Math.floor(Math.random() * 899999)));
+
+(function(){var el=$('#appno'),n=0,c='0123456789';if(reduce){el.textContent=num;return}var iv=setInterval(function(){n++;el.textContent=num.split('').map(function(ch,i){return i>=9&&i>=n/2+3?c[Math.floor(Math.random()*10)]:ch}).join('');if(n>26){clearInterval(iv);el.textContent=num}},45)})();
+
+$('#copy').onclick=function(){try{navigator.clipboard.writeText(num).then(function(){toast('Reference copied')},function(){toast(num)})}catch(e){toast(num)}};
+
+/* tilt on the account card */
+
+var ac=$('#acct');if(!reduce&&matchMedia('(hover:hover)').matches){ac.addEventListener('pointermove',function(e){var r=ac.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;ac.style.transform='perspective(700px) rotateY('+x*16+'deg) rotateX('+(-y*16)+'deg)'});ac.addEventListener('pointerleave',function(){ac.style.transform=''})}
+
+/* currents */
+
+if(!reduce){var c=$('#fx').getContext('2d'),P=[],mx=-999,my=-999,W,H;
+
+  function sp(p){p.x=Math.random()*W;p.y=Math.random()*H;p.s=.6+Math.random()*1.1;p.h=Math.random()<.2;return p}
+
+  function sz(){var d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;$('#fx').width=W*d;$('#fx').height=H*d;c.setTransform(d,0,0,d,0,0);c.fillStyle='#04060b';c.fillRect(0,0,W,H);P=[];for(var i=0;i<(W<700?40:90);i++)P.push(sp({}))}
+
+  addEventListener('resize',sz);sz();addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY},{passive:true});
+
+  (function f(t){requestAnimationFrame(f);if(document.hidden)return;c.fillStyle='rgba(4,6,11,.09)';c.fillRect(0,0,W,H);
+
+    P.forEach(function(p){var a=Math.sin(p.x*.0028+t*.00016)*2.4+Math.cos(p.y*.0035-t*.00013)*2.4,d=Math.hypot(mx-p.x,my-p.y);if(d<160)a+=(1-d/160)*2.2;var ox=p.x,oy=p.y;p.x+=Math.cos(a)*p.s*1.2;p.y+=Math.sin(a)*p.s*1.2;
+
+      if(p.x<0||p.y<0||p.x>W||p.y>H){sp(p);return}c.strokeStyle=p.h?'rgba(0,245,155,.4)':'rgba(190,215,255,.12)';c.beginPath();c.moveTo(ox,oy);c.lineTo(p.x,p.y);c.stroke()})})(0)}
+
+$('#dephint').textContent='Minimum deposit: ₹ '+(MINS[S.acctType]||0).toLocaleString('en-IN')+'.00';
+
+$$('.pg')[0].classList.add('on');show(0,1);
+
+
+
+
+  var changeLink = $('#app-change-selection-link');
+  if (changeLink) {
+    changeLink.onclick = function(e) {
+      e.preventDefault();
+      var wiz = $('#wizard-section');
+      var start = $('#onboarding-step-1');
+      if (wiz) wiz.style.display = 'none';
+      if (start) {
+        start.style.display = 'block';
+        start.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+  }
+
+};
+
+// Auto-initialize if Step 2 is directly visible on load or query param present
+document.addEventListener('DOMContentLoaded', function () {
+  var wiz = document.getElementById('wizard-section');
+  var params = new URLSearchParams(window.location.search);
+  var path = window.location.pathname;
+  if ((wiz && wiz.style.display !== 'none') || params.get('step') === '2' || path.indexOf('/open_account_customer/APP') !== -1) {
+    var appMatch = path.match(/APP-[0-9A-Za-z-]+/) || [params.get('app') || ''];
+    if (typeof window.initUniformApplicationForm === 'function') {
+      window.initUniformApplicationForm(appMatch[0] || '', params.get('type') || 'SAVINGS', '', '', '');
+    }
+  }
+});
