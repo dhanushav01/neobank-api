@@ -1968,3 +1968,38 @@ body.light-theme .val-banner-chip:hover {
 }
 
 
+
+
+
+/* =================================================================
+   UNIVERSAL SHARED BACKGROUND TOKENS (Matching Home Page #04060b / #f5f8fc)
+   ================================================================= */
+:root, [data-theme="dark"] {
+  --void: #04060b;
+  --ink: #0b132b;
+  --mint: #00f59b;
+  --ice: #e6eef8;
+  --ti: #8d98ab;
+  --line: rgba(230, 238, 248, 0.14);
+  --header-bg: linear-gradient(to bottom, rgba(4, 6, 11, 0.95), rgba(4, 6, 11, 0.75) 75%, transparent);
+  --bg-primary: #04060b;
+  color-scheme: dark;
+}
+
+[data-theme="light"], .light-theme, body.light-theme {
+  --void: #f5f8fc;
+  --ink: #e2e8f0;
+  --mint: #00c878;
+  --ice: #0a1120;
+  --ti: #475569;
+  --line: rgba(10, 17, 32, 0.12);
+  --header-bg: linear-gradient(to bottom, rgba(245, 248, 252, 0.96), rgba(245, 248, 252, 0.8) 75%, transparent);
+  --bg-primary: #f5f8fc;
+  color-scheme: light;
+}
+
+body {
+  background-color: var(--void) !important;
+  color: var(--ice) !important;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

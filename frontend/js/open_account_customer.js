@@ -961,12 +961,55 @@ $('#next').onclick=function(){
 $('#back').onclick=function(){view==='review'?show(3,-1):page>0&&show(page-1,-1)};
 
 /* all-pages 3D fan */
+  var frEl = $('#fr');
+  if (frEl) {
+    frEl.innerHTML = PAGES.map(function(p, i) {
+      return '<button type="button" class="tile" style="--i:' + i + '" data-go="' + i + '" data-testid="app-fan-page-' + (i + 1) + '-button"><div><b style="color:var(--mint)">' + (i + 1) + '</b><h3 style="font:700 1.25rem Syne,sans-serif;margin:.4rem 0">' + p.t + '</h3><span style="font-size:.85rem">' + p.h + '</span></div><em class="pc"></em></button>';
+    }).join('');
+  }
 
-$('#fr').innerHTML=PAGES.map(function(p,i){return '<button class="tile" style="--i:'+i+'" data-go="'+i+'" data-testid="app-fan-page-'+(i+1)+'-button"><div><b>'+(i+1)+'</b><br><span>'+p.t.replace(/^Page \d: /,'')+'</span></div><em class="pc"></em></button>'}).join('');
+  function openFan() {
+    $$('.pc').forEach(function(e, i) {
+      e.textContent = pctOf(i) + '% done';
+    });
+    var f = $('#fan');
+    if (f) {
+      f.hidden = false;
+      f.classList.remove('off');
+      f.classList.add('active');
+      f.style.setProperty('display', 'grid', 'important');
+    }
+  }
 
-$('#all').onclick=function(){$$('.pc').forEach(function(e,i){e.textContent=pctOf(i)+'% done'});$('#fan').hidden=false};
+  function closeFan() {
+    var f = $('#fan');
+    if (f) {
+      f.hidden = true;
+      f.classList.add('off');
+      f.classList.remove('active');
+      f.style.setProperty('display', 'none', 'important');
+    }
+  }
 
-$('#fanx').onclick=function(){$('#fan').hidden=true};
+  // Ensure fan is strictly hidden on initial application load
+  closeFan();
+
+  var btnAll = $('#all');
+  if (btnAll) btnAll.onclick = openFan;
+
+  var btnFanx = $('#fanx');
+  if (btnFanx) btnFanx.onclick = closeFan;
+
+  var fanEl = $('#fan');
+  if (fanEl) {
+    fanEl.onclick = function(e) {
+      if (e.target === fanEl) closeFan();
+    };
+  }
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeFan();
+  });
 
 /* delegated interaction */
 
@@ -978,7 +1021,7 @@ document.addEventListener('click',function(e){var t=e.target,x;
 
   if(x=t.closest('[data-tab]')){show(+x.dataset.tab);return}
 
-  if(x=t.closest('[data-go]')){$('#fan').hidden=true;show(+x.dataset.go);return}
+  if(x=t.closest('[data-go]')){closeFan();show(+x.dataset.go);return}
 
   if(x=t.closest('[data-edit]')){show(+x.dataset.edit,-1);return}
 
@@ -1108,21 +1151,74 @@ $('#copy').onclick=function(){try{navigator.clipboard.writeText(num).then(functi
 
 var ac=$('#acct');if(!reduce&&matchMedia('(hover:hover)').matches){ac.addEventListener('pointermove',function(e){var r=ac.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;ac.style.transform='perspective(700px) rotateY('+x*16+'deg) rotateX('+(-y*16)+'deg)'});ac.addEventListener('pointerleave',function(){ac.style.transform=''})}
 
-/* currents */
-
-if(!reduce){var c=$('#fx').getContext('2d'),P=[],mx=-999,my=-999,W,H;
-
-  function sp(p){p.x=Math.random()*W;p.y=Math.random()*H;p.s=.6+Math.random()*1.1;p.h=Math.random()<.2;return p}
-
-  function sz(){var d=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;$('#fx').width=W*d;$('#fx').height=H*d;c.setTransform(d,0,0,d,0,0);c.fillStyle='#04060b';c.fillRect(0,0,W,H);P=[];for(var i=0;i<(W<700?40:90);i++)P.push(sp({}))}
-
-  addEventListener('resize',sz);sz();addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY},{passive:true});
-
-  (function f(t){requestAnimationFrame(f);if(document.hidden)return;c.fillStyle='rgba(4,6,11,.09)';c.fillRect(0,0,W,H);
-
-    P.forEach(function(p){var a=Math.sin(p.x*.0028+t*.00016)*2.4+Math.cos(p.y*.0035-t*.00013)*2.4,d=Math.hypot(mx-p.x,my-p.y);if(d<160)a+=(1-d/160)*2.2;var ox=p.x,oy=p.y;p.x+=Math.cos(a)*p.s*1.2;p.y+=Math.sin(a)*p.s*1.2;
-
-      if(p.x<0||p.y<0||p.x>W||p.y>H){sp(p);return}c.strokeStyle=p.h?'rgba(0,245,155,.4)':'rgba(190,215,255,.12)';c.beginPath();c.moveTo(ox,oy);c.lineTo(p.x,p.y);c.stroke()})})(0)}
+/* Ambient Flowing Particle Currents Background Canvas (Theme-Aware Matching Home) */
+  if (!reduce) {
+    var fxCanvas = $('#fx');
+    if (fxCanvas) {
+      var c = fxCanvas.getContext('2d'), P = [], mxp = -999, myp = -999, W, H;
+      function isLightTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light' ||
+               document.body.classList.contains('light-theme');
+      }
+      function sp(p) {
+        p.x = Math.random() * W;
+        p.y = Math.random() * H;
+        p.s = 0.6 + Math.random() * 1.2;
+        p.h = Math.random() < 0.25;
+        return p;
+      }
+      function sz() {
+        var d = Math.min(window.devicePixelRatio || 1, 2);
+        W = window.innerWidth;
+        H = window.innerHeight;
+        fxCanvas.width = W * d;
+        fxCanvas.height = H * d;
+        c.setTransform(d, 0, 0, d, 0, 0);
+        c.fillStyle = isLightTheme() ? '#f5f8fc' : '#04060b';
+        c.fillRect(0, 0, W, H);
+        P = [];
+        var count = W < 700 ? 50 : 110;
+        for (var i = 0; i < count; i++) P.push(sp({}));
+      }
+      window.addEventListener('resize', sz);
+      window.addEventListener('pointermove', function(e) {
+        mxp = e.clientX;
+        myp = e.clientY;
+      }, { passive: true });
+      sz();
+      (function loop(t) {
+        requestAnimationFrame(loop);
+        if (document.hidden) return;
+        var light = isLightTheme();
+        c.fillStyle = light ? 'rgba(245, 248, 252, 0.08)' : 'rgba(4, 6, 11, 0.07)';
+        c.fillRect(0, 0, W, H);
+        c.lineWidth = 1.1;
+        for (var i = 0; i < P.length; i++) {
+          var p = P[i];
+          var a = Math.sin(p.x * 0.0028 + t * 0.00018) * 2.4 +
+                  Math.cos(p.y * 0.0035 - t * 0.00014) * 2.4;
+          var d = Math.hypot(mxp - p.x, myp - p.y);
+          if (d < 180) a += (1 - d / 180) * 2.5;
+          var ox = p.x, oy = p.y;
+          p.x += Math.cos(a) * p.s * 1.2;
+          p.y += Math.sin(a) * p.s * 1.2;
+          if (p.x < 0 || p.x > W || p.y < 0 || p.y > H) {
+            sp(p);
+            continue;
+          }
+          if (light) {
+            c.strokeStyle = p.h ? 'rgba(0, 180, 105, 0.5)' : 'rgba(70, 95, 140, 0.16)';
+          } else {
+            c.strokeStyle = p.h ? 'rgba(0, 245, 155, 0.42)' : 'rgba(190, 215, 255, 0.13)';
+          }
+          c.beginPath();
+          c.moveTo(ox, oy);
+          c.lineTo(p.x, p.y);
+          c.stroke();
+        }
+      })(0);
+    }
+  }
 
 $('#dephint').textContent='Minimum deposit: ₹ '+(MINS[S.acctType]||0).toLocaleString('en-IN')+'.00';
 

@@ -62,11 +62,11 @@
         </div>
 
         <!-- Custom Searchable Language Dropdown Mount Target -->
-        <div <button type="button" class="ghost sm" id="sample" style="display:none;padding:5px 12px;font-size:0.8rem;min-height:34px;margin-right:8px;" data-testid="app-fill-sample-button">Fill sample data</button>
-        id="neobank-lang-container" class="notranslate" translate="no" data-testid="openstart-nav-lang-container"></div>
+        <div id="neobank-lang-container" class="notranslate" translate="no" data-testid="openstart-nav-lang-container"></div>
         <div id="google_translate_element" class="notranslate" translate="no" style="display:none!important;" data-testid="openstart-nav-translate-element"></div>
 
         <!-- Links to track or sign in -->
+        <button type="button" class="ghost sm" id="sample" style="display:none;padding:6px 14px;font-size:0.8rem;min-height:34px;" data-testid="app-fill-sample-button">Fill sample data</button>
         <a class="ghost" href="/existing_application" style="padding:6px 14px;font-size:0.8rem;min-height:34px" data-testid="openstart-nav-track-link">Track</a>
         <a class="btn" href="/login" style="padding:6px 14px;font-size:0.8rem;min-height:34px" data-testid="openstart-nav-signin-link">Sign in</a>
       </div>
@@ -443,7 +443,7 @@
       </main>
 
       <!-- 3D Fan Overlay for 'View all 4 pages' -->
-      <div id="fan" hidden data-testid="app-all-pages-view">
+      <div id="fan" class="off" hidden style="display:none!important;" data-testid="app-all-pages-view">
         <div>
           <div class="fr" id="fr"></div>
           <p style="text-align:center;margin-top:28px">
