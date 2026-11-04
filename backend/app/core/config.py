@@ -253,15 +253,38 @@ BILLERS: Dict[str, Dict[str, Any]] = {
 }
 
 # ----------------------------------------------------------------- DYNAMIC INSTRUMENTS (yfinance)
-_INSTRUMENT_SYMBOLS = ["AAPL", "MSFT", "TSLA", "NVDA", "VOO", "BND", "GLD"]
-_tickers_data = yf.Tickers(" ".join(_INSTRUMENT_SYMBOLS))
-INSTRUMENTS: Dict[str, tuple] = {}
-for _sym in _INSTRUMENT_SYMBOLS:
-    _t = _tickers_data.tickers[_sym]
-    _name = _t.info.get("shortName") or _t.info.get("longName") or _sym
-    _type = _t.info.get("quoteType", "STOCK")
-    _price = round(float(_t.fast_info["lastPrice"]), 2)
-    INSTRUMENTS[_sym] = (_name, _type, _price)
+_INSTRUMENT_CATALOG = {
+    "AAPL": ("Apple Inc.", "STOCK", 195.50),
+    "MSFT": ("Microsoft Corp.", "STOCK", 425.20),
+    "TSLA": ("Tesla Inc.", "STOCK", 248.80),
+    "NVDA": ("Nvidia Corp.", "STOCK", 128.40),
+    "VOO": ("Vanguard S&P 500 ETF", "ETF", 492.10),
+    "BND": ("Vanguard Total Bond Market ETF", "ETF", 73.50),
+    "GLD": ("SPDR Gold Shares ETF", "ETF", 218.60)
+}
+
+def _init_instruments() -> Dict[str, tuple]:
+    """Dynamically fetch live pricing via yfinance with fast_info (avoiding crumb-gated info endpoints)."""
+    instruments = dict(_INSTRUMENT_CATALOG)
+    try:
+        import requests
+        session = requests.Session()
+        session.headers.update({
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
+        })
+        for sym, (default_name, default_type, default_price) in _INSTRUMENT_CATALOG.items():
+            try:
+                t = yf.Ticker(sym, session=session)
+                live_price = t.fast_info.last_price
+                if live_price is not None:
+                    instruments[sym] = (default_name, default_type, round(float(live_price), 2))
+            except Exception:
+                pass
+    except Exception:
+        pass
+    return instruments
+
+INSTRUMENTS: Dict[str, tuple] = _init_instruments()
 
 # OpenAPI Tag Groups
 TAGS = [
