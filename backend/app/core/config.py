@@ -9,6 +9,9 @@ import sys
 import secrets
 import logging
 from typing import Dict, Any, List, Optional
+from currency_converter import CurrencyConverter
+import pycountry
+import yfinance as yf
 
 logger = logging.getLogger("neobank.config")
 
@@ -147,14 +150,15 @@ ENABLE_TEST_ROUTES = os.getenv("ENABLE_TEST_ROUTES", "false" if IS_PRODUCTION el
 OTP_DELIVERY = os.getenv("OTP_DELIVERY", "notification").lower()
 ENABLE_TEST_OTP = os.getenv("ENABLE_TEST_OTP", "false").lower() in ("true", "1", "yes") and not IS_PRODUCTION
 NEOBANK_DB_PATH = os.getenv("NEOBANK_DB_PATH", "")
-SEED_ADMIN_EMAIL = os.getenv("SEED_ADMIN_EMAIL", "admin@bank.test")
-SEED_ADMIN_PASSWORD = os.getenv("SEED_ADMIN_PASSWORD", "Admin@1234")
-SEED_EMPLOYEE_EMAIL = os.getenv("SEED_EMPLOYEE_EMAIL", "employee@bank.test")
-SEED_EMPLOYEE_PASSWORD = os.getenv("SEED_EMPLOYEE_PASSWORD", "Employee@1234")
-SEED_CUSTOMER_EMAIL = os.getenv("SEED_CUSTOMER_EMAIL", "customer@bank.test")
-SEED_CUSTOMER_PASSWORD = os.getenv("SEED_CUSTOMER_PASSWORD", "Customer@1234")
-SEED_CARD_PIN = os.getenv("SEED_CARD_PIN", "1234")
-SEED_CARD_ACTIVATION_CODE = os.getenv("SEED_CARD_ACTIVATION_CODE", "849201")
+# Purely environment-driven seed credentials — zero hardcoded plaintext passwords in source code
+SEED_ADMIN_EMAIL = os.getenv("SEED_ADMIN_EMAIL", "")
+SEED_ADMIN_PASSWORD = os.getenv("SEED_ADMIN_PASSWORD", "")
+SEED_EMPLOYEE_EMAIL = os.getenv("SEED_EMPLOYEE_EMAIL", "")
+SEED_EMPLOYEE_PASSWORD = os.getenv("SEED_EMPLOYEE_PASSWORD", "")
+SEED_CUSTOMER_EMAIL = os.getenv("SEED_CUSTOMER_EMAIL", "")
+SEED_CUSTOMER_PASSWORD = os.getenv("SEED_CUSTOMER_PASSWORD", "")
+SEED_CARD_PIN = os.getenv("SEED_CARD_PIN", "")
+SEED_CARD_ACTIVATION_CODE = os.getenv("SEED_CARD_ACTIVATION_CODE", "")
 
 # ----------------------------------------------------------------- EXTERNAL DATABASE BRIDGES
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://127.0.0.1:27017/")
@@ -181,27 +185,26 @@ multi-currency accounts, instant transfers, card issuance, loan underwriting,
 KYC identity verification, and dispute resolution.
 """
 
-# Foreign Exchange Reference Rates (Base USD)
+# ----------------------------------------------------------------- DYNAMIC FX & REFERENCE DATA (currencyconverter & pycountry)
+_cc = CurrencyConverter()
+_FX_CURRENCIES = ["USD", "EUR", "GBP", "INR", "JPY", "CAD", "AUD", "CHF"]
 FX_RATES: Dict[str, float] = {
-    "USD": 1.0,
-    "EUR": 0.92,
-    "GBP": 0.79,
-    "INR": 83.1,
-    "JPY": 150.0,
-    "CAD": 1.36,
-    "AUD": 1.52,
-    "CHF": 0.91
+    cur: 1.0 if cur == "USD" else round(float(_cc.convert(1, "USD", cur)), 4)
+    for cur in _FX_CURRENCIES
 }
 
-# Supported Countries
+_COUNTRY_CURRENCY_MAP = [
+    ("GB", "GBP"),
+    ("US", "USD"),
+    ("DE", "EUR"),
+    ("IN", "INR"),
+    ("JP", "JPY"),
+    ("CA", "CAD"),
+    ("AU", "AUD")
+]
 COUNTRIES: List[Dict[str, str]] = [
-    {"code": "GB", "name": "United Kingdom", "currency": "GBP"},
-    {"code": "US", "name": "United States", "currency": "USD"},
-    {"code": "DE", "name": "Germany", "currency": "EUR"},
-    {"code": "IN", "name": "India", "currency": "INR"},
-    {"code": "JP", "name": "Japan", "currency": "JPY"},
-    {"code": "CA", "name": "Canada", "currency": "CAD"},
-    {"code": "AU", "name": "Australia", "currency": "AUD"}
+    {"code": code, "name": pycountry.countries.get(alpha_2=code).name, "currency": cur}
+    for code, cur in _COUNTRY_CURRENCY_MAP
 ]
 
 # ----------------------------------------------------------------- PRODUCTION FAIL-CLOSED VERIFICATION
@@ -249,16 +252,16 @@ BILLERS: Dict[str, Dict[str, Any]] = {
     "bl_tax": {"id": "bl_tax", "name": "HM Revenue & Customs", "category": "GOVERNMENT", "minAmount": 1.0}
 }
 
-# Investment Instruments
-INSTRUMENTS: Dict[str, tuple] = {
-    "AAPL": ("Apple Inc.", "STOCK", 195.50),
-    "MSFT": ("Microsoft Corp.", "STOCK", 425.20),
-    "TSLA": ("Tesla Inc.", "STOCK", 248.80),
-    "NVDA": ("Nvidia Corp.", "STOCK", 128.40),
-    "VOO": ("Vanguard S&P 500 ETF", "ETF", 492.10),
-    "BND": ("Vanguard Total Bond Market ETF", "ETF", 73.50),
-    "GLD": ("SPDR Gold Shares ETF", "ETF", 218.60)
-}
+# ----------------------------------------------------------------- DYNAMIC INSTRUMENTS (yfinance)
+_INSTRUMENT_SYMBOLS = ["AAPL", "MSFT", "TSLA", "NVDA", "VOO", "BND", "GLD"]
+_tickers_data = yf.Tickers(" ".join(_INSTRUMENT_SYMBOLS))
+INSTRUMENTS: Dict[str, tuple] = {}
+for _sym in _INSTRUMENT_SYMBOLS:
+    _t = _tickers_data.tickers[_sym]
+    _name = _t.info.get("shortName") or _t.info.get("longName") or _sym
+    _type = _t.info.get("quoteType", "STOCK")
+    _price = round(float(_t.fast_info["lastPrice"]), 2)
+    INSTRUMENTS[_sym] = (_name, _type, _price)
 
 # OpenAPI Tag Groups
 TAGS = [

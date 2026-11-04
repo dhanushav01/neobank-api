@@ -1035,9 +1035,16 @@ label.chk.bad {
   text-align: center;
   padding: clamp(24px, 6vw, 64px) 0;
   perspective: 900px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .end svg {
+  display: block;
+  margin: 0 auto 1.2rem auto;
   width: 96px;
   height: 96px;
   fill: none;
@@ -1045,6 +1052,7 @@ label.chk.bad {
   stroke-width: 3;
   stroke-linecap: round;
   stroke-linejoin: round;
+  filter: drop-shadow(0 0 18px rgba(0, 245, 155, 0.45));
 }
 
 .end svg circle {

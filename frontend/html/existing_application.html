@@ -1,512 +1,149 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoBank • Track Application</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Track your application | NeoBank</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💳%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/themes.css"></link>
-  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
-  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
-  <link rel="stylesheet" href="/css/existing_application.css?v=20261011_01">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/common.css?v=20261104_04">
+  <link rel="stylesheet" href="/css/existing_application.css?v=20261104_01">
+
+  <!-- Core NeoBank Scripts -->
   <script src="/js/constants.js?v=20261002_01"></script>
   <script src="/js/utils.js?v=20261002_01"></script>
   <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20261011_08"></script>
-  </head>
-<body>
-
-  <!-- ==================== HEADER ==================== -->
-  <header class="app-header">
-    <div class="brand-badge">
-      <div class="brand-icon">
-        <svg class="ea-s1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
-        </svg>
-      </div>
-      <div>
-        <div class="ea-s2">
-          <span class="brand-title">NeoBank</span>
-        </div>
-        <div class="ea-s4" data-i18n="brand_sub">Digital Banking</div>
-      </div>
-    </div>
-
-    <!-- Right Controls: Theme, Language Selector & Navigation (Centralized Component) -->
-    <div class="ea-s5">
-      <div class="nav-controls" data-component="header-controls" data-testid-prefix="track"></div>
-
-      <a href="/" class="btn btn-outline btn-sm">
-        <span>Home</span>
-      </a>
-      <a href="/login" class="btn btn-outline btn-sm">
-        <span data-i18n="return_login">Sign In</span>
-      </a>
-    </div>
-  </header>
-
-  <!-- ==================== TRACKING CONTAINER ==================== -->
-  <main class="ea-s9">
-    <div class="glass-card ea-s10">
-      <div class="ea-s11">
-        <h2 class="ea-s12" data-i18n="track_title">Track Account Opening Application</h2>
-        <p class="ea-s13" data-i18n="track_subtitle">
-          Enter your official Application Reference Number to check underwriting progress and provisioning status.
-        </p>
-      </div>
-
-      <form id="form-track-app" onsubmit="event.preventDefault(); handleTrackingLookup(this);">
-        <div class="form-group">
-          <label data-i18n="app_num_label" class="form-label">Application Reference Number</label>
-          <input type="text" name="appNumber" class="form-input ea-s14" data-i18n-placeholder="app_num_placeholder" placeholder="e.g. APP-2026-891042" required>
-        </div>
-        <button type="submit" class="btn btn-primary ea-s15">
-          <span data-i18n="track_lookup_btn">Lookup Application Status</span>
-        </button>
-      </form>
-
-      <!-- Dynamic Tracking Result Box -->
-      <div class="ea-s16" id="tracking-result-box"></div>
-
-      <div class="ea-s17">
-        <a class="ea-s18" href="/open_account_customer">
-          <span data-i18n="open_account_btn">Open New Bank Account</span>
-        </a>
-        <a class="ea-s19" href="/login">
-          <span data-i18n="return_login">Return to Sign In</span>
-        </a>
-      </div>
-    </div>
-  </main>
-
-  <!-- MODAL: Customer View of Submitted Bank Application Form -->
-  <div id="modal-customer-bank-form" class="modal-overlay">
-    <div class="modal-box ea-s20">
-      <div class="modal-header ea-s21">
-        <div class="ea-s22">
-          <div class="ea-s23">
-                      </div>
-          <div>
-            <div class="ea-s24">
-              <span class="ea-s25" id="cust-modal-app-num">APP-2026-XXXXXX</span>
-              <span id="cust-modal-status-badge" class="status-pill submitted">SUBMITTED</span>
-            </div>
-            <div class="ea-s26" id="cust-modal-applicant-name">Submitted Uniform Bank Application Dossier</div>
-          </div>
-        </div>
-        <div class="ea-s2">
-          <button type="button" class="btn btn-primary btn-sm no-print" onclick="window.printBankApplicationForm('cust_track')" title="Download official 4-page uniform bank form as PDF or print">
-            Download &amp; Print Form (PDF)
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-customer-bank-form')">✕</button>
-        </div>
-      </div>
-      <div class="modal-body ea-s27">
-        <div id="cust-bank-paper-container">
-          <!-- Dynamically populated via renderBankApplicationPaperForm() -->
-        </div>
-      </div>
-      <div class="modal-footer ea-s28">
-        <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-customer-bank-form')">
-          Close Form
-        </button>
-        <button type="button" class="btn btn-primary btn-sm" onclick="window.printBankApplicationForm('cust_track')">
-          Print / Save as PDF
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MODAL: Decrypted Document Viewer -->
-  <div id="modal-document-viewer" class="modal-overlay">
-    <div class="modal-box ea-s29">
-      <div class="modal-header ea-s30">
-        <div class="ea-s2">
-          <h3 class="ea-s31" id="doc-viewer-title">Document Inspection</h3>
-        </div>
-        <div class="ea-s2">
-          <button type="button" id="doc-viewer-newtab-btn" class="btn btn-outline btn-sm" title="Open Decrypted Document in New Tab">
-            ↗Open in New Tab
-          </button>
-          <button type="button" id="doc-viewer-download-btn" class="btn btn-primary btn-sm" title="Download Decrypted File">
-            Download
-          </button>
-          <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('modal-document-viewer')">✕</button>
-        </div>
-      </div>
-      <div class="modal-body ea-s32">
-        <div id="doc-viewer-body">
-          <!-- Populated dynamically via viewDecryptedDocument() -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Core Scripts -->
   <script src="/js/api.js?v=20261001_1300"></script>
   <script src="/js/bank_form_renderer.js?v=20261001_1600"></script>
-  <script>
-    if (typeof window.formatHumanText !== 'function') {
-      window.formatHumanText = function(val) {
-        if (!val || typeof val !== 'string') return val || '';
-        const trimmed = val.trim();
-        if (trimmed.startsWith('http') || trimmed.includes('@') || /^\$?[0-9]/.test(trimmed) || /^[0-9a-f]{8}-[0-9a-f]{4}/i.test(trimmed)) return val;
-        if (trimmed.includes('_') || (/^[A-Z0-9_]{3,}$/.test(trimmed) && trimmed === trimmed.toUpperCase())) {
-          return trimmed.split('_').filter(Boolean).map(part => {
-            const upper = part.toUpperCase();
-            if (['ID', 'KYC', 'OTP', 'APY', 'NRI', 'ATM', 'USD', 'EUR', 'GBP'].includes(upper)) return upper;
-            return part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-          }).join(' ');
-        }
-        return val;
-      };
-    }
-    var formatHumanText = window.formatHumanText;
+</head>
+<body>
+  <!-- Reactive Currents Particle Canvas -->
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-    let currentTrackedApp = null;
-    window.currentTrackedApp = null;
+  <!-- Sticky Header -->
+  <header class="track-header">
+    <div class="demo-bar" data-testid="track-demo-notice">
+      Demo app, not a real bank. Please don’t enter real personal or financial details.
+    </div>
+    <nav class="top-nav">
+      <a class="brand-logo" href="/home" data-testid="track-nav-brand-link">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+        <span>NeoBank</span>
+      </a>
 
-    function openModal(id) {
-      if (typeof window.openModal === 'function' && window.openModal !== openModal) {
-        window.openModal(id);
-        return;
-      }
-      const el = document.getElementById(id);
-      if (el) {
-        el.style.setProperty('z-index', '1000000100', 'important');
-        el.style.setProperty('display', 'flex', 'important');
-        el.scrollTop = 0;
-        requestAnimationFrame(() => {
-          el.classList.add('active');
-        });
-      }
-    }
-    window.openModal = openModal;
+      <!-- Header Controls: Theme, Zoom, Language & Navigation -->
+      <div class="header-links">
+        <div class="nav-controls" data-component="header-controls" data-testid-prefix="track"></div>
+        <a href="/home" data-testid="track-nav-home-link">Home</a>
+        <a href="/login" class="ghost sm" data-testid="track-nav-signin-link">Sign in</a>
+      </div>
+    </nav>
+  </header>
 
-    function closeModal(id) {
-      if (typeof window.closeModal === 'function' && window.closeModal !== closeModal) {
-        window.closeModal(id);
-        return;
-      }
-      const el = document.getElementById(id);
-      if (el) {
-        el.classList.remove('active');
-        setTimeout(() => {
-          if (!el.classList.contains('active')) {
-            el.style.removeProperty('display');
-            el.style.display = 'none';
-          }
-        }, 220);
-      }
-    }
-    window.closeModal = closeModal;
+  <!-- Main Tracking Container -->
+  <main class="wrap">
+    <h1 data-testid="track-page-title">Track your application.</h1>
+    <p class="lede">Enter the reference number from your confirmation to see where your application stands.</p>
 
-    function openTrackedBankForm() {
-      let app = currentTrackedApp || window.currentTrackedApp;
-      if (!app) {
-        const inp = document.querySelector('input[name="appNumber"]');
-        if (inp && inp.value.trim()) {
-          const form = document.getElementById('form-track-app');
-          if (form) {
-            handleTrackingLookup(form).then(() => {
-              if (currentTrackedApp) openTrackedBankForm();
-            });
-            return;
-          }
-        }
-        showToast ? showToast('Please look up an application reference first.', 'info') : alert('Please lookup an application first.');
-        return;
-      }
+    <!-- 3D Interactive Lookup Card -->
+    <form class="card look" id="look" data-testid="track-lookup-form" novalidate>
+      <span class="lb" id="lbl">Application reference number</span>
+      <div class="refrow">
+        <span class="pre">APP-2026-</span>
+        <div class="bxs" id="refb" role="group" aria-labelledby="lbl" data-testid="track-reference-boxes"></div>
+      </div>
+      <div class="acts">
+        <button class="btn" id="go" type="submit" data-testid="track-lookup-button">Look up status</button>
+        <a class="ghost" href="/open_account_customer" data-testid="track-open-account-link">Open a new account</a>
+        <a class="ghost" href="/login" data-testid="track-return-signin-link">Return to sign in</a>
+      </div>
+      <div class="chips" data-testid="track-sample-chips">
+        <span>Try a sample state:</span>
+      </div>
+    </form>
 
-      const numEl = document.getElementById('cust-modal-app-num');
-      if (numEl) numEl.textContent = app.applicationNumber || 'APP-2026';
-      const badgeEl = document.getElementById('cust-modal-status-badge');
-      if (badgeEl) {
-        badgeEl.textContent = formatHumanText(app.status || 'SUBMITTED');
-        badgeEl.className = `status-pill ${(app.status || 'submitted').toLowerCase().replace('_', '-')}`;
-      }
-      const nameEl = document.getElementById('cust-modal-applicant-name');
-      if (nameEl) {
-        const applicant = app.applicant || {};
-        nameEl.textContent = `${applicant.firstName || app.applicantName || 'Applicant'} ${applicant.lastName || ''} • ${app.branchName || 'Central Branch'} • Official Form Record`.trim();
-      }
-      if (typeof window.renderBankApplicationPaperForm === 'function') {
-        window.renderBankApplicationPaperForm(app, 'cust-bank-paper-container', 'cust_track');
-      }
-      openModal('modal-customer-bank-form');
-    }
-    window.openTrackedBankForm = openTrackedBankForm;
+    <!-- Tracking Result Container -->
+    <section id="out" hidden aria-live="polite" data-testid="track-result"></section>
+  </main>
 
-    async function handleTrackingLookup(form) {
-      const appNum = form.appNumber.value.trim().toUpperCase();
-      const resultBox = document.getElementById('tracking-result-box');
-      resultBox.style.display = 'block';
-      resultBox.innerHTML = '<div class="ea-s33">Looking up application in core banking ledger...</div>';
+  <!-- 3D Fan Form Viewer (4 Pages) -->
+  <div id="fan" hidden data-testid="track-form-viewer">
+    <div>
+      <div class="fr" id="fr"></div>
+      <p style="text-align:center;margin-top:24px;color:var(--ti)">
+        Click any page above or view the complete uniform official printable bank form.
+      </p>
+      <div style="text-align:center;display:flex;gap:12px;justify-content:center;margin-top:14px">
+        <button class="btn sm" id="fan-open-full-btn" type="button" onclick="openTrackedBankForm()">
+          Open Printable Form
+        </button>
+        <button class="ghost sm" id="fanx" data-testid="track-form-close-button" type="button">
+          Close Preview
+        </button>
+      </div>
+    </div>
+  </div>
 
-      // Lookup is strictly read-only from ledger (never overwrite DB with local cache)
-
-      try {
-        const res = await fetch(`/onboarding/track/${encodeURIComponent(appNum)}`);
-        if (!res.ok) {
-          throw new Error('NOT_FOUND_IN_DB');
-        }
-        const app = await res.json();
-        currentTrackedApp = app;
-        window.currentTrackedApp = app;
-        if (typeof window.renderBankApplicationPaperForm === 'function') {
-          window.renderBankApplicationPaperForm(app, 'cust-bank-paper-container', 'cust_track');
-        }
-        const statusClass = (app.status || '').toLowerCase().replace('_', '-');
-
-        resultBox.innerHTML = `
-          <div class="ea-s34">
-            <div class="ea-s35">
-              <span class="ea-s36">${app.applicationNumber}</span>
-              <span class="status-pill ${statusClass}">${app.status === 'DRAFT_INITIATED' ? 'Draft Created' : app.status === 'DRAFT_SAVED' ? 'Draft Saved' : formatHumanText(app.status)}</span>
-            </div>
-
-            <div class="ea-s37">
-              <div><span class="ea-s38">Applicant:</span> <strong>${app.applicantName || 'Applicant Draft'}</strong></div>
-              <div><span class="ea-s38">Account Type:</span> <strong>${formatHumanText(app.accountType)}</strong></div>
-              <div><span class="ea-s38">Branch:</span> <strong>${app.branchName || 'Not Assigned'} ${app.branchCode ? '(' + app.branchCode + ')' : ''}</strong></div>
-              <div><span class="ea-s38">Created / Saved:</span> <span>${(app.updatedAt || app.submittedAt || '').slice(0, 10) || 'Recent'}</span></div>
-            </div>
-
-            ${app.isDraft ? `
-              <div class="ea-s39">
-                <span class="ea-s40">
-                  ${app.status === 'DRAFT_INITIATED' ? 'Application Initiated (Incomplete)' : 'Application Draft Saved'}
-                </span>
-                <p class="ea-s41">
-                  ${app.status === 'DRAFT_INITIATED' ? 'Your Application Number is locked. Complete the uniform bank form to submit your application.' : 'Your entered information is saved. Click below to resume and submit your application.'}
-                </p>
-                <a href="/open_account_customer/${encodeURIComponent(app.applicationNumber)}" class="btn btn-primary btn-sm ea-s42">
-                  Continue / Resume Application
-                </a>
-              </div>
-            ` : ''}
-
-            ${app.generatedAccountNumber ? `
-              <div class="ea-s43">
-                <span class="ea-s44">Official Account Number</span>
-                <div class="ea-s45">${app.generatedAccountNumber}</div>
-                <div class="ea-s46">You may now log in directly on the sign-in page.</div>
-                <a href="/login" class="btn btn-success btn-sm ea-s47">Sign In to Dashboard</a>
-              </div>
-            ` : ''}
-
-            ${(app.officerMessages && app.officerMessages.length > 0) ? `
-              <div class="ea-s48">
-                <div class="ea-s49">
-                  <span>Messages &amp; Requests from Bank Verifying Officer:</span>
-                </div>
-                ${app.officerMessages.map(m => `
-                  <div class="ea-s50">
-                    <div class="ea-s51">
-                      <strong>${m.senderName || 'Verifying Officer'}</strong>
-                      <span>${(m.timestamp || '').slice(0, 16).replace('T', ' ')}</span>
-                    </div>
-                    <div class="ea-s52">${m.message}</div>
-                  </div>
-                `).join('')}
-              </div>
-            ` : ''}
-
-            ${app.reviewNotes ? `
-              <div class="ea-s53">
-                <strong>Officer Notes:</strong> ${app.reviewNotes}
-              </div>
-            ` : ''}
-
-            <!-- View & Download Official Bank Application Form -->
-            <div class="ea-s54">
-              <div class="ea-s55">
-                <div>
-                  <strong class="ea-s56">
-                    <span>Official Bank Application Form (4 Pages)</span>
-                  </strong>
-                  <div class="ea-s57">
-                    Review your complete uniform CIF &amp; CKYC bank account opening form, verified details, and declarations.
-                  </div>
-                </div>
-                <div class="ea-s58">
-                  <button type="button" class="btn btn-outline btn-sm ea-s59" onclick="openTrackedBankForm()">
-                    View Complete Form
-                  </button>
-                  <button type="button" class="btn btn-primary btn-sm ea-s59" onclick="window.printBankApplicationForm('cust_track')">
-                    Download &amp; Print (PDF)
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <!-- Uploaded Documents & ID Vault (AES-256 in SQL) -->
-            <div class="ea-s60">
-              <div class="ea-s61">
-                <strong class="ea-s62">
-                  <span>Encrypted Verification Documents Vault</span>
-                </strong>
-                <span class="ea-s63">
-                  ✓ AES-256 Decrypted On Demand
-                </span>
-              </div>
-              <div class="ea-s64" id="tracked-app-docs-list">
-                ${(app.documents && app.documents.length > 0) ? app.documents.map(d => `
-                  <div class="ea-s65">
-                    <div class="ea-s66">
-                      <span class="ea-s67">${(d.name || '').endsWith('.pdf') ? '' : ''}</span>
-                      <div>
-                        <div class="ea-s68">${d.name}</div>
-                        <div class="ea-s69">
-                          ${formatHumanText(d.category || 'IDENTITY')} • ${d.size ? (d.size / 1024).toFixed(1) + ' KB' : 'Encrypted BLOB'} • AES-256
-                        </div>
-                      </div>
-                    </div>
-                    <div class="ea-s70">
-                      <button type="button" class="btn btn-outline btn-sm" onclick="window.viewDecryptedDocument('${d.id}', '${d.name}', '${d.mime || 'application/octet-stream'}')">
-                        View
-                      </button>
-                      <button type="button" class="btn btn-primary btn-sm" onclick="window.downloadDecryptedDocument('${d.id}', '${d.name}')">
-                        Download
-                      </button>
-                    </div>
-                  </div>
-                `).join('') : `
-                  <div class="ea-s71">
-                    <span>Form Identity Records Registered: <strong>${formatHumanText(app.accountType)}</strong> account verified via Tax ID <code>${app.taxId || 'N/A'}</code> and residential OVD submission.</span>
-                  </div>
-                `}
-              </div>
-            </div>
-
+  <!-- Modal: Full Official Customer Bank Form (4 Pages PDF Ready) -->
+  <div id="modal-customer-bank-form" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box-track">
+      <div class="modal-head-track">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="cust-modal-app-num" style="font:800 1.2rem Syne,sans-serif;color:var(--mint)">APP-2026-XXXXXX</span>
+            <span id="cust-modal-status-badge" class="pill" style="--c:var(--mint);--rgb:0,245,155">SUBMITTED</span>
           </div>
-        `;
-      } catch (err) {
-        // Resilient Fallback: Check local storage for drafts and submitted applications
-        let localApp = null;
-        try {
-          const apps = JSON.parse(localStorage.getItem('neobank_applications') || '{}');
-          if (apps[appNum]) {
-            localApp = apps[appNum];
-          }
-          if (!localApp) {
-            const rawDraft = localStorage.getItem('nb_draft_' + appNum) || 
-              (appNum === localStorage.getItem('neobank_last_submitted_app') ? localStorage.getItem('nb_app_draft') : null);
-            if (rawDraft) {
-              const d = JSON.parse(rawDraft);
-              localApp = {
-                applicationNumber: appNum,
-                status: 'DRAFT_SAVED',
-                isDraft: true,
-                accountType: d.acctType || 'SAVINGS',
-                branchName: d.branchName || 'Mumbai Main Branch',
-                branchCode: d.branchCode || 'BOM-001',
-                applicantName: ((d.firstName || '') + ' ' + (d.lastName || '')).trim() || 'Applicant Draft',
-                applicant: { firstName: d.firstName || 'Applicant', lastName: d.lastName || '' },
-                updatedAt: new Date().toISOString()
-              };
-            }
-          }
-        } catch (_) {}
+          <small id="cust-modal-applicant-name" style="color:var(--ti);font-size:.82rem">Official Bank Application Record</small>
+        </div>
+        <div style="display:flex;gap:8px">
+          <button type="button" class="btn sm" onclick="window.printBankApplicationForm('cust_track')" title="Print or save as PDF">
+            Print / Save PDF
+          </button>
+          <button type="button" class="ghost sm" onclick="closeModal('modal-customer-bank-form')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body-track">
+        <div id="cust-bank-paper-container"></div>
+      </div>
+      <div class="modal-foot-track">
+        <button type="button" class="ghost sm" onclick="closeModal('modal-customer-bank-form')">Close</button>
+        <button type="button" class="btn sm" onclick="window.printBankApplicationForm('cust_track')">Download PDF</button>
+      </div>
+    </div>
+  </div>
 
-        if (localApp) {
-          currentTrackedApp = localApp;
-          window.currentTrackedApp = localApp;
-          const statusClass = (localApp.status || 'draft-saved').toLowerCase().replace('_', '-');
-          resultBox.innerHTML = `
-            <div class="ea-s34">
-              <div class="ea-s35">
-                <span class="ea-s36">${escapeHtml(localApp.applicationNumber)}</span>
-                <span class="status-pill ${statusClass}">${localApp.status === 'SUBMITTED' ? 'Application Submitted' : 'Draft Saved'}</span>
-              </div>
-              <div class="ea-s37">
-                <div><span class="ea-s38">Applicant:</span> <strong>${escapeHtml(localApp.applicantName || 'Applicant Draft')}</strong></div>
-                <div><span class="ea-s38">Account Type:</span> <strong>${escapeHtml(formatHumanText(localApp.accountType))}</strong></div>
-                <div><span class="ea-s38">Branch:</span> <strong>${escapeHtml(localApp.branchName || 'Mumbai Main Branch')} ${localApp.branchCode ? '(' + escapeHtml(localApp.branchCode) + ')' : ''}</strong></div>
-                <div><span class="ea-s38">Status:</span> <span>${localApp.status === 'SUBMITTED' ? 'Under Review' : 'Draft Saved'}</span></div>
-              </div>
-              <div class="ea-s39">
-                <span class="ea-s40">
-                  ${localApp.status === 'SUBMITTED' ? 'Your application has been received and is being processed.' : 'Your entered information is saved.'}
-                </span>
-                <p class="ea-s41">
-                  ${localApp.status === 'SUBMITTED' ? 'You can view your uniform bank form below.' : 'Click below to resume and complete your application form.'}
-                </p>
-                <a href="/open_account_customer/${encodeURIComponent(localApp.applicationNumber)}" class="btn btn-primary btn-sm ea-s42">
-                  ${localApp.status === 'SUBMITTED' ? 'View Application Form' : 'Continue / Resume Application'}
-                </a>
-              </div>
-            </div>
-          `;
-          return;
-        }
+  <!-- Modal: Decrypted Document Viewer -->
+  <div id="modal-document-viewer" class="modal-overlay" role="dialog" aria-modal="true">
+    <div class="modal-box-track" style="max-width:760px">
+      <div class="modal-head-track">
+        <h3 id="doc-viewer-title" style="margin:0;font:700 1.1rem Syne,sans-serif">Decrypted Document Inspection</h3>
+        <div style="display:flex;gap:8px">
+          <button type="button" id="doc-viewer-newtab-btn" class="ghost sm">↗ Open in New Tab</button>
+          <button type="button" id="doc-viewer-download-btn" class="btn sm">Download</button>
+          <button type="button" class="ghost sm" onclick="closeModal('modal-document-viewer')">✕</button>
+        </div>
+      </div>
+      <div class="modal-body-track">
+        <div id="doc-viewer-body"></div>
+      </div>
+    </div>
+  </div>
 
-        resultBox.innerHTML = `
-          <div class="ea-s72">
-            <div class="ea-s73">
-              <span>APPLICATION NOT AVAILABLE / NOT FOUND</span>
-            </div>
-            <h4 class="ea-s74">
-              No Application Found for Reference
-            </h4>
-            <div class="ea-s75">
-              ${escapeHtml(appNum)}
-            </div>
-            <p class="ea-s76">
-              This application reference could not be located in the core banking records. The link may be invalid, or the application might not have been created yet.
-            </p>
-            <div class="ea-s77">
-              <button type="button" class="btn btn-outline btn-sm" onclick="focusAppInput()">
-                <span>Try Another Reference</span>
-              </button>
-              <a href="/open_account_customer" class="btn btn-primary btn-sm">
-                <span>Open New Account</span>
-              </a>
-            </div>
-          </div>
-        `;
-      }
-    }
+  <div id="toast" role="status"></div>
 
-    var escapeHtml = (window.NeoBankUtils && window.NeoBankUtils.escapeHtml) || function(s){ return s || ''; };
+  <footer class="track-footer">
+    NeoBank is a demo and developer sandbox. It is not a bank, holds no real money, and is not insured. Everything on this page is sample data.
+  </footer>
 
-    function detectAndTrackFromUrl() {
-      let appNum = '';
-
-      // 1. Check path: /existing_application/app=APP-XXXX or /existing_application/APP-XXXX or /track/APP-XXXX
-      const path = window.location.pathname;
-      const pathMatch = path.match(/\/(?:existing_application|track)\/([^\/?#]+)/i);
-      if (pathMatch && pathMatch[1]) {
-        let raw = decodeURIComponent(pathMatch[1]).trim();
-        raw = raw.replace(/^app=/i, '').replace(/^id=/i, '').replace(/^application=/i, '');
-        if (raw) appNum = raw;
-      }
-
-      // 2. Check query params: ?app=... or ?applicationNumber=... or ?id=... or ?ref=...
-      if (!appNum) {
-        const params = new URLSearchParams(window.location.search);
-        let paramVal = params.get('app') || params.get('applicationNumber') || params.get('id') || params.get('ref') || params.get('appNumber');
-        if (paramVal) {
-          appNum = paramVal.trim().replace(/^app=/i, '');
-        }
-      }
-
-      if (appNum) {
-        appNum = appNum.toUpperCase();
-        const form = document.getElementById('form-track-app');
-        if (form && form.appNumber) {
-          form.appNumber.value = appNum;
-          handleTrackingLookup(form);
-        }
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', detectAndTrackFromUrl);
-  </script>
-  <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+  <!-- Dedicated Tracking Application Engine -->
+  <script src="/js/existing_application.js?v=20261104_01"></script>
 </body>
 </html>
