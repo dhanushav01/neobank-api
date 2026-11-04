@@ -645,7 +645,7 @@ def store_sql_application(app_record: Dict[str, Any]):
         form_data = app_record.get("formData", {})
         app_num = app_record["applicationNumber"]
 
-        existing_row = conn.execute("SELECT status, created_at FROM applications WHERE application_number = ?", (app_num,)).fetchone()
+        existing_row = conn.execute("SELECT status, created_at, form_data_json, applicant_json FROM applications WHERE application_number = ?", (app_num,)).fetchone()
         target_status = app_record.get("status", "SUBMITTED")
         if existing_row:
             if existing_row["status"] in ("SUBMITTED", "UNDER_REVIEW", "APPROVED", "ACCOUNT_OPENED", "REJECTED"):
@@ -653,6 +653,28 @@ def store_sql_application(app_record: Dict[str, Any]):
                     target_status = existing_row["status"]
                     app_record["status"] = target_status
             orig_created_at = existing_row["created_at"] or app_record.get("createdAt") or datetime.now().isoformat()
+            # Prevent accidental draft field loss if caller sends partial/empty data
+            if existing_row["form_data_json"]:
+                try:
+                    prev_fd = json.loads(existing_row["form_data_json"])
+                    if isinstance(prev_fd, dict):
+                        if isinstance(form_data, dict):
+                            merged_fd = dict(prev_fd)
+                            merged_fd.update({k: v for k, v in form_data.items() if v is not None and str(v).strip() != ""})
+                            form_data = merged_fd
+                        else:
+                            form_data = prev_fd
+                except Exception:
+                    pass
+            if existing_row["applicant_json"]:
+                try:
+                    prev_app = json.loads(existing_row["applicant_json"])
+                    if isinstance(prev_app, dict) and isinstance(applicant, dict):
+                        merged_app = dict(prev_app)
+                        merged_app.update({k: v for k, v in applicant.items() if v is not None and str(v).strip() != ""})
+                        applicant = merged_app
+                except Exception:
+                    pass
         else:
             orig_created_at = app_record.get("createdAt") or datetime.now().isoformat()
         app_record["createdAt"] = orig_created_at

@@ -174,6 +174,7 @@ async def http_error_handler(request: Request, exc: StarletteHTTPException):
         accept = request.headers.get("accept", "").lower()
         path = request.url.path
         api_prefixes = (
+            "/api/", "/api/v1/",
             "/auth/", "/onboarding/", "/users/", "/kyc/", "/accounts/",
             "/transfers/", "/cards/", "/loans/", "/disputes/", "/admin/",
             "/fx/", "/bills/", "/beneficiaries/", "/notifications/",
@@ -215,9 +216,20 @@ async def validation_error_handler(_: Request, exc: RequestValidationError):
 
 # ----------------------------------------------------------------- MOUNT MODULAR ROUTERS
 app.include_router(auth_router)
+app.include_router(auth_router, prefix="/api/v1")
+app.include_router(auth_router, prefix="/api")
+
 app.include_router(onboarding_router)
+app.include_router(onboarding_router, prefix="/api/v1")
+app.include_router(onboarding_router, prefix="/api")
+
 app.include_router(users_router)
+app.include_router(users_router, prefix="/api/v1")
+app.include_router(users_router, prefix="/api")
+
 app.include_router(kyc_router)
+app.include_router(kyc_router, prefix="/api/v1")
+app.include_router(kyc_router, prefix="/api")
 app.include_router(accounts_router)
 app.include_router(transfers_router)
 app.include_router(cards_router)
@@ -308,14 +320,41 @@ def serve_login_page():
     return FileResponse(get_frontend_html("index.html"))
 
 @app.get("/open_account_customer", include_in_schema=False)
-@app.get("/open_account_customer/{path:path}", include_in_schema=False)
 @app.get("/open-account", include_in_schema=False)
-@app.get("/open-account/{path:path}", include_in_schema=False)
-def serve_open_account_page(path: Optional[str] = None):
+def serve_open_account_start_page(request: Request):
+    """Dedicated landing and account initiation page."""
+    app_param = request.query_params.get("app") or request.query_params.get("application") or request.query_params.get("id")
+    if app_param and app_param.strip():
+        app_file = get_frontend_html("open_account_application.html")
+        if os.path.exists(app_file):
+            return FileResponse(app_file)
     page_file = get_frontend_html("open_account_customer.html")
     if os.path.exists(page_file):
         return FileResponse(page_file)
     return FileResponse(get_frontend_html("index.html"))
+
+@app.get("/open_account_customer/{path:path}", include_in_schema=False)
+@app.get("/open-account/{path:path}", include_in_schema=False)
+def serve_open_account_form_page(path: str, request: Request):
+    """Dedicated multi-step uniform application form page (e.g. /open_account_customer/APP-2026-595845)."""
+    clean_path = (path or "").strip().strip("/")
+    if clean_path:
+        app_file = get_frontend_html("open_account_application.html")
+        if os.path.exists(app_file):
+            return FileResponse(app_file)
+    page_file = get_frontend_html("open_account_customer.html")
+    if os.path.exists(page_file):
+        return FileResponse(page_file)
+    return FileResponse(get_frontend_html("index.html"))
+
+@app.get("/open_account_application", include_in_schema=False)
+@app.get("/open_account_application/{path:path}", include_in_schema=False)
+def serve_open_account_application_direct(path: Optional[str] = None):
+    """Direct alias for the dedicated uniform application form."""
+    app_file = get_frontend_html("open_account_application.html")
+    if os.path.exists(app_file):
+        return FileResponse(app_file)
+    return FileResponse(get_frontend_html("open_account_customer.html"))
 
 @app.get("/existing_application", include_in_schema=False)
 @app.get("/existing_application/{path:path}", include_in_schema=False)

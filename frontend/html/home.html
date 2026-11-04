@@ -32,37 +32,8 @@
         NeoBank
       </a>
 
-      <!-- Accessibility & Theme Controls: Theme, Zoom, Language -->
-      <div class="nav-controls" data-testid="home-nav-controls">
-        <!-- Theme Toggle Button (Dark / Light) -->
-        <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme" data-testid="home-nav-theme-button">
-          <span class="theme-toggle-track">
-            <span class="theme-toggle-indicator">
-              <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <circle cx="12" cy="12" r="4"></circle>
-                <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
-              </svg>
-              <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-              </svg>
-            </span>
-          </span>
-          <span class="theme-toggle-label">Dark</span>
-        </button>
-
-        <!-- Accessibility Page Zoom Controls -->
-        <div class="page-zoom-controls" data-testid="home-nav-zoom-controls">
-          <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">−</button>
-          <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
-            <span class="zoom-level-text">100%</span>
-          </button>
-          <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">+</button>
-        </div>
-
-        <!-- Custom Searchable Language Dropdown Mount Target -->
-        <div id="neobank-lang-container" class="notranslate" translate="no" data-testid="home-nav-lang-container"></div>
-        <div id="google_translate_element" class="notranslate" translate="no" style="display:none!important;" data-testid="home-nav-translate-element"></div>
-      </div>
+      <!-- Accessibility & Theme Controls: Theme, Zoom, Language (Centralized Component) -->
+      <div class="nav-controls" data-component="header-controls" data-testid="home-nav-controls"></div>
     </nav>
   </header>
 

@@ -36,46 +36,9 @@
       </div>
     </div>
 
-    <!-- Right Controls: Theme, Language Selector & Navigation -->
+    <!-- Right Controls: Theme, Language Selector & Navigation (Centralized Component) -->
     <div class="ea-s5">
-      <!-- Dark / Light Theme Toggle Switch -->
-      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
-        <span class="theme-toggle-track">
-          <span class="theme-toggle-indicator">
-            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
-            </svg>
-            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
-            </svg>
-          </span>
-        </span>
-        <span class="theme-toggle-label">Dark</span>
-      </button>
-
-      <!-- Accessibility Page Zoom Controls: Minus / Reset / Plus -->
-      <div class="page-zoom-controls">
-        <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">
-          −
-        </button>
-        <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
-          <span class="zoom-level-text">100%</span>
-        </button>
-        <button type="button" class="zoom-btn zoom-in-btn" onclick="zoomPageIn()" title="Zoom In (Larger Text +)" aria-label="Zoom in">
-          +
-        </button>
-      </div>
-
-      <!-- Google Website Translator -->
-      <div id="google_translate_element" class="notranslate" translate="no"></div>
+      <div class="nav-controls" data-component="header-controls" data-testid-prefix="track"></div>
 
       <a href="/" class="btn btn-outline btn-sm">
         <span>Home</span>
@@ -284,8 +247,14 @@
       resultBox.style.display = 'block';
       resultBox.innerHTML = '<div class="ea-s33">Looking up application in core banking ledger...</div>';
 
+      // Lookup is strictly read-only from ledger (never overwrite DB with local cache)
+
       try {
-        const app = await api(`/onboarding/track/${encodeURIComponent(appNum)}`);
+        const res = await fetch(`/onboarding/track/${encodeURIComponent(appNum)}`);
+        if (!res.ok) {
+          throw new Error('NOT_FOUND_IN_DB');
+        }
+        const app = await res.json();
         currentTrackedApp = app;
         window.currentTrackedApp = app;
         if (typeof window.renderBankApplicationPaperForm === 'function') {
@@ -315,7 +284,7 @@
                 <p class="ea-s41">
                   ${app.status === 'DRAFT_INITIATED' ? 'Your Application Number is locked. Complete the uniform bank form to submit your application.' : 'Your entered information is saved. Click below to resume and submit your application.'}
                 </p>
-                <a href="/open_account_customer?app=${encodeURIComponent(app.applicationNumber)}" class="btn btn-primary btn-sm ea-s42">
+                <a href="/open_account_customer/${encodeURIComponent(app.applicationNumber)}" class="btn btn-primary btn-sm ea-s42">
                   Continue / Resume Application
                 </a>
               </div>
@@ -417,6 +386,65 @@
           </div>
         `;
       } catch (err) {
+        // Resilient Fallback: Check local storage for drafts and submitted applications
+        let localApp = null;
+        try {
+          const apps = JSON.parse(localStorage.getItem('neobank_applications') || '{}');
+          if (apps[appNum]) {
+            localApp = apps[appNum];
+          }
+          if (!localApp) {
+            const rawDraft = localStorage.getItem('nb_draft_' + appNum) || 
+              (appNum === localStorage.getItem('neobank_last_submitted_app') ? localStorage.getItem('nb_app_draft') : null);
+            if (rawDraft) {
+              const d = JSON.parse(rawDraft);
+              localApp = {
+                applicationNumber: appNum,
+                status: 'DRAFT_SAVED',
+                isDraft: true,
+                accountType: d.acctType || 'SAVINGS',
+                branchName: d.branchName || 'Mumbai Main Branch',
+                branchCode: d.branchCode || 'BOM-001',
+                applicantName: ((d.firstName || '') + ' ' + (d.lastName || '')).trim() || 'Applicant Draft',
+                applicant: { firstName: d.firstName || 'Applicant', lastName: d.lastName || '' },
+                updatedAt: new Date().toISOString()
+              };
+            }
+          }
+        } catch (_) {}
+
+        if (localApp) {
+          currentTrackedApp = localApp;
+          window.currentTrackedApp = localApp;
+          const statusClass = (localApp.status || 'draft-saved').toLowerCase().replace('_', '-');
+          resultBox.innerHTML = `
+            <div class="ea-s34">
+              <div class="ea-s35">
+                <span class="ea-s36">${escapeHtml(localApp.applicationNumber)}</span>
+                <span class="status-pill ${statusClass}">${localApp.status === 'SUBMITTED' ? 'Application Submitted' : 'Draft Saved'}</span>
+              </div>
+              <div class="ea-s37">
+                <div><span class="ea-s38">Applicant:</span> <strong>${escapeHtml(localApp.applicantName || 'Applicant Draft')}</strong></div>
+                <div><span class="ea-s38">Account Type:</span> <strong>${escapeHtml(formatHumanText(localApp.accountType))}</strong></div>
+                <div><span class="ea-s38">Branch:</span> <strong>${escapeHtml(localApp.branchName || 'Mumbai Main Branch')} ${localApp.branchCode ? '(' + escapeHtml(localApp.branchCode) + ')' : ''}</strong></div>
+                <div><span class="ea-s38">Status:</span> <span>${localApp.status === 'SUBMITTED' ? 'Under Review' : 'Draft Saved'}</span></div>
+              </div>
+              <div class="ea-s39">
+                <span class="ea-s40">
+                  ${localApp.status === 'SUBMITTED' ? 'Your application has been received and is being processed.' : 'Your entered information is saved.'}
+                </span>
+                <p class="ea-s41">
+                  ${localApp.status === 'SUBMITTED' ? 'You can view your uniform bank form below.' : 'Click below to resume and complete your application form.'}
+                </p>
+                <a href="/open_account_customer/${encodeURIComponent(localApp.applicationNumber)}" class="btn btn-primary btn-sm ea-s42">
+                  ${localApp.status === 'SUBMITTED' ? 'View Application Form' : 'Continue / Resume Application'}
+                </a>
+              </div>
+            </div>
+          `;
+          return;
+        }
+
         resultBox.innerHTML = `
           <div class="ea-s72">
             <div class="ea-s73">

@@ -9,23 +9,16 @@
   /**
    * Generates the Theme Toggle Button HTML.
    */
-  function createThemeToggleHtml() {
+  function createThemeToggleHtml(testIdPrefix = 'shared') {
     return `
-      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme">
+      <button type="button" class="theme-toggle-btn" onclick="toggleAppTheme()" aria-label="Toggle light and dark theme" title="Toggle Light/Dark Theme" data-testid="${testIdPrefix}-nav-theme-button">
         <span class="theme-toggle-track">
           <span class="theme-toggle-indicator">
-            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="theme-toggle-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="4"></circle>
-              <path d="M12 2v2"></path>
-              <path d="M12 20v2"></path>
-              <path d="m4.93 4.93 1.41 1.41"></path>
-              <path d="m17.66 17.66 1.41 1.41"></path>
-              <path d="M2 12h2"></path>
-              <path d="M20 12h2"></path>
-              <path d="m6.34 17.66-1.41 1.41"></path>
-              <path d="m19.07 4.93-1.41 1.41"></path>
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
             </svg>
-            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="theme-toggle-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
             </svg>
           </span>
@@ -38,9 +31,9 @@
   /**
    * Generates the Page Zoom Controls HTML.
    */
-  function createZoomControlsHtml() {
+  function createZoomControlsHtml(testIdPrefix = 'shared') {
     return `
-      <div class="page-zoom-controls">
+      <div class="page-zoom-controls" data-testid="${testIdPrefix}-nav-zoom-controls">
         <button type="button" class="zoom-btn zoom-out-btn" onclick="zoomPageOut()" title="Zoom Out (Smaller Text -)" aria-label="Zoom out">−</button>
         <button type="button" class="zoom-btn zoom-reset-btn" onclick="resetPageZoom()" title="Reset Page Size (100%)" aria-label="Reset zoom">
           <span class="zoom-level-text">100%</span>
@@ -53,28 +46,40 @@
   /**
    * Generates the Language Selector with SVG Country Flag HTML.
    */
-  function createLanguageSelectorHtml() {
-    return `<div id="google_translate_element" class="notranslate" translate="no"></div>`.trim();
+  function createLanguageSelectorHtml(testIdPrefix = 'shared') {
+    return `
+      <div id="neobank-lang-container" class="notranslate" translate="no" data-testid="${testIdPrefix}-nav-lang-container"></div>
+      <div id="google_translate_element" class="notranslate" translate="no" style="display:none!important;" data-testid="${testIdPrefix}-nav-translate-element"></div>
+    `.trim();
   }
 
   /**
    * Generates the Complete Header Controls HTML (Theme + Zoom + Language).
    */
-  function createHeaderControlsHtml() {
+  function createHeaderControlsHtml(testIdPrefix = 'shared') {
     return `
-      ${createThemeToggleHtml()}
-      ${createZoomControlsHtml()}
-      ${createLanguageSelectorHtml()}
+      ${createThemeToggleHtml(testIdPrefix)}
+      ${createZoomControlsHtml(testIdPrefix)}
+      ${createLanguageSelectorHtml(testIdPrefix)}
     `.trim();
   }
 
   /**
    * Mounts the Header Controls into a target container.
    */
-  function renderHeaderControls(target) {
+  function renderHeaderControls(target, testIdPrefix = 'shared') {
     const el = typeof target === 'string' ? document.querySelector(target) : target;
     if (el) {
-      el.innerHTML = createHeaderControlsHtml();
+      el.innerHTML = createHeaderControlsHtml(testIdPrefix);
+      if (window.NeoBankI18n && typeof window.NeoBankI18n.initLanguageDropdown === 'function') {
+        window.NeoBankI18n.initLanguageDropdown();
+      }
+      if (window.updateThemeToggleVisuals && typeof window.updateThemeToggleVisuals === 'function') {
+        window.updateThemeToggleVisuals();
+      }
+      if (window.updateZoomDisplay && typeof window.updateZoomDisplay === 'function') {
+        window.updateZoomDisplay();
+      }
     }
   }
 
@@ -169,14 +174,28 @@
     `.trim();
   }
 
-  // Auto-render declarative components on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', () => {
-    // Auto-mount header controls into designated slots
-    document.querySelectorAll('[data-component="header-controls"]').forEach(slot => {
+  function autoMountHeaderControls() {
+    document.querySelectorAll('[data-component="header-controls"], .nav-controls[data-shared-controls]').forEach(slot => {
       if (!slot.hasChildNodes() || slot.innerHTML.trim() === '') {
-        slot.innerHTML = createHeaderControlsHtml();
+        const testId = slot.getAttribute('data-testid') || '';
+        const prefix = slot.getAttribute('data-testid-prefix') || 
+                       (testId.indexOf('-nav-controls') !== -1 ? testId.replace('-nav-controls', '') : 
+                       (slot.id ? slot.id.replace('-controls', '') : 'shared'));
+        renderHeaderControls(slot, prefix);
       }
     });
+  }
+
+  // Auto-render declarative components on DOMContentLoaded or immediately if ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      autoMountHeaderControls();
+    });
+  } else {
+    autoMountHeaderControls();
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-mount brand badges
     document.querySelectorAll('[data-component="brand-badge"]').forEach(slot => {

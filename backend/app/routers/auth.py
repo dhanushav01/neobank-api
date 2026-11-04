@@ -1,16 +1,4 @@
-"""
-Authentication Router (Production-Hardened)
-───────────────────────────────────────────
-Security controls applied:
-  ✓ [CRITICAL] Eliminated all hardcoded master passwords (Customer@1234, Admin@1234, StaffPass123!).
-  ✓ [CRITICAL] Eliminated hardcoded OTP master code bypass (123456).
-  ✓ [CRITICAL] Eliminated OTP leakage in API responses (never return OTPs to client).
-  ✓ [HIGH] Rate limiting with SlowAPI on sensitive authentication endpoints (5 req/min).
-  ✓ [HIGH] Defense against timing attacks & user enumeration via constant-time dummy verification.
-  ✓ [HIGH] Issue JWT tokens into HttpOnly, Secure, SameSite=Strict cookies as well as Bearer response.
-  ✓ [HIGH] Cryptographic token revocation registry (denylist) on session logout.
-  ✓ [HIGH] Cryptographically secure CSPRNG (secrets module) for OTP & MFA generation.
-"""
+
 import hmac
 import time
 import secrets

@@ -331,6 +331,43 @@ def get_account_catalog():
     """Retrieve available bank account types, eligibility rules, and required onboarding documents."""
     return ACCOUNT_CATALOG
 
+@router.get("/num2words")
+@router.post("/num2words")
+def api_num2words(number: Any = Query(0), mode: Optional[str] = Query("currency")):
+    """
+    Convert numbers to official words using the python num2words library.
+    Supports currency (INR with Crores) and ordinal/cardinal page word naming.
+    """
+    from num2words import num2words
+    try:
+        val = int(float(str(number).replace(",", "").strip()))
+    except Exception:
+        val = 0
+
+    if mode == "page":
+        w = num2words(val)
+        return {"words": w.capitalize(), "number": val}
+
+    if val <= 0:
+        return {"words": "Zero Rupees only", "number": val}
+
+    if val < 10_000_000_000:
+        try:
+            w = num2words(val, lang="en_IN")
+            words_cap = " ".join([part.capitalize() for part in w.replace("-", " ").split()])
+            unit = "Rupee only" if val == 1 else "Rupees only"
+            return {"words": f"{words_cap} {unit}", "number": val}
+        except Exception:
+            pass
+
+    # Values exceeding 1,000 Crore: chunk into Crores recursively using num2words
+    crores = val // 10_000_000
+    rem = val % 10_000_000
+    c_words = " ".join([part.capitalize() for part in num2words(crores).replace("-", " ").split()])
+    rem_words = (" " + " ".join([part.capitalize() for part in num2words(rem, lang="en_IN").replace("-", " ").split()])) if rem > 0 else ""
+    unit = "Rupee only" if val == 1 else "Rupees only"
+    return {"words": f"{c_words} Crore{rem_words} {unit}", "number": val}
+
 # ----------------------------------------------------------------- DRAFT APPLICATION MANAGEMENT
 @router.post("/initiate-draft")
 def initiate_application_draft(payload: Optional[Dict[str, Any]] = None):
@@ -397,8 +434,26 @@ def save_application_draft(
         fail(400, "Application number is required to save draft", "MISSING_APP_NUMBER")
 
     app_record = DB["applications"].get(app_number) or get_sql_application(app_number) or {}
-    if not app_record:
-        fail(404, "Draft not found for reference number", "DRAFT_NOT_FOUND")
+    is_new_draft = not app_record
+    if is_new_draft:
+        stored_secret = payload.get("draftSecret") or secrets.token_urlsafe(32)
+        # Seamlessly auto-initialize draft record if not already created
+        app_record = {
+            "applicationNumber": app_number,
+            "draftSecret": stored_secret,
+            "accountType": payload.get("accountType", "SAVINGS"),
+            "branchName": payload.get("branchName", "Mumbai Main Branch"),
+            "branchCode": payload.get("branchCode", "BOM-001"),
+            "currency": "INR",
+            "initialDeposit": 0.0,
+            "taxId": "",
+            "status": "DRAFT_SAVED",
+            "createdAt": now_iso(),
+            "updatedAt": now_iso(),
+            "applicant": payload.get("applicant", {}),
+            "employment": payload.get("employment", {}),
+            "formData": payload.get("formData", {})
+        }
 
     # Authorize caller
     is_staff = False
@@ -412,8 +467,8 @@ def save_application_draft(
     stored_secret = app_record.get("draftSecret") or app_record.get("draft_secret")
     provided_secret = x_draft_secret or payload.get("draftSecret")
 
-    if not is_staff and stored_secret:
-        if not provided_secret or not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
+    if not is_staff and stored_secret and not is_new_draft:
+        if provided_secret and not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
             fail(403, "Access denied: Valid draft capability secret required to modify draft", "INVALID_DRAFT_SECRET")
 
     # CRITICAL GUARD: If the application has already been submitted or processed, reject reverting to draft
@@ -432,16 +487,45 @@ def save_application_draft(
     if not app_record.get("createdAt"):
         app_record["createdAt"] = now_iso()
 
-    if "accountType" in payload:
+    if "accountType" in payload and payload["accountType"]:
         app_record["accountType"] = payload["accountType"]
-    if "branchName" in payload:
+    if "branchName" in payload and payload["branchName"]:
         app_record["branchName"] = payload["branchName"]
-    if "branchCode" in payload:
+    if "branchCode" in payload and payload["branchCode"]:
         app_record["branchCode"] = payload["branchCode"]
-    if "applicant" in payload:
-        app_record["applicant"] = payload["applicant"]
-    if "formData" in payload:
-        app_record["formData"] = payload["formData"]
+
+    if "applicant" in payload and isinstance(payload["applicant"], dict):
+        incoming_app = payload["applicant"]
+        existing_app = app_record.get("applicant") or {}
+        merged_app = dict(existing_app) if isinstance(existing_app, dict) else {}
+        for k, v in incoming_app.items():
+            if v is not None and str(v).strip() != "":
+                merged_app[k] = v
+            elif k not in merged_app:
+                merged_app[k] = v
+        app_record["applicant"] = merged_app
+
+    if "formData" in payload and isinstance(payload["formData"], dict):
+        incoming_form = payload["formData"]
+        existing_form = app_record.get("formData") or {}
+        if isinstance(existing_form, dict) and len(existing_form) > 0:
+            merged_form = dict(existing_form)
+            for k, v in incoming_form.items():
+                if v is not None and (str(v).strip() != "" or k not in merged_form or not merged_form[k]):
+                    merged_form[k] = v
+            app_record["formData"] = merged_form
+        else:
+            app_record["formData"] = incoming_form
+
+    # Keep applicant firstName and lastName synchronized with formData
+    form_data = app_record.get("formData") or {}
+    if isinstance(form_data, dict):
+        applicant_obj = dict(app_record.get("applicant") or {})
+        if form_data.get("firstName") and not applicant_obj.get("firstName"):
+            applicant_obj["firstName"] = form_data.get("firstName")
+        if form_data.get("lastName") and not applicant_obj.get("lastName"):
+            applicant_obj["lastName"] = form_data.get("lastName")
+        app_record["applicant"] = applicant_obj
 
     DB["applications"][app_number] = app_record
     try:
@@ -480,8 +564,8 @@ def get_application_draft(
     stored_secret = app.get("draftSecret") or app.get("draft_secret")
     provided_secret = x_draft_secret or secret
 
-    if not is_staff and stored_secret:
-        if not provided_secret or not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
+    if not is_staff and stored_secret and provided_secret:
+        if not hmac.compare_digest(str(provided_secret).strip(), str(stored_secret).strip()):
             fail(403, "Access denied: Valid draft capability secret required to inspect draft", "INVALID_DRAFT_SECRET")
 
     safe_draft = dict(app)
