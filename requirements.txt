@@ -10,3 +10,6 @@ bcrypt==5.0.0
 slowapi==0.1.10
 python-dotenv==1.2.4
 httpx==0.28.1
+currencyconverter>=0.18.23
+pycountry>=26.2.16
+yfinance>=1.8.0
