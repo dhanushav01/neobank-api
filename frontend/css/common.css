@@ -401,18 +401,88 @@ body.translated-rtl {
 /* =================================================================
    SHARED HEADER, BRAND BADGE & CONTROLS
    ================================================================= */
-.app-header {
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.75rem 1.5rem;
-  background: rgba(7, 9, 14, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border-subtle);
+/* =================================================================
+   SHARED HEADER: TOP DEMO BANNER + BOTTOM NAV & CONTROLS
+   ================================================================= */
+.app-header,
+header.app-header,
+header.track-header,
+header.start-header,
+header.db-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: var(--header-bg, rgba(7, 9, 14, 0.88)) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-bottom: 1px solid var(--line, rgba(230, 238, 248, 0.14)) !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Full-width Demo Notice Banner at the Very Top */
+.demo,
+.demo-bar,
+.demo-banner,
+.app-header .demo,
+header .demo,
+header .demo-bar,
+header.app-header .demo {
+  display: block !important;
+  width: 100% !important;
+  text-align: center !important;
+  font-size: 0.78rem !important;
+  font-weight: 500 !important;
+  color: var(--ti, #8d98ab) !important;
+  padding: 6px 14px !important;
+  border-bottom: 1px solid var(--line, rgba(230, 238, 248, 0.12)) !important;
+  background: rgba(0, 0, 0, 0.28) !important;
+  line-height: 1.4 !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+  letter-spacing: 0.01em !important;
+}
+
+[data-theme="light"] .demo,
+[data-theme="light"] .demo-bar,
+[data-theme="light"] .demo-banner,
+[data-theme="light"] .app-header .demo,
+[data-theme="light"] header .demo,
+[data-theme="light"] header .demo-bar,
+body.light-theme .demo,
+body.light-theme .demo-bar,
+body.light-theme .demo-banner,
+body.light-theme .app-header .demo,
+body.light-theme header .demo,
+body.light-theme header .demo-bar {
+  background: rgba(10, 17, 32, 0.04) !important;
+  color: var(--ti, #475569) !important;
+  border-bottom-color: rgba(10, 17, 32, 0.1) !important;
+}
+
+/* Navigation Row Underneath Demo Banner */
+.header-main-row,
+.app-header nav,
+header nav,
+nav.top,
+nav.top-nav,
+nav.start-nav,
+.db-header-row {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0.65rem clamp(12px, 3.5vw, 40px) !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+  gap: 8px !important;
 }
 
 .brand-badge {

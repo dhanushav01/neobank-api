@@ -571,6 +571,11 @@
         p.h = Math.random() < .2;
         return p;
       }
+      function isLightTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light' ||
+               document.body.classList.contains('light-theme');
+      }
+
       function sz() {
         var d = Math.min(devicePixelRatio || 1, 2);
         W = innerWidth;
@@ -578,18 +583,23 @@
         fxCanvas.width = W * d;
         fxCanvas.height = H * d;
         c.setTransform(d, 0, 0, d, 0, 0);
-        c.fillStyle = '#04060b';
+        c.fillStyle = isLightTheme() ? '#f5f8fc' : '#04060b';
         c.fillRect(0, 0, W, H);
         P = [];
         for (var i = 0; i < (W < 700 ? 40 : 90); i++) P.push(sp({}));
       }
+
+      window.addEventListener('neobank:themechange', function () {
+        sz();
+      });
       addEventListener('resize', sz);
       sz();
       addEventListener('pointermove', function (e) { mx = e.clientX; my = e.clientY; }, { passive: true });
       (function f(t) {
         requestAnimationFrame(f);
         if (document.hidden) return;
-        c.fillStyle = 'rgba(4, 6, 11, .09)';
+        var light = isLightTheme();
+        c.fillStyle = light ? 'rgba(245, 248, 252, 0.08)' : 'rgba(4, 6, 11, .09)';
         c.fillRect(0, 0, W, H);
         P.forEach(function (p) {
           var a = Math.sin(p.x * .0028 + t * .00016) * 2.4 + Math.cos(p.y * .0035 - t * .00013) * 2.4;

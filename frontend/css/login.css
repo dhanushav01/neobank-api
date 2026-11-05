@@ -17,6 +17,19 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+[data-theme="light"], .light-theme, body.light-theme {
+  --void: #f5f8fc;
+  --ink: #e2e8f0;
+  --mint: #00c878;
+  --ice: #0a1120;
+  --ti: #475569;
+  --line: rgba(10, 17, 32, 0.12);
+  --bad: #dc2626;
+  --header-bg: rgba(245, 248, 252, 0.94);
+  color-scheme: light;
+}
+
+
 *, *::before, *::after {
   box-sizing: inherit;
 }
@@ -1308,9 +1321,7 @@ footer {
   .wrap {
     padding: 6px 8px 1.5rem;
   }
-  header.app-header .demo {
-    display: none;
-  }
+  /* demo notice remains visible across all screens */
   nav.top {
     padding: 8px 6px;
     gap: 4px;
@@ -1565,4 +1576,231 @@ footer {
   footer {
     display: none !important;
   }
+}
+
+
+
+/* ==========================================================================
+   LOGIN PAGE LIGHT THEME STYLES
+   ========================================================================== */
+[data-theme="light"] body,
+body.light-theme {
+  background-color: var(--void) !important;
+  color: var(--ice) !important;
+}
+
+[data-theme="light"] body::before,
+body.light-theme::before {
+  opacity: 0.35;
+  background: radial-gradient(40% 35% at 15% 30%, rgba(0, 200, 120, .14), transparent 70%),
+              radial-gradient(35% 40% at 90% 75%, rgba(60, 100, 240, .12), transparent 70%);
+}
+
+[data-theme="light"] header.app-header,
+body.light-theme header.app-header {
+  background: var(--header-bg) !important;
+  border-bottom-color: var(--line) !important;
+}
+
+[data-theme="light"] .brand,
+body.light-theme .brand {
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .brand:hover,
+body.light-theme .brand:hover {
+  color: #00c878 !important;
+}
+
+[data-theme="light"] .header-links a:not(.brand):not(.btn),
+body.light-theme .header-links a:not(.brand):not(.btn) {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .header-links a:not(.brand):not(.btn):hover,
+body.light-theme .header-links a:not(.brand):not(.btn):hover {
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .btn-ghost-nav,
+body.light-theme .btn-ghost-nav {
+  background: #ffffff !important;
+  border-color: rgba(10, 17, 32, 0.16) !important;
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .btn-ghost-nav:hover,
+body.light-theme .btn-ghost-nav:hover {
+  border-color: #00c878 !important;
+  color: #00c878 !important;
+  background: rgba(0, 200, 120, 0.08) !important;
+}
+
+[data-theme="light"] .card,
+body.light-theme .card {
+  background: #ffffff !important;
+  border: 1px solid rgba(10, 17, 32, 0.12) !important;
+  box-shadow: 0 30px 70px -20px rgba(15, 23, 42, 0.12), 0 0 0 1px rgba(15, 23, 42, 0.05) !important;
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .card h2,
+body.light-theme .card h2 {
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .card .sub,
+body.light-theme .card .sub {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .tabs,
+body.light-theme .tabs {
+  background: #eef2f7 !important;
+  border-color: rgba(10, 17, 32, 0.12) !important;
+}
+
+[data-theme="light"] .tab,
+body.light-theme .tab {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .tab[aria-selected="true"],
+body.light-theme .tab[aria-selected="true"] {
+  color: #04060b !important;
+}
+
+[data-theme="light"] .lb,
+body.light-theme .lb {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .inp,
+body.light-theme .inp {
+  background: #ffffff !important;
+  border: 1px solid rgba(10, 17, 32, 0.18) !important;
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .inp:focus,
+body.light-theme .inp:focus {
+  border-color: #00c878 !important;
+  box-shadow: 0 0 0 3px rgba(0, 200, 120, 0.16) !important;
+}
+
+[data-theme="light"] .fld .fi,
+body.light-theme .fld .fi {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .fld:focus-within .fi,
+body.light-theme .fld:focus-within .fi {
+  color: #00c878 !important;
+}
+
+[data-theme="light"] .fld label,
+body.light-theme .fld label {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .fld .inp:focus + label,
+[data-theme="light"] .fld .inp:not(:placeholder-shown) + label,
+body.light-theme .fld .inp:focus + label,
+body.light-theme .fld .inp:not(:placeholder-shown) + label {
+  color: #00a86b !important;
+}
+
+[data-theme="light"] .eye,
+body.light-theme .eye {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .eye:hover,
+body.light-theme .eye:hover {
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .hint,
+body.light-theme .hint {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .stp,
+body.light-theme .stp {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .stp li b,
+body.light-theme .stp li b {
+  border-color: rgba(10, 17, 32, 0.16) !important;
+  background: #f8fafc !important;
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .stp li.act b,
+body.light-theme .stp li.act b {
+  background: #00c878 !important;
+  border-color: #00c878 !important;
+  color: #ffffff !important;
+}
+
+[data-theme="light"] .meter,
+body.light-theme .meter {
+  background: #e2e8f0 !important;
+}
+
+[data-theme="light"] .modal-box,
+body.light-theme .modal-box {
+  background: #ffffff !important;
+  border: 1px solid rgba(10, 17, 32, 0.14) !important;
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] footer,
+body.light-theme footer {
+  color: #64748b !important;
+}
+
+
+[data-theme="light"] .show,
+body.light-theme .show {
+  background: linear-gradient(rgba(240, 246, 255, .85), rgba(230, 240, 252, .9)) padding-box,
+              linear-gradient(150deg, rgba(0, 200, 120, .4), rgba(10, 17, 32, .08) 40%, rgba(10, 17, 32, .08) 70%, rgba(0, 200, 120, .25)) border-box !important;
+  box-shadow: 0 25px 60px -20px rgba(15, 23, 42, 0.08) !important;
+  border-color: rgba(10, 17, 32, 0.12) !important;
+}
+
+[data-theme="light"] .show::before,
+body.light-theme .show::before {
+  background: radial-gradient(60% 50% at 30% 45%, rgba(0, 200, 120, .1), transparent 70%),
+              radial-gradient(50% 50% at 90% 100%, rgba(60, 100, 240, .08), transparent 70%) !important;
+}
+
+[data-theme="light"] h1,
+body.light-theme h1 {
+  color: #0a1120 !important;
+}
+
+[data-theme="light"] .w > span,
+body.light-theme .w > span {
+  background: linear-gradient(100deg, #0a1120 35%, #00a86b 50%, #0a1120 65%) !important;
+  background-size: 250% 100% !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+}
+
+[data-theme="light"] .lede,
+body.light-theme .lede {
+  color: #475569 !important;
+}
+
+[data-theme="light"] .quote,
+body.light-theme .quote {
+  color: #64748b !important;
+}
+
+[data-theme="light"] .quote b,
+body.light-theme .quote b {
+  color: #0a1120 !important;
 }

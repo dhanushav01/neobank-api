@@ -89,11 +89,6 @@
   function createBrandBadgeHtml(subtitle = 'Digital Banking') {
     return `
       <div class="brand-badge">
-        <div class="brand-icon">
-          <svg style="width:24px;height:24px;color:var(--text-contrast)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
-          </svg>
-        </div>
         <div>
           <div style="display:flex;align-items:center;gap:0.5rem">
             <span class="brand-title">NeoBank</span>

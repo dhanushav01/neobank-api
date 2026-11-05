@@ -631,6 +631,11 @@
         p.h = Math.random() < .2;
         return p;
       }
+      function isLightTheme() {
+        return document.documentElement.getAttribute('data-theme') === 'light' ||
+               document.body.classList.contains('light-theme');
+      }
+
       function sz() {
         var d = Math.min(devicePixelRatio || 1, 2);
         W = innerWidth;
@@ -638,11 +643,15 @@
         fxCanvas.width = W * d;
         fxCanvas.height = H * d;
         cx.setTransform(d, 0, 0, d, 0, 0);
-        cx.fillStyle = '#04060b';
+        cx.fillStyle = isLightTheme() ? '#f5f8fc' : '#04060b';
         cx.fillRect(0, 0, W, H);
         P = [];
         for (var i = 0; i < (W < 700 ? 40 : 100); i++) P.push(sp({}));
       }
+
+      window.addEventListener('neobank:themechange', function () {
+        sz();
+      });
       addEventListener('resize', sz);
       sz();
       addEventListener('pointermove', function (e) {
@@ -653,7 +662,8 @@
       (function f(t) {
         requestAnimationFrame(f);
         if (document.hidden) return;
-        cx.fillStyle = 'rgba(4, 6, 11, .09)';
+        var light = isLightTheme();
+        cx.fillStyle = light ? 'rgba(245, 248, 252, 0.08)' : 'rgba(4, 6, 11, .09)';
         cx.fillRect(0, 0, W, H);
         P.forEach(function (p) {
           var a = Math.sin(p.x * .0028 + t * .00016) * 2.4 + Math.cos(p.y * .0035 - t * .00013) * 2.4;

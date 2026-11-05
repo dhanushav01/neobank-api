@@ -25,17 +25,22 @@
   <canvas id="fx" aria-hidden="true"></canvas>
 
   <!-- Ambient Header with Regulatory Notice & Navigation -->
-  <header>
+  <header class="app-header">
     <div class="demo" data-testid="home-demo-notice">
       Demo app, not a real bank. Please don’t enter real personal or financial details.
     </div>
-    <nav aria-label="Main Navigation">
+    <nav class="top" aria-label="Main Navigation">
       <a class="brand" href="/home" data-testid="home-nav-brand-link">
         NeoBank
       </a>
 
-      <!-- Accessibility & Theme Controls: Theme, Zoom, Language (Centralized Component) -->
-      <div class="nav-controls" data-component="header-controls" data-testid="home-nav-controls"></div>
+      <!-- Accessibility & Theme Controls: Theme, Zoom, Language & Navigation -->
+      <div class="header-links">
+        <div class="nav-controls" data-component="header-controls" data-testid="home-nav-controls"></div>
+        <a class="hide-s" href="/existing_application" data-testid="home-nav-track-link">Track application</a>
+        <a class="btn-ghost-nav" href="/open_account_customer" data-testid="home-nav-open-account-link">Open account</a>
+        <a class="btn-ghost-nav" href="/login" data-testid="home-nav-signin-link">Sign in</a>
+      </div>
     </nav>
   </header>
 

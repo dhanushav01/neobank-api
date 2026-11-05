@@ -1410,3 +1410,84 @@ footer {
     padding: 10px 6px !important;
   }
 }
+
+/* ==========================================================================
+   CARD EDGE FIX & UNIFIED HEADER (OVERRIDE THEMES.CSS BACKGROUND/BORDER)
+   ========================================================================== */
+.scene .card,
+.card {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.scene .face,
+.face {
+  border-radius: 24px !important;
+  overflow: hidden !important;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+}
+
+/* Unified Header Navigation Links matching other pages */
+header.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  padding: 0 !important;
+  background: var(--header-bg);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--line);
+  width: 100%;
+}
+
+nav.top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 24px);
+  padding: 12px clamp(12px, 3.5vw, 48px);
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.header-links a:not(.brand):not(.btn) {
+  color: var(--ti);
+  font-size: 0.9rem;
+  transition: color .2s;
+}
+
+.header-links a:not(.brand):not(.btn):hover {
+  color: var(--ice);
+}
+
+.btn-ghost-nav {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 16px;
+  border-radius: 99px;
+  border: 1px solid var(--line);
+  font-size: 0.85rem;
+  color: var(--ice);
+  transition: border-color .2s, background .2s, color .2s;
+}
+
+.btn-ghost-nav:hover {
+  border-color: var(--mint);
+  color: var(--mint);
+  background: rgba(0, 245, 155, 0.08);
+}
