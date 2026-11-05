@@ -9,9 +9,21 @@ import sys
 import secrets
 import logging
 from typing import Dict, Any, List, Optional
-from currency_converter import CurrencyConverter
-import pycountry
-import yfinance as yf
+try:
+    from currency_converter import CurrencyConverter
+except ImportError:
+    CurrencyConverter = None
+
+try:
+    import pycountry
+except ImportError:
+    pycountry = None
+
+try:
+    import yfinance as yf
+    logging.getLogger("yfinance").setLevel(logging.CRITICAL)
+except ImportError:
+    yf = None
 
 logger = logging.getLogger("neobank.config")
 
@@ -186,26 +198,50 @@ KYC identity verification, and dispute resolution.
 """
 
 # ----------------------------------------------------------------- DYNAMIC FX & REFERENCE DATA (currencyconverter & pycountry)
-_cc = CurrencyConverter()
-_FX_CURRENCIES = ["USD", "EUR", "GBP", "INR", "JPY", "CAD", "AUD", "CHF"]
-FX_RATES: Dict[str, float] = {
-    cur: 1.0 if cur == "USD" else round(float(_cc.convert(1, "USD", cur)), 4)
-    for cur in _FX_CURRENCIES
+_DEFAULT_FX_RATES: Dict[str, float] = {
+    "USD": 1.0, "EUR": 0.92, "GBP": 0.79, "INR": 83.1,
+    "JPY": 150.0, "CAD": 1.36, "AUD": 1.52, "CHF": 0.91
 }
+_FX_CURRENCIES = ["USD", "EUR", "GBP", "INR", "JPY", "CAD", "AUD", "CHF"]
 
+if CurrencyConverter:
+    try:
+        _cc = CurrencyConverter()
+        FX_RATES: Dict[str, float] = {
+            cur: 1.0 if cur == "USD" else round(float(_cc.convert(1, "USD", cur)), 4)
+            for cur in _FX_CURRENCIES
+        }
+    except Exception as _fx_err:
+        logger.warning(f"Dynamic FX initialization fallback: {_fx_err}")
+        FX_RATES = dict(_DEFAULT_FX_RATES)
+else:
+    FX_RATES = dict(_DEFAULT_FX_RATES)
+
+_DEFAULT_COUNTRIES: List[Dict[str, str]] = [
+    {"code": "GB", "name": "United Kingdom", "currency": "GBP"},
+    {"code": "US", "name": "United States", "currency": "USD"},
+    {"code": "DE", "name": "Germany", "currency": "EUR"},
+    {"code": "IN", "name": "India", "currency": "INR"},
+    {"code": "JP", "name": "Japan", "currency": "JPY"},
+    {"code": "CA", "name": "Canada", "currency": "CAD"},
+    {"code": "AU", "name": "Australia", "currency": "AUD"}
+]
 _COUNTRY_CURRENCY_MAP = [
-    ("GB", "GBP"),
-    ("US", "USD"),
-    ("DE", "EUR"),
-    ("IN", "INR"),
-    ("JP", "JPY"),
-    ("CA", "CAD"),
-    ("AU", "AUD")
+    ("GB", "GBP"), ("US", "USD"), ("DE", "EUR"),
+    ("IN", "INR"), ("JP", "JPY"), ("CA", "CAD"), ("AU", "AUD")
 ]
-COUNTRIES: List[Dict[str, str]] = [
-    {"code": code, "name": pycountry.countries.get(alpha_2=code).name, "currency": cur}
-    for code, cur in _COUNTRY_CURRENCY_MAP
-]
+
+if pycountry:
+    try:
+        COUNTRIES = [
+            {"code": code, "name": pycountry.countries.get(alpha_2=code).name, "currency": cur}
+            for code, cur in _COUNTRY_CURRENCY_MAP
+        ]
+    except Exception as _pc_err:
+        logger.warning(f"Dynamic countries initialization fallback: {_pc_err}")
+        COUNTRIES = list(_DEFAULT_COUNTRIES)
+else:
+    COUNTRIES = list(_DEFAULT_COUNTRIES)
 
 # ----------------------------------------------------------------- PRODUCTION FAIL-CLOSED VERIFICATION
 def validate_production_secrets():
@@ -263,9 +299,14 @@ _INSTRUMENT_CATALOG = {
     "GLD": ("SPDR Gold Shares ETF", "ETF", 218.60)
 }
 
+ENABLE_LIVE_YFINANCE = os.getenv("ENABLE_LIVE_YFINANCE", "false").lower() in ("true", "1", "yes")
+
 def _init_instruments() -> Dict[str, tuple]:
-    """Dynamically fetch live pricing via yfinance with fast_info (avoiding crumb-gated info endpoints)."""
+    """Dynamically fetch live pricing via yfinance when enabled; prevents 401 Invalid Crumb errors in cloud deployments."""
     instruments = dict(_INSTRUMENT_CATALOG)
+    if not ENABLE_LIVE_YFINANCE or yf is None:
+        return instruments
+
     try:
         import requests
         session = requests.Session()
@@ -275,7 +316,7 @@ def _init_instruments() -> Dict[str, tuple]:
         for sym, (default_name, default_type, default_price) in _INSTRUMENT_CATALOG.items():
             try:
                 t = yf.Ticker(sym, session=session)
-                live_price = t.fast_info.last_price
+                live_price = getattr(t.fast_info, "last_price", None)
                 if live_price is not None:
                     instruments[sym] = (default_name, default_type, round(float(live_price), 2))
             except Exception:

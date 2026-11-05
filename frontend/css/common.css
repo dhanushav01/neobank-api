@@ -2277,3 +2277,137 @@ nav.top-nav, nav.top, nav.start-nav, .nav-top-row {
     min-height: 28px !important;
   }
 }
+
+
+/* =================================================================
+   PHASE 1: RESPONSIVE & FLUID FOUNDATION (ULTRA-WIDE TO SMARTWATCH)
+   ================================================================= */
+
+/* 1. Global Box-Sizing & Viewport Boundary Safety */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* 2. Safe Ultra-Wide Content Containment Constraint */
+.container-contained,
+.wrap,
+.app-shell,
+.main-container,
+.dashboard-container,
+.track-wrap,
+.onboarding-wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: clamp(12px, 3vw, 32px);
+  padding-right: clamp(12px, 3vw, 32px);
+}
+
+/* 3. Fluid Responsive Typography & Heading Helpers */
+.fluid-h1 {
+  font-size: clamp(1.4rem, 4vw, 2.75rem);
+  line-height: 1.15;
+}
+
+.fluid-h2 {
+  font-size: clamp(1.2rem, 3vw, 2rem);
+  line-height: 1.25;
+}
+
+.fluid-body {
+  font-size: clamp(0.85rem, 1.2vw, 1.05rem);
+  line-height: 1.5;
+}
+
+/* 4. Fluid Auto-Fit Grid & Safe Wrap Utilities */
+.fluid-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+  gap: clamp(12px, 2vw, 24px);
+  width: 100%;
+}
+
+.flex-wrap-safe {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(8px, 1.5vw, 16px);
+  align-items: center;
+}
+
+/* 5. Universal Micro-Viewport Protection (Smartwatch / Apple Watch <= 320px) */
+@media (max-width: 320px) {
+  html {
+    font-size: 13px;
+  }
+
+  body {
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .wrap,
+  .container-contained,
+  .main-container,
+  .dashboard-container {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  /* Force horizontal flex rows and toolbars to wrap cleanly downward */
+  .header-links,
+  .top-nav,
+  .acts,
+  .button-group,
+  .form-actions {
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  /* Prevent inputs or buttons from forcing horizontal scroll */
+  input, select, textarea, button, .btn, .ghost {
+    max-width: 100% !important;
+  }
+}
+
+/* Ultra-micro smartwatch displays (e.g. 160px - 240px) */
+@media (max-width: 240px) {
+  html {
+    font-size: 11px;
+  }
+
+  body {
+    padding: 2px !important;
+  }
+
+  .brand-logo span {
+    display: none !important; /* Retain icon badge on micro screens */
+  }
+
+  .header-links {
+    justify-content: center !important;
+  }
+
+  .refrow {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+
+  .bxs {
+    gap: 2px !important;
+  }
+
+  .bxs input {
+    width: 24px !important;
+    height: 30px !important;
+    font-size: 13px !important;
+  }
+}
