@@ -1,543 +1,211 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NeoBank • Sign In</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Sign in | NeoBank</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💳%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/themes.css"></link>
-  <link rel="stylesheet" href="/css/common.css?v=20261011_07">
-  <link rel="stylesheet" href="/css/style.css?v=20260928_2200">
-  <link rel="stylesheet" href="/css/login.css?v=20261011_01">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="/css/themes.css">
+  <link rel="stylesheet" href="/css/common.css?v=20261105_01">
+  <link rel="stylesheet" href="/css/login.css?v=20261105_01">
+
+  <!-- Core NeoBank Scripts -->
   <script src="/js/constants.js?v=20261002_01"></script>
   <script src="/js/utils.js?v=20261002_01"></script>
   <script src="/js/components.js?v=20261002_01"></script>
   <script src="/js/theme.js?v=20260928_2200"></script>
   <script src="/js/zoom.js?v=20260928_2200"></script>
   <script src="/js/i18n.js?v=20261011_08"></script>
-  </head>
+</head>
 <body>
+  <!-- Reactive Currents Particle Canvas -->
+  <canvas id="fx" aria-hidden="true"></canvas>
 
-  <!-- ==================== HEADER ==================== -->
+  <!-- Global Sticky Header with Regulatory Notice & Universal Controls -->
   <header class="app-header">
-    <div class="brand-badge">
-      <a class="login-s1" href="/">
-        <div class="brand-icon">
-          <svg class="login-s2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
-          </svg>
-        </div>
-        <div>
-          <div class="login-s3">
-            <span class="brand-title">NeoBank</span>
-          </div>
-          <div class="login-s5">Secure Sign In</div>
-        </div>
-      </a>
+    <div class="demo" data-testid="login-demo-notice">
+      Demo app, not a real bank. Please don’t enter real personal or financial details.
     </div>
-
-    <!-- Right Controls: Theme, Language Selector & Return to Home (Centralized Component) -->
-    <div class="login-s6">
-      <div class="nav-controls" data-component="header-controls" data-testid-prefix="login"></div>
-
-      <a href="/" class="btn btn-outline btn-sm">
-        <span>NeoBank Home</span>
+    <nav class="top" aria-label="Main Navigation">
+      <a class="brand" href="/home" data-testid="login-nav-brand-link">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 21v-8.25M15.75 21v-8.25M8.25 21v-8.25M3 9l9-6 9 6m-1.5 12V10.5m-15 10.5V10.5" />
+        </svg>
+        <span>NeoBank</span>
       </a>
-    </div>
+
+      <!-- Header Links & Accessibility Controls (Theme, Zoom, Language) -->
+      <div class="header-links">
+        <div class="nav-controls" data-component="header-controls" data-testid-prefix="login"></div>
+        <a class="hide-s" href="/existing_application" data-testid="login-nav-track-link">Track application</a>
+        <a class="btn-ghost-nav" href="/open_account_customer" data-testid="login-nav-open-account-link">Open account</a>
+      </div>
+    </nav>
   </header>
 
-  <!-- ==================== SIGN IN CONTAINER ==================== -->
-  <main class="login-s10">
-    <div class="glass-card login-s11">
-      
-      <div class="login-s12">
-        <h2 class="login-s13">
-          Sign In to NeoBank
-        </h2>
-        <p class="login-s14">
-          Access your digital banking ledger, balances, and cards
-        </p>
-      </div>
+  <!-- Main Sign-In Experience -->
+  <main class="wrap">
+    <div class="split">
+      <!-- Showcase (Left Side) -->
+      <section class="show" data-testid="login-showcase">
+        <div>
+          <h1 data-testid="login-page-title" aria-label="Welcome back.">
+            <span class="w" style="--i:0"><span>Welcome</span></span> 
+            <span class="w" style="--i:1"><span>back.</span></span>
+          </h1>
+          <p class="lede">Sign in to see your balances, cards, and transfers.</p>
+        </div>
 
-      <!-- Login Method Switcher Tabs -->
-      <div class="login-s15">
-        <button type="button" id="tab-btn-email" class="login-method-tab active" onclick="switchLoginMethod('EMAIL')">
-          <span>Email (OTP)</span>
-        </button>
-        <button type="button" id="tab-btn-phone" class="login-method-tab" onclick="switchLoginMethod('PHONE')">
-          <span>Phone (OTP)</span>
-        </button>
-        <button type="button" id="tab-btn-password" class="login-method-tab" onclick="switchLoginMethod('PASSWORD')">
-          <span>Password</span>
-        </button>
-      </div>
-
-      <!-- ==================== METHOD 1: EMAIL (OTP LOGIN) ==================== -->
-      <div id="method-panel-email">
-        <form id="form-email-otp" onsubmit="event.preventDefault(); handleSendOtp('EMAIL');">
-          <div class="form-group">
-            <label class="form-label" for="login-email-otp">Email Address</label>
-            <input type="email" id="login-email-otp" class="form-input" placeholder="e.g. yourname@domain.com" required value="">
-          </div>
-
-          <div class="login-s16" id="email-otp-input-group">
-            <div class="login-s17">
-              <label class="form-label login-s18">6-Digit One-Time Password (OTP)</label>
-              <button class="login-s19" type="button" onclick="handleSendOtp('EMAIL')">
-                Resend Code
-              </button>
-            </div>
-            <input type="text" id="login-email-otp-code" class="form-input otp-box-input" placeholder="••••••" maxlength="6" pattern="[0-9]{4,8}">
-            
-            <!-- Simulated Random OTP Display Banner -->
-            <div class="login-s20" id="email-otp-display-badge" title="Click to auto-fill OTP">
-              <div class="login-s21">GENERATED RANDOM OTP CODE:</div>
-              <div class="login-s22">
-                <span class="login-s23" id="email-otp-display-code"></span>
-                <span class="login-s24">Auto-Filled ✓</span>
+        <div class="stagecard">
+          <div class="orbit" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="scene" id="scene" role="img" aria-label="A sample NeoBank card that turns to show a lock while you sign in" data-testid="login-card-scene">
+            <div class="tilt" id="tilt">
+              <div class="flipper">
+                <div class="face">
+                  <div class="ln">NeoBank<span>Titanium</span></div>
+                  <div class="cc"></div>
+                  <div class="num">4821 •••• •••• 8842</div>
+                  <div class="nm">Sample card, no real funds</div>
+                </div>
+                <div class="face back">
+                  <svg viewBox="0 0 24 24">
+                    <g class="sh">
+                      <path d="M8 11V8a4 4 0 018 0v3" style="fill:none;stroke:var(--mint);stroke-width:2.2;stroke-linecap:round"/>
+                    </g>
+                    <rect class="body" x="5" y="11" width="14" height="10" rx="2.5"/>
+                  </svg>
+                  <p>Private</p>
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="login-s25">
-            <button type="button" id="btn-request-email-otp" class="btn btn-outline login-s26" onclick="handleSendOtp('EMAIL')">
-              <span>Send Verification OTP</span>
-            </button>
-            <button type="button" id="btn-verify-email-otp" class="btn btn-primary login-s27" onclick="handleVerifyOtp('EMAIL')">
-              <span>Verify OTP &amp; Open Dashboard</span>
-            </button>
+        <ul class="trust" data-testid="login-trust-list">
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>
+            Passwords are stored hashed, never as plain text
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>
+            Repeated attempts are rate limited
+          </li>
+          <li>
+            <svg viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>
+            Verification codes expire securely
+          </li>
+        </ul>
+      </section>
+
+      <!-- Form Side (Right Side) -->
+      <section class="formside">
+        <div class="card panel" id="panel" data-testid="login-panel">
+          <div class="mlock" id="mlock" aria-hidden="true" data-testid="login-lock-badge">
+            <svg viewBox="0 0 24 24">
+              <g class="s"><path d="M8 11V8a4 4 0 018 0v3"/></g>
+              <rect class="b" x="5" y="11" width="14" height="10" rx="2.5"/>
+            </svg>
           </div>
-        </form>
-      </div>
+          <h2>Sign in to NeoBank</h2>
+          <p class="sub">Access your digital banking ledger, balances, and cards.</p>
 
-      <!-- ==================== METHOD 2: PHONE (OTP LOGIN) ==================== -->
-      <div class="login-s28" id="method-panel-phone">
-        <form id="form-phone-otp" onsubmit="event.preventDefault(); handleSendOtp('PHONE');">
-          <div class="form-group">
-            <label class="form-label" for="login-phone-input">Mobile Phone Number</label>
-            <input type="tel" id="login-phone-input" class="form-input" placeholder="e.g. +447700900123" required value="">
-          </div>
-
-          <div class="login-s16" id="phone-otp-input-group">
-            <div class="login-s17">
-              <label class="form-label login-s18">6-Digit One-Time Password (OTP)</label>
-              <button class="login-s19" type="button" onclick="handleSendOtp('PHONE')">
-                Resend Code
-              </button>
-            </div>
-            <input type="text" id="login-phone-otp-code" class="form-input otp-box-input" placeholder="••••••" maxlength="6" pattern="[0-9]{4,8}">
-            
-            <!-- Simulated Random OTP Display Banner -->
-            <div class="login-s20" id="phone-otp-display-badge" title="Click to auto-fill OTP">
-              <div class="login-s21">GENERATED SMS OTP CODE:</div>
-              <div class="login-s22">
-                <span class="login-s23" id="phone-otp-display-code"></span>
-                <span class="login-s24">Auto-Filled ✓</span>
-              </div>
-            </div>
-          </div>
-
-          <div class="login-s25">
-            <button type="button" id="btn-request-phone-otp" class="btn btn-outline login-s26" onclick="handleSendOtp('PHONE')">
-              <span>Send SMS/Phone OTP</span>
+          <!-- Sign-in Method Tabs -->
+          <div class="tabs" id="tabs" role="tablist" aria-label="Sign-in method" style="--t:0">
+            <button class="tab" role="tab" aria-selected="true" data-m="email" id="tab-email" data-testid="login-tab-email-button" aria-label="Email one-time code">
+              <svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg>
+              <span>Email</span>
             </button>
-            <button type="button" id="btn-verify-phone-otp" class="btn btn-primary login-s27" onclick="handleVerifyOtp('PHONE')">
-              <span>Verify Phone OTP &amp; Open Dashboard</span>
+            <button class="tab" role="tab" aria-selected="false" data-m="phone" id="tab-phone" data-testid="login-tab-phone-button" aria-label="Phone one-time code">
+              <svg viewBox="0 0 24 24"><rect x="7" y="2.5" width="10" height="19" rx="3"/><path d="M11 18.5h2"/></svg>
+              <span>Phone</span>
+            </button>
+            <button class="tab" role="tab" aria-selected="false" data-m="pw" id="tab-pw" data-testid="login-tab-password-button">
+              <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+              <span>Password</span>
             </button>
           </div>
-        </form>
-      </div>
 
-      <!-- ==================== METHOD 3: PASSWORD LOGIN ==================== -->
-      <div class="login-s28" id="method-panel-password">
-        <form id="form-password-login" onsubmit="event.preventDefault(); handlePasswordLogin();">
-          <div class="form-group">
-            <label class="form-label" for="login-pw-ident">Email or Phone Number</label>
-            <input type="text" id="login-pw-ident" class="form-input" placeholder="e.g. user@domain.com or phone" required value="">
-          </div>
-          <div class="form-group login-s29">
-            <label class="form-label" for="login-pw-input">Password</label>
-            <div class="login-s30">
-              <input type="password" id="login-pw-input" class="form-input login-s31" placeholder="••••••••" required value="">
-              <button class="login-s32" type="button" onclick="togglePasswordVisibility('login-pw-input', this)" title="Show/Hide Password">
-                <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-          </div>
-          <div class="login-s33">
-            <button class="login-s34" type="button" onclick="openForgotPasswordModal()">
-              Forgot Password?
-            </button>
-          </div>
-          <button type="submit" class="btn btn-primary login-s26">
-            <span>Authenticate &amp; Open Dashboard</span>
-          </button>
-        </form>
-      </div>
+          <p class="cap" id="cap" data-testid="login-method-caption"></p>
+          <div id="panes"></div>
 
-      <!-- Bottom Return info -->
-      <div class="login-s35">
-        <a class="login-s36" href="/">Back to Overview</a>
-      </div>
-
+          <div class="foot">
+            <a href="/open_account_customer" data-testid="login-open-account-link">New here? Open an account</a>
+            <a href="/existing_application" data-testid="login-track-link">Track an application</a>
+            <a href="/home" data-testid="login-back-home-link">Back to overview</a>
+          </div>
+        </div>
+      </section>
     </div>
   </main>
 
-  <!-- ==================== FORGOT PASSWORD MODAL ==================== -->
-  <div class="db-modal-overlay login-s37" id="modal-forgot-password">
-    <div class="glass-card login-s38">
-      <div class="login-s39">
-        <div class="login-s40">
-          <h3 class="login-s41">Forgot Password</h3>
+  <!-- Modal: Forgot Password Workflow -->
+  <div id="modal" hidden role="dialog" aria-modal="true" aria-labelledby="fh" data-testid="forgot-modal">
+    <div class="card">
+      <button class="x" id="fx2" aria-label="Close" data-testid="forgot-close-button">✕</button>
+      <h2 id="fh">Forgot password</h2>
+      <div id="f1">
+        <p class="sub">Enter your registered email address or mobile phone number. We’ll send a 6-digit code to reset your password.</p>
+        <div>
+          <div class="fld">
+            <span class="fi">
+              <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.8-3.6 3.8-5.5 7.5-5.5s6.7 1.9 7.5 5.5"/></svg>
+            </span>
+            <input class="inp" id="fid" type="text" placeholder=" " autocomplete="username" data-testid="forgot-identifier-input">
+            <label for="fid">Email or phone number</label>
+          </div>
+          <p class="err" id="fe1"></p>
         </div>
-        <button class="login-s42" type="button" onclick="closeForgotPasswordModal()">✕</button>
+        <button class="btn" id="fsend" style="margin-top:8px" data-testid="forgot-send-otp-button">Send verification code</button>
       </div>
 
-      <!-- STEP 1: Enter Email or Phone -->
-      <div id="forgot-step-1">
-        <p class="login-s43">
-          Enter your registered <strong>email address</strong> or <strong>mobile phone number</strong>. We will send a 6-digit verification OTP code to reset your password.
-        </p>
-        <form onsubmit="event.preventDefault(); handleSendForgotOtp();">
-          <div class="form-group login-s44">
-            <label class="form-label" for="forgot-identifier">Email or Phone Number</label>
-            <input type="text" id="forgot-identifier" class="form-input" placeholder="e.g. name@example.com or +447700900123" required>
+      <div id="f2" hidden>
+        <p class="sub" id="ft"></p>
+        <div style="display:grid;gap:16px">
+          <div class="badge" id="fb" style="display:none">Demo code<b id="fc"></b></div>
+          <div>
+            <span class="lb">6-digit code</span>
+            <div class="otp" id="fo" data-testid="forgot-otp-boxes"></div>
           </div>
-          <button type="submit" id="btn-send-forgot-otp" class="btn btn-primary login-s26">
-            <span>Send Verification OTP</span>
-          </button>
-        </form>
-      </div>
-
-      <!-- STEP 2: Enter OTP & New Password -->
-      <div class="login-s28" id="forgot-step-2">
-        <div class="login-s45">
-          ✓ OTP sent to <strong id="forgot-target-display"></strong>
+          <div>
+            <div class="fld">
+              <span class="fi">
+                <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+              </span>
+              <input class="inp" id="np" type="password" placeholder=" " autocomplete="new-password" data-testid="forgot-new-password-input">
+              <label for="np">New password</label>
+            </div>
+            <div class="meter"><i id="npm"></i></div>
+          </div>
+          <div>
+            <div class="fld">
+              <span class="fi">
+                <svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 018 0v3"/></svg>
+              </span>
+              <input class="inp" id="cp" type="password" placeholder=" " autocomplete="new-password" data-testid="forgot-confirm-password-input">
+              <label for="cp">Confirm new password</label>
+            </div>
+            <p class="err" id="fe2" data-testid="forgot-error-text"></p>
+          </div>
+          <button class="btn" id="freset" data-testid="forgot-reset-button">Reset password &amp; continue</button>
         </div>
-
-        <!-- Simulated Random OTP Display Banner -->
-        <div class="login-s46" id="forgot-otp-display-badge" title="Click to auto-fill OTP">
-          <div class="login-s21">GENERATED PASSWORD RESET OTP:</div>
-          <div class="login-s22">
-            <span class="login-s23" id="forgot-otp-display-code"></span>
-            <span class="login-s24">Auto-Filled ✓</span>
-          </div>
-        </div>
-
-        <form onsubmit="event.preventDefault(); handleResetPasswordConfirm();">
-          <div class="form-group login-s47">
-            <div class="login-s48">
-              <label class="form-label login-s18" for="forgot-otp-code">6-Digit OTP Code</label>
-              <button class="login-s19" type="button" onclick="handleSendForgotOtp()">Resend Code</button>
-            </div>
-            <input type="text" id="forgot-otp-code" class="form-input otp-box-input" placeholder="••••••" maxlength="6" required pattern="[0-9]{4,8}">
-          </div>
-
-          <div class="form-group login-s47">
-            <label class="form-label" for="forgot-new-password">New Password</label>
-            <div class="login-s30">
-              <input type="password" id="forgot-new-password" class="form-input login-s31" placeholder="At least 6 characters" required minlength="6">
-              <button class="login-s32" type="button" onclick="togglePasswordVisibility('forgot-new-password', this)" title="Show/Hide Password">
-                <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-group login-s44">
-            <label class="form-label" for="forgot-confirm-password">Confirm New Password</label>
-            <div class="login-s30">
-              <input type="password" id="forgot-confirm-password" class="form-input login-s31" placeholder="Re-enter new password" required minlength="6">
-              <button class="login-s32" type="button" onclick="togglePasswordVisibility('forgot-confirm-password', this)" title="Show/Hide Password">
-                <svg class="icon-eye" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-          </div>
-
-          <div class="login-s49" id="forgot-reset-error"></div>
-
-          <button type="submit" id="btn-confirm-forgot-reset" class="btn btn-primary login-s26">
-            <span>Reset Password &amp; Continue</span>
-          </button>
-        </form>
       </div>
-
     </div>
   </div>
 
-    </div>
-  </main>
+  <!-- Fullscreen Circle Wipe Animation -->
+  <div id="wipe" aria-hidden="true"><span>Opening your dashboard…</span></div>
+  <div id="toast" role="status"></div>
 
-  <!-- Core Scripts -->
-  <script src="/js/api.js?v=20261001_1300"></script>
-  <script src="/js/auth.js?v=20260928_2200"></script>
-  <script>
-    var formatHumanText = window.formatHumanText;
-    var showToast = window.showToast;
+  <!-- Standardized Page Footer -->
+  <footer>
+    NeoBank is a financial technology platform. Deposits held at partner banks. In this sandbox environment, all data is securely stored in local or isolated cloud database tables.
+  </footer>
 
-    let activeMethod = 'EMAIL';
-
-    function switchLoginMethod(method) {
-      activeMethod = method;
-      document.querySelectorAll('.login-method-tab').forEach(tab => tab.classList.remove('active'));
-      
-      const tabEmail = document.getElementById('tab-btn-email');
-      const tabPhone = document.getElementById('tab-btn-phone');
-      const tabPass = document.getElementById('tab-btn-password');
-
-      const panelEmail = document.getElementById('method-panel-email');
-      const panelPhone = document.getElementById('method-panel-phone');
-      const panelPass = document.getElementById('method-panel-password');
-
-      panelEmail.style.display = 'none';
-      panelPhone.style.display = 'none';
-      panelPass.style.display = 'none';
-
-      if (method === 'EMAIL') {
-        tabEmail.classList.add('active');
-        panelEmail.style.display = 'block';
-      } else if (method === 'PHONE') {
-        tabPhone.classList.add('active');
-        panelPhone.style.display = 'block';
-      } else if (method === 'PASSWORD') {
-        tabPass.classList.add('active');
-        panelPass.style.display = 'block';
-      }
-    }
-
-    // Send OTP handler (Email or Phone)
-    async function handleSendOtp(type) {
-      const isEmail = type === 'EMAIL';
-      const inputEl = document.getElementById(isEmail ? 'login-email-otp' : 'login-phone-input');
-      const ident = inputEl.value.trim();
-
-      if (!ident) {
-        showToast(`Please enter your ${isEmail ? 'email address' : 'phone number'}.`, 'error');
-        return;
-      }
-
-      try {
-        const res = await api('/auth/otp/send', {
-          method: 'POST',
-          body: { identifier: ident }
-        });
-
-        const otpCode = res.otp || res.demoOtp;
-        showToast(res.message || `Verification OTP: ${otpCode}`, 'success');
-
-        // Show OTP code input group and change buttons
-        const groupEl = document.getElementById(isEmail ? 'email-otp-input-group' : 'phone-otp-input-group');
-        const reqBtn = document.getElementById(isEmail ? 'btn-request-email-otp' : 'btn-request-phone-otp');
-        const verBtn = document.getElementById(isEmail ? 'btn-verify-email-otp' : 'btn-verify-phone-otp');
-        const badgeEl = document.getElementById(isEmail ? 'email-otp-display-badge' : 'phone-otp-display-badge');
-        const textEl = document.getElementById(isEmail ? 'email-otp-display-code' : 'phone-otp-display-code');
-        const codeInput = document.getElementById(isEmail ? 'login-email-otp-code' : 'login-phone-otp-code');
-
-        groupEl.style.display = 'block';
-        reqBtn.style.display = 'none';
-        verBtn.style.display = 'block';
-
-        if (otpCode) {
-          if (badgeEl && textEl) {
-            badgeEl.style.display = 'block';
-            textEl.textContent = otpCode;
-            badgeEl.onclick = () => {
-              codeInput.value = otpCode;
-            };
-          }
-          // Auto fill generated random OTP so user can authenticate immediately
-          codeInput.value = otpCode;
-        }
-
-        codeInput.focus();
-      } catch (err) {
-        showToast(err.message || 'Failed to send OTP code', 'error');
-      }
-    }
-
-    // Verify OTP handler
-    async function handleVerifyOtp(type) {
-      const isEmail = type === 'EMAIL';
-      const ident = document.getElementById(isEmail ? 'login-email-otp' : 'login-phone-input').value.trim();
-      const code = document.getElementById(isEmail ? 'login-email-otp-code' : 'login-phone-otp-code').value.trim();
-
-      if (!code) {
-        showToast('Please enter the 6-digit OTP code.', 'error');
-        return;
-      }
-
-      try {
-        const res = await api('/auth/otp/verify', {
-          method: 'POST',
-          body: { identifier: ident, code: code }
-        });
-
-        localStorage.setItem('neobank_token', res.accessToken);
-        localStorage.setItem('neobank_user', JSON.stringify(res.user || { email: ident, role: res.role }));
-        showToast('Verification successful! Opening dashboard...', 'success');
-
-        const params = new URLSearchParams(window.location.search);
-        let redirectUrl = params.get('redirect') || '/app';
-        if (redirectUrl.includes('/sql-gui') && res.role === 'CUSTOMER') {
-          redirectUrl = '/app';
-        }
-
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 500);
-      } catch (err) {
-        showToast(err.message || 'Invalid or expired OTP code', 'error');
-      }
-    }
-
-    // Standard Password Login handler
-    async function handlePasswordLogin() {
-      const email = document.getElementById('login-pw-ident').value.trim();
-      const password = document.getElementById('login-pw-input').value;
-
-      try {
-        const res = await api('/auth/login', {
-          method: 'POST',
-          body: { email, password }
-        });
-
-        localStorage.setItem('neobank_token', res.accessToken);
-        localStorage.setItem('neobank_user', JSON.stringify(res.user || { email, role: res.role }));
-        showToast('Login successful! Redirecting...', 'success');
-
-        const params = new URLSearchParams(window.location.search);
-        let redirectUrl = params.get('redirect') || '/app';
-        if (redirectUrl.includes('/sql-gui') && res.role === 'CUSTOMER') {
-          redirectUrl = '/app';
-        }
-
-        setTimeout(() => {
-          window.location.href = redirectUrl;
-        }, 500);
-      } catch (err) {
-        showToast(err.message || 'Invalid credentials', 'error');
-      }
-    }
-
-    // ==================== FORGOT PASSWORD WORKFLOW ====================
-    function openForgotPasswordModal() {
-      const modal = document.getElementById('modal-forgot-password');
-      if (!modal) return;
-      modal.style.display = 'flex';
-      document.getElementById('forgot-step-1').style.display = 'block';
-      document.getElementById('forgot-step-2').style.display = 'none';
-      const prefill = document.getElementById('login-pw-ident')?.value || document.getElementById('login-email-otp')?.value || '';
-      if (prefill) document.getElementById('forgot-identifier').value = prefill;
-      const errEl = document.getElementById('forgot-reset-error');
-      if (errEl) errEl.style.display = 'none';
-    }
-
-    function closeForgotPasswordModal() {
-      const modal = document.getElementById('modal-forgot-password');
-      if (modal) modal.style.display = 'none';
-    }
-
-    async function handleSendForgotOtp() {
-      const ident = document.getElementById('forgot-identifier').value.trim();
-      if (!ident) {
-        showToast('Please enter your email address or phone number.', 'error');
-        return;
-      }
-      const btn = document.getElementById('btn-send-forgot-otp');
-      if (btn) btn.disabled = true;
-
-      try {
-        const res = await api('/auth/forgot-password/request-otp', {
-          method: 'POST',
-          body: { identifier: ident }
-        });
-        const otpCode = res.otp || res.demoOtp;
-        showToast(res.message || `Verification OTP: ${otpCode}`, 'success');
-        document.getElementById('forgot-target-display').textContent = ident;
-        document.getElementById('forgot-step-1').style.display = 'none';
-        document.getElementById('forgot-step-2').style.display = 'block';
-
-        const forgotBadge = document.getElementById('forgot-otp-display-badge');
-        const forgotCodeText = document.getElementById('forgot-otp-display-code');
-        const otpInput = document.getElementById('forgot-otp-code');
-
-        if (otpCode) {
-          if (forgotBadge && forgotCodeText) {
-            forgotBadge.style.display = 'block';
-            forgotCodeText.textContent = otpCode;
-            forgotBadge.onclick = () => {
-              if (otpInput) otpInput.value = otpCode;
-            };
-          }
-          if (otpInput) otpInput.value = otpCode;
-        }
-      } catch (err) {
-        showToast(err.message || 'Failed to send reset OTP', 'error');
-      } finally {
-        if (btn) btn.disabled = false;
-      }
-    }
-
-    async function handleResetPasswordConfirm() {
-      const ident = document.getElementById('forgot-identifier').value.trim();
-      const otp = document.getElementById('forgot-otp-code').value.trim();
-      const newPwd = document.getElementById('forgot-new-password').value;
-      const confPwd = document.getElementById('forgot-confirm-password').value;
-      const errEl = document.getElementById('forgot-reset-error');
-      if (errEl) errEl.style.display = 'none';
-
-      if (!otp) {
-        if (errEl) { errEl.textContent = 'Please enter the 6-digit OTP code.'; errEl.style.display = 'block'; }
-        return;
-      }
-      if (newPwd.length < 6) {
-        if (errEl) { errEl.textContent = 'Password must be at least 6 characters.'; errEl.style.display = 'block'; }
-        return;
-      }
-      if (newPwd !== confPwd) {
-        if (errEl) { errEl.textContent = 'Passwords do not match.'; errEl.style.display = 'block'; }
-        return;
-      }
-
-      const btn = document.getElementById('btn-confirm-forgot-reset');
-      if (btn) btn.disabled = true;
-
-      try {
-        const res = await api('/auth/forgot-password/reset', {
-          method: 'POST',
-          body: { identifier: ident, otp: otp, newPassword: newPwd }
-        });
-        showToast(res.message || 'Password successfully updated!', 'success');
-        closeForgotPasswordModal();
-        
-        // Switch to password login with details loaded
-        switchLoginMethod('PASSWORD');
-        const idInput = document.getElementById('login-pw-ident');
-        if (idInput) idInput.value = ident;
-        const pwdInput = document.getElementById('login-pw-input');
-        if (pwdInput) {
-          pwdInput.value = newPwd;
-          pwdInput.focus();
-        }
-      } catch (err) {
-        if (errEl) {
-          errEl.textContent = err.message || 'Failed to reset password';
-          errEl.style.display = 'block';
-        } else {
-          showToast(err.message || 'Failed to reset password', 'error');
-        }
-      } finally {
-        if (btn) btn.disabled = false;
-      }
-    }
-
-    function togglePasswordVisibility(inputId, btn) {
-      if (window.NeoBankUtils && typeof window.NeoBankUtils.togglePasswordVisibility === 'function') {
-        return window.NeoBankUtils.togglePasswordVisibility(inputId, btn);
-      }
-    }
-  </script>
-  <script>try{localStorage.setItem('nb_last_page',location.pathname+location.search)}catch(e){}</script>
+  <!-- Dedicated Sign-In Engine Script -->
+  <script src="/js/login.js?v=20261105_01"></script>
 </body>
 </html>
