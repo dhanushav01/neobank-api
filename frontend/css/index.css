@@ -2078,3 +2078,320 @@
       padding-top: 0px !important;
       transform: none !important;
     }
+
+
+/* ==========================================================================
+   PHASE 3: FLUID DASHBOARD & TRANSACTIONAL UI REFACTORING
+   (PORTAL SHELL, WIDGETS, DEBIT CARDS & DATA LISTS - ULTRA-WIDE TO SMARTWATCH)
+   ========================================================================== */
+
+/* 1. Structural Interface Shell Containment & Safe Boundaries */
+.app-layout {
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+.app-main {
+  width: 100% !important;
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.app-header {
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Fluid Metric Cards & Balance Widgets */
+.metrics-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)) !important;
+  gap: clamp(0.75rem, 1.5vw, 1.25rem) !important;
+  width: 100% !important;
+}
+
+.metric-card {
+  min-width: 0 !important;
+  box-sizing: border-box !important;
+}
+
+.metric-value {
+  font-size: clamp(1.4rem, 4vw, 2.1rem) !important;
+}
+
+/* 3. Account Cards & Payment Cards Containers Fluid Layout */
+.idx-s162,
+#accounts-cards-container {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 290px), 1fr)) !important;
+  gap: clamp(0.85rem, 1.8vw, 1.4rem) !important;
+  width: 100% !important;
+}
+
+.idx-s163,
+.idx-s169,
+#cards-display-container,
+#cards-display-container-tab {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  gap: clamp(1rem, 2vw, 1.5rem) !important;
+  width: 100% !important;
+}
+
+/* Virtual Debit Card Auto-Scaling */
+.virtual-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* 4. Multi-Column Grids Responsive Stacking */
+.idx-s170 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)) !important;
+  gap: clamp(1rem, 2vw, 1.5rem) !important;
+}
+
+/* 5. Mobile Viewport Refinements (<= 768px) */
+@media (max-width: 768px) {
+  .app-sidebar {
+    width: 100% !important;
+    min-width: 100% !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+  }
+  .app-sidebar::-webkit-scrollbar {
+    display: none !important;
+  }
+  .sidebar-toggle-btn {
+    display: none !important;
+  }
+  .idx-s167,
+  .idx-s160 {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+  }
+}
+
+/* 6. Tablet & Compact Mobile Viewports (<= 480px) */
+@media (max-width: 480px) {
+  .app-layout {
+    padding-inline: 8px !important;
+    padding-block: 8px !important;
+    gap: 10px !important;
+  }
+
+  .app-header {
+    padding: 8px 10px !important;
+  }
+
+  .brand-title {
+    font-size: 1.1rem !important;
+  }
+
+  .idx-s4 {
+    display: none !important;
+  }
+
+  /* Single-column auto-scaling layout for card displays */
+  .idx-s162,
+  #accounts-cards-container,
+  .idx-s163,
+  .idx-s169,
+  #cards-display-container,
+  #cards-display-container-tab,
+  .metrics-grid,
+  .idx-s170 {
+    grid-template-columns: 1fr !important;
+  }
+
+  .virtual-card {
+    min-height: 180px !important;
+    padding: 1rem !important;
+    border-radius: 14px !important;
+  }
+
+  .account-card-elevated {
+    padding: 1.1rem !important;
+  }
+
+  .quick-action-btn {
+    padding: 0.5rem 0.9rem !important;
+    font-size: 0.78rem !important;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    font-size: 16px !important; /* Prevents mobile browser auto-zoom */
+  }
+}
+
+/* 7. Universal Micro-Viewport / Smartwatch Protection (<= 320px) */
+@media (max-width: 320px) {
+  html {
+    font-size: 13px !important;
+  }
+
+  body {
+    overflow-x: hidden !important;
+  }
+
+  .app-header {
+    padding: 6px 4px !important;
+    flex-wrap: wrap !important;
+  }
+
+  .brand-badge {
+    gap: 0.4rem !important;
+  }
+
+  .brand-icon {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .brand-icon svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  .brand-title {
+    font-size: 0.95rem !important;
+  }
+
+  #user-profile-badge {
+    padding: 0.2rem 0.4rem !important;
+    gap: 0.3rem !important;
+  }
+
+  #header-user-name {
+    font-size: 0.75rem !important;
+    max-width: 70px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
+
+  .role-badge {
+    font-size: 0.55rem !important;
+    padding: 1px 3px !important;
+  }
+
+  /* Compress Quick Actions into cleanly wrapped vertical stacks */
+  .quick-actions-bar {
+    flex-wrap: wrap !important;
+    overflow-x: visible !important;
+    gap: 4px !important;
+    padding: 4px 0 !important;
+  }
+
+  .quick-action-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 6px 8px !important;
+    font-size: 0.75rem !important;
+    white-space: normal !important;
+    text-align: center !important;
+  }
+
+  /* Metrics Stack */
+  .metrics-grid {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+
+  .metric-card {
+    padding: 0.75rem !important;
+    border-radius: 12px !important;
+  }
+
+  .metric-value {
+    font-size: 1.35rem !important;
+  }
+
+  .metric-icon-wrap {
+    width: 30px !important;
+    height: 30px !important;
+  }
+
+  .metric-icon-wrap svg {
+    width: 16px !important;
+    height: 16px !important;
+  }
+
+  /* Single-Stacked List Layouts for Complex Data */
+  .data-table th,
+  .data-table td {
+    padding: 6px 4px !important;
+    font-size: 0.7rem !important;
+  }
+
+  .virtual-card {
+    min-height: 155px !important;
+    padding: 0.85rem !important;
+    border-radius: 12px !important;
+  }
+
+  .card-chip {
+    width: 34px !important;
+    height: 24px !important;
+  }
+
+  .account-card-elevated {
+    padding: 0.85rem !important;
+    border-radius: 12px !important;
+  }
+
+  /* Buttons and Actions clean wrap */
+  .btn,
+  .btn-sm,
+  .btn-primary,
+  .btn-outline {
+    max-width: 100% !important;
+    padding: 6px 10px !important;
+    font-size: 0.78rem !important;
+  }
+
+  .modal-box,
+  .glass-card {
+    padding: 0.85rem !important;
+    border-radius: 12px !important;
+  }
+}
+
+/* 8. Ultra-micro Smartwatch (<= 240px) */
+@media (max-width: 240px) {
+  .app-header {
+    justify-content: center !important;
+  }
+
+  .brand-badge {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .idx-s5 {
+    width: 100% !important;
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+
+  .metric-value {
+    font-size: 1.2rem !important;
+  }
+
+  .virtual-card {
+    min-height: 140px !important;
+    padding: 0.65rem !important;
+  }
+
+  .account-card-elevated {
+    padding: 0.65rem !important;
+  }
+}
