@@ -1235,3 +1235,178 @@ footer p {
     transition: none;
   }
 }
+
+
+/* ==========================================================================
+   PHASE 2: FLUID WEB DESIGN OVERHAUL (HOME PAGE - ULTRA-WIDE TO SMARTWATCH)
+   ========================================================================== */
+
+/* 1. Global Viewport Safety & Box Sizing */
+main {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.hero,
+.stage,
+.cta,
+footer {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* 2. Fluid Layout Adjustments for Large Monitors (1440px - 4K) */
+@media (min-width: 1441px) {
+  .hero {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+  .stage, .cta, footer {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
+}
+
+/* 3. Fluid Tablet & Mobile Stacking (<= 768px) */
+@media (max-width: 768px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding-top: clamp(90px, 14vh, 120px);
+    gap: 1.5rem;
+  }
+  .hero .lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .acts {
+    justify-content: center;
+  }
+  .scene {
+    width: min(86vw, 360px);
+    margin-top: 1rem;
+  }
+  .cta .row {
+    padding: 24px 16px;
+  }
+}
+
+/* 4. Compact Mobile Viewports (<= 480px) */
+@media (max-width: 480px) {
+  header nav {
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .brand {
+    font-size: 1.15rem;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 9vw, 3.2rem);
+  }
+  .hero .acts {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+  .hero .acts .btn,
+  .hero .acts .btn-explore {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .cta .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 16px 12px;
+  }
+  .cta .row b {
+    font-size: clamp(1.3rem, 6vw, 1.8rem);
+  }
+  .cta .row span {
+    font-size: 0.9rem;
+    max-width: 100%;
+  }
+}
+
+/* 5. Universal Micro-Viewport / Smartwatch Protection (<= 320px) */
+@media (max-width: 320px) {
+  body {
+    overflow-x: hidden !important;
+  }
+  header nav {
+    padding: 6px 8px !important;
+  }
+  .demo {
+    font-size: 0.68rem !important;
+    padding: 4px 6px !important;
+    line-height: 1.3 !important;
+  }
+  .brand {
+    font-size: 1.05rem !important;
+  }
+  .nav-controls {
+    gap: 3px !important;
+  }
+  .theme-toggle-btn {
+    padding: 4px 6px !important;
+    min-height: 28px !important;
+  }
+  .page-zoom-controls {
+    height: 28px !important;
+  }
+  .hero {
+    padding: 75px 8px 24px !important;
+    gap: 1rem !important;
+  }
+  .hero h1 {
+    font-size: clamp(1.6rem, 8vw, 2.2rem) !important;
+    margin-bottom: 0.8rem !important;
+  }
+  .scene {
+    width: min(92vw, 220px) !important;
+  }
+  .chap h2 {
+    font-size: 1.2rem !important;
+  }
+  .chap p {
+    font-size: 0.85rem !important;
+  }
+  .cta h2 {
+    font-size: 1.25rem !important;
+  }
+  footer {
+    padding: 1.5rem 10px 2rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
+/* 6. Ultra-micro Smartwatch (<= 240px) */
+@media (max-width: 240px) {
+  header nav {
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+  .brand {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+  .hero {
+    padding: 65px 4px 16px !important;
+  }
+  .hero h1 {
+    font-size: 1.45rem !important;
+  }
+  .scene {
+    width: min(96vw, 180px) !important;
+  }
+  .cta .row {
+    padding: 10px 6px !important;
+  }
+}

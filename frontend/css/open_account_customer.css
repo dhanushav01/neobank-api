@@ -4287,3 +4287,168 @@ body.light-theme .page-word-indicator {
 }
 
 
+
+
+/* ==========================================================================
+   PHASE 2: FLUID WEB DESIGN OVERHAUL (CUSTOMER ONBOARDING - ULTRA-WIDE TO SMARTWATCH)
+   ========================================================================== */
+
+/* 1. Global Viewport Safety & Box Sizing */
+#onboarding-step-1,
+.hero,
+.start-hero,
+.stage,
+.pick,
+.cats {
+  max-width: 1440px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+/* 2. Fluid Auto-Fit Grid for Account Cards */
+.cat-b .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: clamp(10px, 2vw, 18px);
+  width: 100%;
+}
+
+.acct {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 3. Fluid Tablet & Mobile Stacking (<= 768px) */
+@media (max-width: 768px) {
+  .hero, .start-hero {
+    text-align: center;
+    padding-top: clamp(80px, 12vh, 110px);
+  }
+  .hero .lede {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .hero .acts {
+    justify-content: center;
+  }
+  .cat-b .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 4. Compact Mobile Viewports (<= 480px) */
+@media (max-width: 480px) {
+  .start-nav {
+    padding: 8px 12px;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .start-nav .brand {
+    font-size: 1.15rem;
+  }
+  .hero h1, .start-hero h1 {
+    font-size: clamp(1.8rem, 8vw, 2.6rem) !important;
+  }
+  .hero .acts {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+  .hero .acts .btn,
+  .hero .acts .ghost {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+  .acct {
+    padding: 14px 12px !important;
+  }
+  .acct b {
+    font-size: 1.1rem !important;
+  }
+  .cat-h {
+    padding: 14px 12px !important;
+  }
+  .cat-h b {
+    font-size: 1rem !important;
+  }
+}
+
+/* 5. Universal Micro-Viewport / Smartwatch Protection (<= 320px) */
+@media (max-width: 320px) {
+  body {
+    overflow-x: hidden !important;
+  }
+  .start-nav {
+    padding: 6px 8px !important;
+  }
+  .start-nav .brand {
+    font-size: 1.05rem !important;
+  }
+  .hero, .start-hero {
+    padding: 70px 8px 20px !important;
+  }
+  .hero h1, .start-hero h1 {
+    font-size: 1.5rem !important;
+  }
+  .hero .lede {
+    font-size: 0.82rem !important;
+  }
+  .pick h2 {
+    font-size: 1.25rem !important;
+  }
+  .cat-h {
+    padding: 10px 8px !important;
+  }
+  .cat-h b {
+    font-size: 0.9rem !important;
+  }
+  .cat-h span {
+    font-size: 0.72rem !important;
+  }
+  .acct {
+    padding: 10px 8px !important;
+    border-radius: 12px !important;
+  }
+  .acct b {
+    font-size: 0.98rem !important;
+  }
+  .acct span {
+    font-size: 0.8rem !important;
+  }
+  .stage {
+    height: auto !important;
+    margin-bottom: 2rem !important;
+  }
+  .pin {
+    position: static !important;
+    height: auto !important;
+  }
+  .sheet {
+    display: none !important;
+  }
+}
+
+/* 6. Ultra-micro Smartwatch (<= 240px) */
+@media (max-width: 240px) {
+  .start-nav {
+    justify-content: center !important;
+    gap: 4px !important;
+  }
+  .start-nav .brand {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .hero, .start-hero {
+    padding: 60px 4px 14px !important;
+  }
+  .hero h1, .start-hero h1 {
+    font-size: 1.35rem !important;
+  }
+  .acct {
+    padding: 8px 6px !important;
+  }
+}
