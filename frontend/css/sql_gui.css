@@ -1473,3 +1473,149 @@
         font-size: 0.72rem;
       }
     }
+
+
+/* ==========================================================================
+   PHASE 4: FLUID SQL WORKBENCH REFACTORING (ULTRA-WIDE TO SMARTWATCH)
+   ========================================================================= */
+
+/* 1. Ultra-Wide Containment & Safe Boundaries */
+.db-workspace {
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.db-header {
+  max-width: 1440px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Responsive SQL Console, Schema Grid & DDL Views */
+.db-sql-textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+  font-family: var(--db-mono) !important;
+  resize: vertical !important;
+}
+
+.sql-s62 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)) !important;
+  gap: clamp(1rem, 2vw, 1.5rem) !important;
+}
+
+.sql-s77 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)) !important;
+  gap: 0.6rem !important;
+}
+
+.sql-s85 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)) !important;
+  gap: 1rem !important;
+}
+
+/* 3. Authentication & Gate Barriers Margin-Free on Small Screens */
+.sql-s11, .sql-s25 {
+  width: 100% !important;
+  max-width: 480px !important;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem) !important;
+  box-sizing: border-box !important;
+}
+
+/* 4. Mobile Screen Adaptations (<= 768px) */
+@media (max-width: 768px) {
+  .db-grid-container {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+  .db-pagination-bar {
+    flex-wrap: wrap !important;
+    gap: 8px !important;
+    justify-content: center !important;
+    text-align: center !important;
+  }
+  .sql-s41 {
+    flex-wrap: wrap !important;
+    justify-content: center !important;
+  }
+}
+
+/* 5. Compact Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .sql-s10 {
+    padding: 0.5rem !important;
+  }
+  .sql-s11, .sql-s25 {
+    padding: 1.25rem 0.85rem !important;
+  }
+  .sql-s13, .sql-s27 {
+    font-size: 1.15rem !important;
+  }
+  .sql-s31 {
+    flex-direction: column !important;
+  }
+  .sql-s32, .sql-s33 {
+    width: 100% !important;
+    text-align: center !important;
+  }
+  .db-brand-title {
+    font-size: 0.95rem !important;
+  }
+}
+
+/* 6. Universal Micro-Viewport / Smartwatch Protection (<= 320px) */
+@media (max-width: 320px) {
+  html {
+    font-size: 13px !important;
+  }
+  body {
+    overflow-x: hidden !important;
+  }
+  .db-header {
+    padding: 4px 6px !important;
+  }
+  .db-brand {
+    gap: 4px !important;
+  }
+  .db-brand-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+  .db-brand-badge {
+    display: none !important;
+  }
+  .db-toolbar {
+    padding: 6px 4px !important;
+  }
+  .db-btn {
+    font-size: 0.72rem !important;
+    padding: 4px 6px !important;
+  }
+  .db-grid-table th, .db-grid-table td {
+    padding: 4px 6px !important;
+    font-size: 0.7rem !important;
+  }
+  .db-pagination-bar {
+    font-size: 0.72rem !important;
+    padding: 4px !important;
+  }
+}
+
+/* 7. Ultra-micro Smartwatch (<= 240px) */
+@media (max-width: 240px) {
+  .db-brand-title {
+    font-size: 0.82rem !important;
+  }
+  .db-btn {
+    font-size: 0.68rem !important;
+    padding: 3px 5px !important;
+  }
+}

@@ -210,3 +210,103 @@
       padding-top: 0px !important;
       transform: none !important;
     }
+
+
+/* ==========================================================================
+   PHASE 4: FLUID EMPLOYEE ONBOARDING REFACTORING (ULTRA-WIDE TO SMARTWATCH)
+   ========================================================================== */
+
+/* 1. Safe Containment & Centering on Ultra-Wide Monitors */
+.eo-s9 {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  min-height: calc(100vh - 80px) !important;
+  min-height: calc(100dvh - 80px) !important;
+  padding: clamp(0.75rem, 2.5vw, 2rem) !important;
+  width: 100% !important;
+  max-width: 1440px !important;
+  margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+.eo-s10 {
+  width: 100% !important;
+  max-width: 580px !important;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem) !important;
+  border-radius: clamp(12px, 2.5vw, 22px) !important;
+  box-sizing: border-box !important;
+}
+
+/* 2. Fluid Form Row Grid Structures */
+.eo-s14 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)) !important;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem) !important;
+  width: 100% !important;
+}
+
+.eo-s15 {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 140px), 1fr)) !important;
+  gap: clamp(0.5rem, 1.5vw, 0.75rem) !important;
+  width: 100% !important;
+}
+
+/* 3. Compact Mobile Screens (<= 480px) */
+@media (max-width: 480px) {
+  .eo-s9 {
+    padding: 0.5rem !important;
+  }
+  .eo-s10 {
+    padding: 1.25rem 0.85rem !important;
+  }
+  .eo-s14, .eo-s15 {
+    grid-template-columns: 1fr !important;
+  }
+  .eo-s12 {
+    font-size: 1.3rem !important;
+  }
+}
+
+/* 4. Universal Micro-Viewport / Smartwatch Protection (<= 320px) */
+@media (max-width: 320px) {
+  .app-header {
+    padding: 6px 4px !important;
+  }
+  .eo-s9 {
+    padding: 4px !important;
+    min-height: auto !important;
+  }
+  .eo-s10 {
+    padding: 10px 8px !important;
+    border-radius: 10px !important;
+  }
+  .eo-s12 {
+    font-size: 1.15rem !important;
+  }
+  .eo-s13 {
+    font-size: 0.75rem !important;
+  }
+  .form-group label {
+    font-size: 0.75rem !important;
+  }
+  .form-input, .form-select {
+    padding: 0.4rem 0.5rem !important;
+    font-size: 0.8rem !important;
+  }
+  .eo-s16 {
+    padding: 0.5rem !important;
+    font-size: 0.82rem !important;
+  }
+}
+
+/* 5. Ultra-micro Smartwatch (<= 240px) */
+@media (max-width: 240px) {
+  .eo-s10 {
+    padding: 6px 4px !important;
+  }
+  .eo-s12 {
+    font-size: 1.05rem !important;
+  }
+}

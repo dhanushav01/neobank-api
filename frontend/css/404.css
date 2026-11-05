@@ -667,3 +667,23 @@
         opacity: .9
       }
     }
+
+
+@media (max-width: 320px) {
+  .wrap {
+    padding: 8px !important;
+  }
+  .cheque {
+    padding: 12px 10px !important;
+    border-radius: 12px !important;
+  }
+  .actions {
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+  .btn, .btn-primary, .btn-ghost {
+    width: 100% !important;
+    text-align: center !important;
+    justify-content: center !important;
+  }
+}
