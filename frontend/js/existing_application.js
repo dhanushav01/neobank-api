@@ -45,15 +45,6 @@
     '100006': { status: 'REJECTED', applicantName: 'Dev Patel', accountType: 'PENSION', branchName: 'Ahmedabad Ashram Road Branch', branchCode: 'AMD-008', submittedAt: '2026-10-29T09:30:00', reviewedAt: '2026-10-31T13:00:00', reviewNotes: 'Age requirement or mandatory OVD document for this account type was not met.' }
   };
 
-  var CH = [
-    ['100001', 'Draft'],
-    ['100002', 'Submitted'],
-    ['100003', 'Under review'],
-    ['100004', 'Verified'],
-    ['100005', 'Account opened'],
-    ['100006', 'Rejected']
-  ];
-
   function esc(s) {
     return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
       return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
@@ -121,21 +112,6 @@
       var v = raw.replace(/\D/g, '').slice(-6);
       setRef(v);
       if (v.length === 6) look();
-    });
-  }
-
-  // Populate Sample Chips
-  var chipsEl = $('.chips');
-  if (chipsEl) {
-    chipsEl.insertAdjacentHTML('beforeend', CH.map(function (c) {
-      return '<button type="button" class="chip" data-s="' + c[0] + '" data-testid="track-sample-' + c[1].toLowerCase().replace(/\s+/g, '-') + '-chip">' + c[1] + '</button>';
-    }).join(''));
-    chipsEl.addEventListener('click', function (e) {
-      var b = e.target.closest('[data-s]');
-      if (b) {
-        setRef(b.dataset.s);
-        look();
-      }
     });
   }
 
@@ -259,14 +235,27 @@
       }
     } catch (_) {}
 
-    // 2. Fallback to LocalStorage (Multi-tab resilient)
+    // Check LocalStorage records
+    var localApp = null;
+    try {
+      var apps = JSON.parse(localStorage.getItem('neobank_applications') || '{}');
+      if (apps[fullNum]) localApp = apps[fullNum];
+    } catch (_) {}
+
+    // If local storage record exists and is SUBMITTED, prioritize SUBMITTED status over stale draft
+    if (localApp && (localApp.status === 'SUBMITTED' || !localApp.isDraft)) {
+      if (!appData || appData.status === 'DRAFT_SAVED' || appData.status === 'DRAFT_INITIATED') {
+        appData = Object.assign({}, appData || {}, localApp, { status: 'SUBMITTED', isDraft: false });
+      }
+    }
+
+    // 2. Fallback to LocalStorage if API did not return data
     if (!appData) {
-      try {
-        var apps = JSON.parse(localStorage.getItem('neobank_applications') || '{}');
-        if (apps[fullNum]) appData = apps[fullNum];
-        if (!appData) {
-          var rawDraft = localStorage.getItem('nb_draft_' + fullNum) ||
-            (fullNum === localStorage.getItem('neobank_last_submitted_app') ? localStorage.getItem('nb_app_draft') : null);
+      if (localApp) {
+        appData = localApp;
+      } else {
+        try {
+          var rawDraft = localStorage.getItem('nb_draft_' + fullNum);
           if (rawDraft) {
             var d = JSON.parse(rawDraft);
             appData = {
@@ -280,13 +269,15 @@
               updatedAt: new Date().toISOString()
             };
           }
-        }
-      } catch (_) {}
+        } catch (_) {}
+      }
     }
 
-    // 3. Fallback to offline preview dictionary DB
-    if (!appData && DB[v]) {
-      appData = Object.assign({ applicationNumber: fullNum }, DB[v]);
+    // Ensure status consistency: if status is SUBMITTED or further along, isDraft is definitely false
+    if (appData) {
+      if (appData.status && appData.status !== 'DRAFT_SAVED' && appData.status !== 'DRAFT_INITIATED') {
+        appData.isDraft = false;
+      }
     }
 
     render(fullNum, appData);
@@ -635,6 +626,13 @@
       if (paramVal) {
         appNum = paramVal.trim().replace(/^app=/i, '');
       }
+    }
+
+    if (!appNum) {
+      try {
+        var lastApp = localStorage.getItem('neobank_last_submitted_app');
+        if (lastApp) appNum = lastApp;
+      } catch (_) {}
     }
 
     if (appNum) {

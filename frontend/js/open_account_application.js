@@ -613,6 +613,21 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
     $('#no2').textContent = num;
     scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
 
+    // Cancel pending debounced draft saves to prevent overwriting submitted status
+    clearTimeout(syncDraftTimer);
+    syncDraftTimer = null;
+
+    // Remove draft caches so tracking doesn't mistake this submitted app for a draft
+    try {
+      localStorage.removeItem('nb_draft_' + num);
+      localStorage.removeItem('nb_app_draft');
+    } catch (_) {}
+
+    var trackBtn = $('[data-testid="app-track-button"]');
+    if (trackBtn) {
+      trackBtn.href = '/existing_application?app=' + encodeURIComponent(num);
+    }
+
     var addrLine1 = [S.house, S.street, S.landmark].filter(Boolean).join(', ') || '123 Marine Drive';
     if (addrLine1.length < 3) addrLine1 = 'Flat 101, Main Road';
 
@@ -674,6 +689,7 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
       apps[num] = {
         applicationNumber: num,
         status: 'SUBMITTED',
+        isDraft: false,
         createdAt: new Date().toISOString(),
         accountType: S.acctType,
         branchName: S.branchName,
@@ -693,7 +709,8 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
         if (resData && resData.applicationNumber) {
           num = resData.applicationNumber;
           $('#no2').textContent = num;
-          apps[num] = Object.assign({}, apps[num], resData);
+          if (trackBtn) trackBtn.href = '/existing_application?app=' + encodeURIComponent(num);
+          apps[num] = Object.assign({}, apps[num], resData, { status: 'SUBMITTED', isDraft: false });
           localStorage.setItem('neobank_applications', JSON.stringify(apps));
           localStorage.setItem('neobank_last_submitted_app', num);
         }
@@ -1251,14 +1268,14 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
     }
   });
 
-  /* Signature Pad */
+  /* Robust Signature Pad with Multi-Device Touch & Pointer Support */
   var cv = $('#sig'), cx = (cv && typeof cv.getContext === 'function') ? cv.getContext('2d') : null, dr = false, has = false;
 
   function fit() {
     if (!cv || !cx) return;
     var r = cv.getBoundingClientRect();
     if (r.width > 0 && !has) {
-      var d = Math.min(devicePixelRatio || 1, 2);
+      var d = Math.min(window.devicePixelRatio || 1, 2);
       cv.width = r.width * d;
       cv.height = r.height * d;
       cx.setTransform(d, 0, 0, d, 0, 0);
@@ -1269,40 +1286,77 @@ window.initUniformApplicationForm = function (appNum, accType, accLabel, branchN
     }
   }
 
-  function pt(e) {
+  function getCoords(e) {
     var r = cv.getBoundingClientRect();
-    return [e.clientX - r.left, e.clientY - r.top];
+    var clientX = e.clientX;
+    var clientY = e.clientY;
+    if (e.touches && e.touches.length > 0) {
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else if (e.changedTouches && e.changedTouches.length > 0) {
+      clientX = e.changedTouches[0].clientX;
+      clientY = e.changedTouches[0].clientY;
+    }
+    return [clientX - r.left, clientY - r.top];
+  }
+
+  function startDraw(e) {
+    if (e.cancelable) e.preventDefault();
+    if (!cv.width || !cv.height || !has) fit();
+    dr = true;
+    if (e.pointerId && typeof cv.setPointerCapture === 'function') {
+      try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+    }
+    var p = getCoords(e);
+    cx.beginPath();
+    cx.moveTo(p[0], p[1]);
+    var sigp = $('#sigp');
+    if (sigp) sigp.style.opacity = 0;
+  }
+
+  function moveDraw(e) {
+    if (!dr) return;
+    if (e.cancelable) e.preventDefault();
+    var p = getCoords(e);
+    cx.lineTo(p[0], p[1]);
+    cx.stroke();
+    has = true;
+  }
+
+  function endDraw(e) {
+    if (!dr) return;
+    dr = false;
+    if (has) {
+      S.signature = 'Signed';
+      saved();
+      update();
+    }
   }
 
   if (cv && cx) {
-    cv.onpointerdown = function (e) {
-      dr = true;
-      cv.setPointerCapture(e.pointerId);
-      var p = pt(e);
-      cx.beginPath();
-      cx.moveTo(p[0], p[1]);
-      var sigp = $('#sigp');
-      if (sigp) sigp.style.opacity = 0;
-    };
-    cv.onpointermove = function (e) {
-      if (!dr) return;
-      var p = pt(e);
-      cx.lineTo(p[0], p[1]);
-      cx.stroke();
-      has = true;
-    };
-    cv.onpointerup = function () {
-      dr = false;
-      if (has) {
-        S.signature = 'Signed';
-        saved();
-        update();
-      }
-    };
+    // Pointer Events (Touch, Pen, Mouse)
+    cv.addEventListener('pointerdown', startDraw, { passive: false });
+    cv.addEventListener('pointermove', moveDraw, { passive: false });
+    cv.addEventListener('pointerup', endDraw);
+    cv.addEventListener('pointercancel', endDraw);
+
+    // Direct Touch Events fallback (Safari iOS, Android Mobile)
+    cv.addEventListener('touchstart', startDraw, { passive: false });
+    cv.addEventListener('touchmove', moveDraw, { passive: false });
+    cv.addEventListener('touchend', endDraw, { passive: false });
+    cv.addEventListener('touchcancel', endDraw, { passive: false });
+
+    // Mouse Events fallback
+    cv.addEventListener('mousedown', startDraw);
+    window.addEventListener('mousemove', function (e) { if (dr) moveDraw(e); });
+    window.addEventListener('mouseup', function (e) { if (dr) endDraw(e); });
+
     var sigclr = $('#sigclr');
     if (sigclr) {
-      sigclr.onclick = function () {
+      sigclr.onclick = function (e) {
+        if (e && e.preventDefault) e.preventDefault();
         has = false;
+        dr = false;
         cx.clearRect(0, 0, cv.width, cv.height);
         S.signature = '';
         var sigp = $('#sigp');

@@ -87,9 +87,11 @@ header.track-header {
 
 nav.top-nav {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: clamp(12px, 2.5vw, 28px);
-  padding: 12px clamp(16px, 4vw, 48px);
+  justify-content: space-between;
+  gap: clamp(8px, 2vw, 20px);
+  padding: 12px clamp(12px, 3vw, 36px);
 }
 
 .brand-logo {

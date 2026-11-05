@@ -90,10 +90,11 @@ header {
 
 nav.top {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: clamp(10px, 2.5vw, 28px);
-  padding: 12px clamp(16px, 4vw, 48px);
+  gap: clamp(8px, 2vw, 20px);
+  padding: 12px clamp(12px, 3vw, 36px);
   max-width: 1360px;
   margin: 0 auto;
 }
@@ -885,13 +886,18 @@ label.chk.bad {
   height: 170px;
   background: rgba(4, 6, 11, 0.5);
   margin-top: 8px;
+  touch-action: none !important;
+  user-select: none !important;
+  -webkit-user-select: none !important;
+  cursor: crosshair;
 }
 
 .sigw canvas {
   width: 100%;
   height: 100%;
-  touch-action: none;
+  touch-action: none !important;
   display: block;
+  cursor: crosshair;
 }
 
 .sigw button {
